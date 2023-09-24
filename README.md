@@ -1,6 +1,5 @@
-# Interdisciplinary Group Project
-## Group 21
-### Team member
+# Mach D Trading
+## Team member
 - Aaron Barker
 - Andrew Mcauliffe
 - Gerald Lee
