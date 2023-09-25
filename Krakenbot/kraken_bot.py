@@ -29,9 +29,9 @@ def kraken_request(url_path, data, api_key, api_sec):
     return resp 
 
 #Total balance
-resp = kraken_request("/0/private/Balance", {
-    "nonce": str(int(1000 * time.time()))
-}, api_key, api_sec)
+# resp = kraken_request("/0/private/Balance", {
+#     "nonce": str(int(1000 * time.time()))
+# }, api_key, api_sec)
 
 #Specific balance on asset
 # resp = kraken_request("/0/private/TradeBalance", {
@@ -57,6 +57,54 @@ resp = kraken_request("/0/private/Balance", {
 #      "trades": True
 #  }, api_key, api_sec)
 
+#Create sell order
+# resp = kraken_request("/0/private/AddOrder", {
+#      "nonce": str(int(1000 * time.time())),
+#      "ordertype": "limit",
+#      "type": "sell",
+#      "volume": 1.00,
+#      "pair": "XBTUSD",
+#      "price": 27000
+#  }, api_key, api_sec)
 
+buy_limit = 21574
+sell_limit = 21600
+buy_amount = 0.0001
+sell_amount = 0.0000001
 
-print(resp.json())
+while True:
+    current_price = requests.get("https://api.kraken.com/0/public/Ticker?pair=BTCGBP").json()['result']['XXBTZGBP']['c'][0]
+    print(current_price)
+    if float(current_price) < buy_limit:
+        print(f"Buying  {buy_amount} of BTC at {current_price}!")
+    
+        resp = kraken_request("/0/private/AddOrder", {
+        "nonce": str(int(1000 * time.time())),
+        "ordertype": "market",
+        "type": "buy",
+        "volume": buy_amount,
+        "pair": "XBTGBP",
+        }, api_key, api_sec)
+
+        if not resp.json()['error']:
+            print("successfully bought BTC")
+        else:
+            print(f"Error: {resp.json()['error']}")
+    elif float(current_price) > sell_limit:
+        print(f"Selling  {sell_amount} of BTC at {current_price}!")
+    
+        resp = kraken_request("/0/private/AddOrder", {
+        "nonce": str(int(1000 * time.time())),
+        "ordertype": "market",
+        "type": "sell",
+        "volume": sell_amount,
+        "pair": "XBTGBP",
+        }, api_key, api_sec)
+
+        if not resp.json()['error']:
+            print("successfully sold BTC")
+        else:
+            print(f"Error: {resp.json()['error']}")
+    else:
+        print(f"Current Price: {current_price}, not buying or selling")
+    time.sleep(3)

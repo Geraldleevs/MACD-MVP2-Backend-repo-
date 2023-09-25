@@ -83,7 +83,7 @@ open_orders_button = tk.Button(app, text="Open Orders", command=fetch_open_order
 closed_orders_button = tk.Button(app, text="Closed Orders", command=fetch_closed_orders)
 trades_history_button = tk.Button(app, text="Trades History", command=fetch_trades_history)
 # Create a text widget to display the balance
-text_widget = tk.Text(app, height=10, width=30)
+text_widget = tk.Text(app, height=5, width=30)
 # Pack the buttons
 fetch_button.pack()
 specific_balance_button.pack()
@@ -91,6 +91,58 @@ open_orders_button.pack()
 closed_orders_button.pack()
 trades_history_button.pack()
 text_widget.pack()
+# Create input fields for all parameters
+ordertype_label = tk.Label(app, text="Ordertype:")
+ordertype_label.pack()
+ordertype_entry = tk.Entry(app)
+ordertype_entry.pack()
+
+type_label = tk.Label(app, text="Type:")
+type_label.pack()
+type_entry = tk.Entry(app)
+type_entry.pack()
+
+volume_label = tk.Label(app, text="Volume:")
+volume_label.pack()
+volume_entry = tk.Entry(app)
+volume_entry.pack()
+
+pair_label = tk.Label(app, text="Pair:")
+pair_label.pack()
+pair_entry = tk.Entry(app)
+pair_entry.pack()
+
+price_label = tk.Label(app, text="Price:")
+price_label.pack()
+price_entry = tk.Entry(app)
+price_entry.pack()
+
+# Function to make a custom AddOrder request
+def make_custom_order():
+    # Get user-entered values for all parameters
+    user_entered_ordertype = ordertype_entry.get()
+    user_entered_type = type_entry.get()
+    user_entered_volume = volume_entry.get()
+    user_entered_pair = pair_entry.get()
+    user_entered_price = price_entry.get()
+    
+    # Construct the request data using user-entered values
+    data = {
+        "nonce": str(int(1000 * time.time())),
+        "ordertype": user_entered_ordertype,
+        "type": user_entered_type,
+        "volume": user_entered_volume,
+        "pair": user_entered_pair,
+        "price": user_entered_price
+    }
+    
+    response = kraken_request("/0/private/AddOrder", data)
+    display_response(response)
+
+# Create a button for the custom AddOrder request
+custom_order_button = tk.Button(app, text="Custom AddOrder", command=make_custom_order)
+custom_order_button.pack()
+
 
 
 # Start the Tkinter main loop
