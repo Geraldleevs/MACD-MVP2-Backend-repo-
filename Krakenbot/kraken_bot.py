@@ -5,7 +5,7 @@ import hashlib
 import hmac
 import base64
 
-with open ("tempkeys", "r") as f:
+with open ("Krakenbot/tempkeys", "r") as f:
     lines = f.read().splitlines()
     api_key = lines[0]
     api_sec = lines[1]
@@ -28,9 +28,35 @@ def kraken_request(url_path, data, api_key, api_sec):
 
     return resp 
 
-
+#Total balance
 resp = kraken_request("/0/private/Balance", {
     "nonce": str(int(1000 * time.time()))
 }, api_key, api_sec)
+
+#Specific balance on asset
+# resp = kraken_request("/0/private/TradeBalance", {
+#     "nonce": str(int(1000 * time.time())),
+#     "asset": "GBP"
+# }, api_key, api_sec)
+
+#Open orders query
+# resp = kraken_request("/0/private/OpenOrders", {
+#     "nonce": str(int(1000 * time.time())),
+#     "trades": True
+# }, api_key, api_sec)
+
+#Closed orders query
+# resp = kraken_request("/0/private/ClosedOrders", {
+#     "nonce": str(int(1000 * time.time())),
+#     "trades": True
+# }, api_key, api_sec)
+
+#Trades History query
+# resp = kraken_request("/0/private/TradesHistory", {
+#      "nonce": str(int(1000 * time.time())),
+#      "trades": True
+#  }, api_key, api_sec)
+
+
 
 print(resp.json())
