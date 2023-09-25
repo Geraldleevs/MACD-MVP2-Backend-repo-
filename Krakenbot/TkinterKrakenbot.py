@@ -143,7 +143,5 @@ def make_custom_order():
 custom_order_button = tk.Button(app, text="Custom AddOrder", command=make_custom_order)
 custom_order_button.pack()
 
-
-
 # Start the Tkinter main loop
 app.mainloop()
