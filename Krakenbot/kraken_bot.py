@@ -70,7 +70,7 @@ def kraken_request(url_path, data, api_key, api_sec):
 buy_limit = 21574
 sell_limit = 21600
 buy_amount = 0.0001
-sell_amount = 0.0000001
+sell_amount = 0.0001
 
 while True:
     current_price = requests.get("https://api.kraken.com/0/public/Ticker?pair=BTCGBP").json()['result']['XXBTZGBP']['c'][0]
