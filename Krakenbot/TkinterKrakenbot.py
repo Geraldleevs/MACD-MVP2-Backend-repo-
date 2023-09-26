@@ -48,10 +48,10 @@ class KrakenApp(tk.Tk):
         strategy_frame = tk.Frame(self)
         strategy_frame.pack(side=tk.LEFT)
 
-        buy_limit = 21574
-        sell_limit = 21600
-        buy_amount = 0.0001
-        sell_amount = 0.0001
+        # buy_limit = 21574
+        # sell_limit = 21600
+        # buy_amount = 0.0001
+        # sell_amount = 0.0001
 
         self.buy_limit_label = self.create_label(strategy_frame, "Buy Limit:")
         self.buy_limit_entry = self.create_entry(strategy_frame)
@@ -266,8 +266,6 @@ class KrakenApp(tk.Tk):
             
             self.display_trading_output(trading_output)
             time.sleep(3)
-
-
 
 if __name__ == "__main__":
     app = KrakenApp()
