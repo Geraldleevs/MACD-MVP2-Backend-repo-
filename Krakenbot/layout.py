@@ -50,18 +50,13 @@ class KrakenApp(tk.Tk):
         strategy_frame = tk.Frame(self)
         strategy_frame.pack(side=tk.LEFT)
 
-
-
-        # self.buy_limit_label = self.create_label(strategy_frame, "Buy Limit:")
-        # self.buy_limit_entry = self.create_entry(strategy_frame)
-        # self.sell_limit_label = self.create_label(strategy_frame, "Sell Limit:")
-        # self.sell_limit_entry = self.create_entry(strategy_frame)
         self.buy_amount_label = self.create_label(strategy_frame, "Buy Amount:")
         self.buy_amount_entry = self.create_entry(strategy_frame)
+        
         self.sell_amount_label = self.create_label(strategy_frame, "Sell Amount:")
         self.sell_amount_entry = self.create_entry(strategy_frame)
 
-        self.start_trading_button = self.create_button(strategy_frame, "Start Trading", self.start_trading)
+        self.start_trading_button = self.create_button(strategy_frame, "Start Trading MACD", self.start_trading_MACD)
 
     def create_label(self, frame, text):
         label = tk.Label(frame, text=text)
@@ -359,17 +354,16 @@ class KrakenApp(tk.Tk):
             return None
 
     
-    # Function to run trading logic in a separate thread
     def trading_logic_MACD(self):
-    # Define MACD parameters
+        # Define MACD parameters
         short_ema_period = 1
         long_ema_period = 26
         signal_ema_period = 9
 
         while True:
             # Fetch historical price data
-            historical_data = self.fetch_historical_data("XXBTZGBP",short_ema_period, long_ema_period)
-            
+            historical_data = self.fetch_historical_data("XXBTZGBP", short_ema_period, long_ema_period)
+
             if historical_data:
                 # Calculate MACD
                 macd_line, signal_line = self.calculate_macd(
@@ -379,11 +373,12 @@ class KrakenApp(tk.Tk):
                 current_price = float(self.fetch_current_price("XXBTZGBP"))
 
                 trading_output = f"Current Price: {current_price}\n"
-                
+
                 # Check for MACD buy signal
                 if macd_line[-1] > signal_line[-1] and macd_line[-2] <= signal_line[-2]:
                     trading_output += f"Buy signal detected! Buying BTC at {current_price}!\n"
-                    resp = self.place_market_order("buy", "XXBTZGBP", 0.0002, 'market')  # Adjust volume as needed
+                    buy_amount = float(self.buy_amount_entry.get())  # Get the value from the sell_amount_entry
+                    resp = self.place_market_order("buy", "XXBTZGBP", buy_amount, 'market')  # Adjust volume as needed
 
                     if not resp.get('error'):
                         trading_output += "Successfully bought BTC\n"
@@ -393,18 +388,19 @@ class KrakenApp(tk.Tk):
                 # Check for MACD sell signal
                 elif macd_line[-1] < signal_line[-1] and macd_line[-2] >= signal_line[-2]:
                     trading_output += f"Sell signal detected! Selling BTC at {current_price}!\n"
-                    resp = self.place_market_order("sell", "XXBTZGBP", 0.0002, 'market')  # Adjust volume as needed
+                    sell_amount = float(self.sell_amount_entry.get())  # Get the value from the sell_amount_entry
+                    resp = self.place_market_order("sell", "XXBTZGBP", sell_amount, 'market')  # Use the sell_amount
 
                     if not resp.get('error'):
                         trading_output += "Successfully sold BTC\n"
                     else:
                         trading_output += f"Error: {resp.get('error')}\n"
-                
+
                 else:
                     trading_output += "No trading signal\n"
 
                 self.display_trading_output(trading_output)
-            
+
             time.sleep(3)
 
 
