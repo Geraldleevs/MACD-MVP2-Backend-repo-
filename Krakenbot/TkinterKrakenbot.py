@@ -74,10 +74,10 @@ class KrakenApp(tk.Tk):
         self.traiding_pair_label = self.create_label(strategy_frame_RSI, "Trading Pair:")
         self.trading_pair_entry_RSI = self.create_entry(strategy_frame_RSI)
 
-        self.time_frame_label = self.create_label(strategy_frame_RSI, "Timeframe/RSI Calculation period:")
+        self.time_frame_label = self.create_label(strategy_frame_RSI, "Timeframe/RSI Calculation period: DONT USE WIP")
         self.time_frame_RSI = self.create_entry(strategy_frame_RSI)
 
-        self.traiding_pair_label = self.create_label(strategy_frame_RSI, "Interval:")
+        self.traiding_pair_label = self.create_label(strategy_frame_RSI, "Interval: DONT USE WIP")
         self.interval = self.create_entry(strategy_frame_RSI)
 
         self.buy_amount_label = self.create_label(strategy_frame_RSI, "Buy Amount:")
@@ -352,7 +352,7 @@ class KrakenApp(tk.Tk):
             print(f"Error: Failed to fetch historical data (HTTP {response.status_code}).")
         
 
-        time.sleep(3)
+        time.sleep(60)
         return []
 
 
@@ -500,14 +500,13 @@ class KrakenApp(tk.Tk):
         overbought_threshold = 70
         oversold_threshold = 30            
         trading_pair = self.trading_pair_entry_RSI.get()  # Get the value from the sell_amount_entry
-        timeframe = float(self.time_frame_RSI.get())  # Get the value from the trading_pair entry
-        interval = float(self.time_frame_RSI.get())  # Get the value from the trading_pair entry
+        timeframe = 14  # Get the value from the trading_pair entry
 
 
 
         while True:
             # Fetch historical price data
-            historical_data = self.fetch_historical_data_RSI(trading_pair, "1h", timeframe)
+            historical_data = self.fetch_historical_data_RSI(trading_pair, 1, timeframe)
             print(historical_data)
 
             if historical_data:
