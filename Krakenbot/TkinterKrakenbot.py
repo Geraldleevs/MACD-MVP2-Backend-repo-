@@ -377,8 +377,7 @@ class KrakenApp(tk.Tk):
 
         rs = avg_gain / avg_loss if avg_loss != 0 else 0
         rsi_values = [100 - (100 / (1 + rs))]
-        print("HEREE?", period)
-        print("THERE?", len(close_prices))
+
         for i in range(period, len(close_prices)-1):
             avg_gain = ((period - 1) * avg_gain + gains[i]) / period
             avg_loss = ((period - 1) * avg_loss + losses[i]) / period
@@ -390,8 +389,6 @@ class KrakenApp(tk.Tk):
                 print(f"i: {i}, rsi: {rsi}")
             else:
                 print(f"Index {i} out of bounds for close_prices")
-
-        print("HEREE3?")
 
         return rsi_values
 
