@@ -6,6 +6,8 @@ import hmac
 import base64
 import time
 import threading
+import numpy as np
+
 
 class KrakenApp(tk.Tk):
     def __init__(self):
@@ -17,6 +19,8 @@ class KrakenApp(tk.Tk):
         self.create_widgets()
         self.apply_dark_mode()
         self.trading_thread = None  # Initialize the trading thread
+        self.trading_thread_RSI = None  # Initialize the trading thread
+
 
 
     def load_api_keys(self):
@@ -29,8 +33,11 @@ class KrakenApp(tk.Tk):
     def create_widgets(self):
         # Create frames for different sections
         self.create_buttons_frame()
-        self.create_strategy_frame()
+        self.create_MACD_strategy_frame()
+        self.create_RSI_strategy_frame()
         self.create_output_frame()
+        self.create_output_frame_MACD()
+        self.create_output_frame_RSI()
         self.create_input_fields_frame()
 
     def create_buttons_frame(self):
@@ -44,25 +51,42 @@ class KrakenApp(tk.Tk):
         self.trades_history_button = self.create_button(buttons_frame, "Trades History", self.fetch_trades_history)
         self.dark_mode_button = self.create_button(buttons_frame, "Toggle Dark Mode", self.toggle_dark_mode)
 
-    def create_strategy_frame(self):
+    def create_MACD_strategy_frame(self):
+
         strategy_frame = tk.Frame(self)
         strategy_frame.pack(side=tk.LEFT)
 
-        # buy_limit = 21574
-        # sell_limit = 21600
-        # buy_amount = 0.0001
-        # sell_amount = 0.0001
+        self.traiding_pair_label = self.create_label(strategy_frame, "Trading Pair:")
+        self.trading_pair_entry = self.create_entry(strategy_frame)
 
-        self.buy_limit_label = self.create_label(strategy_frame, "Buy Limit:")
-        self.buy_limit_entry = self.create_entry(strategy_frame)
-        self.sell_limit_label = self.create_label(strategy_frame, "Sell Limit:")
-        self.sell_limit_entry = self.create_entry(strategy_frame)
         self.buy_amount_label = self.create_label(strategy_frame, "Buy Amount:")
         self.buy_amount_entry = self.create_entry(strategy_frame)
+        
         self.sell_amount_label = self.create_label(strategy_frame, "Sell Amount:")
         self.sell_amount_entry = self.create_entry(strategy_frame)
 
-        self.start_trading_button = self.create_button(strategy_frame, "Start Trading", self.start_trading)
+        self.start_trading_button = self.create_button(strategy_frame, "Start Trading MACD", self.start_trading_MACD)
+
+    def create_RSI_strategy_frame(self):
+        strategy_frame_RSI = tk.Frame(self)
+        strategy_frame_RSI.pack(side=tk.LEFT)
+
+        self.traiding_pair_label = self.create_label(strategy_frame_RSI, "Trading Pair:")
+        self.trading_pair_entry_RSI = self.create_entry(strategy_frame_RSI)
+
+        self.time_frame_label = self.create_label(strategy_frame_RSI, "Timeframe/RSI Calculation period:")
+        self.time_frame_RSI = self.create_entry(strategy_frame_RSI)
+
+        self.traiding_pair_label = self.create_label(strategy_frame_RSI, "Interval:")
+        self.interval = self.create_entry(strategy_frame_RSI)
+
+        self.buy_amount_label = self.create_label(strategy_frame_RSI, "Buy Amount:")
+        self.buy_amount_entry = self.create_entry(strategy_frame_RSI)
+        
+        self.sell_amount_label = self.create_label(strategy_frame_RSI, "Sell Amount:")
+        self.sell_amount_entry = self.create_entry(strategy_frame_RSI)
+
+        self.start_trading_button = self.create_button(strategy_frame_RSI, "Start Trading RSI", self.start_trading_RSI)
 
     def create_label(self, frame, text):
         label = tk.Label(frame, text=text)
@@ -74,12 +98,19 @@ class KrakenApp(tk.Tk):
         entry.pack()
         return entry
 
-    def start_trading(self):
+    def start_trading_MACD(self):
         # Start the trading thread
         if self.trading_thread is None or not self.trading_thread.is_alive():
-            self.trading_thread = threading.Thread(target=self.trading_logic)
+            self.trading_thread = threading.Thread(target=self.trading_logic_MACD)
             self.trading_thread.daemon = True  # Set the thread as a daemon so it exits when the main application exits
             self.trading_thread.start()
+    
+    def start_trading_RSI(self):
+        # Start the trading thread
+        if self.trading_thread_RSI is None or not self.trading_thread_RSI.is_alive():
+            self.trading_thread_RSI = threading.Thread(target=self.trading_logic_RSI)
+            self.trading_thread_RSI.daemon = True  # Set the thread as a daemon so it exits when the main application exits
+            self.trading_thread_RSI.start()
 
     def create_button(self, frame, text, command):
         button = tk.Button(frame, text=text, command=command)
@@ -90,11 +121,46 @@ class KrakenApp(tk.Tk):
         output_frame = tk.Frame(self)
         output_frame.pack(side=tk.LEFT)
 
-        self.text_widget = tk.Text(output_frame, height=10, width=100)
-        self.text_widget.pack()
+        # Create a vertical scrollbar for the text boxes
+        text_scrollbar = tk.Scrollbar(output_frame)
+        text_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-        self.trading_output_text = tk.Text(output_frame, height=10, width=100)
-        self.trading_output_text.pack()
+        # Create the text widgets with the yscrollcommand option set to the scrollbar's set method
+        self.text_widget = tk.Text(output_frame, height=10, width=50, yscrollcommand=text_scrollbar.set)
+        self.text_widget.pack(side=tk.LEFT)
+
+        # Configure the scrollbar to work with the text widgets
+        text_scrollbar.config(command=lambda *args: self.scroll_text_widgets(*args))
+
+    def create_output_frame_MACD(self):
+        output_frame = tk.Frame(self)
+        output_frame.pack(side=tk.LEFT)
+
+        # Create a vertical scrollbar for the text boxes
+        text_scrollbar = tk.Scrollbar(output_frame)
+        text_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        # Create the text widgets with the yscrollcommand option set to the scrollbar's set method
+        self.trading_output_text_MACD = tk.Text(output_frame, height=10, width=50, yscrollcommand=text_scrollbar.set)
+        self.trading_output_text_MACD.pack(side=tk.LEFT)
+
+    
+    def create_output_frame_RSI(self):
+        output_frame = tk.Frame(self)
+        output_frame.pack(side=tk.LEFT)
+
+        # Create a vertical scrollbar for the text boxes
+
+        text_scrollbar = tk.Scrollbar(output_frame)
+        text_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        # Create the text widgets with the yscrollcommand option set to the scrollbar's set method
+        self.trading_output_text_RSI = tk.Text(output_frame, height=10, width=50, yscrollcommand=text_scrollbar.set)
+        self.trading_output_text_RSI.pack(side=tk.LEFT)    
+
+    # Add a method to scroll the text widgets
+    def scroll_text_widgets(self, *args):
+        self.text_widget.yview(*args)
 
     def create_input_fields_frame(self):
         input_fields_frame = tk.Frame(self)
@@ -113,10 +179,6 @@ class KrakenApp(tk.Tk):
         label.pack()
         entry = tk.Entry(frame)
         entry.pack()
-
-    def create_trading_output_widget(self):
-        self.trading_output_text = tk.Text(self, height=10, width=50)
-        self.trading_output_text.pack()
 
     def apply_dark_mode(self):
         # Define light and dark mode colors
@@ -213,58 +275,344 @@ class KrakenApp(tk.Tk):
         self.display_response(response)
 
     def display_trading_output(self, text):
-        self.trading_output_text.insert(tk.END, text + '\n')
+        self.trading_output_text_MACD.insert(tk.END, text + '\n')
+
+    def display_trading_output_RSI(self, text):
+        self.trading_output_text_RSI.insert(tk.END, text + '\n')
 
     def toggle_dark_mode(self):
         self.dark_mode_enabled = not self.dark_mode_enabled
         self.apply_dark_mode()
 
+    def fetch_historical_data_MACD(self, pair, interval, since):
+        """
+        Fetch historical price data from Kraken.
+
+        :param pair: Trading pair (e.g., "XBTGBP").
+        :param interval: Time interval for data (e.g., "1h" for 1-hour candles).
+        :param since: Unix timestamp for the start of the data range.
+        :return: List of historical price data.
+        """
+        url = f"https://api.kraken.com/0/public/OHLC?pair={pair}&interval={interval}&since={since}"
+
+        try:
+            response = requests.get(url)
+            if response.status_code == 200:
+                data = response.json()
+                print(data)
+                if 'result' in data and pair in data['result']:
+                    return data['result'][pair]
+                else:
+                    print(f"Error: No data found for trading pair '{pair}' in the response.")
+            else:
+                print(f"Error: Failed to fetch historical data (HTTP {response.status_code}).")
+        except Exception as e:
+            print(f"Error fetching historical data: {e}")
+        
+        time.sleep(2)
+
+        return []
+
+    def fetch_historical_data_RSI(self, pair, interval, since):
+        """
+        Fetch historical price data from Kraken and calculate RSI.
+
+        :param pair: Trading pair (e.g., "XXBTZGBP").
+        :param interval: Time interval for data (e.g., "1h" for 1-hour candles).
+        :param since: Unix timestamp for the start of the data range.
+        :return: List of historical price data with RSI values.
+        """
+        url = f"https://api.kraken.com/0/public/OHLC?pair={pair}&interval={interval}&since={since}"
+        print(url)
+
+        
+        response = requests.get(url)
+        
+        if response.status_code == 200:
+            data = response.json()
+            print("ACHECK")
+            if 'result' in data and pair in data['result']:
+                print("BCHECK")
+
+                ohlc_data = data['result'][pair]
+                close_prices = [float(item[4]) for item in ohlc_data]
+
+                rsi_values = self.calculate_rsi(close_prices)  # Calculate RSI
+                if len(rsi_values) < len(ohlc_data):
+                    # Ensure that rsi_values has the same length as ohlc_data
+                    rsi_values.extend([0] * (len(ohlc_data) - len(rsi_values)))
+
+                for i, item in enumerate(ohlc_data):
+                    item.append(rsi_values[i])  # Append RSI value to the data
+                return ohlc_data
+            else:
+                print(f"Error: No data found for trading pair '{pair}' in the response.")
+
+        else:
+            print(f"Error: Failed to fetch historical data (HTTP {response.status_code}).")
+        
+
+        time.sleep(3)
+        return []
+
+
+    def calculate_rsi(self, close_prices, period=14):
+        """
+        Calculate RSI (Relative Strength Index).
+
+        :param close_prices: List of closing prices.
+        :param period: RSI calculation period.
+        :return: List of RSI values.
+        """
+        if len(close_prices) < period:
+            print("Not enough data points to calculate RSI")
+            return []  # Not enough data points to calculate RSI
+
+        delta = np.diff(close_prices)
+        gains = delta * (delta > 0)
+        losses = -delta * (delta < 0)
+
+        avg_gain = np.mean(gains[:period])
+        avg_loss = np.mean(losses[:period])
+
+        rs = avg_gain / avg_loss if avg_loss != 0 else 0
+        rsi_values = [100 - (100 / (1 + rs))]
+        print("HEREE?", period)
+        print("THERE?", len(close_prices))
+        for i in range(period, len(close_prices)-1):
+            avg_gain = ((period - 1) * avg_gain + gains[i]) / period
+            avg_loss = ((period - 1) * avg_loss + losses[i]) / period
+
+            if i < len(close_prices):
+                rs = avg_gain / avg_loss if avg_loss != 0 else 0
+                rsi = 100 - (100 / (1 + rs))
+                rsi_values.append(rsi)
+                print(f"i: {i}, rsi: {rsi}")
+            else:
+                print(f"Index {i} out of bounds for close_prices")
+
+        print("HEREE3?")
+
+        return rsi_values
+
+
+
+
+    def fetch_current_price(self, pair):
+        """
+        Fetch the current price for a trading pair.
+
+        :param pair: Trading pair symbol (e.g., 'XBTGBP' for Bitcoin to GBP).
+        :return: Current price as a float or None if the request fails.
+        """
+        try:
+            response = requests.get(f"https://api.kraken.com/0/public/Ticker?pair={pair}")
+            response_data = response.json()
+            
+            # Check if the response contains data for the specified pair
+            if 'result' in response_data and pair in response_data['result']:
+                current_price = float(response_data['result'][pair]['c'][0])
+                return current_price
+            else:
+                print(f"Error: Trading pair '{pair}' not found in API response.")
+                return None
+        except Exception as e:
+            print(f"Error fetching current price: {e}")
+            return None
+
+
+    def calculate_macd(self, data, short_window, long_window, signal_window):
+        """
+        Calculate MACD indicator.
+
+        :param data: List of historical price data.
+        :param short_window: Short-term moving average window.
+        :param long_window: Long-term moving average window.
+        :param signal_window: Signal line moving average window.
+        :return: List of MACD values.
+        """
+        if len(data) < long_window:
+            return []
+
+        # Extract closing prices from the data
+        close_prices = np.array([float(item[4]) for item in data])
+
+        # Calculate short-term EMA
+        short_ema = self.calculate_ema(close_prices, short_window)
+
+        # Calculate long-term EMA
+        long_ema = self.calculate_ema(close_prices, long_window)
+
+        # Calculate MACD line
+        macd_line = short_ema - long_ema
+
+        # Calculate signal line
+        signal_line = self.calculate_ema(macd_line, signal_window)
+
+        return macd_line, signal_line
+
+    def calculate_ema(self, data, window):
+        """
+        Calculate Exponential Moving Average (EMA).
+
+        :param data: Input data (e.g., price or MACD values).
+        :param window: EMA window.
+        :return: EMA values.
+        """
+        ema = []
+        alpha = 2 / (window + 1)
+        ema_prev = data[0]
+
+        for value in data:
+            ema_prev = (1 - alpha) * ema_prev + alpha * value
+            ema.append(ema_prev)
+
+        return np.array(ema)
     
-    # Function to run trading logic in a separate thread
-    def trading_logic(self):
-        user_entered_buy_limit = float(self.buy_limit_entry.get())
-        user_entered_sell_limit = float(self.sell_limit_entry.get())
-        user_entered_buy_amount = float(self.buy_amount_entry.get())
-        user_entered_sell_amount = float(self.sell_amount_entry.get())
+    def place_market_order(self, type, pair, volume, ordertype):
+        """
+        Place a market order.
+
+        :param ordertype: Order type ('market').
+        :param type: Order type ('buy' or 'sell').
+        :param volume: Amount to buy/sell.
+        :param pair: Trading pair symbol (e.g., 'XBTGBP' for Bitcoin to GBP).
+        :return: Response from Kraken API or None if the request fails.
+        """
+        try:
+            data = {
+                "nonce": str(int(1000 * time.time())),
+                "ordertype": ordertype,
+                "type": type,
+                "volume": volume,
+                "pair": pair,
+            }
+            response = self.kraken_request("/0/private/AddOrder", data)
+            return response
+        except Exception as e:
+            print(f"Error placing market order: {e}")
+            return None
+
+    def trading_logic_RSI(self):
+
+        #XXBTZGBP
+        # Define RSI parameters
+        overbought_threshold = 70
+        oversold_threshold = 30            
+        trading_pair = self.trading_pair_entry_RSI.get()  # Get the value from the sell_amount_entry
+        timeframe = float(self.time_frame_RSI.get())  # Get the value from the trading_pair entry
+        interval = float(self.time_frame_RSI.get())  # Get the value from the trading_pair entry
+
+
 
         while True:
-            response = requests.get("https://api.kraken.com/0/public/Ticker?pair=BTCGBP").json()
-            current_price = float(response['result']['XXBTZGBP']['c'][0])
+            # Fetch historical price data
+            historical_data = self.fetch_historical_data_RSI(trading_pair, "1h", timeframe)
+            print(historical_data)
 
-            trading_output = f"Current Price: {current_price}\n"
-            
-            if current_price < user_entered_buy_limit:
-                trading_output += f"Buying  {user_entered_buy_amount} of BTC at {current_price}!\n"
-                resp = self.kraken_request("/0/private/AddOrder", {
-                    "nonce": str(int(1000 * time.time())),
-                    "ordertype": "market",
-                    "type": "buy",
-                    "volume": user_entered_buy_amount,
-                    "pair": "XBTGBP",
-                })
-                
-                if not resp.get('error'):
-                    trading_output += "Successfully bought BTC\n"
+            if historical_data:
+                # Extract closing prices from the data
+                close_prices = np.array([float(item[4]) for item in historical_data])
+
+                # Calculate RSI
+                delta = np.diff(close_prices)
+                gain = np.where(delta > 0, delta, 0)
+                loss = np.where(delta < 0, -delta, 0)
+
+                avg_gain = np.mean(gain[:timeframe])
+                avg_loss = np.mean(loss[:timeframe])
+
+                for i in range(timeframe, len(close_prices)):
+                    avg_gain = ((timeframe - 1) * avg_gain + gain[i]) / timeframe
+                    avg_loss = ((timeframe - 1) * avg_loss + loss[i]) / timeframe
+
+                    relative_strength = avg_gain / avg_loss
+                    rsi = 100 - (100 / (1 + relative_strength))
+
+                    current_price = float(self.fetch_current_price(trading_pair))
+
+                    trading_output = f"Current Price: {current_price}\n"
+                    print("RSI: ", rsi)
+
+                    # Check for RSI buy signal (oversold condition)
+                    if rsi < oversold_threshold:
+                        trading_output += f"RSI buy signal detected! Buying BTC at {current_price}!\n"
+                        buy_amount = float(self.buy_amount_entry.get())  # Get the value from the sell_amount_entry
+                        resp = self.place_market_order("buy", trading_pair, buy_amount, 'market')  # Adjust volume as needed
+
+                        if not resp.get('error'):
+                            trading_output += "Successfully bought BTC\n"
+                        else:
+                            trading_output += f"Error: {resp.get('error')}\n"
+
+                    # Check for RSI sell signal (overbought condition)
+                    elif rsi > overbought_threshold:
+                        trading_output += f"RSI sell signal detected! Selling BTC at {current_price}!\n"
+                        sell_amount = float(self.sell_amount_entry.get())  # Get the value from the sell_amount_entry
+                        resp = self.place_market_order("sell", trading_pair, sell_amount, 'market')  # Use the sell_amount
+
+                        if not resp.get('error'):
+                            trading_output += "Successfully sold BTC\n"
+                        else:
+                            trading_output += f"Error: {resp.get('error')}\n"
+
+                    else:
+                        trading_output += "No trading signal\n"
+
+                    self.display_trading_output(trading_output)
+
+            time.sleep(3)
+
+
+    def trading_logic_MACD(self):
+        # Define MACD parameters
+        short_ema_period = 1
+        long_ema_period = 26
+        signal_ema_period = 9
+        #XXBTZGBP
+
+        while True:
+            # Fetch historical price data
+            trading_pair = self.trading_pair_entry.get()  # Get the value from the trading_pair entry
+            historical_data = self.fetch_historical_data_MACD(trading_pair, short_ema_period, long_ema_period)
+
+            if historical_data:
+                # Calculate MACD
+                macd_line, signal_line = self.calculate_macd(
+                    historical_data, short_ema_period, long_ema_period, signal_ema_period
+                )
+
+                current_price = float(self.fetch_current_price(trading_pair))
+
+                trading_output = f"Current Price: {current_price}\n"
+
+                # Check for MACD buy signal
+                if macd_line[-1] > signal_line[-1] and macd_line[-2] <= signal_line[-2]:
+                    trading_output += f"Buy signal detected! Buying BTC at {current_price}!\n"
+                    buy_amount = float(self.buy_amount_entry.get())  # Get the value from the sell_amount_entry
+                    resp = self.place_market_order("buy", trading_pair, buy_amount, 'market')  # Adjust volume as needed
+
+                    if not resp.get('error'):
+                        trading_output += "Successfully bought BTC\n"
+                    else:
+                        trading_output += f"Error: {resp.get('error')}\n"
+
+                # Check for MACD sell signal
+                elif macd_line[-1] < signal_line[-1] and macd_line[-2] >= signal_line[-2]:
+                    trading_output += f"Sell signal detected! Selling BTC at {current_price}!\n"
+                    sell_amount = float(self.sell_amount_entry.get())  # Get the value from the sell_amount_entry
+                    resp = self.place_market_order("sell", trading_pair, sell_amount, 'market')  # Use the sell_amount
+
+                    if not resp.get('error'):
+                        trading_output += "Successfully sold BTC\n"
+                    else:
+                        trading_output += f"Error: {resp.get('error')}\n"
+
                 else:
-                    trading_output += f"Error: {resp.get('error')}\n"
-            elif current_price > user_entered_sell_limit:
-                trading_output += f"Selling  {user_entered_sell_amount} of BTC at {current_price}!\n"
-                resp = self.kraken_request("/0/private/AddOrder", {
-                    "nonce": str(int(1000 * time.time())),
-                    "ordertype": "market",
-                    "type": "sell",
-                    "volume": user_entered_sell_amount,
-                    "pair": "XBTGBP",
-                })
-                
-                if not resp.get('error'):
-                    trading_output += "Successfully sold BTC\n"
-                else:
-                    trading_output += f"Error: {resp.get('error')}\n"
-            else:
-                trading_output += f"Current Price: {current_price}, not buying or selling\n"
-            
-            self.display_trading_output(trading_output)
+                    trading_output += "No trading signal\n"
+
+                self.display_trading_output(trading_output)
+
             time.sleep(3)
 
 if __name__ == "__main__":
