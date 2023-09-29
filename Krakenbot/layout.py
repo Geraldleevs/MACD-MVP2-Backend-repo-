@@ -19,6 +19,8 @@ class KrakenApp(tk.Tk):
         self.create_widgets()
         self.apply_dark_mode()
         self.trading_thread = None  # Initialize the trading thread
+        self.trading_thread_RSI = None  # Initialize the trading thread
+
 
 
     def load_api_keys(self):
@@ -31,8 +33,11 @@ class KrakenApp(tk.Tk):
     def create_widgets(self):
         # Create frames for different sections
         self.create_buttons_frame()
-        self.create_strategy_frame()
+        self.create_MACD_strategy_frame()
+        self.create_RSI_strategy_frame()
         self.create_output_frame()
+        self.create_output_frame_MACD()
+        self.create_output_frame_RSI()
         self.create_input_fields_frame()
 
     def create_buttons_frame(self):
@@ -46,9 +51,13 @@ class KrakenApp(tk.Tk):
         self.trades_history_button = self.create_button(buttons_frame, "Trades History", self.fetch_trades_history)
         self.dark_mode_button = self.create_button(buttons_frame, "Toggle Dark Mode", self.toggle_dark_mode)
 
-    def create_strategy_frame(self):
+    def create_MACD_strategy_frame(self):
+
         strategy_frame = tk.Frame(self)
         strategy_frame.pack(side=tk.LEFT)
+
+        self.traiding_pair_label = self.create_label(strategy_frame, "Trading Pair:")
+        self.trading_pair_entry = self.create_entry(strategy_frame)
 
         self.buy_amount_label = self.create_label(strategy_frame, "Buy Amount:")
         self.buy_amount_entry = self.create_entry(strategy_frame)
@@ -57,6 +66,21 @@ class KrakenApp(tk.Tk):
         self.sell_amount_entry = self.create_entry(strategy_frame)
 
         self.start_trading_button = self.create_button(strategy_frame, "Start Trading MACD", self.start_trading_MACD)
+
+    def create_RSI_strategy_frame(self):
+        strategy_frame_RSI = tk.Frame(self)
+        strategy_frame_RSI.pack(side=tk.LEFT)
+
+        self.traiding_pair_label = self.create_label(strategy_frame_RSI, "Trading Pair:")
+        self.trading_pair_entry_RSI = self.create_entry(strategy_frame_RSI)
+
+        self.buy_amount_label = self.create_label(strategy_frame_RSI, "Buy Amount:")
+        self.buy_amount_entry = self.create_entry(strategy_frame_RSI)
+        
+        self.sell_amount_label = self.create_label(strategy_frame_RSI, "Sell Amount:")
+        self.sell_amount_entry = self.create_entry(strategy_frame_RSI)
+
+        self.start_trading_button = self.create_button(strategy_frame_RSI, "Start Trading RSI", self.start_trading_RSI)
 
     def create_label(self, frame, text):
         label = tk.Label(frame, text=text)
@@ -74,6 +98,13 @@ class KrakenApp(tk.Tk):
             self.trading_thread = threading.Thread(target=self.trading_logic_MACD)
             self.trading_thread.daemon = True  # Set the thread as a daemon so it exits when the main application exits
             self.trading_thread.start()
+    
+    def start_trading_RSI(self):
+        # Start the trading thread
+        if self.trading_thread_RSI is None or not self.trading_thread_RSI.is_alive():
+            self.trading_thread_RSI = threading.Thread(target=self.trading_logic_RSI)
+            self.trading_thread_RSI.daemon = True  # Set the thread as a daemon so it exits when the main application exits
+            self.trading_thread_RSI.start()
 
     def create_button(self, frame, text, command):
         button = tk.Button(frame, text=text, command=command)
@@ -92,16 +123,38 @@ class KrakenApp(tk.Tk):
         self.text_widget = tk.Text(output_frame, height=10, width=50, yscrollcommand=text_scrollbar.set)
         self.text_widget.pack(side=tk.LEFT)
 
-        self.trading_output_text = tk.Text(output_frame, height=10, width=50, yscrollcommand=text_scrollbar.set)
-        self.trading_output_text.pack(side=tk.LEFT)
-
         # Configure the scrollbar to work with the text widgets
         text_scrollbar.config(command=lambda *args: self.scroll_text_widgets(*args))
+
+    def create_output_frame_MACD(self):
+        output_frame = tk.Frame(self)
+        output_frame.pack(side=tk.LEFT)
+
+        # Create a vertical scrollbar for the text boxes
+        text_scrollbar = tk.Scrollbar(output_frame)
+        text_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        # Create the text widgets with the yscrollcommand option set to the scrollbar's set method
+        self.trading_output_text_MACD = tk.Text(output_frame, height=10, width=50, yscrollcommand=text_scrollbar.set)
+        self.trading_output_text_MACD.pack(side=tk.LEFT)
+
+    
+    def create_output_frame_RSI(self):
+        output_frame = tk.Frame(self)
+        output_frame.pack(side=tk.LEFT)
+
+        # Create a vertical scrollbar for the text boxes
+
+        text_scrollbar = tk.Scrollbar(output_frame)
+        text_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        # Create the text widgets with the yscrollcommand option set to the scrollbar's set method
+        self.trading_output_text_RSI = tk.Text(output_frame, height=10, width=50, yscrollcommand=text_scrollbar.set)
+        self.trading_output_text_RSI.pack(side=tk.LEFT)    
 
     # Add a method to scroll the text widgets
     def scroll_text_widgets(self, *args):
         self.text_widget.yview(*args)
-        self.trading_output_text.yview(*args)
 
     def create_input_fields_frame(self):
         input_fields_frame = tk.Frame(self)
@@ -120,10 +173,6 @@ class KrakenApp(tk.Tk):
         label.pack()
         entry = tk.Entry(frame)
         entry.pack()
-
-    def create_trading_output_widget(self):
-        self.trading_output_text = tk.Text(self, height=10, width=50)
-        self.trading_output_text.pack()
 
     def apply_dark_mode(self):
         # Define light and dark mode colors
@@ -220,7 +269,10 @@ class KrakenApp(tk.Tk):
         self.display_response(response)
 
     def display_trading_output(self, text):
-        self.trading_output_text.insert(tk.END, text + '\n')
+        self.trading_output_text_MACD.insert(tk.END, text + '\n')
+
+    def display_trading_output_RSI(self, text):
+        self.trading_output_text_RSI.insert(tk.END, text + '\n')
 
     def toggle_dark_mode(self):
         self.dark_mode_enabled = not self.dark_mode_enabled
@@ -353,16 +405,31 @@ class KrakenApp(tk.Tk):
             print(f"Error placing market order: {e}")
             return None
 
-    
+    def trading_logic_RSI(self):
+        # Define MACD parameters
+        short_ema_period = 1
+        long_ema_period = 26
+        signal_ema_period = 9
+        #XXBTZGBP
+
+        while True:
+            # Fetch historical price data
+            self.display_trading_output_RSI("RSI LOGIC")
+
+
+            time.sleep(3)
+
     def trading_logic_MACD(self):
         # Define MACD parameters
         short_ema_period = 1
         long_ema_period = 26
         signal_ema_period = 9
+        #XXBTZGBP
 
         while True:
             # Fetch historical price data
-            historical_data = self.fetch_historical_data("XXBTZGBP", short_ema_period, long_ema_period)
+            trading_pair = self.trading_pair_entry.get()  # Get the value from the sell_amount_entry
+            historical_data = self.fetch_historical_data(trading_pair, short_ema_period, long_ema_period)
 
             if historical_data:
                 # Calculate MACD
@@ -370,7 +437,7 @@ class KrakenApp(tk.Tk):
                     historical_data, short_ema_period, long_ema_period, signal_ema_period
                 )
 
-                current_price = float(self.fetch_current_price("XXBTZGBP"))
+                current_price = float(self.fetch_current_price(trading_pair))
 
                 trading_output = f"Current Price: {current_price}\n"
 
@@ -378,7 +445,7 @@ class KrakenApp(tk.Tk):
                 if macd_line[-1] > signal_line[-1] and macd_line[-2] <= signal_line[-2]:
                     trading_output += f"Buy signal detected! Buying BTC at {current_price}!\n"
                     buy_amount = float(self.buy_amount_entry.get())  # Get the value from the sell_amount_entry
-                    resp = self.place_market_order("buy", "XXBTZGBP", buy_amount, 'market')  # Adjust volume as needed
+                    resp = self.place_market_order("buy", trading_pair, buy_amount, 'market')  # Adjust volume as needed
 
                     if not resp.get('error'):
                         trading_output += "Successfully bought BTC\n"
@@ -389,7 +456,7 @@ class KrakenApp(tk.Tk):
                 elif macd_line[-1] < signal_line[-1] and macd_line[-2] >= signal_line[-2]:
                     trading_output += f"Sell signal detected! Selling BTC at {current_price}!\n"
                     sell_amount = float(self.sell_amount_entry.get())  # Get the value from the sell_amount_entry
-                    resp = self.place_market_order("sell", "XXBTZGBP", sell_amount, 'market')  # Use the sell_amount
+                    resp = self.place_market_order("sell", trading_pair, sell_amount, 'market')  # Use the sell_amount
 
                     if not resp.get('error'):
                         trading_output += "Successfully sold BTC\n"
