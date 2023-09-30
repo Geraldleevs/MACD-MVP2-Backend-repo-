@@ -74,11 +74,17 @@ class KrakenApp(tk.Tk):
         self.traiding_pair_label = self.create_label(strategy_frame_RSI, "Trading Pair:")
         self.trading_pair_entry_RSI = self.create_entry(strategy_frame_RSI)
 
-        self.time_frame_label = self.create_label(strategy_frame_RSI, "Timeframe/RSI Calculation period: DONT USE WIP")
+        self.time_frame_label = self.create_label(strategy_frame_RSI, "Timeframe/RSI Calculation period:")
         self.time_frame_RSI = self.create_entry(strategy_frame_RSI)
 
         self.traiding_pair_label = self.create_label(strategy_frame_RSI, "Interval: DONT USE WIP")
         self.interval = self.create_entry(strategy_frame_RSI)
+
+        self.traiding_pair_label = self.create_label(strategy_frame_RSI, "Upper bound sell: ")
+        self.upper_entry = self.create_entry(strategy_frame_RSI)
+
+        self.traiding_pair_label = self.create_label(strategy_frame_RSI, "Lower bound buy: ")
+        self.lower_entry = self.create_entry(strategy_frame_RSI)
 
         self.buy_amount_label = self.create_label(strategy_frame_RSI, "Buy Amount:")
         self.buy_amount_entry = self.create_entry(strategy_frame_RSI)
@@ -494,12 +500,10 @@ class KrakenApp(tk.Tk):
 
         #XXBTZGBP
         # Define RSI parameters
-        overbought_threshold = 70
-        oversold_threshold = 30            
+        overbought_threshold = int(self.upper_entry.get())
+        oversold_threshold = int(self.lower_entry.get())            
         trading_pair = self.trading_pair_entry_RSI.get()  # Get the value from the sell_amount_entry
-        timeframe = 14  # Get the value from the trading_pair entry
-
-
+        timeframe = int(self.time_frame_RSI.get())  # Get the value from the time_frame entry
 
         while True:
             # Fetch historical price data
