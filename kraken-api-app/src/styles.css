@@ -1,0 +1,47 @@
+body {
+  background-image: url('./background.jpg');
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  height: 100vh;
+  color: white;
+}
+
+.App {
+  background-color: rgba(56, 21, 68, 0.8);  /* This will add a slight overlay to make text more readable */
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 600px;
+  margin: 40px auto;
+}
+
+.form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;  /* Space between each form group */
+}
+
+label {
+  margin-right: 10px;  /* Space between the label and the input/select box */
+}
+
+select, input, button {
+  background-color: white;
+  color: #8227a0;
+  border: 1px solid white;
+  padding: 5px 10px;
+  margin: 10px 0;
+  font-size: 16px;
+}
+
+button {
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #2a1036;
+  color: white;
+}
