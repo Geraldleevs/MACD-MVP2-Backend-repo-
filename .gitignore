@@ -8,3 +8,5 @@ year_data/ETHUSDT_full.csv
 year_data/MANAUSDT_full.csv
 year_data/LINKUSDT_full.csv
 year_data/UNIUSDT_full.csv
+coin_profit.csv
+trade_logs.log
