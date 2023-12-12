@@ -325,4 +325,4 @@ def get_dmi(data, period=14):
 # data should be a DataFrame with 'High', 'Low', and 'Close' columns
 # For example:
 # data = pd.DataFrame({'High': [...], 'Low': [...], 'Close': [...]})
-di_plus, di_minus, adx = calculate_dmi(data)
+# di_plus, di_minus, adx = calculate_dmi(data)
