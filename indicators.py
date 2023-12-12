@@ -140,4 +140,189 @@ def get_rsi(close, period = 14):
     )
     return rsi
 
+def get_parabolic_sar(data, acceleration=0.02, maximum=0.2):
+    length = len(data)
+    trend = 0
+    sar = data['Close'][0]
+    ep = data['Close'][0]
+    af = acceleration
 
+    sar_values = [0] * length
+
+    for i in range(1, length):
+        if trend == 0:
+            sar = sar + af * (ep - sar)
+            if data['Close'][i] > sar:
+                trend = 1
+                ep = data['High'][i]
+                sar = min(data['Low'][:i])
+            elif data['Close'][i] < sar:
+                trend = -1
+                ep = data['Low'][i]
+                sar = max(data['High'][:i])
+        elif trend > 0:
+            sar = min(sar + af * (ep - sar), min(data['Low'][i - 1], data['Low'][i]))
+            if data['High'][i] > ep:
+                ep = data['High'][i]
+                af = min(af + acceleration, maximum)
+            if data['Close'][i] < sar:
+                trend = -1
+                sar = ep
+                ep = data['Low'][i]
+                af = acceleration
+        else:
+            sar = max(sar + af * (ep - sar), max(data['High'][i - 1], data['High'][i]))
+            if data['Low'][i] < ep:
+                ep = data['Low'][i]
+                af = min(af + acceleration, maximum)
+            if data['Close'][i] > sar:
+                trend = 1
+                sar = ep
+                ep = data['High'][i]
+                af = acceleration
+
+        sar_values[i] = sar
+
+    return sar_values
+
+def get_williams_r(data, period=14):
+    williams_r_values = []
+
+    for i in range(period, len(data)):
+        high = max(data['High'][i-period:i])
+        low = min(data['Low'][i-period:i])
+        current_close = data['Close'][i]
+        wr = -100 * ((high - current_close) / (high - low))
+        williams_r_values.append(wr)
+
+    return williams_r_values
+
+def get_cci(data, period=20):
+    cci_values = []
+
+    for i in range(period, len(data)):
+        tp = (data['High'][i] + data['Low'][i] + data['Close'][i]) / 3
+        tp_avg = sum(data['High'][i-period:i] + data['Low'][i-period:i] + data['Close'][i-period:i]) / (3 * period)
+        md = sum([abs(tp - (data['High'][j] + data['Low'][j] + data['Close'][j]) / 3) for j in range(i-period, i)]) / period
+        cci = (tp - tp_avg) / (0.015 * md)
+        cci_values.append(cci)
+
+    return cci_values
+
+def get_on_balance_volume(data):
+    obv = [0]
+    for i in range(1, len(data)):
+        if data['Close'][i] > data['Close'][i-1]:
+            obv.append(obv[-1] + data['Volume'][i])
+        elif data['Close'][i] < data['Close'][i-1]:
+            obv.append(obv[-1] - data['Volume'][i])
+        else:
+            obv.append(obv[-1])
+    return obv
+
+def get_accumulation_distribution_line(data):
+    adl = [0]
+    for i in range(1, len(data)):
+        clv = ((data['Close'][i] - data['Low'][i]) - (data['High'][i] - data['Close'][i])) / (data['High'][i] - data['Low'][i]) if data['High'][i] != data['Low'][i] else 0
+        adl.append(adl[-1] + (clv * data['Volume'][i]))
+   
+def get_money_flow_index(data, period=14):
+    typical_price = (data['High'] + data['Low'] + data['Close']) / 3
+    raw_money_flow = typical_price * data['Volume']
+    positive_flow = []
+    negative_flow = []
+
+    for i in range(1, len(typical_price)):
+        if typical_price[i] > typical_price[i-1]:
+            positive_flow.append(raw_money_flow[i])
+            negative_flow.append(0)
+        elif typical_price[i] < typical_price[i-1]:
+            negative_flow.append(raw_money_flow[i])
+            positive_flow.append(0)
+        else:
+            positive_flow.append(0)
+            negative_flow.append(0)
+
+    positive_mf = [sum(positive_flow[i-period+1:i+1]) for i in range(period-1, len(positive_flow))]
+    negative_mf = [sum(negative_flow[i-period+1:i+1]) for i in range(period-1, len(negative_flow))]
+    mfi = [100 - (100 / (1 + (pmf/nmf))) if nmf != 0 else 100 for pmf, nmf in zip(positive_mf, negative_mf)]
+
+    return mfi
+
+def get_chaikin_money_flow(data, period=20):
+    money_flow_multiplier = ((data['Close'] - data['Low']) - (data['High'] - data['Close'])) / (data['High'] - data['Low'])
+    money_flow_volume = money_flow_multiplier * data['Volume']
+    cmf = [money_flow_volume[i-period+1:i+1].sum() / data['Volume'][i-period+1:i+1].sum() for i in range(period-1, len(data))]
+    
+    return cmf
+
+def get_average_directional_index(data, period=14):
+    plus_dm = data['High'].diff()
+    minus_dm = data['Low'].diff()
+    plus_dm[plus_dm < 0] = 0
+    minus_dm[minus_dm > 0] = 0
+
+    tr1 = pd.Series(data['High'] - data['Low'])
+    tr2 = pd.Series(abs(data['High'] - data['Close'].shift(1)))
+    tr3 = pd.Series(abs(data['Low'] - data['Close'].shift(1)))
+    tr = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
+
+    atr = tr.rolling(window=period).mean()
+    plus_di = 100 * (plus_dm.rolling(window=period).mean() / atr)
+    minus_di = abs(100 * (minus_dm.rolling(window=period).mean() / atr))
+    dx = (abs(plus_di - minus_di) / abs(plus_di + minus_di)) * 100
+    adx = dx.rolling(window=period).mean()
+
+    return adx
+
+def get_pivot_points(data):
+    pivot_point = (data['High'].shift(1) + data['Low'].shift(1) + data['Close'].shift(1)) / 3
+    support1 = (pivot_point * 2) - data['High'].shift(1)
+    resistance1 = (pivot_point * 2) - data['Low'].shift(1)
+    support2 = pivot_point - (data['High'].shift(1) - data['Low'].shift(1))
+    resistance2 = pivot_point + (data['High'].shift(1) - data['Low'].shift(1))
+    
+    return pivot_point, support1, resistance1, support2, resistance2
+
+def get_dmi(data, period=14):
+    # Calculate the differences between consecutive highs and lows
+    delta_high = data['High'].diff()
+    delta_low = data['Low'].diff()
+
+    # Initialize the components of the DMI
+    dm_plus = pd.Series([0] * len(data))
+    dm_minus = pd.Series([0] * len(data))
+    tr = pd.Series([0] * len(data))
+
+    for i in range(1, len(data)):
+        # Determine if the movements are positive, negative, or neutral
+        if delta_high[i] > delta_low[i] and delta_high[i] > 0:
+            dm_plus[i] = delta_high[i]
+        if delta_low[i] > delta_high[i] and delta_low[i] > 0:
+            dm_minus[i] = delta_low[i]
+
+        # Calculate the True Range
+        tr[i] = max(data['High'][i] - data['Low'][i], 
+                    abs(data['High'][i] - data['Close'][i-1]), 
+                    abs(data['Low'][i] - data['Close'][i-1]))
+
+    # Smooth the True Range and Directional Movements
+    atr = tr.rolling(window=period).mean()
+    smooth_dm_plus = dm_plus.rolling(window=period).mean()
+    smooth_dm_minus = dm_minus.rolling(window=period).mean()
+
+    # Calculate the Directional Indicators
+    di_plus = 100 * (smooth_dm_plus / atr)
+    di_minus = 100 * (smooth_dm_minus / atr)
+
+    # Calculate the ADX
+    dx = (abs(di_plus - di_minus) / abs(di_plus + di_minus)) * 100
+    adx = dx.rolling(window=period).mean()
+
+    return di_plus, di_minus, adx
+
+# Sample usage:
+# data should be a DataFrame with 'High', 'Low', and 'Close' columns
+# For example:
+# data = pd.DataFrame({'High': [...], 'Low': [...], 'Close': [...]})
+di_plus, di_minus, adx = calculate_dmi(data)
