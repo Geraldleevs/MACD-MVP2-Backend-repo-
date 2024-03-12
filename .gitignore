@@ -10,3 +10,5 @@ year_data/LINKUSDT_full.csv
 year_data/UNIUSDT_full.csv
 coin_profit.csv
 trade_logs.log
+kraken-react-app/src/tempkeys.txt
+kraken-react-app/server/tempkeys.txt
