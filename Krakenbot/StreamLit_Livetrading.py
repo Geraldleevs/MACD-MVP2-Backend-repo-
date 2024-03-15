@@ -25,27 +25,32 @@ class KrakenAppStreamlit:
         
     def main(self):
         st.title(self.title)
-        self.create_buttons()
         with st.expander("MACD Strategy"):
             self.create_MACD_strategy()
         with st.expander("RSI Strategy"):
             self.create_RSI_strategy()
         with st.expander("Custom AddOrder"):
             self.create_input_fields()
+        st.markdown("---")
+        self.create_buttons()
+        self.output_text = st.empty()  # Create an empty container for output
     
     def create_buttons(self):
-        st.sidebar.header("Actions")
-        if st.sidebar.button("Fetch Balance"):
-            self.fetch_balance()
-        if st.sidebar.button("Specific Balance (GBP)"):
-            self.fetch_specific_balance("GBP")
-        if st.sidebar.button("Open Orders"):
-            self.fetch_open_orders()
-        if st.sidebar.button("Closed Orders"):
-            self.fetch_closed_orders()
-        if st.sidebar.button("Trades History"):
-            self.fetch_trades_history()
-        
+            st.sidebar.header("Get Balances")
+            if st.sidebar.button("Fetch Balance"):
+                self.fetch_balance()
+
+            specific_currency = st.sidebar.text_input("Enter Specific Currency:")
+            if st.sidebar.button("Specific Balance"):
+                self.fetch_specific_balance(specific_currency)
+
+            st.sidebar.header("Orders")
+            if st.sidebar.button("Open Orders"):
+                self.fetch_open_orders()
+            if st.sidebar.button("Closed Orders"):
+                self.fetch_closed_orders()
+            if st.sidebar.button("Trades History"):
+                self.fetch_trades_history()
     
     def create_MACD_strategy(self):
         trading_pair = st.text_input("Trading Pair (MACD):")
@@ -83,7 +88,7 @@ class KrakenAppStreamlit:
     def fetch_specific_balance(self, asset):
         data = {"nonce": str(int(1000 * time.time())), "asset": asset}
         response = self.kraken_request("/0/private/TradeBalance", data)
-        st.header("Balance GBP")
+        st.header("Balance: ", asset)
         self.display_output(response)
     
     def fetch_open_orders(self):
@@ -114,7 +119,6 @@ class KrakenAppStreamlit:
             "price": price
         }
         response = self.kraken_request("/0/private/AddOrder", data)
-        st.header("Custom Order Response")
         self.display_output(response)
     
     def start_trading_MACD(self, trading_pair, buy_amount, sell_amount):
@@ -129,7 +133,7 @@ class KrakenAppStreamlit:
         if isinstance(response, dict):
             col1, col2 = st.columns(2)
             for key, value in response.items():
-                #col1.write(key)
+                # col1.write(key)
                 col2.write(value)
 
     
