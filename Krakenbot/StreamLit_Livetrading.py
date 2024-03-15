@@ -24,16 +24,28 @@ class KrakenAppStreamlit:
             print("Keys already loaded")
         
     def main(self):
-        st.title(self.title)
-        with st.expander("MACD Strategy"):
-            self.create_MACD_strategy()
-        with st.expander("RSI Strategy"):
-            self.create_RSI_strategy()
-        with st.expander("Custom AddOrder"):
-            self.create_input_fields()
-        st.markdown("---")
-        self.create_buttons()
-        self.output_text = st.empty()  # Create an empty container for output
+        st.set_page_config(page_title=self.title, page_icon="📈", layout="wide", initial_sidebar_state="expanded")
+        
+        with st.sidebar:
+            st.image("https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=294,fit=crop,q=95/YrD15NnZWQuRJoV6/screenshot-2023-09-24-at-8.07.02-am-AMqa6VWjQ6ilborW.png", width=270)
+            st.markdown("---")
+            
+
+        with st.container():
+            st.markdown("<h1 style='text-align: center; color: #301934;'>Mach D Live Trading Application</h1>", unsafe_allow_html=True)
+            st.markdown("---")
+
+            with st.expander("MACD Strategy", expanded=False):
+                self.create_MACD_strategy()
+
+            with st.expander("RSI Strategy", expanded=False):
+                self.create_RSI_strategy()
+
+            with st.expander("Custom AddOrder", expanded=False):
+                self.create_input_fields()
+
+            self.create_buttons()
+            self.output_text = st.empty()  # Create an empty container for output
     
     def create_buttons(self):
             st.sidebar.header("Get Balances")
