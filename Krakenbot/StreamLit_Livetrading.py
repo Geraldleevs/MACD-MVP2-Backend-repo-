@@ -26,10 +26,12 @@ class KrakenAppStreamlit:
     def main(self):
         st.title(self.title)
         self.create_buttons()
-        self.create_MACD_strategy()
-        self.create_RSI_strategy()
-        self.create_output()
-        self.create_input_fields()
+        with st.expander("MACD Strategy"):
+            self.create_MACD_strategy()
+        with st.expander("RSI Strategy"):
+            self.create_RSI_strategy()
+        with st.expander("Custom AddOrder"):
+            self.create_input_fields()
     
     def create_buttons(self):
         st.sidebar.header("Actions")
@@ -46,36 +48,30 @@ class KrakenAppStreamlit:
         
     
     def create_MACD_strategy(self):
-        st.sidebar.header("MACD Strategy")
-        trading_pair = st.sidebar.text_input("Trading Pair:")
-        buy_amount = st.sidebar.text_input("Buy Amount:")
-        sell_amount = st.sidebar.text_input("Sell Amount:")
-        if st.sidebar.button("Start Trading MACD"):
+        trading_pair = st.text_input("Trading Pair (MACD):")
+        buy_amount = st.text_input("Buy Amount (MACD):")
+        sell_amount = st.text_input("Sell Amount (MACD):")
+        if st.button("Start Trading MACD"):
             self.start_trading_MACD(trading_pair, buy_amount, sell_amount)
     
     def create_RSI_strategy(self):
-        st.sidebar.header("RSI Strategy")
-        trading_pair_rsi = st.sidebar.text_input("Trading Pair RSI:")
-        timeframe_rsi = st.sidebar.text_input("Timeframe/RSI Calculation period:")
-        interval_rsi = st.sidebar.text_input("Interval: DONT USE WIP")
-        upper_bound_sell = st.sidebar.text_input("Upper bound sell:")
-        lower_bound_buy = st.sidebar.text_input("Lower bound buy:")
-        buy_amount_rsi = st.sidebar.text_input("Buy Amount RSI:")
-        sell_amount_rsi = st.sidebar.text_input("Sell Amount RSI:")
-        if st.sidebar.button("Start Trading RSI"):
+        trading_pair_rsi = st.text_input("Trading Pair RSI:")
+        timeframe_rsi = st.text_input("Timeframe/RSI Calculation period:")
+        interval_rsi = st.text_input("Interval: DONT USE WIP")
+        upper_bound_sell = st.text_input("Upper bound sell:")
+        lower_bound_buy = st.text_input("Lower bound buy:")
+        buy_amount_rsi = st.text_input("Buy Amount RSI:")
+        sell_amount_rsi = st.text_input("Sell Amount RSI:")
+        if st.button("Start Trading RSI"):
             self.start_trading_RSI(trading_pair_rsi, timeframe_rsi, interval_rsi, upper_bound_sell, lower_bound_buy, buy_amount_rsi, sell_amount_rsi)
     
-    def create_output(self):
-        self.output_text = st.empty()  # Create an empty container for output
-    
     def create_input_fields(self):
-        st.sidebar.header("Custom AddOrder")
-        ordertype = st.sidebar.text_input("Ordertype:")
-        type = st.sidebar.text_input("Type:")
-        volume = st.sidebar.text_input("Volume:")
-        pair = st.sidebar.text_input("Pair:")
-        price = st.sidebar.text_input("Price:")
-        if st.sidebar.button("Custom AddOrder"):
+        ordertype = st.text_input("Ordertype:")
+        type = st.text_input("Type:")
+        volume = st.text_input("Volume:")
+        pair = st.text_input("Pair:")
+        price = st.text_input("Price:")
+        if st.button("Custom AddOrder"):
             self.make_custom_order(ordertype, type, volume, pair, price)
     
     def fetch_balance(self):
@@ -118,6 +114,7 @@ class KrakenAppStreamlit:
             "price": price
         }
         response = self.kraken_request("/0/private/AddOrder", data)
+        st.header("Custom Order Response")
         self.display_output(response)
     
     def start_trading_MACD(self, trading_pair, buy_amount, sell_amount):
