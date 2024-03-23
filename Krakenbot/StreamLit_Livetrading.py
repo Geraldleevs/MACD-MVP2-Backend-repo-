@@ -12,6 +12,8 @@ class KrakenAppStreamlit:
         self.api_url = "https://api.kraken.com"
         self.output_text = None
         self.load_api_keys()
+        st.set_page_config(page_title=self.title, page_icon="📈", layout="wide", initial_sidebar_state="expanded")
+
     
     def load_api_keys(self):
         if not hasattr(self, 'api_key') or not hasattr(self, 'api_sec'):
@@ -24,11 +26,26 @@ class KrakenAppStreamlit:
             print("Keys already loaded")
         
     def main(self):
-        st.set_page_config(page_title=self.title, page_icon="📈", layout="wide", initial_sidebar_state="expanded")
         
         with st.sidebar:
             st.image("https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=294,fit=crop,q=95/YrD15NnZWQuRJoV6/machd_logo-Y4Lpqn8P75i27V6n.png", width=270)
             st.markdown("---")
+
+        # Create a sidebar radio button for app selection
+        app_selection = st.sidebar.radio("Select App", ("Backtesting", "Realtime trading"))
+        
+        # Depending on the selection, call the respective method
+        if app_selection == "Backtesting":
+            self.MachD_Backtesting()
+        elif app_selection == "Realtime trading":
+            self.MachD_Realtime_Trading()
+    
+    def MachD_Backtesting(self):
+        st.write("Welcome to Backtesting")
+        # Add your content for App 1 here
+    
+    def MachD_Realtime_Trading(self):
+    
             
 
         with st.container():
@@ -48,21 +65,21 @@ class KrakenAppStreamlit:
             self.output_text = st.empty()  # Create an empty container for output
     
     def create_buttons(self):
-            st.sidebar.header("Get Balances")
-            if st.sidebar.button("Fetch Balance"):
-                self.fetch_balance()
+        st.sidebar.header("Get Balances")
+        if st.sidebar.button("Fetch Balance"):
+            self.fetch_balance()
 
-            specific_currency = st.sidebar.text_input("Enter Specific Currency:")
-            if st.sidebar.button("Specific Balance"):
-                self.fetch_specific_balance(specific_currency)
+        specific_currency = st.sidebar.text_input("Enter Specific Currency:")
+        if st.sidebar.button("Specific Balance"):
+            self.fetch_specific_balance(specific_currency)
 
-            st.sidebar.header("Orders")
-            if st.sidebar.button("Open Orders"):
-                self.fetch_open_orders()
-            if st.sidebar.button("Closed Orders"):
-                self.fetch_closed_orders()
-            if st.sidebar.button("Trades History"):
-                self.fetch_trades_history()
+        st.sidebar.header("Orders")
+        if st.sidebar.button("Open Orders"):
+            self.fetch_open_orders()
+        if st.sidebar.button("Closed Orders"):
+            self.fetch_closed_orders()
+        if st.sidebar.button("Trades History"):
+            self.fetch_trades_history()
     
     def create_MACD_strategy(self):
         trading_pair = st.text_input("Trading Pair (MACD):")
