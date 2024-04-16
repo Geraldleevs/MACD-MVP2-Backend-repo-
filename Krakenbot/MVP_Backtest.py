@@ -339,7 +339,7 @@ def use_rsi(df, overbought_thresh = 70, oversold_thresh = 30):
     df.drop(['rsi', 'prev_rsi'], axis = 1, inplace = True)
     return trading_df
 
-def use_rsi_custom(df, overbought_thresh= int(input("Overbought threshhold: ")), oversold_thresh= int(input("Oversold threshold: "))):
+#def use_rsi_custom(df, overbought_thresh= int(input("Overbought threshhold: ")), oversold_thresh= int(input("Oversold threshold: "))):
   
     df['rsi'] = rsi(df.Close)
     df['prev_rsi'] = df['rsi'].shift(1)
@@ -445,7 +445,7 @@ trades_log = pd.DataFrame(columns=['Coin', 'Strategy', 'Buy/Sell', 'Price'])
 # Assuming filesyear and indicators are defined elsewhere or in previous cells
 #indicators = [use_macd, use_rsi, use_sma]
 #to use non custom parameter rsi use 'use_rsi'
-indicators = [use_macd, use_rsi_custom, use_sma, use_ichimoku, use_donchian_channel]
+indicators = [use_macd, use_sma, use_ichimoku, use_donchian_channel]
 
 filesfull = ['BTCUSDT_full.csv', 'ETHUSDT_full.csv', 'DOGEUSDT_full.csv', 'LINKUSDT_full.csv']
 filesyrbtc = ['BTCUSDT_data.csv']

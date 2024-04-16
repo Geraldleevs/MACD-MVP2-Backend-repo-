@@ -1,3 +1,4 @@
+import pandas as pd
 import streamlit as st
 import requests
 import urllib.parse
@@ -5,6 +6,11 @@ import hashlib
 import hmac
 import base64
 import time
+import datetime as dt
+import streamlit as st
+import pandas as pd
+import numpy as np
+import logging
 
 class KrakenAppStreamlit:
     def __init__(self):
@@ -24,9 +30,15 @@ class KrakenAppStreamlit:
                 self.api_sec = lines[1]
         else:
             print("Keys already loaded")
+
+    # Load the backtesting results CSV file
+    @st.cache
+    def load_data(_self, file_path):
+        df = pd.read_csv(file_path, index_col=0)
+        return df
         
     def main(self):
-        
+
         with st.sidebar:
             st.image("https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=294,fit=crop,q=95/YrD15NnZWQuRJoV6/machd_logo-Y4Lpqn8P75i27V6n.png", width=270)
             st.markdown("---")
@@ -41,8 +53,11 @@ class KrakenAppStreamlit:
             self.MachD_Realtime_Trading()
     
     def MachD_Backtesting(self):
-        st.write("Welcome to Backtesting")
-        # Add your content for App 1 here
+        st.title("Cryptocurrency Trading Strategy Recommender")
+
+        # Load the backtesting results
+        file_path = '../data/BTCUSDT_data.csv'
+
     
     def MachD_Realtime_Trading(self):
     
