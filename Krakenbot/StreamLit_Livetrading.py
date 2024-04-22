@@ -11,6 +11,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import logging
+import datetime as dt
 
 class KrakenAppStreamlit:
     def __init__(self):
@@ -56,17 +57,22 @@ class KrakenAppStreamlit:
                 for asset, balance in self.balance_output.items():
                     st.write(f"**{asset}**: {balance}")
 
-            elif hasattr(self, 'trades_history_output'):
-                st.subheader("Trades History")
-                st.write(self.trades_history_output)
-                
             elif hasattr(self, 'open_orders_output'):
                 st.subheader("Open Orders")
-                st.write(self.open_orders_output)
-                
+                for order, info in self.open_orders_output.items():
+                    st.write(f"**{order}** - {info}")
+
             elif hasattr(self, 'closed_orders_output'):
                 st.subheader("Closed Orders")
-                st.write(self.closed_orders_output)
+                for order, info in self.closed_orders_output.items():
+                    st.write(f"**{order}** - {info}")
+                    st.write("")
+            
+            elif hasattr(self, 'trades_history_output'):
+                st.subheader("Trades History")
+                for trade, info in self.trades_history_output.items():
+                    st.write(f"**{trade}** \n {info}")
+                    
 
         with col2:
             st.markdown("<h1 style='text-align: center;'>Mach D Live Trading Application</h1>", unsafe_allow_html=True)
@@ -198,8 +204,12 @@ class KrakenAppStreamlit:
                 price = trade_info.get('price', '')
                 volume = trade_info.get('vol', '')
                 time = trade_info.get('time', '')
-                output[f"Trade {trade_id} - {pair}"] = f"Price: {price}, Volume: {volume}, Time: {time}"
+
+                formatted_time = dt.datetime.fromtimestamp(float(time)).strftime('%Y-%m-%d %H:%M:%S')
+                output[f"Trade {trade_id} - {pair}"] = f"\nPrice: {price}\n Volume: {volume}\n Time: {formatted_time}"
+                
             return output
+
 
     
     def kraken_request(self, url_path, data):
