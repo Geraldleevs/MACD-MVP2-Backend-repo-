@@ -12,3 +12,4 @@ coin_profit.csv
 trade_logs.log
 kraken-react-app/src/tempkeys.txt
 kraken-react-app/server/tempkeys.txt
+data/trade_logs_full_backup.log
