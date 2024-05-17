@@ -595,6 +595,7 @@ indicators = [
     use_sma,
     use_ichimoku,
     use_donchian_channel,
+    use_atr,
     use_rsi65_25,
     use_rsi66_26,
     use_rsi67_27,
@@ -617,12 +618,14 @@ coin_profit_df = pd.DataFrame()
 
 
 # Generate column names based on indicator combinations
-strategy_columns = ['{} & {}'.format(indicators[i].__name__, indicators[j].__name__) for i in range(len(indicators)) for j in range(i + 1, len(indicators))]
+strategy_columns = ['{} & {}'.format(indicators[i].__name__, indicators[j].__name__) 
+                    for i in range(len(indicators)) 
+                    for j in range(i + 1, len(indicators))]
 
 # Initialize the DataFrame with the strategy columns
 coin_profit_df = pd.DataFrame(columns=strategy_columns)
 
-for file in filesyrbtc:
+for file in filesyear:
     df = pd.read_csv("./data/{}".format(file))
     coin_name = file[0:3]
     
