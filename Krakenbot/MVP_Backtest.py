@@ -275,8 +275,7 @@ def use_atr(df, period=14):
 def use_macd(df):
     df['macd'], df['signal'], df['histogram'] = macd(df.Close)
     df['prev_histogram'] = df['histogram'].shift(1)
-    trading_df = df[(df.Time >= '2022-12-01 00:00:00') & (df.Time <= '2023-02-01 23:59:00')]
-    trading_df = trading_df.copy()
+    trading_df = df.copy()
     trading_df.loc['buy_sell'] = 0
 
     buy_condition_1 = (trading_df['prev_histogram'] < 0) & (trading_df['histogram'] > 0) 
@@ -299,8 +298,7 @@ def use_sma(df):
     df['sma_200'] = sma(df.Close, 200)
     df['sma_diff'] = df['sma_50'] - df['sma_200']
     df['prev_sma_diff'] = df['sma_diff'].shift(1)
-    trading_df = df[(df.Time >= '2022-12-01 00:00:00') & (df.Time <= '2023-02-01 23:59:00')]
-    trading_df = trading_df.copy()
+    trading_df = df.copy()
     trading_df.loc['buy_sell'] = 0
 
     buy_condition = (trading_df['sma_diff'] > 0) & (trading_df['prev_sma_diff'] < 0)
@@ -318,8 +316,7 @@ def use_rsi70_30(df, overbought_thresh = 70, oversold_thresh = 30):
     df['rsi'] = rsi(df.Close)
     df['prev_rsi'] = df['rsi'].shift(1)
 
-    trading_df = df[(df.Time >= '2022-12-01 00:00:00') & (df.Time <= '2023-02-01 23:59:00')]
-    trading_df = trading_df.copy()
+    trading_df = df.copy()
     trading_df.loc['buy_sell'] = 0
 
     buy_condition = (trading_df['rsi'] < oversold_thresh) & (trading_df['prev_rsi'] >= oversold_thresh)
@@ -335,8 +332,7 @@ def use_rsi65_25(df, overbought_thresh=65, oversold_thresh=25):
     df['rsi'] = rsi(df.Close)
     df['prev_rsi'] = df['rsi'].shift(1)
 
-    trading_df = df[(df.Time >= '2022-12-01 00:00:00') & (df.Time <= '2023-02-01 23:59:00')]
-    trading_df = trading_df.copy()
+    trading_df = df.copy()
     trading_df.loc['buy_sell'] = 0
 
     buy_condition = (trading_df['rsi'] < oversold_thresh) & (trading_df['prev_rsi'] >= oversold_thresh)
@@ -351,8 +347,7 @@ def use_rsi66_26(df, overbought_thresh=66, oversold_thresh=26):
     df['rsi'] = rsi(df.Close)
     df['prev_rsi'] = df['rsi'].shift(1)
 
-    trading_df = df[(df.Time >= '2022-12-01 00:00:00') & (df.Time <= '2023-02-01 23:59:00')]
-    trading_df = trading_df.copy()
+    trading_df = df.copy()
     trading_df.loc['buy_sell'] = 0
 
     buy_condition = (trading_df['rsi'] < oversold_thresh) & (trading_df['prev_rsi'] >= oversold_thresh)
@@ -367,8 +362,7 @@ def use_rsi67_27(df, overbought_thresh=67, oversold_thresh=27):
     df['rsi'] = rsi(df.Close)
     df['prev_rsi'] = df['rsi'].shift(1)
 
-    trading_df = df[(df.Time >= '2022-12-01 00:00:00') & (df.Time <= '2023-02-01 23:59:00')]
-    trading_df = trading_df.copy()
+    trading_df = df.copy()
     trading_df.loc['buy_sell'] = 0
 
     buy_condition = (trading_df['rsi'] < oversold_thresh) & (trading_df['prev_rsi'] >= oversold_thresh)
@@ -383,8 +377,7 @@ def use_rsi68_28(df, overbought_thresh=68, oversold_thresh=28):
     df['rsi'] = rsi(df.Close)
     df['prev_rsi'] = df['rsi'].shift(1)
 
-    trading_df = df[(df.Time >= '2022-12-01 00:00:00') & (df.Time <= '2023-02-01 23:59:00')]
-    trading_df = trading_df.copy()
+    trading_df = df.copy()
     trading_df.loc['buy_sell'] = 0
 
     buy_condition = (trading_df['rsi'] < oversold_thresh) & (trading_df['prev_rsi'] >= oversold_thresh)
@@ -399,8 +392,7 @@ def use_rsi69_29(df, overbought_thresh=69, oversold_thresh=29):
     df['rsi'] = rsi(df.Close)
     df['prev_rsi'] = df['rsi'].shift(1)
 
-    trading_df = df[(df.Time >= '2022-12-01 00:00:00') & (df.Time <= '2023-02-01 23:59:00')]
-    trading_df = trading_df.copy()
+    trading_df = df.copy()
     trading_df.loc['buy_sell'] = 0
 
     buy_condition = (trading_df['rsi'] < oversold_thresh) & (trading_df['prev_rsi'] >= oversold_thresh)
@@ -415,8 +407,7 @@ def use_rsi70_30(df, overbought_thresh=70, oversold_thresh=30):
     df['rsi'] = rsi(df.Close)
     df['prev_rsi'] = df['rsi'].shift(1)
 
-    trading_df = df[(df.Time >= '2022-12-01 00:00:00') & (df.Time <= '2023-02-01 23:59:00')]
-    trading_df = trading_df.copy()
+    trading_df = df.copy()
     trading_df.loc['buy_sell'] = 0
 
     buy_condition = (trading_df['rsi'] < oversold_thresh) & (trading_df['prev_rsi'] >= oversold_thresh)
@@ -431,8 +422,7 @@ def use_rsi71_31(df, overbought_thresh=71, oversold_thresh=31):
     df['rsi'] = rsi(df.Close)
     df['prev_rsi'] = df['rsi'].shift(1)
 
-    trading_df = df[(df.Time >= '2022-12-01 00:00:00') & (df.Time <= '2023-02-01 23:59:00')]
-    trading_df = trading_df.copy()
+    trading_df = df.copy()
     trading_df.loc['buy_sell'] = 0
 
     buy_condition = (trading_df['rsi'] < oversold_thresh) & (trading_df['prev_rsi'] >= oversold_thresh)
@@ -447,8 +437,7 @@ def use_rsi72_32(df, overbought_thresh=72, oversold_thresh=32):
     df['rsi'] = rsi(df.Close)
     df['prev_rsi'] = df['rsi'].shift(1)
 
-    trading_df = df[(df.Time >= '2022-12-01 00:00:00') & (df.Time <= '2023-02-01 23:59:00')]
-    trading_df = trading_df.copy()
+    trading_df = df.copy()
     trading_df.loc['buy_sell'] = 0
 
     buy_condition = (trading_df['rsi'] < oversold_thresh) & (trading_df['prev_rsi'] >= oversold_thresh)
@@ -463,8 +452,7 @@ def use_rsi73_33(df, overbought_thresh=73, oversold_thresh=33):
     df['rsi'] = rsi(df.Close)
     df['prev_rsi'] = df['rsi'].shift(1)
 
-    trading_df = df[(df.Time >= '2022-12-01 00:00:00') & (df.Time <= '2023-02-01 23:59:00')]
-    trading_df = trading_df.copy()
+    trading_df = df.copy()
     trading_df.loc['buy_sell'] = 0
 
     buy_condition = (trading_df['rsi'] < oversold_thresh) & (trading_df['prev_rsi'] >= oversold_thresh)
@@ -479,8 +467,7 @@ def use_rsi74_34(df, overbought_thresh=74, oversold_thresh=34):
     df['rsi'] = rsi(df.Close)
     df['prev_rsi'] = df['rsi'].shift(1)
 
-    trading_df = df[(df.Time >= '2022-12-01 00:00:00') & (df.Time <= '2023-02-01 23:59:00')]
-    trading_df = trading_df.copy()
+    trading_df = df.copy()
     trading_df.loc['buy_sell'] = 0
 
     buy_condition = (trading_df['rsi'] < oversold_thresh) & (trading_df['prev_rsi'] >= oversold_thresh)
@@ -495,8 +482,7 @@ def use_rsi75_35(df, overbought_thresh=75, oversold_thresh=35):
     df['rsi'] = rsi(df.Close)
     df['prev_rsi'] = df['rsi'].shift(1)
 
-    trading_df = df[(df.Time >= '2022-12-01 00:00:00') & (df.Time <= '2023-02-01 23:59:00')]
-    trading_df = trading_df.copy()
+    trading_df = df.copy()
     trading_df['buy_sell'] = 0
 
     buy_condition = (trading_df['rsi'] < oversold_thresh) & (trading_df['prev_rsi'] >= oversold_thresh)
@@ -514,8 +500,7 @@ def use_ichimoku(df):
     df['conversion_base_diff'] = df['conversion_line'] - df['base_line']
     df['prev_diff'] = df['conversion_base_diff'].shift(1)
     
-    trading_df = df[(df.Time >= '2022-12-01 00:00:00') & (df.Time <= '2023-02-01 23:59:00')]
-    trading_df = trading_df.copy()
+    trading_df = df.copy()
     trading_df.loc['buy_sell'] = 0
 
     buy_condition_1 = trading_df.Close >= np.maximum(trading_df['leading_span_a'], trading_df['leading_span_b'])
@@ -532,8 +517,7 @@ def use_ichimoku(df):
 
 def use_donchian_channel(df):
     df['upper'], df['lower'], df['mid'] = calculate_donchian_channels(df)
-    trading_df = df[(df.Time >= '2022-12-01 00:00:00') & (df.Time <= '2023-02-01 23:59:00')]
-    trading_df = trading_df.copy()
+    trading_df = df.copy()
     trading_df.loc['buy_sell'] = 0
 
     buy_condition = trading_df.Close >= trading_df.upper
@@ -588,17 +572,15 @@ coin_profit_df = pd.DataFrame()
 trades_log = pd.DataFrame(columns=['Coin', 'Strategy', 'Buy/Sell', 'Price'])
 
 # Assuming filesyear and indicators are defined elsewhere or in previous cells
-#indicators = [use_macd, use_rsi, use_sma]
+#indicators = [use_macd, use_rsi68_28, use_sma]
 #to use non custom parameter rsi use 'use_rsi'
 indicators = [
+    
     use_macd,
     use_sma,
     use_ichimoku,
     use_donchian_channel,
     use_atr,
-    use_rsi65_25,
-    use_rsi66_26,
-    use_rsi67_27,
     use_rsi68_28,
     use_rsi69_29,
     use_rsi70_30,
@@ -606,28 +588,21 @@ indicators = [
     use_rsi72_32,
     use_rsi73_33,
     use_rsi74_34,
-    use_rsi75_35
+    use_rsi75_35,
 ]
 
 filesfull = ['BTCUSDT_full.csv', 'ETHUSDT_full.csv', 'DOGEUSDT_full.csv', 'LINKUSDT_full.csv']
 filesyrbtc = ['BTCUSDT_data.csv']
 filesyear = ['BTCUSDT_data.csv', 'ETHUSDT_data.csv','DOGEUSDT_data.csv', 'LINKUSDT_data.csv']
+btcbinance = ['BTCUSDT-5m-2024-05-07.csv']
 
-# Initialization
-coin_profit_df = pd.DataFrame()
+# Initialize the list to collect all profit DataFrames
+profit_dfs = []
 
-
-# Generate column names based on indicator combinations
-strategy_columns = ['{} & {}'.format(indicators[i].__name__, indicators[j].__name__) 
-                    for i in range(len(indicators)) 
-                    for j in range(i + 1, len(indicators))]
-
-# Initialize the DataFrame with the strategy columns
-coin_profit_df = pd.DataFrame(columns=strategy_columns)
-
-for file in filesyear:
-    df = pd.read_csv("./data/{}".format(file))
-    coin_name = file[0:3]
+# Process each file
+for file in filesyrbtc:
+    df = pd.read_csv(f"./data/{file}")
+    coin_name = file[:3]
     
     # Log the coin being processed
     logging.info(f"Processing Coin: {coin_name}")
@@ -636,7 +611,6 @@ for file in filesyear:
     coin_profits = {}
     
     for i in range(len(indicators)):
-        
         for j in range(i + 1, len(indicators)):
             trading_frame_1 = indicators[i](df)
             trading_frame_2 = indicators[j](df)
@@ -666,7 +640,7 @@ for file in filesyear:
                     trade_message = f"  SELL: Strategy={indicators[i].__name__} & {indicators[j].__name__}, Price={row['Close']}"
                     logging.info(trade_message)
 
-            fiat_amount += coin * trading_data.iloc[-1, 5]
+            fiat_amount += coin * trading_data.iloc[-1]['Close']
             coin = 0
 
             # Store the profit for the current coin and strategy
@@ -675,15 +649,19 @@ for file in filesyear:
             # Log the completion of the strategy execution with a new line for clarity
             logging.info(f"Completed Strategy: {indicators[i].__name__} & {indicators[j].__name__}, Coin: {coin_name}, Profit: {fiat_amount}\n")
 
+    # Convert the coin_profits dictionary to a DataFrame
+    coin_profits_df = pd.DataFrame(coin_profits, index=[coin_name])
+    
+    # Append the coin profits DataFrame to the list
+    profit_dfs.append(coin_profits_df)
 
-    # Assign the coin_profits dictionary directly to a row in coin_profit_df
-    coin_profit_df.loc[coin_name] = coin_profits
-    print(coin_profit_df.loc[coin_name], "\n")
+# Concatenate all the profit DataFrames into a single DataFrame
+coin_profit_df = pd.concat(profit_dfs)
 
 # Determine the best strategy for each coin
 coin_profit_df['Recommended Strategy'] = coin_profit_df.idxmax(axis=1)
 
-# Cell 3: Save the trades log to a CSV file
+# Save the trades log to a CSV file
 coin_profit_df.to_csv('coin_profit.csv')
 
-
+print(coin_profit_df)
