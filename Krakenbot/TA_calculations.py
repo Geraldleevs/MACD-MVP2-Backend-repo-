@@ -115,38 +115,14 @@ def calculate_donchian_channels(data, window_size = 20):
     
     return upper_channel, lower_channel, mid_line
 
-def rsi(close, number_of_periods=14):
-    """ calculate RSI using closing price and number of periods
-    returns RSI"""
-
-    #initialise deltas, seed, up, down
-    deltas = np.diff(close)
-    seed = deltas[:number_of_periods+1]
-    up = seed[seed >= 0].sum()/number_of_periods
-    down = -seed[seed < 0].sum()/number_of_periods
-
-    #calculate first RSI value
-    rs = up/down
-    rsi = np.zeros_like(close)
-    rsi[:number_of_periods] = 100. - 100./(1.+rs)
-
-    #calculate RSI for remaining number of periods
-    for i in range(number_of_periods, len(close)):
-        delta = deltas[i-1]
-        if delta > 0:
-            upval = delta
-            downval = 0.
-        else:
-            upval = 0.
-            downval = -delta
-            
-        #calculate average for up and down moves
-        up = (up*(number_of_periods-1) + upval)/number_of_periods
-        down = (down*(number_of_periods-1) + downval)/number_of_periods
-        #calculate RSI for current period
-        rs = up/down
-        rsi[i] = 100. - 100./(1.+rs)
-
+def rsi(series, period=14):
+    delta = series.diff(1)
+    gain = delta.where(delta > 0, 0)
+    loss = -delta.where(delta < 0, 0)
+    avg_gain = gain.rolling(window=period, min_periods=1).mean()
+    avg_loss = loss.rolling(window=period, min_periods=1).mean()
+    rs = avg_gain / avg_loss
+    rsi = 100 - (100 / (1 + rs))
     return rsi
 
 def bollinger_bands(close, window_size=20):
