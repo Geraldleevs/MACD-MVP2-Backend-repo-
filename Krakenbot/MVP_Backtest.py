@@ -166,10 +166,10 @@ def determine_use_case(indicator_1, indicator_2):
 profit_dfs = []
 
 # Example list of files to process
+filesyr = ['BTCUSDT_data.csv', 'DOGEUSDT_data.csv', 'ETHUSDT_data.csv', 'LINKUSDT_data.csv', 'UNIUSDT_data.csv',]
 filesyrbtc = ['BTCUSDT_data.csv']
-
 # Process each file
-for file in filesyrbtc:
+for file in filesyr:
     df = pd.read_csv(f"./data/{file}")
     coin_name = file[:3]
     
