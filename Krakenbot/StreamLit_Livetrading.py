@@ -7,10 +7,6 @@ import hashlib
 import hmac
 import base64
 import datetime as dt
-import streamlit as st
-import pandas as pd
-import numpy as np
-import datetime as dt
 
 class KrakenAppStreamlit:
     st.set_page_config(page_title="Kraken API Application", page_icon="📈", layout="wide", initial_sidebar_state="expanded")
