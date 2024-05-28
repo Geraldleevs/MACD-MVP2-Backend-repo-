@@ -161,11 +161,19 @@ profit_dfs = []
 
 # Example list of files to process
 filesyr = ['BTCUSDT_data.csv', 'DOGEUSDT_data.csv', 'ETHUSDT_data.csv', 'LINKUSDT_data.csv', 'UNIUSDT_data.csv']
+files5m = ['BTCUSDT-5m-2024-05-19.csv','ETHUSDT-5m-2024-04.csv','DOGEUSDT-5m-2024-04.csv']
+files1m = ['BTCUSDT-1m-2024-04.csv','ETHUSDT-1m-2024-04.csv','DOGEUSDT-1m-2024-04.csv']
 filesyrbtc = ['BTCUSDT_data.csv']
-filesyrbtc5m = ['BTCUSDT-5m-2024-05-19.csv']
-
+#1 week of 5minute data
+filesbtc5m = ['BTCUSDT-5m-2024-05-19.csv']
+fileseth5m = ['ETHUSDT-5m-2024-04.csv']
+filesdoge5m = ['DOGEUSDT-5m-2024-04.csv']
+#1 week of 1minute data
+filesbtc1m = ['BTCUSDT-1m-2024-04.csv']
+fileseth1m = ['ETHUSDT-1m-2024-04.csv']
+filesdoge1m = ['DOGEUSDT-1m-2024-04.csv']
 # Process each file
-for file in filesyrbtc:
+for file in files1m:
     df = pd.read_csv(f"./data/{file}")
     coin_name = file[:3]
 
@@ -235,6 +243,11 @@ coin_profit_df = pd.concat(profit_dfs)
 
 # Determine the best strategy for each coin
 coin_profit_df['Recommended Strategy'] = coin_profit_df.idxmax(axis=1)
+
+# Add a column with the profit of the recommended strategy
+coin_profit_df['Profit of Recommended Strategy'] = coin_profit_df.apply(
+    lambda row: row[row['Recommended Strategy']], axis=1
+)
 
 # Save the trades log to a CSV file
 coin_profit_df.to_csv('coin_profit.csv')
