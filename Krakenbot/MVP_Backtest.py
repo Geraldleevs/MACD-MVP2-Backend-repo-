@@ -4,11 +4,6 @@ import logging
 from itertools import combinations
 import TA_functions
 
-# Read BTCUSDT data file
-df = pd.read_csv('data/BTCUSDT_data.csv')
-# Drop unnamed and index columns
-df.drop(["Unnamed: 0", "index"], axis=1, inplace=True)
-
 # Set up logging
 logging.basicConfig(filename='trade_logs.log', level=logging.INFO, format='%(asctime)s - %(message)s')
 
@@ -17,7 +12,6 @@ indicators = [
     TA_functions.use_sma,
     TA_functions.use_ichimoku,
     TA_functions.use_donchian_channel,
-    # TA_functions.use_atr,
     TA_functions.use_rsi65_25,
     TA_functions.use_rsi66_26,
     TA_functions.use_rsi67_27,
@@ -43,7 +37,6 @@ indicator_names = {
     TA_functions.use_sma: 'SMA',
     TA_functions.use_ichimoku: 'Ichimoku',
     TA_functions.use_donchian_channel: 'Donchian',
-    TA_functions.use_atr: 'ATR',
     TA_functions.use_rsi65_25: 'RSI65',
     TA_functions.use_rsi66_26: 'RSI66',
     TA_functions.use_rsi67_27: 'RSI67',
@@ -62,6 +55,37 @@ indicator_names = {
     TA_functions.use_stochastic_21_5_80_20: 'Stochastic21_5_80_20',
     TA_functions.use_stochastic_21_5_85_15: 'Stochastic21_5_85_15'
 }
+
+# Create a mapping of indicators to their base types
+indicator_base_types = {
+    'MACD': 'MACD',
+    'SMA': 'SMA',
+    'Ichimoku': 'Ichimoku',
+    'Donchian': 'Donchian',
+    'RSI65': 'RSI',
+    'RSI66': 'RSI',
+    'RSI67': 'RSI',
+    'RSI68': 'RSI',
+    'RSI69': 'RSI',
+    'RSI70': 'RSI',
+    'RSI71': 'RSI',
+    'RSI72': 'RSI',
+    'RSI73': 'RSI',
+    'RSI74': 'RSI',
+    'RSI75': 'RSI',
+    'Stochastic14_3_80_20': 'Stochastic',
+    'Stochastic14_3_85_15': 'Stochastic',
+    'Stochastic10_3_80_20': 'Stochastic',
+    'Stochastic10_3_85_15': 'Stochastic',
+    'Stochastic21_5_80_20': 'Stochastic',
+    'Stochastic21_5_85_15': 'Stochastic'
+}
+
+# Filter combinations to exclude pairs with the same base type
+valid_combinations = [
+    (ind1, ind2) for ind1, ind2 in combinations(indicators, 2)
+    if indicator_base_types[indicator_names[ind1]] != indicator_base_types[indicator_names[ind2]]
+]
 
 # Update the use cases dictionary as needed
 use_cases = {
@@ -116,70 +140,42 @@ use_cases = {
     ('MACD', 'ATR'): 'Momentum and volatility confirmation',
     ('SMA', 'MACD'): 'Trend direction and momentum',
     ('Donchian', 'MACD'): 'Breakout and momentum confirmation',
-    ('Ichimoku', 'ATR'): 'Trend direction and volatility confirmation',
-    ('RSI65', 'ATR'): 'Overbought/oversold conditions and volatility',
-    ('RSI66', 'ATR'): 'Overbought/oversold conditions and volatility',
-    ('RSI67', 'ATR'): 'Overbought/oversold conditions and volatility',
-    ('RSI68', 'ATR'): 'Overbought/oversold conditions and volatility',
-    ('RSI69', 'ATR'): 'Overbought/oversold conditions and volatility',
-    ('RSI70', 'ATR'): 'Overbought/oversold conditions and volatility',
-    ('RSI71', 'ATR'): 'Overbought/oversold conditions and volatility',
-    ('RSI72', 'ATR'): 'Overbought/oversold conditions and volatility',
-    ('RSI73', 'ATR'): 'Overbought/oversold conditions and volatility',
-    ('RSI74', 'ATR'): 'Overbought/oversold conditions and volatility',
-    ('RSI75', 'ATR'): 'Overbought/oversold conditions and volatility',
-    ('Ichimoku', 'SMA'): 'Comprehensive trend analysis',
-    ('Donchian', 'RSI65'): 'Breakout confirmation and overbought/oversold conditions',
-    ('Donchian', 'RSI66'): 'Breakout confirmation and overbought/oversold conditions',
-    ('Donchian', 'RSI67'): 'Breakout confirmation and overbought/oversold conditions',
-    ('Donchian', 'RSI68'): 'Breakout confirmation and overbought/oversold conditions',
-    ('Donchian', 'RSI69'): 'Breakout confirmation and overbought/oversold conditions',
-    ('Donchian', 'RSI70'): 'Breakout confirmation and overbought/oversold conditions',
-    ('Donchian', 'RSI71'): 'Breakout confirmation and overbought/oversold conditions',
-    ('Donchian', 'RSI72'): 'Breakout confirmation and overbought/oversold conditions',
-    ('Donchian', 'RSI73'): 'Breakout confirmation and overbought/oversold conditions',
-    ('Donchian', 'RSI74'): 'Breakout confirmation and overbought/oversold conditions',
-    ('Donchian', 'RSI75'): 'Breakout confirmation and overbought/oversold conditions',
-    ('SMA', 'Ichimoku'): 'Trend confirmation and comprehensive trend analysis',
-    ('Stochastic14_3_80_20', 'MACD'): 'Momentum and trend reversal confirmation',
-    ('Stochastic14_3_85_15', 'MACD'): 'Momentum and trend reversal confirmation',
-    ('Stochastic10_3_80_20', 'MACD'): 'Momentum and trend reversal confirmation',
-    ('Stochastic10_3_85_15', 'MACD'): 'Momentum and trend reversal confirmation',
-    ('Stochastic21_5_80_20', 'MACD'): 'Momentum and trend reversal confirmation',
-    ('Stochastic21_5_85_15', 'MACD'): 'Momentum and trend reversal confirmation',
-    # Add other use cases as needed
+    ('Ichimoku', 'ATR'): 'Trend and volatility analysis',
+    ('Stochastic14_3_80_20', 'MACD'): 'Momentum and trend confirmation',
+    ('Stochastic14_3_85_15', 'MACD'): 'Momentum and trend confirmation',
+    ('Stochastic10_3_80_20', 'MACD'): 'Momentum and trend confirmation',
+    ('Stochastic10_3_85_15', 'MACD'): 'Momentum and trend confirmation',
+    ('Stochastic21_5_80_20', 'MACD'): 'Momentum and trend confirmation',
+    ('Stochastic21_5_85_15', 'MACD'): 'Momentum and trend confirmation'
+    # Additional use cases can be added here
 }
 
-# Function to determine the use case
-def determine_use_case(indicator_1, indicator_2):
-    # Check if indicators are in the known indicators list
-    if indicator_1 not in indicator_names.values() or indicator_2 not in indicator_names.values():
-        return None  # Or return 'Unknown Use Case' or any other appropriate response
-
-    # Iterate over use cases to find a match
-    for (ind_1, ind_2), use_case in use_cases.items():
-        if (ind_1 in indicator_1 and ind_2 in indicator_2) or (ind_1 in indicator_2 and ind_2 in indicator_1):
-            return use_case
-    return 'Unknown Use Case'
+def determine_use_case(indicator1, indicator2):
+    use_case = use_cases.get((indicator1, indicator2))
+    if use_case is None:
+        use_case = use_cases.get((indicator2, indicator1))
+    return use_case
 
 # Initialize the list to collect all profit DataFrames
 profit_dfs = []
 
 # Example list of files to process
-filesyr = ['BTCUSDT_data.csv', 'DOGEUSDT_data.csv', 'ETHUSDT_data.csv', 'LINKUSDT_data.csv', 'UNIUSDT_data.csv',]
+filesyr = ['BTCUSDT_data.csv', 'DOGEUSDT_data.csv', 'ETHUSDT_data.csv', 'LINKUSDT_data.csv', 'UNIUSDT_data.csv']
 filesyrbtc = ['BTCUSDT_data.csv']
+filesyrbtc5m = ['BTCUSDT-5m-2024-05-19.csv']
+
 # Process each file
-for file in filesyr:
+for file in filesyrbtc:
     df = pd.read_csv(f"./data/{file}")
     coin_name = file[:3]
-    
+
     # Log the coin being processed
     logging.info(f"Processing Coin: {coin_name}")
-    
+
     # Create a dictionary to store the profits for the current coin
     coin_profits = {}
-    
-    for (indicator_func1, indicator_func2) in combinations(indicators, 2):
+
+    for (indicator_func1, indicator_func2) in valid_combinations:
         trading_frame_1 = indicator_func1(df.copy())  # Ensure to pass a copy to avoid modifying the original df
         trading_frame_2 = indicator_func2(df.copy())  # Ensure to pass a copy to avoid modifying the original df
         trading_data = df.copy()
@@ -213,14 +209,14 @@ for file in filesyr:
 
         # Determine the strategy name
         strategy_name = f'{indicator_names[indicator_func1]} & {indicator_names[indicator_func2]}'
-        
+
         # Determine the use case
         use_case = determine_use_case(indicator_names[indicator_func1], indicator_names[indicator_func2])
 
-        # Check if use_case is None, indicating an unknown use case, skip if it is
+        # If use case is unknown, log a warning but still include the strategy
         if use_case is None:
-            logging.warning(f"Skipping strategy {strategy_name} due to unknown use case.")
-            continue
+            use_case = 'Unknown Use Case'
+            logging.warning(f"Unknown use case for strategy {strategy_name}")
 
         # Store the profit for the current coin and strategy with the use case
         coin_profits[f'{strategy_name} ({use_case})'] = fiat_amount
@@ -230,7 +226,7 @@ for file in filesyr:
 
     # Convert the coin_profits dictionary to a DataFrame
     coin_profits_df = pd.DataFrame(coin_profits, index=[coin_name])
-    
+
     # Append the coin profits DataFrame to the list
     profit_dfs.append(coin_profits_df)
 
