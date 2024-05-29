@@ -59,175 +59,10 @@ def use_sma(df):
 
     return trading_df
 
-def use_rsi70_30(df, overbought_thresh = 70, oversold_thresh = 30):
+#RSI FUNCTIONS
+def use_rsi(df, overbought_thresh, oversold_thresh):
     df['rsi'] = rsi(df.Close)
     df['prev_rsi'] = df['rsi'].shift(1)
-    trading_df = df.copy()
-    trading_df.loc['buy_sell'] = 0
-
-    buy_condition = (trading_df['rsi'] < oversold_thresh) & (trading_df['prev_rsi'] >= oversold_thresh)
-    sell_condition = (trading_df['rsi'] > overbought_thresh) & (trading_df['prev_rsi'] <= overbought_thresh)
-
-    trading_df.loc[buy_condition, 'buy_sell'] = 1
-    trading_df.loc[sell_condition, 'buy_sell'] = -1
-    # Clean up df
-    df.drop(['rsi', 'prev_rsi'], axis = 1, inplace = True)
-    return trading_df
-#ALTERNATIVE RSI FUNCTIONS
-def use_rsi65_25(df, overbought_thresh=65, oversold_thresh=25):
-    df['rsi'] = rsi(df.Close)
-    df['prev_rsi'] = df['rsi'].shift(1)
-
-    trading_df = df.copy()
-    trading_df.loc['buy_sell'] = 0
-
-    buy_condition = (trading_df['rsi'] < oversold_thresh) & (trading_df['prev_rsi'] >= oversold_thresh)
-    sell_condition = (trading_df['rsi'] > overbought_thresh) & (trading_df['prev_rsi'] <= overbought_thresh)
-
-    trading_df.loc[buy_condition, 'buy_sell'] = 1
-    trading_df.loc[sell_condition, 'buy_sell'] = -1
-    # Clean up df
-    df.drop(['rsi', 'prev_rsi'], axis = 1, inplace = True)
-    return trading_df
-def use_rsi66_26(df, overbought_thresh=66, oversold_thresh=26):
-    df['rsi'] = rsi(df.Close)
-    df['prev_rsi'] = df['rsi'].shift(1)
-
-    trading_df = df.copy()
-    trading_df.loc['buy_sell'] = 0
-
-    buy_condition = (trading_df['rsi'] < oversold_thresh) & (trading_df['prev_rsi'] >= oversold_thresh)
-    sell_condition = (trading_df['rsi'] > overbought_thresh) & (trading_df['prev_rsi'] <= overbought_thresh)
-
-    trading_df.loc[buy_condition, 'buy_sell'] = 1
-    trading_df.loc[sell_condition, 'buy_sell'] = -1
-    # Clean up df
-    df.drop(['rsi', 'prev_rsi'], axis = 1, inplace = True)
-    return trading_df
-def use_rsi67_27(df, overbought_thresh=67, oversold_thresh=27):
-    df['rsi'] = rsi(df.Close)
-    df['prev_rsi'] = df['rsi'].shift(1)
-
-    trading_df = df.copy()
-    trading_df.loc['buy_sell'] = 0
-
-    buy_condition = (trading_df['rsi'] < oversold_thresh) & (trading_df['prev_rsi'] >= oversold_thresh)
-    sell_condition = (trading_df['rsi'] > overbought_thresh) & (trading_df['prev_rsi'] <= overbought_thresh)
-
-    trading_df.loc[buy_condition, 'buy_sell'] = 1
-    trading_df.loc[sell_condition, 'buy_sell'] = -1
-    # Clean up df
-    df.drop(['rsi', 'prev_rsi'], axis = 1, inplace = True)
-    return trading_df
-def use_rsi68_28(df, overbought_thresh=68, oversold_thresh=28):
-    df['rsi'] = rsi(df.Close)
-    df['prev_rsi'] = df['rsi'].shift(1)
-
-    trading_df = df.copy()
-    trading_df.loc['buy_sell'] = 0
-
-    buy_condition = (trading_df['rsi'] < oversold_thresh) & (trading_df['prev_rsi'] >= oversold_thresh)
-    sell_condition = (trading_df['rsi'] > overbought_thresh) & (trading_df['prev_rsi'] <= overbought_thresh)
-
-    trading_df.loc[buy_condition, 'buy_sell'] = 1
-    trading_df.loc[sell_condition, 'buy_sell'] = -1
-    # Clean up df
-    df.drop(['rsi', 'prev_rsi'], axis = 1, inplace = True)
-    return trading_df
-def use_rsi69_29(df, overbought_thresh=69, oversold_thresh=29):
-    df['rsi'] = rsi(df.Close)
-    df['prev_rsi'] = df['rsi'].shift(1)
-
-    trading_df = df.copy()
-    trading_df.loc['buy_sell'] = 0
-
-    buy_condition = (trading_df['rsi'] < oversold_thresh) & (trading_df['prev_rsi'] >= oversold_thresh)
-    sell_condition = (trading_df['rsi'] > overbought_thresh) & (trading_df['prev_rsi'] <= overbought_thresh)
-
-    trading_df.loc[buy_condition, 'buy_sell'] = 1
-    trading_df.loc[sell_condition, 'buy_sell'] = -1
-    # Clean up df
-    df.drop(['rsi', 'prev_rsi'], axis = 1, inplace = True)
-    return trading_df
-def use_rsi70_30(df, overbought_thresh=70, oversold_thresh=30):
-    df['rsi'] = rsi(df.Close)
-    df['prev_rsi'] = df['rsi'].shift(1)
-
-    trading_df = df.copy()
-    trading_df.loc['buy_sell'] = 0
-
-    buy_condition = (trading_df['rsi'] < oversold_thresh) & (trading_df['prev_rsi'] >= oversold_thresh)
-    sell_condition = (trading_df['rsi'] > overbought_thresh) & (trading_df['prev_rsi'] <= overbought_thresh)
-    
-    trading_df.loc[buy_condition, 'buy_sell'] = 1
-    trading_df.loc[sell_condition, 'buy_sell'] = -1
-    # Clean up df
-    df.drop(['rsi', 'prev_rsi'], axis = 1, inplace = True)
-    return trading_df
-def use_rsi71_31(df, overbought_thresh=71, oversold_thresh=31):
-    df['rsi'] = rsi(df.Close)
-    df['prev_rsi'] = df['rsi'].shift(1)
-
-    trading_df = df.copy()
-    trading_df.loc['buy_sell'] = 0
-
-    buy_condition = (trading_df['rsi'] < oversold_thresh) & (trading_df['prev_rsi'] >= oversold_thresh)
-    sell_condition = (trading_df['rsi'] > overbought_thresh) & (trading_df['prev_rsi'] <= overbought_thresh)
-
-    trading_df.loc[buy_condition, 'buy_sell'] = 1
-    trading_df.loc[sell_condition, 'buy_sell'] = -1
-    # Clean up df
-    df.drop(['rsi', 'prev_rsi'], axis = 1, inplace = True)
-    return trading_df
-def use_rsi72_32(df, overbought_thresh=72, oversold_thresh=32):
-    df['rsi'] = rsi(df.Close)
-    df['prev_rsi'] = df['rsi'].shift(1)
-
-    trading_df = df.copy()
-    trading_df.loc['buy_sell'] = 0
-
-    buy_condition = (trading_df['rsi'] < oversold_thresh) & (trading_df['prev_rsi'] >= oversold_thresh)
-    sell_condition = (trading_df['rsi'] > overbought_thresh) & (trading_df['prev_rsi'] <= overbought_thresh)
-
-    trading_df.loc[buy_condition, 'buy_sell'] = 1
-    trading_df.loc[sell_condition, 'buy_sell'] = -1
-    # Clean up df
-    df.drop(['rsi', 'prev_rsi'], axis = 1, inplace = True)
-    return trading_df
-def use_rsi73_33(df, overbought_thresh=73, oversold_thresh=33):
-    df['rsi'] = rsi(df.Close)
-    df['prev_rsi'] = df['rsi'].shift(1)
-
-    trading_df = df.copy()
-    trading_df.loc['buy_sell'] = 0
-
-    buy_condition = (trading_df['rsi'] < oversold_thresh) & (trading_df['prev_rsi'] >= oversold_thresh)
-    sell_condition = (trading_df['rsi'] > overbought_thresh) & (trading_df['prev_rsi'] <= overbought_thresh)
-
-    trading_df.loc[buy_condition, 'buy_sell'] = 1
-    trading_df.loc[sell_condition, 'buy_sell'] = -1
-    # Clean up df
-    df.drop(['rsi', 'prev_rsi'], axis = 1, inplace = True)
-    return trading_df
-def use_rsi74_34(df, overbought_thresh=74, oversold_thresh=34):
-    df['rsi'] = rsi(df.Close)
-    df['prev_rsi'] = df['rsi'].shift(1)
-
-    trading_df = df.copy()
-    trading_df.loc['buy_sell'] = 0
-
-    buy_condition = (trading_df['rsi'] < oversold_thresh) & (trading_df['prev_rsi'] >= oversold_thresh)
-    sell_condition = (trading_df['rsi'] > overbought_thresh) & (trading_df['prev_rsi'] <= overbought_thresh)
-
-    trading_df.loc[buy_condition, 'buy_sell'] = 1
-    trading_df.loc[sell_condition, 'buy_sell'] = -1
-    # Clean up df
-    df.drop(['rsi', 'prev_rsi'], axis = 1, inplace = True)
-    return trading_df
-def use_rsi75_35(df, overbought_thresh=75, oversold_thresh=35):
-    df['rsi'] = rsi(df.Close)
-    df['prev_rsi'] = df['rsi'].shift(1)
-
     trading_df = df.copy()
     trading_df['buy_sell'] = 0
 
@@ -236,9 +71,41 @@ def use_rsi75_35(df, overbought_thresh=75, oversold_thresh=35):
 
     trading_df.loc[buy_condition, 'buy_sell'] = 1
     trading_df.loc[sell_condition, 'buy_sell'] = -1
-    # Clean up df
     df.drop(['rsi', 'prev_rsi'], axis=1, inplace=True)
     return trading_df
+
+def use_rsi65_25(df): 
+    return use_rsi(df, overbought_thresh=65, oversold_thresh=25)
+
+def use_rsi66_26(df): 
+    return use_rsi(df, overbought_thresh=66, oversold_thresh=26)
+
+def use_rsi67_27(df): 
+    return use_rsi(df, overbought_thresh=67, oversold_thresh=27)
+
+def use_rsi68_28(df): 
+    return use_rsi(df, overbought_thresh=68, oversold_thresh=28)
+
+def use_rsi69_29(df): 
+    return use_rsi(df, overbought_thresh=69, oversold_thresh=29)
+
+def use_rsi70_30(df): 
+    return use_rsi(df, overbought_thresh=70, oversold_thresh=30)
+
+def use_rsi71_31(df): 
+    return use_rsi(df, overbought_thresh=71, oversold_thresh=31)
+
+def use_rsi72_32(df): 
+    return use_rsi(df, overbought_thresh=72, oversold_thresh=32)
+
+def use_rsi73_33(df): 
+    return use_rsi(df, overbought_thresh=73, oversold_thresh=33)
+
+def use_rsi74_34(df): 
+    return use_rsi(df, overbought_thresh=74, oversold_thresh=34)
+
+def use_rsi75_35(df): 
+    return use_rsi(df, overbought_thresh=75, oversold_thresh=35)
 
 def use_ichimoku(df):
     df['conversion_line'], df['base_line'], df['leading_span_a'], df['leading_span_b'], df['lagging_span'] = ichimoku_cloud(df.High, df.Low, df.Close)
