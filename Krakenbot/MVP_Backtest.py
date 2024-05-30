@@ -84,7 +84,7 @@ files = [
 # Process each file
 for file in files:
     df = pd.read_csv(f"./data/{file}")
-    coin_name = file.split('-')[0]
+    coin_name = file.split('.')[0]  # Use the file name without extension as the coin name
 
     # Log the coin being processed
     logging.info(f"Processing Coin: {coin_name}")
