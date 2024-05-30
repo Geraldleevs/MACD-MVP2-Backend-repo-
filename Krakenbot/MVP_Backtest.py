@@ -75,7 +75,8 @@ profit_dfs = []
 # Example list of files to process
 files = [
     #'Concatenated-BTCUSDT-5m-2023-24-concatenated.csv',
-    'BTCUSDT-1m-2024-04.csv'
+    #'Concatenated-BTCUSDT-1h-2023-4.csv'
+    'Concatenated-ETHUSDT-1h-2023-4.csv'
     # Add other file names as needed
 ]
 
@@ -93,7 +94,13 @@ for file in files:
     # Calculate trading signals for all indicators once
     trading_signals = {name: func(df.copy()) for func, name in indicator_names.items()}
 
-    for (name1, name2) in combinations(indicator_names.values(), 2):
+    # Generate combinations of indicators, avoiding comparisons of the same type
+    indicator_combinations = [
+        (name1, name2) for name1, name2 in combinations(indicator_names.values(), 2)
+        if get_base_type(name1) != get_base_type(name2)
+    ]
+
+    for (name1, name2) in indicator_combinations:
         func1 = [func for func, name in indicator_names.items() if name == name1][0]
         func2 = [func for func, name in indicator_names.items() if name == name2][0]
 
