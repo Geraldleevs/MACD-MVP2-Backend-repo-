@@ -75,8 +75,9 @@ profit_dfs = []
 # Example list of files to process
 files = [
     #'Concatenated-BTCUSDT-5m-2023-24-concatenated.csv',
-    #'Concatenated-BTCUSDT-1h-2023-4.csv'
-    'Concatenated-ETHUSDT-1h-2023-4.csv'
+    'Concatenated-BTCUSDT-1h-2023-4.csv',
+    'Concatenated-ETHUSDT-1h-2023-4.csv',
+    'Concatenated-BTCUSDT-5m-2023-24-concatenated.csv'
     # Add other file names as needed
 ]
 
@@ -92,7 +93,7 @@ for file in files:
     coin_profits = {}
 
     # Calculate trading signals for all indicators once
-    trading_signals = {name: func(df.copy()) for func, name in indicator_names.items()}
+    trading_signals = {name: func(df) for func, name in indicator_names.items()}
 
     # Generate combinations of indicators, avoiding comparisons of the same type
     indicator_combinations = [
@@ -101,33 +102,40 @@ for file in files:
     ]
 
     for (name1, name2) in indicator_combinations:
-        func1 = [func for func, name in indicator_names.items() if name == name1][0]
-        func2 = [func for func, name in indicator_names.items() if name == name2][0]
-
         trading_data = df.copy()
         trading_data['buy_sell_1'] = trading_signals[name1].iloc[:, -1]
         trading_data['buy_sell_2'] = trading_signals[name2].iloc[:, -1]
 
-        position = False
-        coin = 0
+        # Vectorized buy/sell logic
+        buy_signals = (trading_data['buy_sell_1'] == 1) & (trading_data['buy_sell_2'] == 1)
+        sell_signals = (trading_data['buy_sell_1'] == -1) & (trading_data['buy_sell_2'] == -1)
+
+        positions = np.where(buy_signals, 1, np.where(sell_signals, -1, 0))
+        positions = pd.Series(positions).ffill().fillna(0).values
+
+        # Calculate coin holdings and fiat amount
+        coin_holdings = 0
         fiat_amount = 10000
-        for idx, row in trading_data.iterrows():
-            if (row['buy_sell_1'] == 1) and (row['buy_sell_2'] == 1) and not position:
-                position = True
-                coin = fiat_amount / row['Close']
+        position = False
+
+        for i in range(len(positions)):
+            if positions[i] == 1 and not position:
+                coin_holdings = fiat_amount / trading_data['Close'].iloc[i]
                 fiat_amount = 0
-                trade_message = f"  BUY: Strategy={name1} & {name2}, Price={row['Close']}"
+                position = True
+                trade_message = f"  BUY: Strategy={name1} & {name2}, Price={trading_data['Close'].iloc[i]}"
                 logging.info(trade_message)
-
-            elif (row['buy_sell_1'] == -1) and (row['buy_sell_2'] == -1) and position:
-                fiat_amount = coin * row['Close']
-                coin = 0
+            elif positions[i] == -1 and position:
+                fiat_amount = coin_holdings * trading_data['Close'].iloc[i]
+                coin_holdings = 0
                 position = False
-                trade_message = f"  SELL: Strategy={name1} & {name2}, Price={row['Close']}"
+                trade_message = f"  SELL: Strategy={name1} & {name2}, Price={trading_data['Close'].iloc[i]}"
                 logging.info(trade_message)
-
-        fiat_amount += coin * trading_data.iloc[-1]['Close']
-        coin = 0
+        
+        # Final value if still holding coins
+        if coin_holdings > 0:
+            fiat_amount = coin_holdings * trading_data['Close'].iloc[-1]
+            coin_holdings = 0
 
         strategy_name = f'{name1} & {name2}'
         use_case, timeframe = determine_use_case(name1, name2)
