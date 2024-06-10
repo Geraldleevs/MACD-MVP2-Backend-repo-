@@ -81,9 +81,18 @@ profit_dfs = []
 
 # Example list of files to process
 files = [
+    #short term - trades are based on hourly closing data
     'Concatenated-BTCUSDT-1h-2023-concatenated.csv',
     'Concatenated-ETHUSDT-1h-2023-concatenated.csv',
-    'Concatenated-DOGEUSDT-1h-2023-concatenated.csv'
+    'Concatenated-DOGEUSDT-1h-2023-concatenated.csv',
+    #medium term - trades are based on 4h closing data
+    'Concatenated-BTCUSDT-4h-2023-4-concatenated.csv',
+    'Concatenated-ETHUSDT-4h-2023-4-concatenated.csv',
+    'Concatenated-DOGEUSDT-4h-2023-4-concatenated.csv',
+    #long term - trades are based on daily closing data
+    'Concatenated-BTCUSDT-1d-2023-4-concatenated.csv',
+    'Concatenated-ETHUSDT-1d-2023-4-concatenated.csv',
+    'Concatenated-DOGEUSDT-1d-2023-4-concatenated.csv',
     # Add other file names as needed
 ]
 

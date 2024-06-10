@@ -1,0 +1,928 @@
+2024-06-10 14:47:16,980 - Processing Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated
+2024-06-10 14:47:17,019 - Completed Strategy: MACD & SMA, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and momentum, Timeframe: 1D
+
+2024-06-10 14:47:17,020 - Completed Strategy: MACD & Ichimoku, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Comprehensive trend and momentum analysis, Timeframe: 4H
+
+2024-06-10 14:47:17,021 -   BUY: Strategy=MACD & Donchian, Price=3694.61
+2024-06-10 14:47:17,024 - Completed Strategy: MACD & Donchian, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10183.1857760359, Use Case: Breakout and momentum confirmation, Timeframe: 1H
+
+2024-06-10 14:47:17,025 - Completed Strategy: MACD & RSI65, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Identifying and confirming trend reversals, Timeframe: 1H
+
+2024-06-10 14:47:17,026 - Completed Strategy: MACD & RSI66, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Identifying and confirming trend reversals, Timeframe: 1H
+
+2024-06-10 14:47:17,026 - Completed Strategy: MACD & RSI67, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Identifying and confirming trend reversals, Timeframe: 1H
+
+2024-06-10 14:47:17,027 - Completed Strategy: MACD & RSI68, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Identifying and confirming trend reversals, Timeframe: 1H
+
+2024-06-10 14:47:17,028 - Completed Strategy: MACD & RSI69, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Identifying and confirming trend reversals, Timeframe: 1H
+
+2024-06-10 14:47:17,028 - Completed Strategy: MACD & RSI70, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Identifying and confirming trend reversals, Timeframe: 1H
+
+2024-06-10 14:47:17,029 - Completed Strategy: MACD & RSI71, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Identifying and confirming trend reversals, Timeframe: 1H
+
+2024-06-10 14:47:17,030 - Completed Strategy: MACD & RSI72, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Identifying and confirming trend reversals, Timeframe: 1H
+
+2024-06-10 14:47:17,031 - Completed Strategy: MACD & RSI73, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Identifying and confirming trend reversals, Timeframe: 1H
+
+2024-06-10 14:47:17,031 - Completed Strategy: MACD & RSI74, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Identifying and confirming trend reversals, Timeframe: 1H
+
+2024-06-10 14:47:17,032 - Completed Strategy: MACD & RSI75, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Identifying and confirming trend reversals, Timeframe: 1H
+
+2024-06-10 14:47:17,033 - Completed Strategy: MACD & Stochastic14_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Momentum and trend confirmation, Timeframe: 1H
+
+2024-06-10 14:47:17,034 - Completed Strategy: MACD & Stochastic14_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Momentum and trend confirmation, Timeframe: 1H
+
+2024-06-10 14:47:17,034 - Completed Strategy: MACD & Stochastic10_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Momentum and trend confirmation, Timeframe: 1H
+
+2024-06-10 14:47:17,035 - Completed Strategy: MACD & Stochastic10_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Momentum and trend confirmation, Timeframe: 1H
+
+2024-06-10 14:47:17,036 - Completed Strategy: MACD & Stochastic21_5_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Momentum and trend confirmation, Timeframe: 1H
+
+2024-06-10 14:47:17,036 - Completed Strategy: MACD & Stochastic21_5_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Momentum and trend confirmation, Timeframe: 1H
+
+2024-06-10 14:47:17,037 - Unknown use case for strategy SMA & Ichimoku
+2024-06-10 14:47:17,037 - Completed Strategy: SMA & Ichimoku, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,038 - Unknown use case for strategy SMA & Donchian
+2024-06-10 14:47:17,038 - Completed Strategy: SMA & Donchian, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,039 - Completed Strategy: SMA & RSI65, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and entry/exit timing, Timeframe: 1D
+
+2024-06-10 14:47:17,040 - Completed Strategy: SMA & RSI66, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and entry/exit timing, Timeframe: 1D
+
+2024-06-10 14:47:17,041 - Completed Strategy: SMA & RSI67, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and entry/exit timing, Timeframe: 1D
+
+2024-06-10 14:47:17,041 - Completed Strategy: SMA & RSI68, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and entry/exit timing, Timeframe: 1D
+
+2024-06-10 14:47:17,042 - Completed Strategy: SMA & RSI69, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and entry/exit timing, Timeframe: 1D
+
+2024-06-10 14:47:17,043 - Completed Strategy: SMA & RSI70, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and entry/exit timing, Timeframe: 1D
+
+2024-06-10 14:47:17,044 - Completed Strategy: SMA & RSI71, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and entry/exit timing, Timeframe: 1D
+
+2024-06-10 14:47:17,044 - Completed Strategy: SMA & RSI72, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and entry/exit timing, Timeframe: 1D
+
+2024-06-10 14:47:17,045 - Completed Strategy: SMA & RSI73, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and entry/exit timing, Timeframe: 1D
+
+2024-06-10 14:47:17,046 - Completed Strategy: SMA & RSI74, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and entry/exit timing, Timeframe: 1D
+
+2024-06-10 14:47:17,046 - Completed Strategy: SMA & RSI75, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and entry/exit timing, Timeframe: 1D
+
+2024-06-10 14:47:17,047 - Unknown use case for strategy SMA & Stochastic14_3_80_20
+2024-06-10 14:47:17,047 - Completed Strategy: SMA & Stochastic14_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,048 - Unknown use case for strategy SMA & Stochastic14_3_85_15
+2024-06-10 14:47:17,048 - Completed Strategy: SMA & Stochastic14_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,049 -   BUY: Strategy=SMA & Stochastic10_3_80_20, Price=1933.01
+2024-06-10 14:47:17,049 - Unknown use case for strategy SMA & Stochastic10_3_80_20
+2024-06-10 14:47:17,049 - Completed Strategy: SMA & Stochastic10_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 19463.375771465227, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,050 -   BUY: Strategy=SMA & Stochastic10_3_85_15, Price=1933.01
+2024-06-10 14:47:17,050 - Unknown use case for strategy SMA & Stochastic10_3_85_15
+2024-06-10 14:47:17,050 - Completed Strategy: SMA & Stochastic10_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 19463.375771465227, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,050 - Unknown use case for strategy SMA & Stochastic21_5_80_20
+2024-06-10 14:47:17,050 - Completed Strategy: SMA & Stochastic21_5_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,051 - Unknown use case for strategy SMA & Stochastic21_5_85_15
+2024-06-10 14:47:17,051 - Completed Strategy: SMA & Stochastic21_5_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,052 -   BUY: Strategy=Ichimoku & Donchian, Price=1765.46
+2024-06-10 14:47:17,052 - Unknown use case for strategy Ichimoku & Donchian
+2024-06-10 14:47:17,052 - Completed Strategy: Ichimoku & Donchian, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 21310.536630679824, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,053 - Completed Strategy: Ichimoku & RSI65, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and momentum confirmation, Timeframe: 4H
+
+2024-06-10 14:47:17,053 - Completed Strategy: Ichimoku & RSI66, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and momentum confirmation, Timeframe: 4H
+
+2024-06-10 14:47:17,054 - Completed Strategy: Ichimoku & RSI67, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and momentum confirmation, Timeframe: 4H
+
+2024-06-10 14:47:17,055 - Completed Strategy: Ichimoku & RSI68, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and momentum confirmation, Timeframe: 4H
+
+2024-06-10 14:47:17,056 - Completed Strategy: Ichimoku & RSI69, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and momentum confirmation, Timeframe: 4H
+
+2024-06-10 14:47:17,057 - Completed Strategy: Ichimoku & RSI70, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and momentum confirmation, Timeframe: 4H
+
+2024-06-10 14:47:17,058 - Completed Strategy: Ichimoku & RSI71, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and momentum confirmation, Timeframe: 4H
+
+2024-06-10 14:47:17,058 - Completed Strategy: Ichimoku & RSI72, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and momentum confirmation, Timeframe: 4H
+
+2024-06-10 14:47:17,059 - Completed Strategy: Ichimoku & RSI73, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and momentum confirmation, Timeframe: 4H
+
+2024-06-10 14:47:17,060 - Completed Strategy: Ichimoku & RSI74, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and momentum confirmation, Timeframe: 4H
+
+2024-06-10 14:47:17,061 - Completed Strategy: Ichimoku & RSI75, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and momentum confirmation, Timeframe: 4H
+
+2024-06-10 14:47:17,061 - Unknown use case for strategy Ichimoku & Stochastic14_3_80_20
+2024-06-10 14:47:17,061 - Completed Strategy: Ichimoku & Stochastic14_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,062 - Unknown use case for strategy Ichimoku & Stochastic14_3_85_15
+2024-06-10 14:47:17,062 - Completed Strategy: Ichimoku & Stochastic14_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,063 - Unknown use case for strategy Ichimoku & Stochastic10_3_80_20
+2024-06-10 14:47:17,063 - Completed Strategy: Ichimoku & Stochastic10_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,064 - Unknown use case for strategy Ichimoku & Stochastic10_3_85_15
+2024-06-10 14:47:17,064 - Completed Strategy: Ichimoku & Stochastic10_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,064 - Unknown use case for strategy Ichimoku & Stochastic21_5_80_20
+2024-06-10 14:47:17,064 - Completed Strategy: Ichimoku & Stochastic21_5_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,065 - Unknown use case for strategy Ichimoku & Stochastic21_5_85_15
+2024-06-10 14:47:17,065 - Completed Strategy: Ichimoku & Stochastic21_5_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,066 - Completed Strategy: Donchian & RSI65, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Overbought/oversold conditions and breakout confirmation, Timeframe: 1H
+
+2024-06-10 14:47:17,067 - Completed Strategy: Donchian & RSI66, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Overbought/oversold conditions and breakout confirmation, Timeframe: 1H
+
+2024-06-10 14:47:17,067 - Completed Strategy: Donchian & RSI67, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Overbought/oversold conditions and breakout confirmation, Timeframe: 1H
+
+2024-06-10 14:47:17,068 - Completed Strategy: Donchian & RSI68, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Overbought/oversold conditions and breakout confirmation, Timeframe: 1H
+
+2024-06-10 14:47:17,069 - Completed Strategy: Donchian & RSI69, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Overbought/oversold conditions and breakout confirmation, Timeframe: 1H
+
+2024-06-10 14:47:17,069 - Completed Strategy: Donchian & RSI70, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Overbought/oversold conditions and breakout confirmation, Timeframe: 1H
+
+2024-06-10 14:47:17,070 - Completed Strategy: Donchian & RSI71, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Overbought/oversold conditions and breakout confirmation, Timeframe: 1H
+
+2024-06-10 14:47:17,071 - Completed Strategy: Donchian & RSI72, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Overbought/oversold conditions and breakout confirmation, Timeframe: 1H
+
+2024-06-10 14:47:17,072 - Completed Strategy: Donchian & RSI73, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Overbought/oversold conditions and breakout confirmation, Timeframe: 1H
+
+2024-06-10 14:47:17,073 - Completed Strategy: Donchian & RSI74, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Overbought/oversold conditions and breakout confirmation, Timeframe: 1H
+
+2024-06-10 14:47:17,074 - Completed Strategy: Donchian & RSI75, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Overbought/oversold conditions and breakout confirmation, Timeframe: 1H
+
+2024-06-10 14:47:17,074 - Unknown use case for strategy Donchian & Stochastic14_3_80_20
+2024-06-10 14:47:17,074 - Completed Strategy: Donchian & Stochastic14_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,075 - Unknown use case for strategy Donchian & Stochastic14_3_85_15
+2024-06-10 14:47:17,075 - Completed Strategy: Donchian & Stochastic14_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,076 - Unknown use case for strategy Donchian & Stochastic10_3_80_20
+2024-06-10 14:47:17,076 - Completed Strategy: Donchian & Stochastic10_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,076 - Unknown use case for strategy Donchian & Stochastic10_3_85_15
+2024-06-10 14:47:17,076 - Completed Strategy: Donchian & Stochastic10_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,077 - Unknown use case for strategy Donchian & Stochastic21_5_80_20
+2024-06-10 14:47:17,077 - Completed Strategy: Donchian & Stochastic21_5_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,078 - Unknown use case for strategy Donchian & Stochastic21_5_85_15
+2024-06-10 14:47:17,078 - Completed Strategy: Donchian & Stochastic21_5_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,079 - Unknown use case for strategy RSI65 & Stochastic14_3_80_20
+2024-06-10 14:47:17,079 - Completed Strategy: RSI65 & Stochastic14_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,079 -   BUY: Strategy=RSI65 & Stochastic14_3_85_15, Price=1861.28
+2024-06-10 14:47:17,079 -   SELL: Strategy=RSI65 & Stochastic14_3_85_15, Price=1733.79
+2024-06-10 14:47:17,079 - Unknown use case for strategy RSI65 & Stochastic14_3_85_15
+2024-06-10 14:47:17,079 - Completed Strategy: RSI65 & Stochastic14_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 9315.041261927276, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,080 - Unknown use case for strategy RSI65 & Stochastic10_3_80_20
+2024-06-10 14:47:17,080 - Completed Strategy: RSI65 & Stochastic10_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,081 - Unknown use case for strategy RSI65 & Stochastic10_3_85_15
+2024-06-10 14:47:17,081 - Completed Strategy: RSI65 & Stochastic10_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,081 -   BUY: Strategy=RSI65 & Stochastic21_5_80_20, Price=1861.28
+2024-06-10 14:47:17,081 -   SELL: Strategy=RSI65 & Stochastic21_5_80_20, Price=1765.46
+2024-06-10 14:47:17,081 - Unknown use case for strategy RSI65 & Stochastic21_5_80_20
+2024-06-10 14:47:17,081 - Completed Strategy: RSI65 & Stochastic21_5_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 9485.192985472364, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,082 - Unknown use case for strategy RSI65 & Stochastic21_5_85_15
+2024-06-10 14:47:17,082 - Completed Strategy: RSI65 & Stochastic21_5_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,082 - Unknown use case for strategy RSI66 & Stochastic14_3_80_20
+2024-06-10 14:47:17,083 - Completed Strategy: RSI66 & Stochastic14_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,083 -   BUY: Strategy=RSI66 & Stochastic14_3_85_15, Price=1861.28
+2024-06-10 14:47:17,083 -   SELL: Strategy=RSI66 & Stochastic14_3_85_15, Price=1733.79
+2024-06-10 14:47:17,083 - Unknown use case for strategy RSI66 & Stochastic14_3_85_15
+2024-06-10 14:47:17,083 - Completed Strategy: RSI66 & Stochastic14_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 9315.041261927276, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,084 - Unknown use case for strategy RSI66 & Stochastic10_3_80_20
+2024-06-10 14:47:17,084 - Completed Strategy: RSI66 & Stochastic10_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,085 - Unknown use case for strategy RSI66 & Stochastic10_3_85_15
+2024-06-10 14:47:17,085 - Completed Strategy: RSI66 & Stochastic10_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,085 -   BUY: Strategy=RSI66 & Stochastic21_5_80_20, Price=1861.28
+2024-06-10 14:47:17,085 -   SELL: Strategy=RSI66 & Stochastic21_5_80_20, Price=1765.46
+2024-06-10 14:47:17,085 - Unknown use case for strategy RSI66 & Stochastic21_5_80_20
+2024-06-10 14:47:17,085 - Completed Strategy: RSI66 & Stochastic21_5_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 9485.192985472364, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,086 - Unknown use case for strategy RSI66 & Stochastic21_5_85_15
+2024-06-10 14:47:17,086 - Completed Strategy: RSI66 & Stochastic21_5_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,087 - Unknown use case for strategy RSI67 & Stochastic14_3_80_20
+2024-06-10 14:47:17,087 - Completed Strategy: RSI67 & Stochastic14_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,087 -   BUY: Strategy=RSI67 & Stochastic14_3_85_15, Price=1861.28
+2024-06-10 14:47:17,088 -   SELL: Strategy=RSI67 & Stochastic14_3_85_15, Price=1733.79
+2024-06-10 14:47:17,088 - Unknown use case for strategy RSI67 & Stochastic14_3_85_15
+2024-06-10 14:47:17,088 - Completed Strategy: RSI67 & Stochastic14_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 9315.041261927276, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,088 - Unknown use case for strategy RSI67 & Stochastic10_3_80_20
+2024-06-10 14:47:17,088 - Completed Strategy: RSI67 & Stochastic10_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,089 - Unknown use case for strategy RSI67 & Stochastic10_3_85_15
+2024-06-10 14:47:17,089 - Completed Strategy: RSI67 & Stochastic10_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,089 -   BUY: Strategy=RSI67 & Stochastic21_5_80_20, Price=1861.28
+2024-06-10 14:47:17,089 -   SELL: Strategy=RSI67 & Stochastic21_5_80_20, Price=1765.46
+2024-06-10 14:47:17,090 - Unknown use case for strategy RSI67 & Stochastic21_5_80_20
+2024-06-10 14:47:17,090 - Completed Strategy: RSI67 & Stochastic21_5_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 9485.192985472364, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,090 - Unknown use case for strategy RSI67 & Stochastic21_5_85_15
+2024-06-10 14:47:17,090 - Completed Strategy: RSI67 & Stochastic21_5_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,091 - Unknown use case for strategy RSI68 & Stochastic14_3_80_20
+2024-06-10 14:47:17,091 - Completed Strategy: RSI68 & Stochastic14_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,091 -   BUY: Strategy=RSI68 & Stochastic14_3_85_15, Price=1861.28
+2024-06-10 14:47:17,092 -   SELL: Strategy=RSI68 & Stochastic14_3_85_15, Price=1733.79
+2024-06-10 14:47:17,092 - Unknown use case for strategy RSI68 & Stochastic14_3_85_15
+2024-06-10 14:47:17,092 - Completed Strategy: RSI68 & Stochastic14_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 9315.041261927276, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,092 - Unknown use case for strategy RSI68 & Stochastic10_3_80_20
+2024-06-10 14:47:17,092 - Completed Strategy: RSI68 & Stochastic10_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,093 - Unknown use case for strategy RSI68 & Stochastic10_3_85_15
+2024-06-10 14:47:17,093 - Completed Strategy: RSI68 & Stochastic10_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,093 -   BUY: Strategy=RSI68 & Stochastic21_5_80_20, Price=1861.28
+2024-06-10 14:47:17,094 -   SELL: Strategy=RSI68 & Stochastic21_5_80_20, Price=1765.46
+2024-06-10 14:47:17,094 - Unknown use case for strategy RSI68 & Stochastic21_5_80_20
+2024-06-10 14:47:17,094 - Completed Strategy: RSI68 & Stochastic21_5_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 9485.192985472364, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,094 - Unknown use case for strategy RSI68 & Stochastic21_5_85_15
+2024-06-10 14:47:17,094 - Completed Strategy: RSI68 & Stochastic21_5_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,095 - Unknown use case for strategy RSI69 & Stochastic14_3_80_20
+2024-06-10 14:47:17,095 - Completed Strategy: RSI69 & Stochastic14_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,095 -   BUY: Strategy=RSI69 & Stochastic14_3_85_15, Price=1861.28
+2024-06-10 14:47:17,095 -   SELL: Strategy=RSI69 & Stochastic14_3_85_15, Price=1733.79
+2024-06-10 14:47:17,095 - Unknown use case for strategy RSI69 & Stochastic14_3_85_15
+2024-06-10 14:47:17,096 - Completed Strategy: RSI69 & Stochastic14_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 9315.041261927276, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,096 -   BUY: Strategy=RSI69 & Stochastic10_3_80_20, Price=2912.45
+2024-06-10 14:47:17,096 -   SELL: Strategy=RSI69 & Stochastic10_3_80_20, Price=3661.78
+2024-06-10 14:47:17,096 - Unknown use case for strategy RSI69 & Stochastic10_3_80_20
+2024-06-10 14:47:17,096 - Completed Strategy: RSI69 & Stochastic10_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 12572.851036069289, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,097 -   BUY: Strategy=RSI69 & Stochastic10_3_85_15, Price=2235.02
+2024-06-10 14:47:17,097 -   SELL: Strategy=RSI69 & Stochastic10_3_85_15, Price=3661.78
+2024-06-10 14:47:17,097 - Unknown use case for strategy RSI69 & Stochastic10_3_85_15
+2024-06-10 14:47:17,097 - Completed Strategy: RSI69 & Stochastic10_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 16383.65652208929, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,097 -   BUY: Strategy=RSI69 & Stochastic21_5_80_20, Price=1861.28
+2024-06-10 14:47:17,098 -   SELL: Strategy=RSI69 & Stochastic21_5_80_20, Price=1765.46
+2024-06-10 14:47:17,098 -   BUY: Strategy=RSI69 & Stochastic21_5_80_20, Price=2235.02
+2024-06-10 14:47:17,098 -   SELL: Strategy=RSI69 & Stochastic21_5_80_20, Price=3661.78
+2024-06-10 14:47:17,098 - Unknown use case for strategy RSI69 & Stochastic21_5_80_20
+2024-06-10 14:47:17,098 - Completed Strategy: RSI69 & Stochastic21_5_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 15540.214391970985, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,098 -   BUY: Strategy=RSI69 & Stochastic21_5_85_15, Price=2235.02
+2024-06-10 14:47:17,098 -   SELL: Strategy=RSI69 & Stochastic21_5_85_15, Price=3661.78
+2024-06-10 14:47:17,098 - Unknown use case for strategy RSI69 & Stochastic21_5_85_15
+2024-06-10 14:47:17,098 - Completed Strategy: RSI69 & Stochastic21_5_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 16383.65652208929, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,099 - Unknown use case for strategy RSI70 & Stochastic14_3_80_20
+2024-06-10 14:47:17,099 - Completed Strategy: RSI70 & Stochastic14_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,100 -   BUY: Strategy=RSI70 & Stochastic14_3_85_15, Price=1861.28
+2024-06-10 14:47:17,100 -   SELL: Strategy=RSI70 & Stochastic14_3_85_15, Price=1733.79
+2024-06-10 14:47:17,100 - Unknown use case for strategy RSI70 & Stochastic14_3_85_15
+2024-06-10 14:47:17,100 - Completed Strategy: RSI70 & Stochastic14_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 9315.041261927276, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,100 -   BUY: Strategy=RSI70 & Stochastic10_3_80_20, Price=2912.45
+2024-06-10 14:47:17,100 -   SELL: Strategy=RSI70 & Stochastic10_3_80_20, Price=3661.78
+2024-06-10 14:47:17,100 - Unknown use case for strategy RSI70 & Stochastic10_3_80_20
+2024-06-10 14:47:17,100 - Completed Strategy: RSI70 & Stochastic10_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 12572.851036069289, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,101 -   BUY: Strategy=RSI70 & Stochastic10_3_85_15, Price=2235.02
+2024-06-10 14:47:17,101 -   SELL: Strategy=RSI70 & Stochastic10_3_85_15, Price=3661.78
+2024-06-10 14:47:17,101 - Unknown use case for strategy RSI70 & Stochastic10_3_85_15
+2024-06-10 14:47:17,101 - Completed Strategy: RSI70 & Stochastic10_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 16383.65652208929, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,102 -   BUY: Strategy=RSI70 & Stochastic21_5_80_20, Price=1861.28
+2024-06-10 14:47:17,102 -   SELL: Strategy=RSI70 & Stochastic21_5_80_20, Price=1765.46
+2024-06-10 14:47:17,102 -   BUY: Strategy=RSI70 & Stochastic21_5_80_20, Price=2235.02
+2024-06-10 14:47:17,102 -   SELL: Strategy=RSI70 & Stochastic21_5_80_20, Price=3661.78
+2024-06-10 14:47:17,102 - Unknown use case for strategy RSI70 & Stochastic21_5_80_20
+2024-06-10 14:47:17,102 - Completed Strategy: RSI70 & Stochastic21_5_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 15540.214391970985, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,103 -   BUY: Strategy=RSI70 & Stochastic21_5_85_15, Price=2235.02
+2024-06-10 14:47:17,103 -   SELL: Strategy=RSI70 & Stochastic21_5_85_15, Price=3661.78
+2024-06-10 14:47:17,103 - Unknown use case for strategy RSI70 & Stochastic21_5_85_15
+2024-06-10 14:47:17,103 - Completed Strategy: RSI70 & Stochastic21_5_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 16383.65652208929, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,103 - Unknown use case for strategy RSI71 & Stochastic14_3_80_20
+2024-06-10 14:47:17,104 - Completed Strategy: RSI71 & Stochastic14_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,104 -   BUY: Strategy=RSI71 & Stochastic14_3_85_15, Price=1861.28
+2024-06-10 14:47:17,104 -   SELL: Strategy=RSI71 & Stochastic14_3_85_15, Price=1733.79
+2024-06-10 14:47:17,104 - Unknown use case for strategy RSI71 & Stochastic14_3_85_15
+2024-06-10 14:47:17,104 - Completed Strategy: RSI71 & Stochastic14_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 9315.041261927276, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,105 -   BUY: Strategy=RSI71 & Stochastic10_3_80_20, Price=2912.45
+2024-06-10 14:47:17,105 - Unknown use case for strategy RSI71 & Stochastic10_3_80_20
+2024-06-10 14:47:17,105 - Completed Strategy: RSI71 & Stochastic10_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 12917.955673058765, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,105 -   BUY: Strategy=RSI71 & Stochastic10_3_85_15, Price=2235.02
+2024-06-10 14:47:17,106 - Unknown use case for strategy RSI71 & Stochastic10_3_85_15
+2024-06-10 14:47:17,106 - Completed Strategy: RSI71 & Stochastic10_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 16833.361670141654, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,106 -   BUY: Strategy=RSI71 & Stochastic21_5_80_20, Price=1861.28
+2024-06-10 14:47:17,106 -   SELL: Strategy=RSI71 & Stochastic21_5_80_20, Price=1765.46
+2024-06-10 14:47:17,106 -   BUY: Strategy=RSI71 & Stochastic21_5_80_20, Price=2235.02
+2024-06-10 14:47:17,106 - Unknown use case for strategy RSI71 & Stochastic21_5_80_20
+2024-06-10 14:47:17,106 - Completed Strategy: RSI71 & Stochastic21_5_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 15966.768403554695, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,107 -   BUY: Strategy=RSI71 & Stochastic21_5_85_15, Price=2235.02
+2024-06-10 14:47:17,107 - Unknown use case for strategy RSI71 & Stochastic21_5_85_15
+2024-06-10 14:47:17,107 - Completed Strategy: RSI71 & Stochastic21_5_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 16833.361670141654, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,108 - Unknown use case for strategy RSI72 & Stochastic14_3_80_20
+2024-06-10 14:47:17,108 - Completed Strategy: RSI72 & Stochastic14_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,108 -   BUY: Strategy=RSI72 & Stochastic14_3_85_15, Price=1861.28
+2024-06-10 14:47:17,108 -   SELL: Strategy=RSI72 & Stochastic14_3_85_15, Price=2121.32
+2024-06-10 14:47:17,108 - Unknown use case for strategy RSI72 & Stochastic14_3_85_15
+2024-06-10 14:47:17,108 - Completed Strategy: RSI72 & Stochastic14_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 11397.103068855842, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,109 -   BUY: Strategy=RSI72 & Stochastic10_3_80_20, Price=2912.45
+2024-06-10 14:47:17,109 - Unknown use case for strategy RSI72 & Stochastic10_3_80_20
+2024-06-10 14:47:17,109 - Completed Strategy: RSI72 & Stochastic10_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 12917.955673058765, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,110 -   BUY: Strategy=RSI72 & Stochastic10_3_85_15, Price=2235.02
+2024-06-10 14:47:17,110 - Unknown use case for strategy RSI72 & Stochastic10_3_85_15
+2024-06-10 14:47:17,110 - Completed Strategy: RSI72 & Stochastic10_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 16833.361670141654, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,110 -   BUY: Strategy=RSI72 & Stochastic21_5_80_20, Price=1861.28
+2024-06-10 14:47:17,110 -   SELL: Strategy=RSI72 & Stochastic21_5_80_20, Price=1765.46
+2024-06-10 14:47:17,110 -   BUY: Strategy=RSI72 & Stochastic21_5_80_20, Price=2235.02
+2024-06-10 14:47:17,110 - Unknown use case for strategy RSI72 & Stochastic21_5_80_20
+2024-06-10 14:47:17,110 - Completed Strategy: RSI72 & Stochastic21_5_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 15966.768403554695, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,111 -   BUY: Strategy=RSI72 & Stochastic21_5_85_15, Price=2235.02
+2024-06-10 14:47:17,111 - Unknown use case for strategy RSI72 & Stochastic21_5_85_15
+2024-06-10 14:47:17,111 - Completed Strategy: RSI72 & Stochastic21_5_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 16833.361670141654, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,112 - Unknown use case for strategy RSI73 & Stochastic14_3_80_20
+2024-06-10 14:47:17,112 - Completed Strategy: RSI73 & Stochastic14_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,112 -   BUY: Strategy=RSI73 & Stochastic14_3_85_15, Price=1861.28
+2024-06-10 14:47:17,112 -   SELL: Strategy=RSI73 & Stochastic14_3_85_15, Price=2121.32
+2024-06-10 14:47:17,112 - Unknown use case for strategy RSI73 & Stochastic14_3_85_15
+2024-06-10 14:47:17,112 - Completed Strategy: RSI73 & Stochastic14_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 11397.103068855842, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,113 -   BUY: Strategy=RSI73 & Stochastic10_3_80_20, Price=2912.45
+2024-06-10 14:47:17,113 - Unknown use case for strategy RSI73 & Stochastic10_3_80_20
+2024-06-10 14:47:17,113 - Completed Strategy: RSI73 & Stochastic10_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 12917.955673058765, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,114 -   BUY: Strategy=RSI73 & Stochastic10_3_85_15, Price=2235.02
+2024-06-10 14:47:17,114 - Unknown use case for strategy RSI73 & Stochastic10_3_85_15
+2024-06-10 14:47:17,114 - Completed Strategy: RSI73 & Stochastic10_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 16833.361670141654, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,114 -   BUY: Strategy=RSI73 & Stochastic21_5_80_20, Price=1861.28
+2024-06-10 14:47:17,114 -   SELL: Strategy=RSI73 & Stochastic21_5_80_20, Price=1765.46
+2024-06-10 14:47:17,114 -   BUY: Strategy=RSI73 & Stochastic21_5_80_20, Price=2235.02
+2024-06-10 14:47:17,115 - Unknown use case for strategy RSI73 & Stochastic21_5_80_20
+2024-06-10 14:47:17,115 - Completed Strategy: RSI73 & Stochastic21_5_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 15966.768403554695, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,115 -   BUY: Strategy=RSI73 & Stochastic21_5_85_15, Price=2235.02
+2024-06-10 14:47:17,115 - Unknown use case for strategy RSI73 & Stochastic21_5_85_15
+2024-06-10 14:47:17,115 - Completed Strategy: RSI73 & Stochastic21_5_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 16833.361670141654, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,116 - Unknown use case for strategy RSI74 & Stochastic14_3_80_20
+2024-06-10 14:47:17,116 - Completed Strategy: RSI74 & Stochastic14_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,116 -   BUY: Strategy=RSI74 & Stochastic14_3_85_15, Price=1861.28
+2024-06-10 14:47:17,116 -   SELL: Strategy=RSI74 & Stochastic14_3_85_15, Price=2121.32
+2024-06-10 14:47:17,117 - Unknown use case for strategy RSI74 & Stochastic14_3_85_15
+2024-06-10 14:47:17,117 - Completed Strategy: RSI74 & Stochastic14_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 11397.103068855842, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,117 -   BUY: Strategy=RSI74 & Stochastic10_3_80_20, Price=1551.85
+2024-06-10 14:47:17,117 -   SELL: Strategy=RSI74 & Stochastic10_3_80_20, Price=2355.73
+2024-06-10 14:47:17,117 -   BUY: Strategy=RSI74 & Stochastic10_3_80_20, Price=2912.45
+2024-06-10 14:47:17,117 - Unknown use case for strategy RSI74 & Stochastic10_3_80_20
+2024-06-10 14:47:17,118 - Completed Strategy: RSI74 & Stochastic10_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 19609.637347485084, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,118 -   BUY: Strategy=RSI74 & Stochastic10_3_85_15, Price=1551.85
+2024-06-10 14:47:17,118 -   SELL: Strategy=RSI74 & Stochastic10_3_85_15, Price=2121.32
+2024-06-10 14:47:17,118 -   BUY: Strategy=RSI74 & Stochastic10_3_85_15, Price=2235.02
+2024-06-10 14:47:17,118 - Unknown use case for strategy RSI74 & Stochastic10_3_85_15
+2024-06-10 14:47:17,118 - Completed Strategy: RSI74 & Stochastic10_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 23010.565955540093, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,119 -   BUY: Strategy=RSI74 & Stochastic21_5_80_20, Price=1861.28
+2024-06-10 14:47:17,119 -   SELL: Strategy=RSI74 & Stochastic21_5_80_20, Price=1765.46
+2024-06-10 14:47:17,119 -   BUY: Strategy=RSI74 & Stochastic21_5_80_20, Price=2235.02
+2024-06-10 14:47:17,119 - Unknown use case for strategy RSI74 & Stochastic21_5_80_20
+2024-06-10 14:47:17,119 - Completed Strategy: RSI74 & Stochastic21_5_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 15966.768403554695, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,120 -   BUY: Strategy=RSI74 & Stochastic21_5_85_15, Price=1551.85
+2024-06-10 14:47:17,120 -   SELL: Strategy=RSI74 & Stochastic21_5_85_15, Price=1765.46
+2024-06-10 14:47:17,120 -   BUY: Strategy=RSI74 & Stochastic21_5_85_15, Price=2235.02
+2024-06-10 14:47:17,120 - Unknown use case for strategy RSI74 & Stochastic21_5_85_15
+2024-06-10 14:47:17,120 - Completed Strategy: RSI74 & Stochastic21_5_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 19150.4505552523, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,121 - Unknown use case for strategy RSI75 & Stochastic14_3_80_20
+2024-06-10 14:47:17,121 - Completed Strategy: RSI75 & Stochastic14_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,121 -   BUY: Strategy=RSI75 & Stochastic14_3_85_15, Price=1861.28
+2024-06-10 14:47:17,122 -   SELL: Strategy=RSI75 & Stochastic14_3_85_15, Price=2121.32
+2024-06-10 14:47:17,122 - Unknown use case for strategy RSI75 & Stochastic14_3_85_15
+2024-06-10 14:47:17,122 - Completed Strategy: RSI75 & Stochastic14_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 11397.103068855842, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,122 -   BUY: Strategy=RSI75 & Stochastic10_3_80_20, Price=1551.85
+2024-06-10 14:47:17,122 -   SELL: Strategy=RSI75 & Stochastic10_3_80_20, Price=2355.73
+2024-06-10 14:47:17,122 -   BUY: Strategy=RSI75 & Stochastic10_3_80_20, Price=2912.45
+2024-06-10 14:47:17,122 - Unknown use case for strategy RSI75 & Stochastic10_3_80_20
+2024-06-10 14:47:17,122 - Completed Strategy: RSI75 & Stochastic10_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 19609.637347485084, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,123 -   BUY: Strategy=RSI75 & Stochastic10_3_85_15, Price=1551.85
+2024-06-10 14:47:17,123 -   SELL: Strategy=RSI75 & Stochastic10_3_85_15, Price=2121.32
+2024-06-10 14:47:17,123 -   BUY: Strategy=RSI75 & Stochastic10_3_85_15, Price=2235.02
+2024-06-10 14:47:17,123 - Unknown use case for strategy RSI75 & Stochastic10_3_85_15
+2024-06-10 14:47:17,123 - Completed Strategy: RSI75 & Stochastic10_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 23010.565955540093, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,124 -   BUY: Strategy=RSI75 & Stochastic21_5_80_20, Price=1861.28
+2024-06-10 14:47:17,124 -   SELL: Strategy=RSI75 & Stochastic21_5_80_20, Price=1765.46
+2024-06-10 14:47:17,124 -   BUY: Strategy=RSI75 & Stochastic21_5_80_20, Price=2235.02
+2024-06-10 14:47:17,124 - Unknown use case for strategy RSI75 & Stochastic21_5_80_20
+2024-06-10 14:47:17,124 - Completed Strategy: RSI75 & Stochastic21_5_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 15966.768403554695, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 14:47:17,124 -   BUY: Strategy=RSI75 & Stochastic21_5_85_15, Price=1861.79
+2024-06-10 14:47:17,125 -   SELL: Strategy=RSI75 & Stochastic21_5_85_15, Price=1765.46
+2024-06-10 14:47:17,125 -   BUY: Strategy=RSI75 & Stochastic21_5_85_15, Price=2235.02
+2024-06-10 14:47:17,125 - Unknown use case for strategy RSI75 & Stochastic21_5_85_15
+2024-06-10 14:47:17,125 - Completed Strategy: RSI75 & Stochastic21_5_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 15962.3946278411, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,646 - Processing Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated
+2024-06-10 16:23:31,684 - Completed Strategy: MACD & SMA, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and momentum, Timeframe: 1D
+
+2024-06-10 16:23:31,685 - Completed Strategy: MACD & Ichimoku, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Comprehensive trend and momentum analysis, Timeframe: 4H
+
+2024-06-10 16:23:31,686 -   BUY: Strategy=MACD & Donchian, Price=3694.61
+2024-06-10 16:23:31,686 - Completed Strategy: MACD & Donchian, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10183.1857760359, Use Case: Breakout and momentum confirmation, Timeframe: 1H
+
+2024-06-10 16:23:31,687 - Completed Strategy: MACD & RSI65, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Identifying and confirming trend reversals, Timeframe: 1H
+
+2024-06-10 16:23:31,688 - Completed Strategy: MACD & RSI66, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Identifying and confirming trend reversals, Timeframe: 1H
+
+2024-06-10 16:23:31,689 - Completed Strategy: MACD & RSI67, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Identifying and confirming trend reversals, Timeframe: 1H
+
+2024-06-10 16:23:31,689 - Completed Strategy: MACD & RSI68, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Identifying and confirming trend reversals, Timeframe: 1H
+
+2024-06-10 16:23:31,690 - Completed Strategy: MACD & RSI69, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Identifying and confirming trend reversals, Timeframe: 1H
+
+2024-06-10 16:23:31,691 - Completed Strategy: MACD & RSI70, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Identifying and confirming trend reversals, Timeframe: 1H
+
+2024-06-10 16:23:31,692 - Completed Strategy: MACD & RSI71, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Identifying and confirming trend reversals, Timeframe: 1H
+
+2024-06-10 16:23:31,692 - Completed Strategy: MACD & RSI72, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Identifying and confirming trend reversals, Timeframe: 1H
+
+2024-06-10 16:23:31,693 - Completed Strategy: MACD & RSI73, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Identifying and confirming trend reversals, Timeframe: 1H
+
+2024-06-10 16:23:31,694 - Completed Strategy: MACD & RSI74, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Identifying and confirming trend reversals, Timeframe: 1H
+
+2024-06-10 16:23:31,695 - Completed Strategy: MACD & RSI75, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Identifying and confirming trend reversals, Timeframe: 1H
+
+2024-06-10 16:23:31,695 - Completed Strategy: MACD & Stochastic14_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Momentum and trend confirmation, Timeframe: 1H
+
+2024-06-10 16:23:31,696 - Completed Strategy: MACD & Stochastic14_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Momentum and trend confirmation, Timeframe: 1H
+
+2024-06-10 16:23:31,697 - Completed Strategy: MACD & Stochastic10_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Momentum and trend confirmation, Timeframe: 1H
+
+2024-06-10 16:23:31,698 - Completed Strategy: MACD & Stochastic10_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Momentum and trend confirmation, Timeframe: 1H
+
+2024-06-10 16:23:31,698 - Completed Strategy: MACD & Stochastic21_5_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Momentum and trend confirmation, Timeframe: 1H
+
+2024-06-10 16:23:31,699 - Completed Strategy: MACD & Stochastic21_5_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Momentum and trend confirmation, Timeframe: 1H
+
+2024-06-10 16:23:31,700 - Unknown use case for strategy SMA & Ichimoku
+2024-06-10 16:23:31,700 - Completed Strategy: SMA & Ichimoku, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,701 - Unknown use case for strategy SMA & Donchian
+2024-06-10 16:23:31,701 - Completed Strategy: SMA & Donchian, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,702 - Completed Strategy: SMA & RSI65, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and entry/exit timing, Timeframe: 1D
+
+2024-06-10 16:23:31,702 - Completed Strategy: SMA & RSI66, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and entry/exit timing, Timeframe: 1D
+
+2024-06-10 16:23:31,703 - Completed Strategy: SMA & RSI67, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and entry/exit timing, Timeframe: 1D
+
+2024-06-10 16:23:31,704 - Completed Strategy: SMA & RSI68, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and entry/exit timing, Timeframe: 1D
+
+2024-06-10 16:23:31,705 - Completed Strategy: SMA & RSI69, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and entry/exit timing, Timeframe: 1D
+
+2024-06-10 16:23:31,705 - Completed Strategy: SMA & RSI70, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and entry/exit timing, Timeframe: 1D
+
+2024-06-10 16:23:31,706 - Completed Strategy: SMA & RSI71, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and entry/exit timing, Timeframe: 1D
+
+2024-06-10 16:23:31,707 - Completed Strategy: SMA & RSI72, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and entry/exit timing, Timeframe: 1D
+
+2024-06-10 16:23:31,708 - Completed Strategy: SMA & RSI73, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and entry/exit timing, Timeframe: 1D
+
+2024-06-10 16:23:31,708 - Completed Strategy: SMA & RSI74, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and entry/exit timing, Timeframe: 1D
+
+2024-06-10 16:23:31,709 - Completed Strategy: SMA & RSI75, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and entry/exit timing, Timeframe: 1D
+
+2024-06-10 16:23:31,710 - Unknown use case for strategy SMA & Stochastic14_3_80_20
+2024-06-10 16:23:31,710 - Completed Strategy: SMA & Stochastic14_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,711 - Unknown use case for strategy SMA & Stochastic14_3_85_15
+2024-06-10 16:23:31,711 - Completed Strategy: SMA & Stochastic14_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,712 -   BUY: Strategy=SMA & Stochastic10_3_80_20, Price=1933.01
+2024-06-10 16:23:31,712 - Unknown use case for strategy SMA & Stochastic10_3_80_20
+2024-06-10 16:23:31,712 - Completed Strategy: SMA & Stochastic10_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 19463.375771465227, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,712 -   BUY: Strategy=SMA & Stochastic10_3_85_15, Price=1933.01
+2024-06-10 16:23:31,712 - Unknown use case for strategy SMA & Stochastic10_3_85_15
+2024-06-10 16:23:31,712 - Completed Strategy: SMA & Stochastic10_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 19463.375771465227, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,713 - Unknown use case for strategy SMA & Stochastic21_5_80_20
+2024-06-10 16:23:31,713 - Completed Strategy: SMA & Stochastic21_5_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,714 - Unknown use case for strategy SMA & Stochastic21_5_85_15
+2024-06-10 16:23:31,714 - Completed Strategy: SMA & Stochastic21_5_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,715 -   BUY: Strategy=Ichimoku & Donchian, Price=1765.46
+2024-06-10 16:23:31,715 - Unknown use case for strategy Ichimoku & Donchian
+2024-06-10 16:23:31,715 - Completed Strategy: Ichimoku & Donchian, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 21310.536630679824, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,716 - Completed Strategy: Ichimoku & RSI65, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and momentum confirmation, Timeframe: 4H
+
+2024-06-10 16:23:31,716 - Completed Strategy: Ichimoku & RSI66, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and momentum confirmation, Timeframe: 4H
+
+2024-06-10 16:23:31,717 - Completed Strategy: Ichimoku & RSI67, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and momentum confirmation, Timeframe: 4H
+
+2024-06-10 16:23:31,718 - Completed Strategy: Ichimoku & RSI68, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and momentum confirmation, Timeframe: 4H
+
+2024-06-10 16:23:31,719 - Completed Strategy: Ichimoku & RSI69, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and momentum confirmation, Timeframe: 4H
+
+2024-06-10 16:23:31,720 - Completed Strategy: Ichimoku & RSI70, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and momentum confirmation, Timeframe: 4H
+
+2024-06-10 16:23:31,721 - Completed Strategy: Ichimoku & RSI71, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and momentum confirmation, Timeframe: 4H
+
+2024-06-10 16:23:31,721 - Completed Strategy: Ichimoku & RSI72, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and momentum confirmation, Timeframe: 4H
+
+2024-06-10 16:23:31,722 - Completed Strategy: Ichimoku & RSI73, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and momentum confirmation, Timeframe: 4H
+
+2024-06-10 16:23:31,723 - Completed Strategy: Ichimoku & RSI74, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and momentum confirmation, Timeframe: 4H
+
+2024-06-10 16:23:31,724 - Completed Strategy: Ichimoku & RSI75, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and momentum confirmation, Timeframe: 4H
+
+2024-06-10 16:23:31,724 - Unknown use case for strategy Ichimoku & Stochastic14_3_80_20
+2024-06-10 16:23:31,724 - Completed Strategy: Ichimoku & Stochastic14_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,725 - Unknown use case for strategy Ichimoku & Stochastic14_3_85_15
+2024-06-10 16:23:31,725 - Completed Strategy: Ichimoku & Stochastic14_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,726 - Unknown use case for strategy Ichimoku & Stochastic10_3_80_20
+2024-06-10 16:23:31,726 - Completed Strategy: Ichimoku & Stochastic10_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,727 - Unknown use case for strategy Ichimoku & Stochastic10_3_85_15
+2024-06-10 16:23:31,727 - Completed Strategy: Ichimoku & Stochastic10_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,727 - Unknown use case for strategy Ichimoku & Stochastic21_5_80_20
+2024-06-10 16:23:31,728 - Completed Strategy: Ichimoku & Stochastic21_5_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,728 - Unknown use case for strategy Ichimoku & Stochastic21_5_85_15
+2024-06-10 16:23:31,728 - Completed Strategy: Ichimoku & Stochastic21_5_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,729 - Completed Strategy: Donchian & RSI65, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Overbought/oversold conditions and breakout confirmation, Timeframe: 1H
+
+2024-06-10 16:23:31,730 - Completed Strategy: Donchian & RSI66, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Overbought/oversold conditions and breakout confirmation, Timeframe: 1H
+
+2024-06-10 16:23:31,730 - Completed Strategy: Donchian & RSI67, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Overbought/oversold conditions and breakout confirmation, Timeframe: 1H
+
+2024-06-10 16:23:31,731 - Completed Strategy: Donchian & RSI68, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Overbought/oversold conditions and breakout confirmation, Timeframe: 1H
+
+2024-06-10 16:23:31,732 - Completed Strategy: Donchian & RSI69, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Overbought/oversold conditions and breakout confirmation, Timeframe: 1H
+
+2024-06-10 16:23:31,733 - Completed Strategy: Donchian & RSI70, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Overbought/oversold conditions and breakout confirmation, Timeframe: 1H
+
+2024-06-10 16:23:31,733 - Completed Strategy: Donchian & RSI71, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Overbought/oversold conditions and breakout confirmation, Timeframe: 1H
+
+2024-06-10 16:23:31,734 - Completed Strategy: Donchian & RSI72, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Overbought/oversold conditions and breakout confirmation, Timeframe: 1H
+
+2024-06-10 16:23:31,735 - Completed Strategy: Donchian & RSI73, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Overbought/oversold conditions and breakout confirmation, Timeframe: 1H
+
+2024-06-10 16:23:31,736 - Completed Strategy: Donchian & RSI74, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Overbought/oversold conditions and breakout confirmation, Timeframe: 1H
+
+2024-06-10 16:23:31,736 - Completed Strategy: Donchian & RSI75, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Overbought/oversold conditions and breakout confirmation, Timeframe: 1H
+
+2024-06-10 16:23:31,737 - Unknown use case for strategy Donchian & Stochastic14_3_80_20
+2024-06-10 16:23:31,737 - Completed Strategy: Donchian & Stochastic14_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,738 - Unknown use case for strategy Donchian & Stochastic14_3_85_15
+2024-06-10 16:23:31,738 - Completed Strategy: Donchian & Stochastic14_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,739 - Unknown use case for strategy Donchian & Stochastic10_3_80_20
+2024-06-10 16:23:31,739 - Completed Strategy: Donchian & Stochastic10_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,739 - Unknown use case for strategy Donchian & Stochastic10_3_85_15
+2024-06-10 16:23:31,739 - Completed Strategy: Donchian & Stochastic10_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,740 - Unknown use case for strategy Donchian & Stochastic21_5_80_20
+2024-06-10 16:23:31,740 - Completed Strategy: Donchian & Stochastic21_5_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,741 - Unknown use case for strategy Donchian & Stochastic21_5_85_15
+2024-06-10 16:23:31,741 - Completed Strategy: Donchian & Stochastic21_5_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,742 - Unknown use case for strategy RSI65 & Stochastic14_3_80_20
+2024-06-10 16:23:31,742 - Completed Strategy: RSI65 & Stochastic14_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,742 -   BUY: Strategy=RSI65 & Stochastic14_3_85_15, Price=1861.28
+2024-06-10 16:23:31,742 -   SELL: Strategy=RSI65 & Stochastic14_3_85_15, Price=1733.79
+2024-06-10 16:23:31,742 - Unknown use case for strategy RSI65 & Stochastic14_3_85_15
+2024-06-10 16:23:31,742 - Completed Strategy: RSI65 & Stochastic14_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 9315.041261927276, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,743 - Unknown use case for strategy RSI65 & Stochastic10_3_80_20
+2024-06-10 16:23:31,743 - Completed Strategy: RSI65 & Stochastic10_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,744 - Unknown use case for strategy RSI65 & Stochastic10_3_85_15
+2024-06-10 16:23:31,744 - Completed Strategy: RSI65 & Stochastic10_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,744 -   BUY: Strategy=RSI65 & Stochastic21_5_80_20, Price=1861.28
+2024-06-10 16:23:31,744 -   SELL: Strategy=RSI65 & Stochastic21_5_80_20, Price=1765.46
+2024-06-10 16:23:31,744 - Unknown use case for strategy RSI65 & Stochastic21_5_80_20
+2024-06-10 16:23:31,744 - Completed Strategy: RSI65 & Stochastic21_5_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 9485.192985472364, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,745 - Unknown use case for strategy RSI65 & Stochastic21_5_85_15
+2024-06-10 16:23:31,745 - Completed Strategy: RSI65 & Stochastic21_5_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,746 - Unknown use case for strategy RSI66 & Stochastic14_3_80_20
+2024-06-10 16:23:31,746 - Completed Strategy: RSI66 & Stochastic14_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,746 -   BUY: Strategy=RSI66 & Stochastic14_3_85_15, Price=1861.28
+2024-06-10 16:23:31,746 -   SELL: Strategy=RSI66 & Stochastic14_3_85_15, Price=1733.79
+2024-06-10 16:23:31,746 - Unknown use case for strategy RSI66 & Stochastic14_3_85_15
+2024-06-10 16:23:31,746 - Completed Strategy: RSI66 & Stochastic14_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 9315.041261927276, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,747 - Unknown use case for strategy RSI66 & Stochastic10_3_80_20
+2024-06-10 16:23:31,747 - Completed Strategy: RSI66 & Stochastic10_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,748 - Unknown use case for strategy RSI66 & Stochastic10_3_85_15
+2024-06-10 16:23:31,748 - Completed Strategy: RSI66 & Stochastic10_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,748 -   BUY: Strategy=RSI66 & Stochastic21_5_80_20, Price=1861.28
+2024-06-10 16:23:31,748 -   SELL: Strategy=RSI66 & Stochastic21_5_80_20, Price=1765.46
+2024-06-10 16:23:31,749 - Unknown use case for strategy RSI66 & Stochastic21_5_80_20
+2024-06-10 16:23:31,749 - Completed Strategy: RSI66 & Stochastic21_5_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 9485.192985472364, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,749 - Unknown use case for strategy RSI66 & Stochastic21_5_85_15
+2024-06-10 16:23:31,749 - Completed Strategy: RSI66 & Stochastic21_5_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,750 - Unknown use case for strategy RSI67 & Stochastic14_3_80_20
+2024-06-10 16:23:31,750 - Completed Strategy: RSI67 & Stochastic14_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,750 -   BUY: Strategy=RSI67 & Stochastic14_3_85_15, Price=1861.28
+2024-06-10 16:23:31,751 -   SELL: Strategy=RSI67 & Stochastic14_3_85_15, Price=1733.79
+2024-06-10 16:23:31,751 - Unknown use case for strategy RSI67 & Stochastic14_3_85_15
+2024-06-10 16:23:31,751 - Completed Strategy: RSI67 & Stochastic14_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 9315.041261927276, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,751 - Unknown use case for strategy RSI67 & Stochastic10_3_80_20
+2024-06-10 16:23:31,751 - Completed Strategy: RSI67 & Stochastic10_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,752 - Unknown use case for strategy RSI67 & Stochastic10_3_85_15
+2024-06-10 16:23:31,752 - Completed Strategy: RSI67 & Stochastic10_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,752 -   BUY: Strategy=RSI67 & Stochastic21_5_80_20, Price=1861.28
+2024-06-10 16:23:31,753 -   SELL: Strategy=RSI67 & Stochastic21_5_80_20, Price=1765.46
+2024-06-10 16:23:31,753 - Unknown use case for strategy RSI67 & Stochastic21_5_80_20
+2024-06-10 16:23:31,753 - Completed Strategy: RSI67 & Stochastic21_5_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 9485.192985472364, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,753 - Unknown use case for strategy RSI67 & Stochastic21_5_85_15
+2024-06-10 16:23:31,753 - Completed Strategy: RSI67 & Stochastic21_5_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,754 - Unknown use case for strategy RSI68 & Stochastic14_3_80_20
+2024-06-10 16:23:31,754 - Completed Strategy: RSI68 & Stochastic14_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,755 -   BUY: Strategy=RSI68 & Stochastic14_3_85_15, Price=1861.28
+2024-06-10 16:23:31,755 -   SELL: Strategy=RSI68 & Stochastic14_3_85_15, Price=1733.79
+2024-06-10 16:23:31,755 - Unknown use case for strategy RSI68 & Stochastic14_3_85_15
+2024-06-10 16:23:31,755 - Completed Strategy: RSI68 & Stochastic14_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 9315.041261927276, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,755 - Unknown use case for strategy RSI68 & Stochastic10_3_80_20
+2024-06-10 16:23:31,755 - Completed Strategy: RSI68 & Stochastic10_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,756 - Unknown use case for strategy RSI68 & Stochastic10_3_85_15
+2024-06-10 16:23:31,756 - Completed Strategy: RSI68 & Stochastic10_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,756 -   BUY: Strategy=RSI68 & Stochastic21_5_80_20, Price=1861.28
+2024-06-10 16:23:31,757 -   SELL: Strategy=RSI68 & Stochastic21_5_80_20, Price=1765.46
+2024-06-10 16:23:31,757 - Unknown use case for strategy RSI68 & Stochastic21_5_80_20
+2024-06-10 16:23:31,757 - Completed Strategy: RSI68 & Stochastic21_5_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 9485.192985472364, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,757 - Unknown use case for strategy RSI68 & Stochastic21_5_85_15
+2024-06-10 16:23:31,757 - Completed Strategy: RSI68 & Stochastic21_5_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,758 - Unknown use case for strategy RSI69 & Stochastic14_3_80_20
+2024-06-10 16:23:31,758 - Completed Strategy: RSI69 & Stochastic14_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,758 -   BUY: Strategy=RSI69 & Stochastic14_3_85_15, Price=1861.28
+2024-06-10 16:23:31,759 -   SELL: Strategy=RSI69 & Stochastic14_3_85_15, Price=1733.79
+2024-06-10 16:23:31,759 - Unknown use case for strategy RSI69 & Stochastic14_3_85_15
+2024-06-10 16:23:31,759 - Completed Strategy: RSI69 & Stochastic14_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 9315.041261927276, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,759 -   BUY: Strategy=RSI69 & Stochastic10_3_80_20, Price=2912.45
+2024-06-10 16:23:31,759 -   SELL: Strategy=RSI69 & Stochastic10_3_80_20, Price=3661.78
+2024-06-10 16:23:31,759 - Unknown use case for strategy RSI69 & Stochastic10_3_80_20
+2024-06-10 16:23:31,759 - Completed Strategy: RSI69 & Stochastic10_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 12572.851036069289, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,760 -   BUY: Strategy=RSI69 & Stochastic10_3_85_15, Price=2235.02
+2024-06-10 16:23:31,760 -   SELL: Strategy=RSI69 & Stochastic10_3_85_15, Price=3661.78
+2024-06-10 16:23:31,760 - Unknown use case for strategy RSI69 & Stochastic10_3_85_15
+2024-06-10 16:23:31,760 - Completed Strategy: RSI69 & Stochastic10_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 16383.65652208929, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,761 -   BUY: Strategy=RSI69 & Stochastic21_5_80_20, Price=1861.28
+2024-06-10 16:23:31,761 -   SELL: Strategy=RSI69 & Stochastic21_5_80_20, Price=1765.46
+2024-06-10 16:23:31,761 -   BUY: Strategy=RSI69 & Stochastic21_5_80_20, Price=2235.02
+2024-06-10 16:23:31,761 -   SELL: Strategy=RSI69 & Stochastic21_5_80_20, Price=3661.78
+2024-06-10 16:23:31,761 - Unknown use case for strategy RSI69 & Stochastic21_5_80_20
+2024-06-10 16:23:31,761 - Completed Strategy: RSI69 & Stochastic21_5_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 15540.214391970985, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,762 -   BUY: Strategy=RSI69 & Stochastic21_5_85_15, Price=2235.02
+2024-06-10 16:23:31,762 -   SELL: Strategy=RSI69 & Stochastic21_5_85_15, Price=3661.78
+2024-06-10 16:23:31,762 - Unknown use case for strategy RSI69 & Stochastic21_5_85_15
+2024-06-10 16:23:31,762 - Completed Strategy: RSI69 & Stochastic21_5_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 16383.65652208929, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,762 - Unknown use case for strategy RSI70 & Stochastic14_3_80_20
+2024-06-10 16:23:31,762 - Completed Strategy: RSI70 & Stochastic14_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,763 -   BUY: Strategy=RSI70 & Stochastic14_3_85_15, Price=1861.28
+2024-06-10 16:23:31,763 -   SELL: Strategy=RSI70 & Stochastic14_3_85_15, Price=1733.79
+2024-06-10 16:23:31,763 - Unknown use case for strategy RSI70 & Stochastic14_3_85_15
+2024-06-10 16:23:31,763 - Completed Strategy: RSI70 & Stochastic14_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 9315.041261927276, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,764 -   BUY: Strategy=RSI70 & Stochastic10_3_80_20, Price=2912.45
+2024-06-10 16:23:31,764 -   SELL: Strategy=RSI70 & Stochastic10_3_80_20, Price=3661.78
+2024-06-10 16:23:31,764 - Unknown use case for strategy RSI70 & Stochastic10_3_80_20
+2024-06-10 16:23:31,764 - Completed Strategy: RSI70 & Stochastic10_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 12572.851036069289, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,765 -   BUY: Strategy=RSI70 & Stochastic10_3_85_15, Price=2235.02
+2024-06-10 16:23:31,765 -   SELL: Strategy=RSI70 & Stochastic10_3_85_15, Price=3661.78
+2024-06-10 16:23:31,765 - Unknown use case for strategy RSI70 & Stochastic10_3_85_15
+2024-06-10 16:23:31,765 - Completed Strategy: RSI70 & Stochastic10_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 16383.65652208929, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,765 -   BUY: Strategy=RSI70 & Stochastic21_5_80_20, Price=1861.28
+2024-06-10 16:23:31,765 -   SELL: Strategy=RSI70 & Stochastic21_5_80_20, Price=1765.46
+2024-06-10 16:23:31,765 -   BUY: Strategy=RSI70 & Stochastic21_5_80_20, Price=2235.02
+2024-06-10 16:23:31,765 -   SELL: Strategy=RSI70 & Stochastic21_5_80_20, Price=3661.78
+2024-06-10 16:23:31,765 - Unknown use case for strategy RSI70 & Stochastic21_5_80_20
+2024-06-10 16:23:31,765 - Completed Strategy: RSI70 & Stochastic21_5_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 15540.214391970985, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,766 -   BUY: Strategy=RSI70 & Stochastic21_5_85_15, Price=2235.02
+2024-06-10 16:23:31,766 -   SELL: Strategy=RSI70 & Stochastic21_5_85_15, Price=3661.78
+2024-06-10 16:23:31,766 - Unknown use case for strategy RSI70 & Stochastic21_5_85_15
+2024-06-10 16:23:31,766 - Completed Strategy: RSI70 & Stochastic21_5_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 16383.65652208929, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,767 - Unknown use case for strategy RSI71 & Stochastic14_3_80_20
+2024-06-10 16:23:31,767 - Completed Strategy: RSI71 & Stochastic14_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,767 -   BUY: Strategy=RSI71 & Stochastic14_3_85_15, Price=1861.28
+2024-06-10 16:23:31,768 -   SELL: Strategy=RSI71 & Stochastic14_3_85_15, Price=1733.79
+2024-06-10 16:23:31,768 - Unknown use case for strategy RSI71 & Stochastic14_3_85_15
+2024-06-10 16:23:31,768 - Completed Strategy: RSI71 & Stochastic14_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 9315.041261927276, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,768 -   BUY: Strategy=RSI71 & Stochastic10_3_80_20, Price=2912.45
+2024-06-10 16:23:31,768 - Unknown use case for strategy RSI71 & Stochastic10_3_80_20
+2024-06-10 16:23:31,768 - Completed Strategy: RSI71 & Stochastic10_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 12917.955673058765, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,769 -   BUY: Strategy=RSI71 & Stochastic10_3_85_15, Price=2235.02
+2024-06-10 16:23:31,769 - Unknown use case for strategy RSI71 & Stochastic10_3_85_15
+2024-06-10 16:23:31,769 - Completed Strategy: RSI71 & Stochastic10_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 16833.361670141654, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,770 -   BUY: Strategy=RSI71 & Stochastic21_5_80_20, Price=1861.28
+2024-06-10 16:23:31,770 -   SELL: Strategy=RSI71 & Stochastic21_5_80_20, Price=1765.46
+2024-06-10 16:23:31,770 -   BUY: Strategy=RSI71 & Stochastic21_5_80_20, Price=2235.02
+2024-06-10 16:23:31,770 - Unknown use case for strategy RSI71 & Stochastic21_5_80_20
+2024-06-10 16:23:31,770 - Completed Strategy: RSI71 & Stochastic21_5_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 15966.768403554695, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,770 -   BUY: Strategy=RSI71 & Stochastic21_5_85_15, Price=2235.02
+2024-06-10 16:23:31,770 - Unknown use case for strategy RSI71 & Stochastic21_5_85_15
+2024-06-10 16:23:31,770 - Completed Strategy: RSI71 & Stochastic21_5_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 16833.361670141654, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,771 - Unknown use case for strategy RSI72 & Stochastic14_3_80_20
+2024-06-10 16:23:31,771 - Completed Strategy: RSI72 & Stochastic14_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,772 -   BUY: Strategy=RSI72 & Stochastic14_3_85_15, Price=1861.28
+2024-06-10 16:23:31,772 -   SELL: Strategy=RSI72 & Stochastic14_3_85_15, Price=2121.32
+2024-06-10 16:23:31,772 - Unknown use case for strategy RSI72 & Stochastic14_3_85_15
+2024-06-10 16:23:31,772 - Completed Strategy: RSI72 & Stochastic14_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 11397.103068855842, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,772 -   BUY: Strategy=RSI72 & Stochastic10_3_80_20, Price=2912.45
+2024-06-10 16:23:31,772 - Unknown use case for strategy RSI72 & Stochastic10_3_80_20
+2024-06-10 16:23:31,772 - Completed Strategy: RSI72 & Stochastic10_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 12917.955673058765, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,773 -   BUY: Strategy=RSI72 & Stochastic10_3_85_15, Price=2235.02
+2024-06-10 16:23:31,773 - Unknown use case for strategy RSI72 & Stochastic10_3_85_15
+2024-06-10 16:23:31,773 - Completed Strategy: RSI72 & Stochastic10_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 16833.361670141654, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,774 -   BUY: Strategy=RSI72 & Stochastic21_5_80_20, Price=1861.28
+2024-06-10 16:23:31,774 -   SELL: Strategy=RSI72 & Stochastic21_5_80_20, Price=1765.46
+2024-06-10 16:23:31,774 -   BUY: Strategy=RSI72 & Stochastic21_5_80_20, Price=2235.02
+2024-06-10 16:23:31,774 - Unknown use case for strategy RSI72 & Stochastic21_5_80_20
+2024-06-10 16:23:31,774 - Completed Strategy: RSI72 & Stochastic21_5_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 15966.768403554695, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,775 -   BUY: Strategy=RSI72 & Stochastic21_5_85_15, Price=2235.02
+2024-06-10 16:23:31,775 - Unknown use case for strategy RSI72 & Stochastic21_5_85_15
+2024-06-10 16:23:31,775 - Completed Strategy: RSI72 & Stochastic21_5_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 16833.361670141654, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,775 - Unknown use case for strategy RSI73 & Stochastic14_3_80_20
+2024-06-10 16:23:31,775 - Completed Strategy: RSI73 & Stochastic14_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,776 -   BUY: Strategy=RSI73 & Stochastic14_3_85_15, Price=1861.28
+2024-06-10 16:23:31,776 -   SELL: Strategy=RSI73 & Stochastic14_3_85_15, Price=2121.32
+2024-06-10 16:23:31,776 - Unknown use case for strategy RSI73 & Stochastic14_3_85_15
+2024-06-10 16:23:31,776 - Completed Strategy: RSI73 & Stochastic14_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 11397.103068855842, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,777 -   BUY: Strategy=RSI73 & Stochastic10_3_80_20, Price=2912.45
+2024-06-10 16:23:31,777 - Unknown use case for strategy RSI73 & Stochastic10_3_80_20
+2024-06-10 16:23:31,777 - Completed Strategy: RSI73 & Stochastic10_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 12917.955673058765, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,777 -   BUY: Strategy=RSI73 & Stochastic10_3_85_15, Price=2235.02
+2024-06-10 16:23:31,777 - Unknown use case for strategy RSI73 & Stochastic10_3_85_15
+2024-06-10 16:23:31,777 - Completed Strategy: RSI73 & Stochastic10_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 16833.361670141654, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,778 -   BUY: Strategy=RSI73 & Stochastic21_5_80_20, Price=1861.28
+2024-06-10 16:23:31,778 -   SELL: Strategy=RSI73 & Stochastic21_5_80_20, Price=1765.46
+2024-06-10 16:23:31,778 -   BUY: Strategy=RSI73 & Stochastic21_5_80_20, Price=2235.02
+2024-06-10 16:23:31,778 - Unknown use case for strategy RSI73 & Stochastic21_5_80_20
+2024-06-10 16:23:31,778 - Completed Strategy: RSI73 & Stochastic21_5_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 15966.768403554695, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,779 -   BUY: Strategy=RSI73 & Stochastic21_5_85_15, Price=2235.02
+2024-06-10 16:23:31,779 - Unknown use case for strategy RSI73 & Stochastic21_5_85_15
+2024-06-10 16:23:31,779 - Completed Strategy: RSI73 & Stochastic21_5_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 16833.361670141654, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,780 - Unknown use case for strategy RSI74 & Stochastic14_3_80_20
+2024-06-10 16:23:31,780 - Completed Strategy: RSI74 & Stochastic14_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,781 -   BUY: Strategy=RSI74 & Stochastic14_3_85_15, Price=1861.28
+2024-06-10 16:23:31,781 -   SELL: Strategy=RSI74 & Stochastic14_3_85_15, Price=2121.32
+2024-06-10 16:23:31,781 - Unknown use case for strategy RSI74 & Stochastic14_3_85_15
+2024-06-10 16:23:31,781 - Completed Strategy: RSI74 & Stochastic14_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 11397.103068855842, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,782 -   BUY: Strategy=RSI74 & Stochastic10_3_80_20, Price=1551.85
+2024-06-10 16:23:31,782 -   SELL: Strategy=RSI74 & Stochastic10_3_80_20, Price=2355.73
+2024-06-10 16:23:31,782 -   BUY: Strategy=RSI74 & Stochastic10_3_80_20, Price=2912.45
+2024-06-10 16:23:31,782 - Unknown use case for strategy RSI74 & Stochastic10_3_80_20
+2024-06-10 16:23:31,782 - Completed Strategy: RSI74 & Stochastic10_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 19609.637347485084, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,783 -   BUY: Strategy=RSI74 & Stochastic10_3_85_15, Price=1551.85
+2024-06-10 16:23:31,783 -   SELL: Strategy=RSI74 & Stochastic10_3_85_15, Price=2121.32
+2024-06-10 16:23:31,783 -   BUY: Strategy=RSI74 & Stochastic10_3_85_15, Price=2235.02
+2024-06-10 16:23:31,783 - Unknown use case for strategy RSI74 & Stochastic10_3_85_15
+2024-06-10 16:23:31,783 - Completed Strategy: RSI74 & Stochastic10_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 23010.565955540093, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,784 -   BUY: Strategy=RSI74 & Stochastic21_5_80_20, Price=1861.28
+2024-06-10 16:23:31,784 -   SELL: Strategy=RSI74 & Stochastic21_5_80_20, Price=1765.46
+2024-06-10 16:23:31,784 -   BUY: Strategy=RSI74 & Stochastic21_5_80_20, Price=2235.02
+2024-06-10 16:23:31,784 - Unknown use case for strategy RSI74 & Stochastic21_5_80_20
+2024-06-10 16:23:31,784 - Completed Strategy: RSI74 & Stochastic21_5_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 15966.768403554695, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,784 -   BUY: Strategy=RSI74 & Stochastic21_5_85_15, Price=1551.85
+2024-06-10 16:23:31,784 -   SELL: Strategy=RSI74 & Stochastic21_5_85_15, Price=1765.46
+2024-06-10 16:23:31,784 -   BUY: Strategy=RSI74 & Stochastic21_5_85_15, Price=2235.02
+2024-06-10 16:23:31,785 - Unknown use case for strategy RSI74 & Stochastic21_5_85_15
+2024-06-10 16:23:31,785 - Completed Strategy: RSI74 & Stochastic21_5_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 19150.4505552523, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,785 - Unknown use case for strategy RSI75 & Stochastic14_3_80_20
+2024-06-10 16:23:31,785 - Completed Strategy: RSI75 & Stochastic14_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,786 -   BUY: Strategy=RSI75 & Stochastic14_3_85_15, Price=1861.28
+2024-06-10 16:23:31,786 -   SELL: Strategy=RSI75 & Stochastic14_3_85_15, Price=2121.32
+2024-06-10 16:23:31,786 - Unknown use case for strategy RSI75 & Stochastic14_3_85_15
+2024-06-10 16:23:31,786 - Completed Strategy: RSI75 & Stochastic14_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 11397.103068855842, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,787 -   BUY: Strategy=RSI75 & Stochastic10_3_80_20, Price=1551.85
+2024-06-10 16:23:31,787 -   SELL: Strategy=RSI75 & Stochastic10_3_80_20, Price=2355.73
+2024-06-10 16:23:31,787 -   BUY: Strategy=RSI75 & Stochastic10_3_80_20, Price=2912.45
+2024-06-10 16:23:31,787 - Unknown use case for strategy RSI75 & Stochastic10_3_80_20
+2024-06-10 16:23:31,787 - Completed Strategy: RSI75 & Stochastic10_3_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 19609.637347485084, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,787 -   BUY: Strategy=RSI75 & Stochastic10_3_85_15, Price=1551.85
+2024-06-10 16:23:31,787 -   SELL: Strategy=RSI75 & Stochastic10_3_85_15, Price=2121.32
+2024-06-10 16:23:31,788 -   BUY: Strategy=RSI75 & Stochastic10_3_85_15, Price=2235.02
+2024-06-10 16:23:31,788 - Unknown use case for strategy RSI75 & Stochastic10_3_85_15
+2024-06-10 16:23:31,788 - Completed Strategy: RSI75 & Stochastic10_3_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 23010.565955540093, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,788 -   BUY: Strategy=RSI75 & Stochastic21_5_80_20, Price=1861.28
+2024-06-10 16:23:31,788 -   SELL: Strategy=RSI75 & Stochastic21_5_80_20, Price=1765.46
+2024-06-10 16:23:31,788 -   BUY: Strategy=RSI75 & Stochastic21_5_80_20, Price=2235.02
+2024-06-10 16:23:31,788 - Unknown use case for strategy RSI75 & Stochastic21_5_80_20
+2024-06-10 16:23:31,788 - Completed Strategy: RSI75 & Stochastic21_5_80_20, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 15966.768403554695, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,789 -   BUY: Strategy=RSI75 & Stochastic21_5_85_15, Price=1861.79
+2024-06-10 16:23:31,789 -   SELL: Strategy=RSI75 & Stochastic21_5_85_15, Price=1765.46
+2024-06-10 16:23:31,789 -   BUY: Strategy=RSI75 & Stochastic21_5_85_15, Price=2235.02
+2024-06-10 16:23:31,789 - Unknown use case for strategy RSI75 & Stochastic21_5_85_15
+2024-06-10 16:23:31,789 - Completed Strategy: RSI75 & Stochastic21_5_85_15, Coin: Concatenated-ETHUSDT-1d-2023-4-concatenated, Profit: 15962.3946278411, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+

@@ -12,7 +12,7 @@ header = ['open_time', 'Open', 'High', 'Low', 'Close', 'Volume', 'Close_time', '
 dataframes = []
 
 # Get all files matching the pattern
-file_pattern = os.path.join(directory, 'DOGEUSDT-1h-202*.csv')
+file_pattern = os.path.join(directory, 'DOGEUSDT-4h-202*.csv')
 files = sorted(glob(file_pattern))
 
 # Debugging: Print the files found
@@ -37,7 +37,7 @@ if dataframes:
     concatenated_df = pd.concat(dataframes, ignore_index=True)
 
     # Save the concatenated DataFrame to a new CSV file with the specified header
-    output_file = os.path.join(directory, 'Concatenated-DOGEUSDT-1h-2023-concatenated.csv')
+    output_file = os.path.join(directory, 'Concatenated-DOGEUSDT-4h-2023-4-concatenated.csv')
     concatenated_df.to_csv(output_file, index=False)
     print(f'Concatenated file saved as {output_file}')
 else:

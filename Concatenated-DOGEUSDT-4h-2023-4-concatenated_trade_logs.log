@@ -1,0 +1,1419 @@
+2024-06-10 16:23:31,240 - Processing Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated
+2024-06-10 16:23:31,303 - Completed Strategy: MACD & SMA, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and momentum, Timeframe: 1D
+
+2024-06-10 16:23:31,304 - Completed Strategy: MACD & Ichimoku, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Comprehensive trend and momentum analysis, Timeframe: 4H
+
+2024-06-10 16:23:31,305 -   BUY: Strategy=MACD & Donchian, Price=0.07379
+2024-06-10 16:23:31,305 -   SELL: Strategy=MACD & Donchian, Price=0.06171
+2024-06-10 16:23:31,306 -   BUY: Strategy=MACD & Donchian, Price=0.08062
+2024-06-10 16:23:31,306 -   SELL: Strategy=MACD & Donchian, Price=0.15271
+2024-06-10 16:23:31,306 - Completed Strategy: MACD & Donchian, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 15841.004575294955, Use Case: Breakout and momentum confirmation, Timeframe: 1H
+
+2024-06-10 16:23:31,307 - Completed Strategy: MACD & RSI65, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Identifying and confirming trend reversals, Timeframe: 1H
+
+2024-06-10 16:23:31,308 - Completed Strategy: MACD & RSI66, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Identifying and confirming trend reversals, Timeframe: 1H
+
+2024-06-10 16:23:31,310 - Completed Strategy: MACD & RSI67, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Identifying and confirming trend reversals, Timeframe: 1H
+
+2024-06-10 16:23:31,311 - Completed Strategy: MACD & RSI68, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Identifying and confirming trend reversals, Timeframe: 1H
+
+2024-06-10 16:23:31,312 - Completed Strategy: MACD & RSI69, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Identifying and confirming trend reversals, Timeframe: 1H
+
+2024-06-10 16:23:31,314 - Completed Strategy: MACD & RSI70, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Identifying and confirming trend reversals, Timeframe: 1H
+
+2024-06-10 16:23:31,315 - Completed Strategy: MACD & RSI71, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Identifying and confirming trend reversals, Timeframe: 1H
+
+2024-06-10 16:23:31,316 - Completed Strategy: MACD & RSI72, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Identifying and confirming trend reversals, Timeframe: 1H
+
+2024-06-10 16:23:31,317 - Completed Strategy: MACD & RSI73, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Identifying and confirming trend reversals, Timeframe: 1H
+
+2024-06-10 16:23:31,318 - Completed Strategy: MACD & RSI74, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Identifying and confirming trend reversals, Timeframe: 1H
+
+2024-06-10 16:23:31,319 - Completed Strategy: MACD & RSI75, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Identifying and confirming trend reversals, Timeframe: 1H
+
+2024-06-10 16:23:31,320 - Completed Strategy: MACD & Stochastic14_3_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Momentum and trend confirmation, Timeframe: 1H
+
+2024-06-10 16:23:31,321 - Completed Strategy: MACD & Stochastic14_3_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Momentum and trend confirmation, Timeframe: 1H
+
+2024-06-10 16:23:31,323 - Completed Strategy: MACD & Stochastic10_3_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Momentum and trend confirmation, Timeframe: 1H
+
+2024-06-10 16:23:31,324 - Completed Strategy: MACD & Stochastic10_3_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Momentum and trend confirmation, Timeframe: 1H
+
+2024-06-10 16:23:31,326 - Completed Strategy: MACD & Stochastic21_5_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Momentum and trend confirmation, Timeframe: 1H
+
+2024-06-10 16:23:31,327 - Completed Strategy: MACD & Stochastic21_5_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Momentum and trend confirmation, Timeframe: 1H
+
+2024-06-10 16:23:31,328 - Unknown use case for strategy SMA & Ichimoku
+2024-06-10 16:23:31,328 - Completed Strategy: SMA & Ichimoku, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,329 -   BUY: Strategy=SMA & Donchian, Price=0.06791
+2024-06-10 16:23:31,330 - Unknown use case for strategy SMA & Donchian
+2024-06-10 16:23:31,330 - Completed Strategy: SMA & Donchian, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 23410.396112501843, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,331 - Completed Strategy: SMA & RSI65, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and entry/exit timing, Timeframe: 1D
+
+2024-06-10 16:23:31,332 - Completed Strategy: SMA & RSI66, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and entry/exit timing, Timeframe: 1D
+
+2024-06-10 16:23:31,333 - Completed Strategy: SMA & RSI67, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and entry/exit timing, Timeframe: 1D
+
+2024-06-10 16:23:31,334 - Completed Strategy: SMA & RSI68, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and entry/exit timing, Timeframe: 1D
+
+2024-06-10 16:23:31,335 - Completed Strategy: SMA & RSI69, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and entry/exit timing, Timeframe: 1D
+
+2024-06-10 16:23:31,336 - Completed Strategy: SMA & RSI70, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and entry/exit timing, Timeframe: 1D
+
+2024-06-10 16:23:31,337 - Completed Strategy: SMA & RSI71, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and entry/exit timing, Timeframe: 1D
+
+2024-06-10 16:23:31,338 - Completed Strategy: SMA & RSI72, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and entry/exit timing, Timeframe: 1D
+
+2024-06-10 16:23:31,339 - Completed Strategy: SMA & RSI73, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and entry/exit timing, Timeframe: 1D
+
+2024-06-10 16:23:31,340 - Completed Strategy: SMA & RSI74, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and entry/exit timing, Timeframe: 1D
+
+2024-06-10 16:23:31,341 - Completed Strategy: SMA & RSI75, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and entry/exit timing, Timeframe: 1D
+
+2024-06-10 16:23:31,343 - Unknown use case for strategy SMA & Stochastic14_3_80_20
+2024-06-10 16:23:31,343 - Completed Strategy: SMA & Stochastic14_3_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,344 -   BUY: Strategy=SMA & Stochastic14_3_85_15, Price=0.14893
+2024-06-10 16:23:31,344 - Unknown use case for strategy SMA & Stochastic14_3_85_15
+2024-06-10 16:23:31,344 - Completed Strategy: SMA & Stochastic14_3_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10674.813670852078, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,345 - Unknown use case for strategy SMA & Stochastic10_3_80_20
+2024-06-10 16:23:31,345 - Completed Strategy: SMA & Stochastic10_3_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,346 -   BUY: Strategy=SMA & Stochastic10_3_85_15, Price=0.14893
+2024-06-10 16:23:31,346 - Unknown use case for strategy SMA & Stochastic10_3_85_15
+2024-06-10 16:23:31,346 - Completed Strategy: SMA & Stochastic10_3_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10674.813670852078, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,347 -   BUY: Strategy=SMA & Stochastic21_5_80_20, Price=0.14893
+2024-06-10 16:23:31,347 - Unknown use case for strategy SMA & Stochastic21_5_80_20
+2024-06-10 16:23:31,347 - Completed Strategy: SMA & Stochastic21_5_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10674.813670852078, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,348 -   BUY: Strategy=SMA & Stochastic21_5_85_15, Price=0.14893
+2024-06-10 16:23:31,348 - Unknown use case for strategy SMA & Stochastic21_5_85_15
+2024-06-10 16:23:31,348 - Completed Strategy: SMA & Stochastic21_5_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10674.813670852078, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,349 -   BUY: Strategy=Ichimoku & Donchian, Price=0.07293
+2024-06-10 16:23:31,349 -   SELL: Strategy=Ichimoku & Donchian, Price=0.06012
+2024-06-10 16:23:31,350 -   BUY: Strategy=Ichimoku & Donchian, Price=0.07231
+2024-06-10 16:23:31,350 -   SELL: Strategy=Ichimoku & Donchian, Price=0.06288
+2024-06-10 16:23:31,350 -   BUY: Strategy=Ichimoku & Donchian, Price=0.06989
+2024-06-10 16:23:31,350 -   SELL: Strategy=Ichimoku & Donchian, Price=0.09295
+2024-06-10 16:23:31,350 -   BUY: Strategy=Ichimoku & Donchian, Price=0.08294
+2024-06-10 16:23:31,350 -   SELL: Strategy=Ichimoku & Donchian, Price=0.16906
+2024-06-10 16:23:31,350 - Unknown use case for strategy Ichimoku & Donchian
+2024-06-10 16:23:31,350 - Completed Strategy: Ichimoku & Donchian, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 19432.922429354734, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,351 - Completed Strategy: Ichimoku & RSI65, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and momentum confirmation, Timeframe: 4H
+
+2024-06-10 16:23:31,352 - Completed Strategy: Ichimoku & RSI66, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and momentum confirmation, Timeframe: 4H
+
+2024-06-10 16:23:31,353 - Completed Strategy: Ichimoku & RSI67, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and momentum confirmation, Timeframe: 4H
+
+2024-06-10 16:23:31,354 - Completed Strategy: Ichimoku & RSI68, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and momentum confirmation, Timeframe: 4H
+
+2024-06-10 16:23:31,356 - Completed Strategy: Ichimoku & RSI69, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and momentum confirmation, Timeframe: 4H
+
+2024-06-10 16:23:31,357 - Completed Strategy: Ichimoku & RSI70, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and momentum confirmation, Timeframe: 4H
+
+2024-06-10 16:23:31,358 - Completed Strategy: Ichimoku & RSI71, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and momentum confirmation, Timeframe: 4H
+
+2024-06-10 16:23:31,359 - Completed Strategy: Ichimoku & RSI72, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Trend direction and momentum confirmation, Timeframe: 4H
+
+2024-06-10 16:23:31,360 -   BUY: Strategy=Ichimoku & RSI73, Price=0.15847
+2024-06-10 16:23:31,360 - Completed Strategy: Ichimoku & RSI73, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10032.182747523191, Use Case: Trend direction and momentum confirmation, Timeframe: 4H
+
+2024-06-10 16:23:31,361 -   BUY: Strategy=Ichimoku & RSI74, Price=0.15847
+2024-06-10 16:23:31,361 - Completed Strategy: Ichimoku & RSI74, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10032.182747523191, Use Case: Trend direction and momentum confirmation, Timeframe: 4H
+
+2024-06-10 16:23:31,362 -   BUY: Strategy=Ichimoku & RSI75, Price=0.15847
+2024-06-10 16:23:31,362 - Completed Strategy: Ichimoku & RSI75, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10032.182747523191, Use Case: Trend direction and momentum confirmation, Timeframe: 4H
+
+2024-06-10 16:23:31,363 - Unknown use case for strategy Ichimoku & Stochastic14_3_80_20
+2024-06-10 16:23:31,363 - Completed Strategy: Ichimoku & Stochastic14_3_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,364 - Unknown use case for strategy Ichimoku & Stochastic14_3_85_15
+2024-06-10 16:23:31,364 - Completed Strategy: Ichimoku & Stochastic14_3_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,366 - Unknown use case for strategy Ichimoku & Stochastic10_3_80_20
+2024-06-10 16:23:31,366 - Completed Strategy: Ichimoku & Stochastic10_3_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,367 - Unknown use case for strategy Ichimoku & Stochastic10_3_85_15
+2024-06-10 16:23:31,367 - Completed Strategy: Ichimoku & Stochastic10_3_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,368 - Unknown use case for strategy Ichimoku & Stochastic21_5_80_20
+2024-06-10 16:23:31,368 - Completed Strategy: Ichimoku & Stochastic21_5_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,369 - Unknown use case for strategy Ichimoku & Stochastic21_5_85_15
+2024-06-10 16:23:31,369 - Completed Strategy: Ichimoku & Stochastic21_5_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,370 - Completed Strategy: Donchian & RSI65, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Overbought/oversold conditions and breakout confirmation, Timeframe: 1H
+
+2024-06-10 16:23:31,371 - Completed Strategy: Donchian & RSI66, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Overbought/oversold conditions and breakout confirmation, Timeframe: 1H
+
+2024-06-10 16:23:31,372 - Completed Strategy: Donchian & RSI67, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Overbought/oversold conditions and breakout confirmation, Timeframe: 1H
+
+2024-06-10 16:23:31,374 - Completed Strategy: Donchian & RSI68, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Overbought/oversold conditions and breakout confirmation, Timeframe: 1H
+
+2024-06-10 16:23:31,375 - Completed Strategy: Donchian & RSI69, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Overbought/oversold conditions and breakout confirmation, Timeframe: 1H
+
+2024-06-10 16:23:31,376 - Completed Strategy: Donchian & RSI70, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Overbought/oversold conditions and breakout confirmation, Timeframe: 1H
+
+2024-06-10 16:23:31,377 - Completed Strategy: Donchian & RSI71, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Overbought/oversold conditions and breakout confirmation, Timeframe: 1H
+
+2024-06-10 16:23:31,378 - Completed Strategy: Donchian & RSI72, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Overbought/oversold conditions and breakout confirmation, Timeframe: 1H
+
+2024-06-10 16:23:31,379 - Completed Strategy: Donchian & RSI73, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Overbought/oversold conditions and breakout confirmation, Timeframe: 1H
+
+2024-06-10 16:23:31,380 - Completed Strategy: Donchian & RSI74, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Overbought/oversold conditions and breakout confirmation, Timeframe: 1H
+
+2024-06-10 16:23:31,381 - Completed Strategy: Donchian & RSI75, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Overbought/oversold conditions and breakout confirmation, Timeframe: 1H
+
+2024-06-10 16:23:31,382 - Unknown use case for strategy Donchian & Stochastic14_3_80_20
+2024-06-10 16:23:31,382 - Completed Strategy: Donchian & Stochastic14_3_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,383 - Unknown use case for strategy Donchian & Stochastic14_3_85_15
+2024-06-10 16:23:31,383 - Completed Strategy: Donchian & Stochastic14_3_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,384 - Unknown use case for strategy Donchian & Stochastic10_3_80_20
+2024-06-10 16:23:31,384 - Completed Strategy: Donchian & Stochastic10_3_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,385 - Unknown use case for strategy Donchian & Stochastic10_3_85_15
+2024-06-10 16:23:31,385 - Completed Strategy: Donchian & Stochastic10_3_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,386 - Unknown use case for strategy Donchian & Stochastic21_5_80_20
+2024-06-10 16:23:31,387 - Completed Strategy: Donchian & Stochastic21_5_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,388 - Unknown use case for strategy Donchian & Stochastic21_5_85_15
+2024-06-10 16:23:31,388 - Completed Strategy: Donchian & Stochastic21_5_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10000, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,389 -   BUY: Strategy=RSI65 & Stochastic14_3_80_20, Price=0.06824
+2024-06-10 16:23:31,389 -   SELL: Strategy=RSI65 & Stochastic14_3_80_20, Price=0.07316
+2024-06-10 16:23:31,389 -   BUY: Strategy=RSI65 & Stochastic14_3_80_20, Price=0.07415
+2024-06-10 16:23:31,389 -   SELL: Strategy=RSI65 & Stochastic14_3_80_20, Price=0.06416
+2024-06-10 16:23:31,389 -   BUY: Strategy=RSI65 & Stochastic14_3_80_20, Price=0.07456
+2024-06-10 16:23:31,389 -   SELL: Strategy=RSI65 & Stochastic14_3_80_20, Price=0.07837
+2024-06-10 16:23:31,389 -   BUY: Strategy=RSI65 & Stochastic14_3_80_20, Price=0.07756
+2024-06-10 16:23:31,389 -   SELL: Strategy=RSI65 & Stochastic14_3_80_20, Price=0.08222
+2024-06-10 16:23:31,389 -   BUY: Strategy=RSI65 & Stochastic14_3_80_20, Price=0.14094
+2024-06-10 16:23:31,389 -   SELL: Strategy=RSI65 & Stochastic14_3_80_20, Price=0.17392
+2024-06-10 16:23:31,389 -   BUY: Strategy=RSI65 & Stochastic14_3_80_20, Price=0.13548
+2024-06-10 16:23:31,389 -   SELL: Strategy=RSI65 & Stochastic14_3_80_20, Price=0.13883
+2024-06-10 16:23:31,389 - Unknown use case for strategy RSI65 & Stochastic14_3_80_20
+2024-06-10 16:23:31,389 - Completed Strategy: RSI65 & Stochastic14_3_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 13070.581013955223, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,390 -   BUY: Strategy=RSI65 & Stochastic14_3_85_15, Price=0.07212
+2024-06-10 16:23:31,390 -   SELL: Strategy=RSI65 & Stochastic14_3_85_15, Price=0.06253
+2024-06-10 16:23:31,390 -   BUY: Strategy=RSI65 & Stochastic14_3_85_15, Price=0.06485
+2024-06-10 16:23:31,390 -   SELL: Strategy=RSI65 & Stochastic14_3_85_15, Price=0.06746
+2024-06-10 16:23:31,390 -   BUY: Strategy=RSI65 & Stochastic14_3_85_15, Price=0.07415
+2024-06-10 16:23:31,390 -   SELL: Strategy=RSI65 & Stochastic14_3_85_15, Price=0.06416
+2024-06-10 16:23:31,390 -   BUY: Strategy=RSI65 & Stochastic14_3_85_15, Price=0.05858
+2024-06-10 16:23:31,390 -   SELL: Strategy=RSI65 & Stochastic14_3_85_15, Price=0.07021
+2024-06-10 16:23:31,391 -   BUY: Strategy=RSI65 & Stochastic14_3_85_15, Price=0.07756
+2024-06-10 16:23:31,391 -   SELL: Strategy=RSI65 & Stochastic14_3_85_15, Price=0.08191
+2024-06-10 16:23:31,391 -   BUY: Strategy=RSI65 & Stochastic14_3_85_15, Price=0.15399
+2024-06-10 16:23:31,391 -   SELL: Strategy=RSI65 & Stochastic14_3_85_15, Price=0.17392
+2024-06-10 16:23:31,391 -   BUY: Strategy=RSI65 & Stochastic14_3_85_15, Price=0.14973
+2024-06-10 16:23:31,391 -   SELL: Strategy=RSI65 & Stochastic14_3_85_15, Price=0.13883
+2024-06-10 16:23:31,391 - Unknown use case for strategy RSI65 & Stochastic14_3_85_15
+2024-06-10 16:23:31,391 - Completed Strategy: RSI65 & Stochastic14_3_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10344.333293458418, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,391 -   BUY: Strategy=RSI65 & Stochastic10_3_80_20, Price=0.06824
+2024-06-10 16:23:31,392 -   SELL: Strategy=RSI65 & Stochastic10_3_80_20, Price=0.06253
+2024-06-10 16:23:31,392 -   BUY: Strategy=RSI65 & Stochastic10_3_80_20, Price=0.06485
+2024-06-10 16:23:31,392 -   SELL: Strategy=RSI65 & Stochastic10_3_80_20, Price=0.07667
+2024-06-10 16:23:31,392 -   BUY: Strategy=RSI65 & Stochastic10_3_80_20, Price=0.07415
+2024-06-10 16:23:31,392 -   SELL: Strategy=RSI65 & Stochastic10_3_80_20, Price=0.06213
+2024-06-10 16:23:31,392 -   BUY: Strategy=RSI65 & Stochastic10_3_80_20, Price=0.07456
+2024-06-10 16:23:31,392 -   SELL: Strategy=RSI65 & Stochastic10_3_80_20, Price=0.0948
+2024-06-10 16:23:31,392 -   BUY: Strategy=RSI65 & Stochastic10_3_80_20, Price=0.07756
+2024-06-10 16:23:31,392 -   SELL: Strategy=RSI65 & Stochastic10_3_80_20, Price=0.08222
+2024-06-10 16:23:31,392 -   BUY: Strategy=RSI65 & Stochastic10_3_80_20, Price=0.15399
+2024-06-10 16:23:31,392 -   SELL: Strategy=RSI65 & Stochastic10_3_80_20, Price=0.17392
+2024-06-10 16:23:31,392 -   BUY: Strategy=RSI65 & Stochastic10_3_80_20, Price=0.13548
+2024-06-10 16:23:31,392 -   SELL: Strategy=RSI65 & Stochastic10_3_80_20, Price=0.13883
+2024-06-10 16:23:31,392 -   BUY: Strategy=RSI65 & Stochastic10_3_80_20, Price=0.14777
+2024-06-10 16:23:31,392 -   SELL: Strategy=RSI65 & Stochastic10_3_80_20, Price=0.1536
+2024-06-10 16:23:31,392 - Unknown use case for strategy RSI65 & Stochastic10_3_80_20
+2024-06-10 16:23:31,392 - Completed Strategy: RSI65 & Stochastic10_3_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 14718.626590860928, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,393 -   BUY: Strategy=RSI65 & Stochastic10_3_85_15, Price=0.07212
+2024-06-10 16:23:31,393 -   SELL: Strategy=RSI65 & Stochastic10_3_85_15, Price=0.06746
+2024-06-10 16:23:31,393 -   BUY: Strategy=RSI65 & Stochastic10_3_85_15, Price=0.07756
+2024-06-10 16:23:31,393 -   SELL: Strategy=RSI65 & Stochastic10_3_85_15, Price=0.08191
+2024-06-10 16:23:31,393 -   BUY: Strategy=RSI65 & Stochastic10_3_85_15, Price=0.15399
+2024-06-10 16:23:31,393 -   SELL: Strategy=RSI65 & Stochastic10_3_85_15, Price=0.17392
+2024-06-10 16:23:31,394 -   BUY: Strategy=RSI65 & Stochastic10_3_85_15, Price=0.13548
+2024-06-10 16:23:31,394 -   SELL: Strategy=RSI65 & Stochastic10_3_85_15, Price=0.13883
+2024-06-10 16:23:31,394 -   BUY: Strategy=RSI65 & Stochastic10_3_85_15, Price=0.14777
+2024-06-10 16:23:31,394 -   SELL: Strategy=RSI65 & Stochastic10_3_85_15, Price=0.1536
+2024-06-10 16:23:31,394 - Unknown use case for strategy RSI65 & Stochastic10_3_85_15
+2024-06-10 16:23:31,394 - Completed Strategy: RSI65 & Stochastic10_3_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 11883.923026070575, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,394 -   BUY: Strategy=RSI65 & Stochastic21_5_80_20, Price=0.07212
+2024-06-10 16:23:31,394 -   SELL: Strategy=RSI65 & Stochastic21_5_80_20, Price=0.07293
+2024-06-10 16:23:31,394 -   BUY: Strategy=RSI65 & Stochastic21_5_80_20, Price=0.06824
+2024-06-10 16:23:31,394 -   SELL: Strategy=RSI65 & Stochastic21_5_80_20, Price=0.06746
+2024-06-10 16:23:31,395 -   BUY: Strategy=RSI65 & Stochastic21_5_80_20, Price=0.07415
+2024-06-10 16:23:31,395 -   SELL: Strategy=RSI65 & Stochastic21_5_80_20, Price=0.0625
+2024-06-10 16:23:31,395 -   BUY: Strategy=RSI65 & Stochastic21_5_80_20, Price=0.07756
+2024-06-10 16:23:31,395 -   SELL: Strategy=RSI65 & Stochastic21_5_80_20, Price=0.08014
+2024-06-10 16:23:31,395 -   BUY: Strategy=RSI65 & Stochastic21_5_80_20, Price=0.12881
+2024-06-10 16:23:31,395 -   SELL: Strategy=RSI65 & Stochastic21_5_80_20, Price=0.18293
+2024-06-10 16:23:31,395 -   BUY: Strategy=RSI65 & Stochastic21_5_80_20, Price=0.13548
+2024-06-10 16:23:31,395 -   SELL: Strategy=RSI65 & Stochastic21_5_80_20, Price=0.1536
+2024-06-10 16:23:31,395 - Unknown use case for strategy RSI65 & Stochastic21_5_80_20
+2024-06-10 16:23:31,395 - Completed Strategy: RSI65 & Stochastic21_5_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 14018.114266485209, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,396 -   BUY: Strategy=RSI65 & Stochastic21_5_85_15, Price=0.06824
+2024-06-10 16:23:31,396 -   SELL: Strategy=RSI65 & Stochastic21_5_85_15, Price=0.06253
+2024-06-10 16:23:31,396 -   BUY: Strategy=RSI65 & Stochastic21_5_85_15, Price=0.06485
+2024-06-10 16:23:31,396 -   SELL: Strategy=RSI65 & Stochastic21_5_85_15, Price=0.06746
+2024-06-10 16:23:31,396 -   BUY: Strategy=RSI65 & Stochastic21_5_85_15, Price=0.07415
+2024-06-10 16:23:31,396 -   SELL: Strategy=RSI65 & Stochastic21_5_85_15, Price=0.06213
+2024-06-10 16:23:31,396 -   BUY: Strategy=RSI65 & Stochastic21_5_85_15, Price=0.05858
+2024-06-10 16:23:31,396 -   SELL: Strategy=RSI65 & Stochastic21_5_85_15, Price=0.07021
+2024-06-10 16:23:31,396 -   BUY: Strategy=RSI65 & Stochastic21_5_85_15, Price=0.07756
+2024-06-10 16:23:31,396 -   SELL: Strategy=RSI65 & Stochastic21_5_85_15, Price=0.08225
+2024-06-10 16:23:31,396 -   BUY: Strategy=RSI65 & Stochastic21_5_85_15, Price=0.15399
+2024-06-10 16:23:31,396 -   SELL: Strategy=RSI65 & Stochastic21_5_85_15, Price=0.18293
+2024-06-10 16:23:31,396 -   BUY: Strategy=RSI65 & Stochastic21_5_85_15, Price=0.14973
+2024-06-10 16:23:31,396 -   SELL: Strategy=RSI65 & Stochastic21_5_85_15, Price=0.17402
+2024-06-10 16:23:31,396 - Unknown use case for strategy RSI65 & Stochastic21_5_85_15
+2024-06-10 16:23:31,396 - Completed Strategy: RSI65 & Stochastic21_5_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 14015.430180034073, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,397 -   BUY: Strategy=RSI66 & Stochastic14_3_80_20, Price=0.06824
+2024-06-10 16:23:31,397 -   SELL: Strategy=RSI66 & Stochastic14_3_80_20, Price=0.07035
+2024-06-10 16:23:31,397 -   BUY: Strategy=RSI66 & Stochastic14_3_80_20, Price=0.07415
+2024-06-10 16:23:31,397 -   SELL: Strategy=RSI66 & Stochastic14_3_80_20, Price=0.06416
+2024-06-10 16:23:31,397 -   BUY: Strategy=RSI66 & Stochastic14_3_80_20, Price=0.07456
+2024-06-10 16:23:31,397 -   SELL: Strategy=RSI66 & Stochastic14_3_80_20, Price=0.07837
+2024-06-10 16:23:31,398 -   BUY: Strategy=RSI66 & Stochastic14_3_80_20, Price=0.07756
+2024-06-10 16:23:31,398 -   SELL: Strategy=RSI66 & Stochastic14_3_80_20, Price=0.08222
+2024-06-10 16:23:31,398 -   BUY: Strategy=RSI66 & Stochastic14_3_80_20, Price=0.14094
+2024-06-10 16:23:31,398 -   SELL: Strategy=RSI66 & Stochastic14_3_80_20, Price=0.18293
+2024-06-10 16:23:31,398 -   BUY: Strategy=RSI66 & Stochastic14_3_80_20, Price=0.16907
+2024-06-10 16:23:31,398 -   SELL: Strategy=RSI66 & Stochastic14_3_80_20, Price=0.15803
+2024-06-10 16:23:31,398 -   BUY: Strategy=RSI66 & Stochastic14_3_80_20, Price=0.13548
+2024-06-10 16:23:31,398 -   SELL: Strategy=RSI66 & Stochastic14_3_80_20, Price=0.13883
+2024-06-10 16:23:31,398 - Unknown use case for strategy RSI66 & Stochastic14_3_80_20
+2024-06-10 16:23:31,398 - Completed Strategy: RSI66 & Stochastic14_3_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 12356.449350733463, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,399 -   BUY: Strategy=RSI66 & Stochastic14_3_85_15, Price=0.07212
+2024-06-10 16:23:31,399 -   SELL: Strategy=RSI66 & Stochastic14_3_85_15, Price=0.0716
+2024-06-10 16:23:31,399 -   BUY: Strategy=RSI66 & Stochastic14_3_85_15, Price=0.06824
+2024-06-10 16:23:31,399 -   SELL: Strategy=RSI66 & Stochastic14_3_85_15, Price=0.06253
+2024-06-10 16:23:31,399 -   BUY: Strategy=RSI66 & Stochastic14_3_85_15, Price=0.06485
+2024-06-10 16:23:31,399 -   SELL: Strategy=RSI66 & Stochastic14_3_85_15, Price=0.06746
+2024-06-10 16:23:31,399 -   BUY: Strategy=RSI66 & Stochastic14_3_85_15, Price=0.07415
+2024-06-10 16:23:31,399 -   SELL: Strategy=RSI66 & Stochastic14_3_85_15, Price=0.06416
+2024-06-10 16:23:31,399 -   BUY: Strategy=RSI66 & Stochastic14_3_85_15, Price=0.06131
+2024-06-10 16:23:31,399 -   SELL: Strategy=RSI66 & Stochastic14_3_85_15, Price=0.06274
+2024-06-10 16:23:31,399 -   BUY: Strategy=RSI66 & Stochastic14_3_85_15, Price=0.05858
+2024-06-10 16:23:31,399 -   SELL: Strategy=RSI66 & Stochastic14_3_85_15, Price=0.0617
+2024-06-10 16:23:31,399 -   BUY: Strategy=RSI66 & Stochastic14_3_85_15, Price=0.07756
+2024-06-10 16:23:31,399 -   SELL: Strategy=RSI66 & Stochastic14_3_85_15, Price=0.08191
+2024-06-10 16:23:31,399 -   BUY: Strategy=RSI66 & Stochastic14_3_85_15, Price=0.15399
+2024-06-10 16:23:31,399 -   SELL: Strategy=RSI66 & Stochastic14_3_85_15, Price=0.15693
+2024-06-10 16:23:31,399 -   BUY: Strategy=RSI66 & Stochastic14_3_85_15, Price=0.17558
+2024-06-10 16:23:31,399 -   SELL: Strategy=RSI66 & Stochastic14_3_85_15, Price=0.15803
+2024-06-10 16:23:31,399 -   BUY: Strategy=RSI66 & Stochastic14_3_85_15, Price=0.14973
+2024-06-10 16:23:31,400 -   SELL: Strategy=RSI66 & Stochastic14_3_85_15, Price=0.13883
+2024-06-10 16:23:31,400 - Unknown use case for strategy RSI66 & Stochastic14_3_85_15
+2024-06-10 16:23:31,400 - Completed Strategy: RSI66 & Stochastic14_3_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 7926.780673207768, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,400 -   BUY: Strategy=RSI66 & Stochastic10_3_80_20, Price=0.06824
+2024-06-10 16:23:31,400 -   SELL: Strategy=RSI66 & Stochastic10_3_80_20, Price=0.06253
+2024-06-10 16:23:31,400 -   BUY: Strategy=RSI66 & Stochastic10_3_80_20, Price=0.06485
+2024-06-10 16:23:31,400 -   SELL: Strategy=RSI66 & Stochastic10_3_80_20, Price=0.07691
+2024-06-10 16:23:31,400 -   BUY: Strategy=RSI66 & Stochastic10_3_80_20, Price=0.07415
+2024-06-10 16:23:31,401 -   SELL: Strategy=RSI66 & Stochastic10_3_80_20, Price=0.06213
+2024-06-10 16:23:31,401 -   BUY: Strategy=RSI66 & Stochastic10_3_80_20, Price=0.05803
+2024-06-10 16:23:31,401 -   SELL: Strategy=RSI66 & Stochastic10_3_80_20, Price=0.05989
+2024-06-10 16:23:31,401 -   BUY: Strategy=RSI66 & Stochastic10_3_80_20, Price=0.07456
+2024-06-10 16:23:31,401 -   SELL: Strategy=RSI66 & Stochastic10_3_80_20, Price=0.09188
+2024-06-10 16:23:31,401 -   BUY: Strategy=RSI66 & Stochastic10_3_80_20, Price=0.07756
+2024-06-10 16:23:31,401 -   SELL: Strategy=RSI66 & Stochastic10_3_80_20, Price=0.08222
+2024-06-10 16:23:31,401 -   BUY: Strategy=RSI66 & Stochastic10_3_80_20, Price=0.15399
+2024-06-10 16:23:31,401 -   SELL: Strategy=RSI66 & Stochastic10_3_80_20, Price=0.18293
+2024-06-10 16:23:31,401 -   BUY: Strategy=RSI66 & Stochastic10_3_80_20, Price=0.16907
+2024-06-10 16:23:31,401 -   SELL: Strategy=RSI66 & Stochastic10_3_80_20, Price=0.15803
+2024-06-10 16:23:31,401 -   BUY: Strategy=RSI66 & Stochastic10_3_80_20, Price=0.13548
+2024-06-10 16:23:31,401 -   SELL: Strategy=RSI66 & Stochastic10_3_80_20, Price=0.13883
+2024-06-10 16:23:31,401 -   BUY: Strategy=RSI66 & Stochastic10_3_80_20, Price=0.14777
+2024-06-10 16:23:31,401 -   SELL: Strategy=RSI66 & Stochastic10_3_80_20, Price=0.1536
+2024-06-10 16:23:31,401 - Unknown use case for strategy RSI66 & Stochastic10_3_80_20
+2024-06-10 16:23:31,401 - Completed Strategy: RSI66 & Stochastic10_3_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 14519.35829020971, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,402 -   BUY: Strategy=RSI66 & Stochastic10_3_85_15, Price=0.07212
+2024-06-10 16:23:31,402 -   SELL: Strategy=RSI66 & Stochastic10_3_85_15, Price=0.06746
+2024-06-10 16:23:31,402 -   BUY: Strategy=RSI66 & Stochastic10_3_85_15, Price=0.06131
+2024-06-10 16:23:31,402 -   SELL: Strategy=RSI66 & Stochastic10_3_85_15, Price=0.06274
+2024-06-10 16:23:31,402 -   BUY: Strategy=RSI66 & Stochastic10_3_85_15, Price=0.05803
+2024-06-10 16:23:31,402 -   SELL: Strategy=RSI66 & Stochastic10_3_85_15, Price=0.0595
+2024-06-10 16:23:31,402 -   BUY: Strategy=RSI66 & Stochastic10_3_85_15, Price=0.07756
+2024-06-10 16:23:31,402 -   SELL: Strategy=RSI66 & Stochastic10_3_85_15, Price=0.08191
+2024-06-10 16:23:31,403 -   BUY: Strategy=RSI66 & Stochastic10_3_85_15, Price=0.15399
+2024-06-10 16:23:31,403 -   SELL: Strategy=RSI66 & Stochastic10_3_85_15, Price=0.15693
+2024-06-10 16:23:31,403 -   BUY: Strategy=RSI66 & Stochastic10_3_85_15, Price=0.16907
+2024-06-10 16:23:31,403 -   SELL: Strategy=RSI66 & Stochastic10_3_85_15, Price=0.15803
+2024-06-10 16:23:31,403 -   BUY: Strategy=RSI66 & Stochastic10_3_85_15, Price=0.13548
+2024-06-10 16:23:31,403 -   SELL: Strategy=RSI66 & Stochastic10_3_85_15, Price=0.13883
+2024-06-10 16:23:31,403 -   BUY: Strategy=RSI66 & Stochastic10_3_85_15, Price=0.14777
+2024-06-10 16:23:31,403 -   SELL: Strategy=RSI66 & Stochastic10_3_85_15, Price=0.1536
+2024-06-10 16:23:31,403 - Unknown use case for strategy RSI66 & Stochastic10_3_85_15
+2024-06-10 16:23:31,403 - Completed Strategy: RSI66 & Stochastic10_3_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10516.39424899616, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,404 -   BUY: Strategy=RSI66 & Stochastic21_5_80_20, Price=0.07212
+2024-06-10 16:23:31,404 -   SELL: Strategy=RSI66 & Stochastic21_5_80_20, Price=0.07293
+2024-06-10 16:23:31,404 -   BUY: Strategy=RSI66 & Stochastic21_5_80_20, Price=0.06824
+2024-06-10 16:23:31,404 -   SELL: Strategy=RSI66 & Stochastic21_5_80_20, Price=0.07035
+2024-06-10 16:23:31,404 -   BUY: Strategy=RSI66 & Stochastic21_5_80_20, Price=0.07415
+2024-06-10 16:23:31,404 -   SELL: Strategy=RSI66 & Stochastic21_5_80_20, Price=0.0625
+2024-06-10 16:23:31,404 -   BUY: Strategy=RSI66 & Stochastic21_5_80_20, Price=0.07756
+2024-06-10 16:23:31,404 -   SELL: Strategy=RSI66 & Stochastic21_5_80_20, Price=0.08014
+2024-06-10 16:23:31,405 -   BUY: Strategy=RSI66 & Stochastic21_5_80_20, Price=0.12881
+2024-06-10 16:23:31,405 -   SELL: Strategy=RSI66 & Stochastic21_5_80_20, Price=0.18293
+2024-06-10 16:23:31,405 -   BUY: Strategy=RSI66 & Stochastic21_5_80_20, Price=0.13548
+2024-06-10 16:23:31,405 -   SELL: Strategy=RSI66 & Stochastic21_5_80_20, Price=0.1536
+2024-06-10 16:23:31,405 - Unknown use case for strategy RSI66 & Stochastic21_5_80_20
+2024-06-10 16:23:31,405 - Completed Strategy: RSI66 & Stochastic21_5_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 14618.653107726568, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,406 -   BUY: Strategy=RSI66 & Stochastic21_5_85_15, Price=0.06824
+2024-06-10 16:23:31,406 -   SELL: Strategy=RSI66 & Stochastic21_5_85_15, Price=0.06253
+2024-06-10 16:23:31,406 -   BUY: Strategy=RSI66 & Stochastic21_5_85_15, Price=0.06485
+2024-06-10 16:23:31,406 -   SELL: Strategy=RSI66 & Stochastic21_5_85_15, Price=0.06746
+2024-06-10 16:23:31,406 -   BUY: Strategy=RSI66 & Stochastic21_5_85_15, Price=0.07415
+2024-06-10 16:23:31,406 -   SELL: Strategy=RSI66 & Stochastic21_5_85_15, Price=0.06213
+2024-06-10 16:23:31,406 -   BUY: Strategy=RSI66 & Stochastic21_5_85_15, Price=0.05858
+2024-06-10 16:23:31,406 -   SELL: Strategy=RSI66 & Stochastic21_5_85_15, Price=0.0617
+2024-06-10 16:23:31,406 -   BUY: Strategy=RSI66 & Stochastic21_5_85_15, Price=0.07756
+2024-06-10 16:23:31,406 -   SELL: Strategy=RSI66 & Stochastic21_5_85_15, Price=0.08225
+2024-06-10 16:23:31,406 -   BUY: Strategy=RSI66 & Stochastic21_5_85_15, Price=0.15399
+2024-06-10 16:23:31,406 -   SELL: Strategy=RSI66 & Stochastic21_5_85_15, Price=0.15693
+2024-06-10 16:23:31,406 -   BUY: Strategy=RSI66 & Stochastic21_5_85_15, Price=0.14973
+2024-06-10 16:23:31,406 -   SELL: Strategy=RSI66 & Stochastic21_5_85_15, Price=0.17402
+2024-06-10 16:23:31,406 - Unknown use case for strategy RSI66 & Stochastic21_5_85_15
+2024-06-10 16:23:31,407 - Completed Strategy: RSI66 & Stochastic21_5_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10566.07438058835, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,407 -   BUY: Strategy=RSI67 & Stochastic14_3_80_20, Price=0.06824
+2024-06-10 16:23:31,407 -   SELL: Strategy=RSI67 & Stochastic14_3_80_20, Price=0.07035
+2024-06-10 16:23:31,407 -   BUY: Strategy=RSI67 & Stochastic14_3_80_20, Price=0.07618
+2024-06-10 16:23:31,407 -   SELL: Strategy=RSI67 & Stochastic14_3_80_20, Price=0.07541
+2024-06-10 16:23:31,407 -   BUY: Strategy=RSI67 & Stochastic14_3_80_20, Price=0.07415
+2024-06-10 16:23:31,408 -   SELL: Strategy=RSI67 & Stochastic14_3_80_20, Price=0.06416
+2024-06-10 16:23:31,408 -   BUY: Strategy=RSI67 & Stochastic14_3_80_20, Price=0.07456
+2024-06-10 16:23:31,408 -   SELL: Strategy=RSI67 & Stochastic14_3_80_20, Price=0.08641
+2024-06-10 16:23:31,408 -   BUY: Strategy=RSI67 & Stochastic14_3_80_20, Price=0.07756
+2024-06-10 16:23:31,408 -   SELL: Strategy=RSI67 & Stochastic14_3_80_20, Price=0.08222
+2024-06-10 16:23:31,408 -   BUY: Strategy=RSI67 & Stochastic14_3_80_20, Price=0.07875
+2024-06-10 16:23:31,408 -   SELL: Strategy=RSI67 & Stochastic14_3_80_20, Price=0.0807
+2024-06-10 16:23:31,408 -   BUY: Strategy=RSI67 & Stochastic14_3_80_20, Price=0.14094
+2024-06-10 16:23:31,408 -   SELL: Strategy=RSI67 & Stochastic14_3_80_20, Price=0.18293
+2024-06-10 16:23:31,408 -   BUY: Strategy=RSI67 & Stochastic14_3_80_20, Price=0.16907
+2024-06-10 16:23:31,408 -   SELL: Strategy=RSI67 & Stochastic14_3_80_20, Price=0.15803
+2024-06-10 16:23:31,408 -   BUY: Strategy=RSI67 & Stochastic14_3_80_20, Price=0.13548
+2024-06-10 16:23:31,408 -   SELL: Strategy=RSI67 & Stochastic14_3_80_20, Price=0.13883
+2024-06-10 16:23:31,408 - Unknown use case for strategy RSI67 & Stochastic14_3_80_20
+2024-06-10 16:23:31,408 - Completed Strategy: RSI67 & Stochastic14_3_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 13820.342195520248, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,409 -   BUY: Strategy=RSI67 & Stochastic14_3_85_15, Price=0.07212
+2024-06-10 16:23:31,409 -   SELL: Strategy=RSI67 & Stochastic14_3_85_15, Price=0.06253
+2024-06-10 16:23:31,409 -   BUY: Strategy=RSI67 & Stochastic14_3_85_15, Price=0.06485
+2024-06-10 16:23:31,409 -   SELL: Strategy=RSI67 & Stochastic14_3_85_15, Price=0.07691
+2024-06-10 16:23:31,409 -   BUY: Strategy=RSI67 & Stochastic14_3_85_15, Price=0.07473
+2024-06-10 16:23:31,409 -   SELL: Strategy=RSI67 & Stochastic14_3_85_15, Price=0.07621
+2024-06-10 16:23:31,409 -   BUY: Strategy=RSI67 & Stochastic14_3_85_15, Price=0.07415
+2024-06-10 16:23:31,409 -   SELL: Strategy=RSI67 & Stochastic14_3_85_15, Price=0.06416
+2024-06-10 16:23:31,409 -   BUY: Strategy=RSI67 & Stochastic14_3_85_15, Price=0.06131
+2024-06-10 16:23:31,409 -   SELL: Strategy=RSI67 & Stochastic14_3_85_15, Price=0.06274
+2024-06-10 16:23:31,409 -   BUY: Strategy=RSI67 & Stochastic14_3_85_15, Price=0.05858
+2024-06-10 16:23:31,410 -   SELL: Strategy=RSI67 & Stochastic14_3_85_15, Price=0.0602
+2024-06-10 16:23:31,410 -   BUY: Strategy=RSI67 & Stochastic14_3_85_15, Price=0.09101
+2024-06-10 16:23:31,410 -   SELL: Strategy=RSI67 & Stochastic14_3_85_15, Price=0.0807
+2024-06-10 16:23:31,410 -   BUY: Strategy=RSI67 & Stochastic14_3_85_15, Price=0.15399
+2024-06-10 16:23:31,410 -   SELL: Strategy=RSI67 & Stochastic14_3_85_15, Price=0.15693
+2024-06-10 16:23:31,410 -   BUY: Strategy=RSI67 & Stochastic14_3_85_15, Price=0.16907
+2024-06-10 16:23:31,410 -   SELL: Strategy=RSI67 & Stochastic14_3_85_15, Price=0.15803
+2024-06-10 16:23:31,410 -   BUY: Strategy=RSI67 & Stochastic14_3_85_15, Price=0.14973
+2024-06-10 16:23:31,410 -   SELL: Strategy=RSI67 & Stochastic14_3_85_15, Price=0.13883
+2024-06-10 16:23:31,410 - Unknown use case for strategy RSI67 & Stochastic14_3_85_15
+2024-06-10 16:23:31,410 - Completed Strategy: RSI67 & Stochastic14_3_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 7472.766387776746, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,411 -   BUY: Strategy=RSI67 & Stochastic10_3_80_20, Price=0.06824
+2024-06-10 16:23:31,411 -   SELL: Strategy=RSI67 & Stochastic10_3_80_20, Price=0.06253
+2024-06-10 16:23:31,411 -   BUY: Strategy=RSI67 & Stochastic10_3_80_20, Price=0.06485
+2024-06-10 16:23:31,411 -   SELL: Strategy=RSI67 & Stochastic10_3_80_20, Price=0.07691
+2024-06-10 16:23:31,411 -   BUY: Strategy=RSI67 & Stochastic10_3_80_20, Price=0.07618
+2024-06-10 16:23:31,411 -   SELL: Strategy=RSI67 & Stochastic10_3_80_20, Price=0.07621
+2024-06-10 16:23:31,411 -   BUY: Strategy=RSI67 & Stochastic10_3_80_20, Price=0.07415
+2024-06-10 16:23:31,411 -   SELL: Strategy=RSI67 & Stochastic10_3_80_20, Price=0.06671
+2024-06-10 16:23:31,411 -   BUY: Strategy=RSI67 & Stochastic10_3_80_20, Price=0.07456
+2024-06-10 16:23:31,411 -   SELL: Strategy=RSI67 & Stochastic10_3_80_20, Price=0.08641
+2024-06-10 16:23:31,411 -   BUY: Strategy=RSI67 & Stochastic10_3_80_20, Price=0.09101
+2024-06-10 16:23:31,411 -   SELL: Strategy=RSI67 & Stochastic10_3_80_20, Price=0.08222
+2024-06-10 16:23:31,411 -   BUY: Strategy=RSI67 & Stochastic10_3_80_20, Price=0.07875
+2024-06-10 16:23:31,411 -   SELL: Strategy=RSI67 & Stochastic10_3_80_20, Price=0.0807
+2024-06-10 16:23:31,411 -   BUY: Strategy=RSI67 & Stochastic10_3_80_20, Price=0.15399
+2024-06-10 16:23:31,412 -   SELL: Strategy=RSI67 & Stochastic10_3_80_20, Price=0.18293
+2024-06-10 16:23:31,412 -   BUY: Strategy=RSI67 & Stochastic10_3_80_20, Price=0.16907
+2024-06-10 16:23:31,412 -   SELL: Strategy=RSI67 & Stochastic10_3_80_20, Price=0.15803
+2024-06-10 16:23:31,412 -   BUY: Strategy=RSI67 & Stochastic10_3_80_20, Price=0.13548
+2024-06-10 16:23:31,412 -   SELL: Strategy=RSI67 & Stochastic10_3_80_20, Price=0.13883
+2024-06-10 16:23:31,412 - Unknown use case for strategy RSI67 & Stochastic10_3_80_20
+2024-06-10 16:23:31,412 - Completed Strategy: RSI67 & Stochastic10_3_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 11940.320788596213, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,412 -   BUY: Strategy=RSI67 & Stochastic10_3_85_15, Price=0.07212
+2024-06-10 16:23:31,413 -   SELL: Strategy=RSI67 & Stochastic10_3_85_15, Price=0.07691
+2024-06-10 16:23:31,413 -   BUY: Strategy=RSI67 & Stochastic10_3_85_15, Price=0.06131
+2024-06-10 16:23:31,413 -   SELL: Strategy=RSI67 & Stochastic10_3_85_15, Price=0.06274
+2024-06-10 16:23:31,413 -   BUY: Strategy=RSI67 & Stochastic10_3_85_15, Price=0.09101
+2024-06-10 16:23:31,413 -   SELL: Strategy=RSI67 & Stochastic10_3_85_15, Price=0.0807
+2024-06-10 16:23:31,413 -   BUY: Strategy=RSI67 & Stochastic10_3_85_15, Price=0.15399
+2024-06-10 16:23:31,413 -   SELL: Strategy=RSI67 & Stochastic10_3_85_15, Price=0.15693
+2024-06-10 16:23:31,413 -   BUY: Strategy=RSI67 & Stochastic10_3_85_15, Price=0.16907
+2024-06-10 16:23:31,413 -   SELL: Strategy=RSI67 & Stochastic10_3_85_15, Price=0.15803
+2024-06-10 16:23:31,413 -   BUY: Strategy=RSI67 & Stochastic10_3_85_15, Price=0.13548
+2024-06-10 16:23:31,413 -   SELL: Strategy=RSI67 & Stochastic10_3_85_15, Price=0.13883
+2024-06-10 16:23:31,413 - Unknown use case for strategy RSI67 & Stochastic10_3_85_15
+2024-06-10 16:23:31,413 - Completed Strategy: RSI67 & Stochastic10_3_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 9445.376867066454, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,414 -   BUY: Strategy=RSI67 & Stochastic21_5_80_20, Price=0.07221
+2024-06-10 16:23:31,414 -   SELL: Strategy=RSI67 & Stochastic21_5_80_20, Price=0.07293
+2024-06-10 16:23:31,414 -   BUY: Strategy=RSI67 & Stochastic21_5_80_20, Price=0.06824
+2024-06-10 16:23:31,414 -   SELL: Strategy=RSI67 & Stochastic21_5_80_20, Price=0.07035
+2024-06-10 16:23:31,414 -   BUY: Strategy=RSI67 & Stochastic21_5_80_20, Price=0.07618
+2024-06-10 16:23:31,414 -   SELL: Strategy=RSI67 & Stochastic21_5_80_20, Price=0.07541
+2024-06-10 16:23:31,414 -   BUY: Strategy=RSI67 & Stochastic21_5_80_20, Price=0.07415
+2024-06-10 16:23:31,414 -   SELL: Strategy=RSI67 & Stochastic21_5_80_20, Price=0.0625
+2024-06-10 16:23:31,414 -   BUY: Strategy=RSI67 & Stochastic21_5_80_20, Price=0.07756
+2024-06-10 16:23:31,414 -   SELL: Strategy=RSI67 & Stochastic21_5_80_20, Price=0.08014
+2024-06-10 16:23:31,414 -   BUY: Strategy=RSI67 & Stochastic21_5_80_20, Price=0.07875
+2024-06-10 16:23:31,415 -   SELL: Strategy=RSI67 & Stochastic21_5_80_20, Price=0.08225
+2024-06-10 16:23:31,415 -   BUY: Strategy=RSI67 & Stochastic21_5_80_20, Price=0.12881
+2024-06-10 16:23:31,415 -   SELL: Strategy=RSI67 & Stochastic21_5_80_20, Price=0.18293
+2024-06-10 16:23:31,415 -   BUY: Strategy=RSI67 & Stochastic21_5_80_20, Price=0.13548
+2024-06-10 16:23:31,415 - Unknown use case for strategy RSI67 & Stochastic21_5_80_20
+2024-06-10 16:23:31,415 - Completed Strategy: RSI67 & Stochastic21_5_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 15623.931539158313, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,415 -   BUY: Strategy=RSI67 & Stochastic21_5_85_15, Price=0.06824
+2024-06-10 16:23:31,415 -   SELL: Strategy=RSI67 & Stochastic21_5_85_15, Price=0.06253
+2024-06-10 16:23:31,416 -   BUY: Strategy=RSI67 & Stochastic21_5_85_15, Price=0.06485
+2024-06-10 16:23:31,416 -   SELL: Strategy=RSI67 & Stochastic21_5_85_15, Price=0.07691
+2024-06-10 16:23:31,416 -   BUY: Strategy=RSI67 & Stochastic21_5_85_15, Price=0.07618
+2024-06-10 16:23:31,416 -   SELL: Strategy=RSI67 & Stochastic21_5_85_15, Price=0.07621
+2024-06-10 16:23:31,416 -   BUY: Strategy=RSI67 & Stochastic21_5_85_15, Price=0.07415
+2024-06-10 16:23:31,416 -   SELL: Strategy=RSI67 & Stochastic21_5_85_15, Price=0.06213
+2024-06-10 16:23:31,416 -   BUY: Strategy=RSI67 & Stochastic21_5_85_15, Price=0.05858
+2024-06-10 16:23:31,416 -   SELL: Strategy=RSI67 & Stochastic21_5_85_15, Price=0.0602
+2024-06-10 16:23:31,416 -   BUY: Strategy=RSI67 & Stochastic21_5_85_15, Price=0.09101
+2024-06-10 16:23:31,416 -   SELL: Strategy=RSI67 & Stochastic21_5_85_15, Price=0.09309
+2024-06-10 16:23:31,416 -   BUY: Strategy=RSI67 & Stochastic21_5_85_15, Price=0.07756
+2024-06-10 16:23:31,416 -   SELL: Strategy=RSI67 & Stochastic21_5_85_15, Price=0.0807
+2024-06-10 16:23:31,416 -   BUY: Strategy=RSI67 & Stochastic21_5_85_15, Price=0.15399
+2024-06-10 16:23:31,416 -   SELL: Strategy=RSI67 & Stochastic21_5_85_15, Price=0.15693
+2024-06-10 16:23:31,416 -   BUY: Strategy=RSI67 & Stochastic21_5_85_15, Price=0.14973
+2024-06-10 16:23:31,416 -   SELL: Strategy=RSI67 & Stochastic21_5_85_15, Price=0.17402
+2024-06-10 16:23:31,416 - Unknown use case for strategy RSI67 & Stochastic21_5_85_15
+2024-06-10 16:23:31,416 - Completed Strategy: RSI67 & Stochastic21_5_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 11800.054215204264, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,417 -   BUY: Strategy=RSI68 & Stochastic14_3_80_20, Price=0.06824
+2024-06-10 16:23:31,417 -   SELL: Strategy=RSI68 & Stochastic14_3_80_20, Price=0.07035
+2024-06-10 16:23:31,417 -   BUY: Strategy=RSI68 & Stochastic14_3_80_20, Price=0.07618
+2024-06-10 16:23:31,417 -   SELL: Strategy=RSI68 & Stochastic14_3_80_20, Price=0.07621
+2024-06-10 16:23:31,417 -   BUY: Strategy=RSI68 & Stochastic14_3_80_20, Price=0.07415
+2024-06-10 16:23:31,417 -   SELL: Strategy=RSI68 & Stochastic14_3_80_20, Price=0.06416
+2024-06-10 16:23:31,417 -   BUY: Strategy=RSI68 & Stochastic14_3_80_20, Price=0.07456
+2024-06-10 16:23:31,418 -   SELL: Strategy=RSI68 & Stochastic14_3_80_20, Price=0.08641
+2024-06-10 16:23:31,418 -   BUY: Strategy=RSI68 & Stochastic14_3_80_20, Price=0.07756
+2024-06-10 16:23:31,418 -   SELL: Strategy=RSI68 & Stochastic14_3_80_20, Price=0.0807
+2024-06-10 16:23:31,418 -   BUY: Strategy=RSI68 & Stochastic14_3_80_20, Price=0.14094
+2024-06-10 16:23:31,418 -   SELL: Strategy=RSI68 & Stochastic14_3_80_20, Price=0.15537
+2024-06-10 16:23:31,418 -   BUY: Strategy=RSI68 & Stochastic14_3_80_20, Price=0.16907
+2024-06-10 16:23:31,418 -   SELL: Strategy=RSI68 & Stochastic14_3_80_20, Price=0.15803
+2024-06-10 16:23:31,418 -   BUY: Strategy=RSI68 & Stochastic14_3_80_20, Price=0.13548
+2024-06-10 16:23:31,418 -   SELL: Strategy=RSI68 & Stochastic14_3_80_20, Price=0.16403
+2024-06-10 16:23:31,418 - Unknown use case for strategy RSI68 & Stochastic14_3_80_20
+2024-06-10 16:23:31,418 - Completed Strategy: RSI68 & Stochastic14_3_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 13424.468490706064, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,419 -   BUY: Strategy=RSI68 & Stochastic14_3_85_15, Price=0.07212
+2024-06-10 16:23:31,419 -   SELL: Strategy=RSI68 & Stochastic14_3_85_15, Price=0.06253
+2024-06-10 16:23:31,419 -   BUY: Strategy=RSI68 & Stochastic14_3_85_15, Price=0.06485
+2024-06-10 16:23:31,419 -   SELL: Strategy=RSI68 & Stochastic14_3_85_15, Price=0.07621
+2024-06-10 16:23:31,419 -   BUY: Strategy=RSI68 & Stochastic14_3_85_15, Price=0.07415
+2024-06-10 16:23:31,419 -   SELL: Strategy=RSI68 & Stochastic14_3_85_15, Price=0.06416
+2024-06-10 16:23:31,419 -   BUY: Strategy=RSI68 & Stochastic14_3_85_15, Price=0.06131
+2024-06-10 16:23:31,419 -   SELL: Strategy=RSI68 & Stochastic14_3_85_15, Price=0.0602
+2024-06-10 16:23:31,419 -   BUY: Strategy=RSI68 & Stochastic14_3_85_15, Price=0.07335
+2024-06-10 16:23:31,419 -   SELL: Strategy=RSI68 & Stochastic14_3_85_15, Price=0.08641
+2024-06-10 16:23:31,419 -   BUY: Strategy=RSI68 & Stochastic14_3_85_15, Price=0.09101
+2024-06-10 16:23:31,419 -   SELL: Strategy=RSI68 & Stochastic14_3_85_15, Price=0.0807
+2024-06-10 16:23:31,419 -   BUY: Strategy=RSI68 & Stochastic14_3_85_15, Price=0.15399
+2024-06-10 16:23:31,419 -   SELL: Strategy=RSI68 & Stochastic14_3_85_15, Price=0.15693
+2024-06-10 16:23:31,420 -   BUY: Strategy=RSI68 & Stochastic14_3_85_15, Price=0.16907
+2024-06-10 16:23:31,420 -   SELL: Strategy=RSI68 & Stochastic14_3_85_15, Price=0.15803
+2024-06-10 16:23:31,420 -   BUY: Strategy=RSI68 & Stochastic14_3_85_15, Price=0.14973
+2024-06-10 16:23:31,420 -   SELL: Strategy=RSI68 & Stochastic14_3_85_15, Price=0.17402
+2024-06-10 16:23:31,420 - Unknown use case for strategy RSI68 & Stochastic14_3_85_15
+2024-06-10 16:23:31,420 - Completed Strategy: RSI68 & Stochastic14_3_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10011.016038160535, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,420 -   BUY: Strategy=RSI68 & Stochastic10_3_80_20, Price=0.06824
+2024-06-10 16:23:31,420 -   SELL: Strategy=RSI68 & Stochastic10_3_80_20, Price=0.06253
+2024-06-10 16:23:31,420 -   BUY: Strategy=RSI68 & Stochastic10_3_80_20, Price=0.06485
+2024-06-10 16:23:31,421 -   SELL: Strategy=RSI68 & Stochastic10_3_80_20, Price=0.07594
+2024-06-10 16:23:31,421 -   BUY: Strategy=RSI68 & Stochastic10_3_80_20, Price=0.07415
+2024-06-10 16:23:31,421 -   SELL: Strategy=RSI68 & Stochastic10_3_80_20, Price=0.06213
+2024-06-10 16:23:31,421 -   BUY: Strategy=RSI68 & Stochastic10_3_80_20, Price=0.07456
+2024-06-10 16:23:31,421 -   SELL: Strategy=RSI68 & Stochastic10_3_80_20, Price=0.08641
+2024-06-10 16:23:31,421 -   BUY: Strategy=RSI68 & Stochastic10_3_80_20, Price=0.09101
+2024-06-10 16:23:31,421 -   SELL: Strategy=RSI68 & Stochastic10_3_80_20, Price=0.0807
+2024-06-10 16:23:31,421 -   BUY: Strategy=RSI68 & Stochastic10_3_80_20, Price=0.15399
+2024-06-10 16:23:31,421 -   SELL: Strategy=RSI68 & Stochastic10_3_80_20, Price=0.15537
+2024-06-10 16:23:31,421 -   BUY: Strategy=RSI68 & Stochastic10_3_80_20, Price=0.16907
+2024-06-10 16:23:31,421 -   SELL: Strategy=RSI68 & Stochastic10_3_80_20, Price=0.15803
+2024-06-10 16:23:31,421 -   BUY: Strategy=RSI68 & Stochastic10_3_80_20, Price=0.13548
+2024-06-10 16:23:31,421 -   SELL: Strategy=RSI68 & Stochastic10_3_80_20, Price=0.16403
+2024-06-10 16:23:31,421 - Unknown use case for strategy RSI68 & Stochastic10_3_80_20
+2024-06-10 16:23:31,421 - Completed Strategy: RSI68 & Stochastic10_3_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10549.660370095227, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,422 -   BUY: Strategy=RSI68 & Stochastic10_3_85_15, Price=0.07212
+2024-06-10 16:23:31,422 -   SELL: Strategy=RSI68 & Stochastic10_3_85_15, Price=0.07621
+2024-06-10 16:23:31,422 -   BUY: Strategy=RSI68 & Stochastic10_3_85_15, Price=0.06131
+2024-06-10 16:23:31,422 -   SELL: Strategy=RSI68 & Stochastic10_3_85_15, Price=0.0602
+2024-06-10 16:23:31,422 -   BUY: Strategy=RSI68 & Stochastic10_3_85_15, Price=0.07335
+2024-06-10 16:23:31,422 -   SELL: Strategy=RSI68 & Stochastic10_3_85_15, Price=0.08641
+2024-06-10 16:23:31,422 -   BUY: Strategy=RSI68 & Stochastic10_3_85_15, Price=0.09101
+2024-06-10 16:23:31,422 -   SELL: Strategy=RSI68 & Stochastic10_3_85_15, Price=0.0807
+2024-06-10 16:23:31,422 -   BUY: Strategy=RSI68 & Stochastic10_3_85_15, Price=0.15399
+2024-06-10 16:23:31,422 -   SELL: Strategy=RSI68 & Stochastic10_3_85_15, Price=0.15693
+2024-06-10 16:23:31,423 -   BUY: Strategy=RSI68 & Stochastic10_3_85_15, Price=0.16907
+2024-06-10 16:23:31,423 -   SELL: Strategy=RSI68 & Stochastic10_3_85_15, Price=0.15803
+2024-06-10 16:23:31,423 -   BUY: Strategy=RSI68 & Stochastic10_3_85_15, Price=0.13548
+2024-06-10 16:23:31,423 -   SELL: Strategy=RSI68 & Stochastic10_3_85_15, Price=0.17402
+2024-06-10 16:23:31,423 - Unknown use case for strategy RSI68 & Stochastic10_3_85_15
+2024-06-10 16:23:31,423 - Completed Strategy: RSI68 & Stochastic10_3_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 13261.118185255677, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,423 -   BUY: Strategy=RSI68 & Stochastic21_5_80_20, Price=0.07221
+2024-06-10 16:23:31,423 -   SELL: Strategy=RSI68 & Stochastic21_5_80_20, Price=0.07293
+2024-06-10 16:23:31,423 -   BUY: Strategy=RSI68 & Stochastic21_5_80_20, Price=0.06824
+2024-06-10 16:23:31,424 -   SELL: Strategy=RSI68 & Stochastic21_5_80_20, Price=0.07035
+2024-06-10 16:23:31,424 -   BUY: Strategy=RSI68 & Stochastic21_5_80_20, Price=0.07618
+2024-06-10 16:23:31,424 -   SELL: Strategy=RSI68 & Stochastic21_5_80_20, Price=0.07621
+2024-06-10 16:23:31,424 -   BUY: Strategy=RSI68 & Stochastic21_5_80_20, Price=0.07415
+2024-06-10 16:23:31,424 -   SELL: Strategy=RSI68 & Stochastic21_5_80_20, Price=0.0625
+2024-06-10 16:23:31,424 -   BUY: Strategy=RSI68 & Stochastic21_5_80_20, Price=0.07335
+2024-06-10 16:23:31,424 -   SELL: Strategy=RSI68 & Stochastic21_5_80_20, Price=0.08641
+2024-06-10 16:23:31,424 -   BUY: Strategy=RSI68 & Stochastic21_5_80_20, Price=0.07756
+2024-06-10 16:23:31,424 -   SELL: Strategy=RSI68 & Stochastic21_5_80_20, Price=0.08014
+2024-06-10 16:23:31,424 -   BUY: Strategy=RSI68 & Stochastic21_5_80_20, Price=0.07875
+2024-06-10 16:23:31,424 -   SELL: Strategy=RSI68 & Stochastic21_5_80_20, Price=0.15099
+2024-06-10 16:23:31,424 -   BUY: Strategy=RSI68 & Stochastic21_5_80_20, Price=0.12881
+2024-06-10 16:23:31,424 -   SELL: Strategy=RSI68 & Stochastic21_5_80_20, Price=0.15537
+2024-06-10 16:23:31,424 -   BUY: Strategy=RSI68 & Stochastic21_5_80_20, Price=0.13548
+2024-06-10 16:23:31,424 -   SELL: Strategy=RSI68 & Stochastic21_5_80_20, Price=0.14058
+2024-06-10 16:23:31,424 -   BUY: Strategy=RSI68 & Stochastic21_5_80_20, Price=0.141
+2024-06-10 16:23:31,424 -   SELL: Strategy=RSI68 & Stochastic21_5_80_20, Price=0.16403
+2024-06-10 16:23:31,424 - Unknown use case for strategy RSI68 & Stochastic21_5_80_20
+2024-06-10 16:23:31,424 - Completed Strategy: RSI68 & Stochastic21_5_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 29834.376323889144, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,425 -   BUY: Strategy=RSI68 & Stochastic21_5_85_15, Price=0.06824
+2024-06-10 16:23:31,425 -   SELL: Strategy=RSI68 & Stochastic21_5_85_15, Price=0.06253
+2024-06-10 16:23:31,425 -   BUY: Strategy=RSI68 & Stochastic21_5_85_15, Price=0.06485
+2024-06-10 16:23:31,425 -   SELL: Strategy=RSI68 & Stochastic21_5_85_15, Price=0.07594
+2024-06-10 16:23:31,425 -   BUY: Strategy=RSI68 & Stochastic21_5_85_15, Price=0.07415
+2024-06-10 16:23:31,425 -   SELL: Strategy=RSI68 & Stochastic21_5_85_15, Price=0.06213
+2024-06-10 16:23:31,425 -   BUY: Strategy=RSI68 & Stochastic21_5_85_15, Price=0.05858
+2024-06-10 16:23:31,425 -   SELL: Strategy=RSI68 & Stochastic21_5_85_15, Price=0.0602
+2024-06-10 16:23:31,426 -   BUY: Strategy=RSI68 & Stochastic21_5_85_15, Price=0.07335
+2024-06-10 16:23:31,426 -   SELL: Strategy=RSI68 & Stochastic21_5_85_15, Price=0.08641
+2024-06-10 16:23:31,426 -   BUY: Strategy=RSI68 & Stochastic21_5_85_15, Price=0.09101
+2024-06-10 16:23:31,426 -   SELL: Strategy=RSI68 & Stochastic21_5_85_15, Price=0.0807
+2024-06-10 16:23:31,426 -   BUY: Strategy=RSI68 & Stochastic21_5_85_15, Price=0.15399
+2024-06-10 16:23:31,426 -   SELL: Strategy=RSI68 & Stochastic21_5_85_15, Price=0.15693
+2024-06-10 16:23:31,426 -   BUY: Strategy=RSI68 & Stochastic21_5_85_15, Price=0.14973
+2024-06-10 16:23:31,426 -   SELL: Strategy=RSI68 & Stochastic21_5_85_15, Price=0.14058
+2024-06-10 16:23:31,426 -   BUY: Strategy=RSI68 & Stochastic21_5_85_15, Price=0.14999
+2024-06-10 16:23:31,426 -   SELL: Strategy=RSI68 & Stochastic21_5_85_15, Price=0.17402
+2024-06-10 16:23:31,426 - Unknown use case for strategy RSI68 & Stochastic21_5_85_15
+2024-06-10 16:23:31,426 - Completed Strategy: RSI68 & Stochastic21_5_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10714.223010685875, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,427 -   BUY: Strategy=RSI69 & Stochastic14_3_80_20, Price=0.06824
+2024-06-10 16:23:31,427 -   SELL: Strategy=RSI69 & Stochastic14_3_80_20, Price=0.07035
+2024-06-10 16:23:31,427 -   BUY: Strategy=RSI69 & Stochastic14_3_80_20, Price=0.07618
+2024-06-10 16:23:31,427 -   SELL: Strategy=RSI69 & Stochastic14_3_80_20, Price=0.07621
+2024-06-10 16:23:31,427 -   BUY: Strategy=RSI69 & Stochastic14_3_80_20, Price=0.07415
+2024-06-10 16:23:31,427 -   SELL: Strategy=RSI69 & Stochastic14_3_80_20, Price=0.06416
+2024-06-10 16:23:31,427 -   BUY: Strategy=RSI69 & Stochastic14_3_80_20, Price=0.07456
+2024-06-10 16:23:31,427 -   SELL: Strategy=RSI69 & Stochastic14_3_80_20, Price=0.08641
+2024-06-10 16:23:31,427 -   BUY: Strategy=RSI69 & Stochastic14_3_80_20, Price=0.07756
+2024-06-10 16:23:31,427 -   SELL: Strategy=RSI69 & Stochastic14_3_80_20, Price=0.0807
+2024-06-10 16:23:31,427 -   BUY: Strategy=RSI69 & Stochastic14_3_80_20, Price=0.14094
+2024-06-10 16:23:31,427 -   SELL: Strategy=RSI69 & Stochastic14_3_80_20, Price=0.18293
+2024-06-10 16:23:31,427 -   BUY: Strategy=RSI69 & Stochastic14_3_80_20, Price=0.16907
+2024-06-10 16:23:31,427 -   SELL: Strategy=RSI69 & Stochastic14_3_80_20, Price=0.15803
+2024-06-10 16:23:31,427 -   BUY: Strategy=RSI69 & Stochastic14_3_80_20, Price=0.13548
+2024-06-10 16:23:31,428 - Unknown use case for strategy RSI69 & Stochastic14_3_80_20
+2024-06-10 16:23:31,428 - Completed Strategy: RSI69 & Stochastic14_3_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 15319.129104352176, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,428 -   BUY: Strategy=RSI69 & Stochastic14_3_85_15, Price=0.07212
+2024-06-10 16:23:31,428 -   SELL: Strategy=RSI69 & Stochastic14_3_85_15, Price=0.06253
+2024-06-10 16:23:31,428 -   BUY: Strategy=RSI69 & Stochastic14_3_85_15, Price=0.06485
+2024-06-10 16:23:31,428 -   SELL: Strategy=RSI69 & Stochastic14_3_85_15, Price=0.07621
+2024-06-10 16:23:31,428 -   BUY: Strategy=RSI69 & Stochastic14_3_85_15, Price=0.07415
+2024-06-10 16:23:31,429 -   SELL: Strategy=RSI69 & Stochastic14_3_85_15, Price=0.06416
+2024-06-10 16:23:31,429 -   BUY: Strategy=RSI69 & Stochastic14_3_85_15, Price=0.06131
+2024-06-10 16:23:31,429 -   SELL: Strategy=RSI69 & Stochastic14_3_85_15, Price=0.0602
+2024-06-10 16:23:31,429 -   BUY: Strategy=RSI69 & Stochastic14_3_85_15, Price=0.07335
+2024-06-10 16:23:31,429 -   SELL: Strategy=RSI69 & Stochastic14_3_85_15, Price=0.08641
+2024-06-10 16:23:31,429 -   BUY: Strategy=RSI69 & Stochastic14_3_85_15, Price=0.07176
+2024-06-10 16:23:31,429 -   SELL: Strategy=RSI69 & Stochastic14_3_85_15, Price=0.08239
+2024-06-10 16:23:31,429 -   BUY: Strategy=RSI69 & Stochastic14_3_85_15, Price=0.09101
+2024-06-10 16:23:31,429 -   SELL: Strategy=RSI69 & Stochastic14_3_85_15, Price=0.0807
+2024-06-10 16:23:31,429 -   BUY: Strategy=RSI69 & Stochastic14_3_85_15, Price=0.15399
+2024-06-10 16:23:31,429 -   SELL: Strategy=RSI69 & Stochastic14_3_85_15, Price=0.15693
+2024-06-10 16:23:31,429 -   BUY: Strategy=RSI69 & Stochastic14_3_85_15, Price=0.16907
+2024-06-10 16:23:31,429 -   SELL: Strategy=RSI69 & Stochastic14_3_85_15, Price=0.15803
+2024-06-10 16:23:31,429 -   BUY: Strategy=RSI69 & Stochastic14_3_85_15, Price=0.14973
+2024-06-10 16:23:31,429 -   SELL: Strategy=RSI69 & Stochastic14_3_85_15, Price=0.17402
+2024-06-10 16:23:31,429 - Unknown use case for strategy RSI69 & Stochastic14_3_85_15
+2024-06-10 16:23:31,429 - Completed Strategy: RSI69 & Stochastic14_3_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 11493.974517614915, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,430 -   BUY: Strategy=RSI69 & Stochastic10_3_80_20, Price=0.06824
+2024-06-10 16:23:31,430 -   SELL: Strategy=RSI69 & Stochastic10_3_80_20, Price=0.06253
+2024-06-10 16:23:31,430 -   BUY: Strategy=RSI69 & Stochastic10_3_80_20, Price=0.06485
+2024-06-10 16:23:31,430 -   SELL: Strategy=RSI69 & Stochastic10_3_80_20, Price=0.07594
+2024-06-10 16:23:31,430 -   BUY: Strategy=RSI69 & Stochastic10_3_80_20, Price=0.07415
+2024-06-10 16:23:31,430 -   SELL: Strategy=RSI69 & Stochastic10_3_80_20, Price=0.06213
+2024-06-10 16:23:31,430 -   BUY: Strategy=RSI69 & Stochastic10_3_80_20, Price=0.07456
+2024-06-10 16:23:31,430 -   SELL: Strategy=RSI69 & Stochastic10_3_80_20, Price=0.08641
+2024-06-10 16:23:31,430 -   BUY: Strategy=RSI69 & Stochastic10_3_80_20, Price=0.09101
+2024-06-10 16:23:31,430 -   SELL: Strategy=RSI69 & Stochastic10_3_80_20, Price=0.0807
+2024-06-10 16:23:31,431 -   BUY: Strategy=RSI69 & Stochastic10_3_80_20, Price=0.15399
+2024-06-10 16:23:31,431 -   SELL: Strategy=RSI69 & Stochastic10_3_80_20, Price=0.18293
+2024-06-10 16:23:31,431 -   BUY: Strategy=RSI69 & Stochastic10_3_80_20, Price=0.16907
+2024-06-10 16:23:31,431 -   SELL: Strategy=RSI69 & Stochastic10_3_80_20, Price=0.15803
+2024-06-10 16:23:31,431 -   BUY: Strategy=RSI69 & Stochastic10_3_80_20, Price=0.13548
+2024-06-10 16:23:31,431 - Unknown use case for strategy RSI69 & Stochastic10_3_80_20
+2024-06-10 16:23:31,431 - Completed Strategy: RSI69 & Stochastic10_3_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 12038.585313708503, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,431 -   BUY: Strategy=RSI69 & Stochastic10_3_85_15, Price=0.07212
+2024-06-10 16:23:31,432 -   SELL: Strategy=RSI69 & Stochastic10_3_85_15, Price=0.07621
+2024-06-10 16:23:31,432 -   BUY: Strategy=RSI69 & Stochastic10_3_85_15, Price=0.06131
+2024-06-10 16:23:31,432 -   SELL: Strategy=RSI69 & Stochastic10_3_85_15, Price=0.0602
+2024-06-10 16:23:31,432 -   BUY: Strategy=RSI69 & Stochastic10_3_85_15, Price=0.07335
+2024-06-10 16:23:31,432 -   SELL: Strategy=RSI69 & Stochastic10_3_85_15, Price=0.08641
+2024-06-10 16:23:31,432 -   BUY: Strategy=RSI69 & Stochastic10_3_85_15, Price=0.07176
+2024-06-10 16:23:31,432 -   SELL: Strategy=RSI69 & Stochastic10_3_85_15, Price=0.07894
+2024-06-10 16:23:31,432 -   BUY: Strategy=RSI69 & Stochastic10_3_85_15, Price=0.09101
+2024-06-10 16:23:31,432 -   SELL: Strategy=RSI69 & Stochastic10_3_85_15, Price=0.0807
+2024-06-10 16:23:31,432 -   BUY: Strategy=RSI69 & Stochastic10_3_85_15, Price=0.15399
+2024-06-10 16:23:31,432 -   SELL: Strategy=RSI69 & Stochastic10_3_85_15, Price=0.15693
+2024-06-10 16:23:31,432 -   BUY: Strategy=RSI69 & Stochastic10_3_85_15, Price=0.16907
+2024-06-10 16:23:31,432 -   SELL: Strategy=RSI69 & Stochastic10_3_85_15, Price=0.15803
+2024-06-10 16:23:31,432 -   BUY: Strategy=RSI69 & Stochastic10_3_85_15, Price=0.13548
+2024-06-10 16:23:31,432 -   SELL: Strategy=RSI69 & Stochastic10_3_85_15, Price=0.17402
+2024-06-10 16:23:31,432 - Unknown use case for strategy RSI69 & Stochastic10_3_85_15
+2024-06-10 16:23:31,432 - Completed Strategy: RSI69 & Stochastic10_3_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 14587.969196545197, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,433 -   BUY: Strategy=RSI69 & Stochastic21_5_80_20, Price=0.07221
+2024-06-10 16:23:31,433 -   SELL: Strategy=RSI69 & Stochastic21_5_80_20, Price=0.07293
+2024-06-10 16:23:31,433 -   BUY: Strategy=RSI69 & Stochastic21_5_80_20, Price=0.06824
+2024-06-10 16:23:31,433 -   SELL: Strategy=RSI69 & Stochastic21_5_80_20, Price=0.07035
+2024-06-10 16:23:31,433 -   BUY: Strategy=RSI69 & Stochastic21_5_80_20, Price=0.07618
+2024-06-10 16:23:31,433 -   SELL: Strategy=RSI69 & Stochastic21_5_80_20, Price=0.07621
+2024-06-10 16:23:31,434 -   BUY: Strategy=RSI69 & Stochastic21_5_80_20, Price=0.07415
+2024-06-10 16:23:31,434 -   SELL: Strategy=RSI69 & Stochastic21_5_80_20, Price=0.0625
+2024-06-10 16:23:31,434 -   BUY: Strategy=RSI69 & Stochastic21_5_80_20, Price=0.06044
+2024-06-10 16:23:31,434 -   SELL: Strategy=RSI69 & Stochastic21_5_80_20, Price=0.0617
+2024-06-10 16:23:31,434 -   BUY: Strategy=RSI69 & Stochastic21_5_80_20, Price=0.07335
+2024-06-10 16:23:31,434 -   SELL: Strategy=RSI69 & Stochastic21_5_80_20, Price=0.08641
+2024-06-10 16:23:31,434 -   BUY: Strategy=RSI69 & Stochastic21_5_80_20, Price=0.07756
+2024-06-10 16:23:31,434 -   SELL: Strategy=RSI69 & Stochastic21_5_80_20, Price=0.08014
+2024-06-10 16:23:31,434 -   BUY: Strategy=RSI69 & Stochastic21_5_80_20, Price=0.07875
+2024-06-10 16:23:31,434 -   SELL: Strategy=RSI69 & Stochastic21_5_80_20, Price=0.15099
+2024-06-10 16:23:31,434 -   BUY: Strategy=RSI69 & Stochastic21_5_80_20, Price=0.12881
+2024-06-10 16:23:31,434 -   SELL: Strategy=RSI69 & Stochastic21_5_80_20, Price=0.18293
+2024-06-10 16:23:31,434 -   BUY: Strategy=RSI69 & Stochastic21_5_80_20, Price=0.13548
+2024-06-10 16:23:31,434 - Unknown use case for strategy RSI69 & Stochastic21_5_80_20
+2024-06-10 16:23:31,434 - Completed Strategy: RSI69 & Stochastic21_5_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 34858.62256025339, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,435 -   BUY: Strategy=RSI69 & Stochastic21_5_85_15, Price=0.06824
+2024-06-10 16:23:31,435 -   SELL: Strategy=RSI69 & Stochastic21_5_85_15, Price=0.06253
+2024-06-10 16:23:31,435 -   BUY: Strategy=RSI69 & Stochastic21_5_85_15, Price=0.06485
+2024-06-10 16:23:31,435 -   SELL: Strategy=RSI69 & Stochastic21_5_85_15, Price=0.07594
+2024-06-10 16:23:31,435 -   BUY: Strategy=RSI69 & Stochastic21_5_85_15, Price=0.07415
+2024-06-10 16:23:31,435 -   SELL: Strategy=RSI69 & Stochastic21_5_85_15, Price=0.06213
+2024-06-10 16:23:31,435 -   BUY: Strategy=RSI69 & Stochastic21_5_85_15, Price=0.05858
+2024-06-10 16:23:31,435 -   SELL: Strategy=RSI69 & Stochastic21_5_85_15, Price=0.0602
+2024-06-10 16:23:31,435 -   BUY: Strategy=RSI69 & Stochastic21_5_85_15, Price=0.07335
+2024-06-10 16:23:31,435 -   SELL: Strategy=RSI69 & Stochastic21_5_85_15, Price=0.08641
+2024-06-10 16:23:31,435 -   BUY: Strategy=RSI69 & Stochastic21_5_85_15, Price=0.09101
+2024-06-10 16:23:31,436 -   SELL: Strategy=RSI69 & Stochastic21_5_85_15, Price=0.0807
+2024-06-10 16:23:31,436 -   BUY: Strategy=RSI69 & Stochastic21_5_85_15, Price=0.15399
+2024-06-10 16:23:31,436 -   SELL: Strategy=RSI69 & Stochastic21_5_85_15, Price=0.15693
+2024-06-10 16:23:31,436 -   BUY: Strategy=RSI69 & Stochastic21_5_85_15, Price=0.14973
+2024-06-10 16:23:31,436 -   SELL: Strategy=RSI69 & Stochastic21_5_85_15, Price=0.17402
+2024-06-10 16:23:31,436 - Unknown use case for strategy RSI69 & Stochastic21_5_85_15
+2024-06-10 16:23:31,436 - Completed Strategy: RSI69 & Stochastic21_5_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 11431.400692650266, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,436 -   BUY: Strategy=RSI70 & Stochastic14_3_80_20, Price=0.07154
+2024-06-10 16:23:31,437 -   SELL: Strategy=RSI70 & Stochastic14_3_80_20, Price=0.07035
+2024-06-10 16:23:31,437 -   BUY: Strategy=RSI70 & Stochastic14_3_80_20, Price=0.07618
+2024-06-10 16:23:31,437 -   SELL: Strategy=RSI70 & Stochastic14_3_80_20, Price=0.07621
+2024-06-10 16:23:31,437 -   BUY: Strategy=RSI70 & Stochastic14_3_80_20, Price=0.07415
+2024-06-10 16:23:31,437 -   SELL: Strategy=RSI70 & Stochastic14_3_80_20, Price=0.06416
+2024-06-10 16:23:31,437 -   BUY: Strategy=RSI70 & Stochastic14_3_80_20, Price=0.06376
+2024-06-10 16:23:31,437 -   SELL: Strategy=RSI70 & Stochastic14_3_80_20, Price=0.06213
+2024-06-10 16:23:31,437 -   BUY: Strategy=RSI70 & Stochastic14_3_80_20, Price=0.0684
+2024-06-10 16:23:31,437 -   SELL: Strategy=RSI70 & Stochastic14_3_80_20, Price=0.07081
+2024-06-10 16:23:31,437 -   BUY: Strategy=RSI70 & Stochastic14_3_80_20, Price=0.07456
+2024-06-10 16:23:31,437 -   SELL: Strategy=RSI70 & Stochastic14_3_80_20, Price=0.08641
+2024-06-10 16:23:31,437 -   BUY: Strategy=RSI70 & Stochastic14_3_80_20, Price=0.07942
+2024-06-10 16:23:31,437 -   SELL: Strategy=RSI70 & Stochastic14_3_80_20, Price=0.0807
+2024-06-10 16:23:31,437 -   BUY: Strategy=RSI70 & Stochastic14_3_80_20, Price=0.12881
+2024-06-10 16:23:31,437 -   SELL: Strategy=RSI70 & Stochastic14_3_80_20, Price=0.20007
+2024-06-10 16:23:31,437 -   BUY: Strategy=RSI70 & Stochastic14_3_80_20, Price=0.16907
+2024-06-10 16:23:31,437 -   SELL: Strategy=RSI70 & Stochastic14_3_80_20, Price=0.15803
+2024-06-10 16:23:31,437 -   BUY: Strategy=RSI70 & Stochastic14_3_80_20, Price=0.13548
+2024-06-10 16:23:31,437 - Unknown use case for strategy RSI70 & Stochastic14_3_80_20
+2024-06-10 16:23:31,437 - Completed Strategy: RSI70 & Stochastic14_3_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 17226.82884562107, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,438 -   BUY: Strategy=RSI70 & Stochastic14_3_85_15, Price=0.07212
+2024-06-10 16:23:31,438 -   SELL: Strategy=RSI70 & Stochastic14_3_85_15, Price=0.06253
+2024-06-10 16:23:31,438 -   BUY: Strategy=RSI70 & Stochastic14_3_85_15, Price=0.06485
+2024-06-10 16:23:31,438 -   SELL: Strategy=RSI70 & Stochastic14_3_85_15, Price=0.07398
+2024-06-10 16:23:31,438 -   BUY: Strategy=RSI70 & Stochastic14_3_85_15, Price=0.07473
+2024-06-10 16:23:31,438 -   SELL: Strategy=RSI70 & Stochastic14_3_85_15, Price=0.07621
+2024-06-10 16:23:31,438 -   BUY: Strategy=RSI70 & Stochastic14_3_85_15, Price=0.07415
+2024-06-10 16:23:31,439 -   SELL: Strategy=RSI70 & Stochastic14_3_85_15, Price=0.06416
+2024-06-10 16:23:31,439 -   BUY: Strategy=RSI70 & Stochastic14_3_85_15, Price=0.06131
+2024-06-10 16:23:31,439 -   SELL: Strategy=RSI70 & Stochastic14_3_85_15, Price=0.06001
+2024-06-10 16:23:31,439 -   BUY: Strategy=RSI70 & Stochastic14_3_85_15, Price=0.05858
+2024-06-10 16:23:31,439 -   SELL: Strategy=RSI70 & Stochastic14_3_85_15, Price=0.0602
+2024-06-10 16:23:31,439 -   BUY: Strategy=RSI70 & Stochastic14_3_85_15, Price=0.07335
+2024-06-10 16:23:31,439 -   SELL: Strategy=RSI70 & Stochastic14_3_85_15, Price=0.08641
+2024-06-10 16:23:31,439 -   BUY: Strategy=RSI70 & Stochastic14_3_85_15, Price=0.07176
+2024-06-10 16:23:31,439 -   SELL: Strategy=RSI70 & Stochastic14_3_85_15, Price=0.08239
+2024-06-10 16:23:31,439 -   BUY: Strategy=RSI70 & Stochastic14_3_85_15, Price=0.09101
+2024-06-10 16:23:31,439 -   SELL: Strategy=RSI70 & Stochastic14_3_85_15, Price=0.0807
+2024-06-10 16:23:31,439 -   BUY: Strategy=RSI70 & Stochastic14_3_85_15, Price=0.15399
+2024-06-10 16:23:31,439 -   SELL: Strategy=RSI70 & Stochastic14_3_85_15, Price=0.15693
+2024-06-10 16:23:31,439 -   BUY: Strategy=RSI70 & Stochastic14_3_85_15, Price=0.16907
+2024-06-10 16:23:31,439 -   SELL: Strategy=RSI70 & Stochastic14_3_85_15, Price=0.15803
+2024-06-10 16:23:31,439 -   BUY: Strategy=RSI70 & Stochastic14_3_85_15, Price=0.14973
+2024-06-10 16:23:31,439 -   SELL: Strategy=RSI70 & Stochastic14_3_85_15, Price=0.17402
+2024-06-10 16:23:31,439 - Unknown use case for strategy RSI70 & Stochastic14_3_85_15
+2024-06-10 16:23:31,439 - Completed Strategy: RSI70 & Stochastic14_3_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 11656.383677983018, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,440 -   BUY: Strategy=RSI70 & Stochastic10_3_80_20, Price=0.07154
+2024-06-10 16:23:31,440 -   SELL: Strategy=RSI70 & Stochastic10_3_80_20, Price=0.06253
+2024-06-10 16:23:31,440 -   BUY: Strategy=RSI70 & Stochastic10_3_80_20, Price=0.06485
+2024-06-10 16:23:31,440 -   SELL: Strategy=RSI70 & Stochastic10_3_80_20, Price=0.07398
+2024-06-10 16:23:31,440 -   BUY: Strategy=RSI70 & Stochastic10_3_80_20, Price=0.07618
+2024-06-10 16:23:31,440 -   SELL: Strategy=RSI70 & Stochastic10_3_80_20, Price=0.07594
+2024-06-10 16:23:31,440 -   BUY: Strategy=RSI70 & Stochastic10_3_80_20, Price=0.07415
+2024-06-10 16:23:31,440 -   SELL: Strategy=RSI70 & Stochastic10_3_80_20, Price=0.06213
+2024-06-10 16:23:31,440 -   BUY: Strategy=RSI70 & Stochastic10_3_80_20, Price=0.07456
+2024-06-10 16:23:31,440 -   SELL: Strategy=RSI70 & Stochastic10_3_80_20, Price=0.08641
+2024-06-10 16:23:31,440 -   BUY: Strategy=RSI70 & Stochastic10_3_80_20, Price=0.09101
+2024-06-10 16:23:31,441 -   SELL: Strategy=RSI70 & Stochastic10_3_80_20, Price=0.0807
+2024-06-10 16:23:31,441 -   BUY: Strategy=RSI70 & Stochastic10_3_80_20, Price=0.15399
+2024-06-10 16:23:31,441 -   SELL: Strategy=RSI70 & Stochastic10_3_80_20, Price=0.15803
+2024-06-10 16:23:31,441 -   BUY: Strategy=RSI70 & Stochastic10_3_80_20, Price=0.13548
+2024-06-10 16:23:31,441 - Unknown use case for strategy RSI70 & Stochastic10_3_80_20
+2024-06-10 16:23:31,441 - Completed Strategy: RSI70 & Stochastic10_3_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10306.720860465073, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,441 -   BUY: Strategy=RSI70 & Stochastic10_3_85_15, Price=0.07212
+2024-06-10 16:23:31,442 -   SELL: Strategy=RSI70 & Stochastic10_3_85_15, Price=0.07398
+2024-06-10 16:23:31,442 -   BUY: Strategy=RSI70 & Stochastic10_3_85_15, Price=0.07405
+2024-06-10 16:23:31,442 -   SELL: Strategy=RSI70 & Stochastic10_3_85_15, Price=0.07621
+2024-06-10 16:23:31,442 -   BUY: Strategy=RSI70 & Stochastic10_3_85_15, Price=0.06131
+2024-06-10 16:23:31,442 -   SELL: Strategy=RSI70 & Stochastic10_3_85_15, Price=0.0602
+2024-06-10 16:23:31,442 -   BUY: Strategy=RSI70 & Stochastic10_3_85_15, Price=0.07335
+2024-06-10 16:23:31,442 -   SELL: Strategy=RSI70 & Stochastic10_3_85_15, Price=0.08641
+2024-06-10 16:23:31,442 -   BUY: Strategy=RSI70 & Stochastic10_3_85_15, Price=0.07176
+2024-06-10 16:23:31,442 -   SELL: Strategy=RSI70 & Stochastic10_3_85_15, Price=0.07894
+2024-06-10 16:23:31,442 -   BUY: Strategy=RSI70 & Stochastic10_3_85_15, Price=0.09101
+2024-06-10 16:23:31,442 -   SELL: Strategy=RSI70 & Stochastic10_3_85_15, Price=0.0807
+2024-06-10 16:23:31,442 -   BUY: Strategy=RSI70 & Stochastic10_3_85_15, Price=0.15399
+2024-06-10 16:23:31,442 -   SELL: Strategy=RSI70 & Stochastic10_3_85_15, Price=0.15693
+2024-06-10 16:23:31,442 -   BUY: Strategy=RSI70 & Stochastic10_3_85_15, Price=0.18248
+2024-06-10 16:23:31,442 -   SELL: Strategy=RSI70 & Stochastic10_3_85_15, Price=0.15803
+2024-06-10 16:23:31,442 -   BUY: Strategy=RSI70 & Stochastic10_3_85_15, Price=0.13548
+2024-06-10 16:23:31,442 -   SELL: Strategy=RSI70 & Stochastic10_3_85_15, Price=0.17402
+2024-06-10 16:23:31,442 - Unknown use case for strategy RSI70 & Stochastic10_3_85_15
+2024-06-10 16:23:31,442 - Completed Strategy: RSI70 & Stochastic10_3_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 13503.159018574834, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,443 -   BUY: Strategy=RSI70 & Stochastic21_5_80_20, Price=0.07221
+2024-06-10 16:23:31,443 -   SELL: Strategy=RSI70 & Stochastic21_5_80_20, Price=0.07293
+2024-06-10 16:23:31,443 -   BUY: Strategy=RSI70 & Stochastic21_5_80_20, Price=0.06824
+2024-06-10 16:23:31,443 -   SELL: Strategy=RSI70 & Stochastic21_5_80_20, Price=0.07035
+2024-06-10 16:23:31,443 -   BUY: Strategy=RSI70 & Stochastic21_5_80_20, Price=0.07618
+2024-06-10 16:23:31,443 -   SELL: Strategy=RSI70 & Stochastic21_5_80_20, Price=0.07621
+2024-06-10 16:23:31,443 -   BUY: Strategy=RSI70 & Stochastic21_5_80_20, Price=0.07415
+2024-06-10 16:23:31,443 -   SELL: Strategy=RSI70 & Stochastic21_5_80_20, Price=0.0625
+2024-06-10 16:23:31,444 -   BUY: Strategy=RSI70 & Stochastic21_5_80_20, Price=0.06044
+2024-06-10 16:23:31,444 -   SELL: Strategy=RSI70 & Stochastic21_5_80_20, Price=0.06001
+2024-06-10 16:23:31,444 -   BUY: Strategy=RSI70 & Stochastic21_5_80_20, Price=0.07335
+2024-06-10 16:23:31,444 -   SELL: Strategy=RSI70 & Stochastic21_5_80_20, Price=0.08641
+2024-06-10 16:23:31,444 -   BUY: Strategy=RSI70 & Stochastic21_5_80_20, Price=0.07942
+2024-06-10 16:23:31,444 -   SELL: Strategy=RSI70 & Stochastic21_5_80_20, Price=0.08014
+2024-06-10 16:23:31,444 -   BUY: Strategy=RSI70 & Stochastic21_5_80_20, Price=0.07875
+2024-06-10 16:23:31,444 -   SELL: Strategy=RSI70 & Stochastic21_5_80_20, Price=0.15099
+2024-06-10 16:23:31,444 -   BUY: Strategy=RSI70 & Stochastic21_5_80_20, Price=0.12881
+2024-06-10 16:23:31,444 -   SELL: Strategy=RSI70 & Stochastic21_5_80_20, Price=0.20007
+2024-06-10 16:23:31,444 -   BUY: Strategy=RSI70 & Stochastic21_5_80_20, Price=0.13548
+2024-06-10 16:23:31,444 - Unknown use case for strategy RSI70 & Stochastic21_5_80_20
+2024-06-10 16:23:31,444 - Completed Strategy: RSI70 & Stochastic21_5_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 36212.0940895197, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,445 -   BUY: Strategy=RSI70 & Stochastic21_5_85_15, Price=0.07154
+2024-06-10 16:23:31,445 -   SELL: Strategy=RSI70 & Stochastic21_5_85_15, Price=0.06253
+2024-06-10 16:23:31,445 -   BUY: Strategy=RSI70 & Stochastic21_5_85_15, Price=0.06485
+2024-06-10 16:23:31,445 -   SELL: Strategy=RSI70 & Stochastic21_5_85_15, Price=0.07398
+2024-06-10 16:23:31,445 -   BUY: Strategy=RSI70 & Stochastic21_5_85_15, Price=0.07618
+2024-06-10 16:23:31,445 -   SELL: Strategy=RSI70 & Stochastic21_5_85_15, Price=0.07594
+2024-06-10 16:23:31,445 -   BUY: Strategy=RSI70 & Stochastic21_5_85_15, Price=0.07415
+2024-06-10 16:23:31,445 -   SELL: Strategy=RSI70 & Stochastic21_5_85_15, Price=0.06213
+2024-06-10 16:23:31,445 -   BUY: Strategy=RSI70 & Stochastic21_5_85_15, Price=0.05858
+2024-06-10 16:23:31,445 -   SELL: Strategy=RSI70 & Stochastic21_5_85_15, Price=0.0602
+2024-06-10 16:23:31,445 -   BUY: Strategy=RSI70 & Stochastic21_5_85_15, Price=0.07335
+2024-06-10 16:23:31,445 -   SELL: Strategy=RSI70 & Stochastic21_5_85_15, Price=0.08641
+2024-06-10 16:23:31,445 -   BUY: Strategy=RSI70 & Stochastic21_5_85_15, Price=0.09101
+2024-06-10 16:23:31,445 -   SELL: Strategy=RSI70 & Stochastic21_5_85_15, Price=0.0807
+2024-06-10 16:23:31,446 -   BUY: Strategy=RSI70 & Stochastic21_5_85_15, Price=0.15399
+2024-06-10 16:23:31,446 -   SELL: Strategy=RSI70 & Stochastic21_5_85_15, Price=0.15693
+2024-06-10 16:23:31,446 -   BUY: Strategy=RSI70 & Stochastic21_5_85_15, Price=0.14973
+2024-06-10 16:23:31,446 -   SELL: Strategy=RSI70 & Stochastic21_5_85_15, Price=0.17402
+2024-06-10 16:23:31,446 - Unknown use case for strategy RSI70 & Stochastic21_5_85_15
+2024-06-10 16:23:31,446 - Completed Strategy: RSI70 & Stochastic21_5_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10589.193609409745, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,446 -   BUY: Strategy=RSI71 & Stochastic14_3_80_20, Price=0.07642
+2024-06-10 16:23:31,446 -   SELL: Strategy=RSI71 & Stochastic14_3_80_20, Price=0.07246
+2024-06-10 16:23:31,446 -   BUY: Strategy=RSI71 & Stochastic14_3_80_20, Price=0.07154
+2024-06-10 16:23:31,447 -   SELL: Strategy=RSI71 & Stochastic14_3_80_20, Price=0.07035
+2024-06-10 16:23:31,447 -   BUY: Strategy=RSI71 & Stochastic14_3_80_20, Price=0.07618
+2024-06-10 16:23:31,447 -   SELL: Strategy=RSI71 & Stochastic14_3_80_20, Price=0.06416
+2024-06-10 16:23:31,447 -   BUY: Strategy=RSI71 & Stochastic14_3_80_20, Price=0.06376
+2024-06-10 16:23:31,447 -   SELL: Strategy=RSI71 & Stochastic14_3_80_20, Price=0.06213
+2024-06-10 16:23:31,447 -   BUY: Strategy=RSI71 & Stochastic14_3_80_20, Price=0.0684
+2024-06-10 16:23:31,447 -   SELL: Strategy=RSI71 & Stochastic14_3_80_20, Price=0.07081
+2024-06-10 16:23:31,447 -   BUY: Strategy=RSI71 & Stochastic14_3_80_20, Price=0.07456
+2024-06-10 16:23:31,447 -   SELL: Strategy=RSI71 & Stochastic14_3_80_20, Price=0.08641
+2024-06-10 16:23:31,447 -   BUY: Strategy=RSI71 & Stochastic14_3_80_20, Price=0.09535
+2024-06-10 16:23:31,447 -   SELL: Strategy=RSI71 & Stochastic14_3_80_20, Price=0.0807
+2024-06-10 16:23:31,447 -   BUY: Strategy=RSI71 & Stochastic14_3_80_20, Price=0.16907
+2024-06-10 16:23:31,447 -   SELL: Strategy=RSI71 & Stochastic14_3_80_20, Price=0.15803
+2024-06-10 16:23:31,447 -   BUY: Strategy=RSI71 & Stochastic14_3_80_20, Price=0.15063
+2024-06-10 16:23:31,447 - Unknown use case for strategy RSI71 & Stochastic14_3_80_20
+2024-06-10 16:23:31,447 - Completed Strategy: RSI71 & Stochastic14_3_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 7665.426685575562, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,448 -   BUY: Strategy=RSI71 & Stochastic14_3_85_15, Price=0.07642
+2024-06-10 16:23:31,448 -   SELL: Strategy=RSI71 & Stochastic14_3_85_15, Price=0.07246
+2024-06-10 16:23:31,448 -   BUY: Strategy=RSI71 & Stochastic14_3_85_15, Price=0.07212
+2024-06-10 16:23:31,448 -   SELL: Strategy=RSI71 & Stochastic14_3_85_15, Price=0.06253
+2024-06-10 16:23:31,448 -   BUY: Strategy=RSI71 & Stochastic14_3_85_15, Price=0.06485
+2024-06-10 16:23:31,448 -   SELL: Strategy=RSI71 & Stochastic14_3_85_15, Price=0.07398
+2024-06-10 16:23:31,448 -   BUY: Strategy=RSI71 & Stochastic14_3_85_15, Price=0.07473
+2024-06-10 16:23:31,448 -   SELL: Strategy=RSI71 & Stochastic14_3_85_15, Price=0.06416
+2024-06-10 16:23:31,448 -   BUY: Strategy=RSI71 & Stochastic14_3_85_15, Price=0.06131
+2024-06-10 16:23:31,448 -   SELL: Strategy=RSI71 & Stochastic14_3_85_15, Price=0.06001
+2024-06-10 16:23:31,449 -   BUY: Strategy=RSI71 & Stochastic14_3_85_15, Price=0.05858
+2024-06-10 16:23:31,449 -   SELL: Strategy=RSI71 & Stochastic14_3_85_15, Price=0.0602
+2024-06-10 16:23:31,449 -   BUY: Strategy=RSI71 & Stochastic14_3_85_15, Price=0.07335
+2024-06-10 16:23:31,449 -   SELL: Strategy=RSI71 & Stochastic14_3_85_15, Price=0.08641
+2024-06-10 16:23:31,449 -   BUY: Strategy=RSI71 & Stochastic14_3_85_15, Price=0.07176
+2024-06-10 16:23:31,449 -   SELL: Strategy=RSI71 & Stochastic14_3_85_15, Price=0.08239
+2024-06-10 16:23:31,449 -   BUY: Strategy=RSI71 & Stochastic14_3_85_15, Price=0.09101
+2024-06-10 16:23:31,449 -   SELL: Strategy=RSI71 & Stochastic14_3_85_15, Price=0.0807
+2024-06-10 16:23:31,449 -   BUY: Strategy=RSI71 & Stochastic14_3_85_15, Price=0.15399
+2024-06-10 16:23:31,449 -   SELL: Strategy=RSI71 & Stochastic14_3_85_15, Price=0.15693
+2024-06-10 16:23:31,449 -   BUY: Strategy=RSI71 & Stochastic14_3_85_15, Price=0.16907
+2024-06-10 16:23:31,449 -   SELL: Strategy=RSI71 & Stochastic14_3_85_15, Price=0.15803
+2024-06-10 16:23:31,449 -   BUY: Strategy=RSI71 & Stochastic14_3_85_15, Price=0.14973
+2024-06-10 16:23:31,450 -   SELL: Strategy=RSI71 & Stochastic14_3_85_15, Price=0.17402
+2024-06-10 16:23:31,450 - Unknown use case for strategy RSI71 & Stochastic14_3_85_15
+2024-06-10 16:23:31,450 - Completed Strategy: RSI71 & Stochastic14_3_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10753.611046655109, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,450 -   BUY: Strategy=RSI71 & Stochastic10_3_80_20, Price=0.07642
+2024-06-10 16:23:31,451 -   SELL: Strategy=RSI71 & Stochastic10_3_80_20, Price=0.07246
+2024-06-10 16:23:31,451 -   BUY: Strategy=RSI71 & Stochastic10_3_80_20, Price=0.07154
+2024-06-10 16:23:31,451 -   SELL: Strategy=RSI71 & Stochastic10_3_80_20, Price=0.06253
+2024-06-10 16:23:31,451 -   BUY: Strategy=RSI71 & Stochastic10_3_80_20, Price=0.06485
+2024-06-10 16:23:31,451 -   SELL: Strategy=RSI71 & Stochastic10_3_80_20, Price=0.07398
+2024-06-10 16:23:31,451 -   BUY: Strategy=RSI71 & Stochastic10_3_80_20, Price=0.07618
+2024-06-10 16:23:31,451 -   SELL: Strategy=RSI71 & Stochastic10_3_80_20, Price=0.07594
+2024-06-10 16:23:31,451 -   BUY: Strategy=RSI71 & Stochastic10_3_80_20, Price=0.07456
+2024-06-10 16:23:31,451 -   SELL: Strategy=RSI71 & Stochastic10_3_80_20, Price=0.08641
+2024-06-10 16:23:31,451 -   BUY: Strategy=RSI71 & Stochastic10_3_80_20, Price=0.09535
+2024-06-10 16:23:31,451 -   SELL: Strategy=RSI71 & Stochastic10_3_80_20, Price=0.0807
+2024-06-10 16:23:31,451 -   BUY: Strategy=RSI71 & Stochastic10_3_80_20, Price=0.15399
+2024-06-10 16:23:31,451 -   SELL: Strategy=RSI71 & Stochastic10_3_80_20, Price=0.15803
+2024-06-10 16:23:31,451 -   BUY: Strategy=RSI71 & Stochastic10_3_80_20, Price=0.15063
+2024-06-10 16:23:31,451 - Unknown use case for strategy RSI71 & Stochastic10_3_80_20
+2024-06-10 16:23:31,451 - Completed Strategy: RSI71 & Stochastic10_3_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10012.758491118144, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,452 -   BUY: Strategy=RSI71 & Stochastic10_3_85_15, Price=0.07642
+2024-06-10 16:23:31,452 -   SELL: Strategy=RSI71 & Stochastic10_3_85_15, Price=0.07246
+2024-06-10 16:23:31,452 -   BUY: Strategy=RSI71 & Stochastic10_3_85_15, Price=0.07212
+2024-06-10 16:23:31,452 -   SELL: Strategy=RSI71 & Stochastic10_3_85_15, Price=0.07398
+2024-06-10 16:23:31,452 -   BUY: Strategy=RSI71 & Stochastic10_3_85_15, Price=0.07405
+2024-06-10 16:23:31,452 -   SELL: Strategy=RSI71 & Stochastic10_3_85_15, Price=0.06416
+2024-06-10 16:23:31,452 -   BUY: Strategy=RSI71 & Stochastic10_3_85_15, Price=0.06131
+2024-06-10 16:23:31,452 -   SELL: Strategy=RSI71 & Stochastic10_3_85_15, Price=0.0602
+2024-06-10 16:23:31,453 -   BUY: Strategy=RSI71 & Stochastic10_3_85_15, Price=0.07335
+2024-06-10 16:23:31,453 -   SELL: Strategy=RSI71 & Stochastic10_3_85_15, Price=0.08641
+2024-06-10 16:23:31,453 -   BUY: Strategy=RSI71 & Stochastic10_3_85_15, Price=0.07176
+2024-06-10 16:23:31,453 -   SELL: Strategy=RSI71 & Stochastic10_3_85_15, Price=0.07894
+2024-06-10 16:23:31,453 -   BUY: Strategy=RSI71 & Stochastic10_3_85_15, Price=0.09101
+2024-06-10 16:23:31,453 -   SELL: Strategy=RSI71 & Stochastic10_3_85_15, Price=0.0807
+2024-06-10 16:23:31,453 -   BUY: Strategy=RSI71 & Stochastic10_3_85_15, Price=0.15399
+2024-06-10 16:23:31,453 -   SELL: Strategy=RSI71 & Stochastic10_3_85_15, Price=0.15693
+2024-06-10 16:23:31,453 -   BUY: Strategy=RSI71 & Stochastic10_3_85_15, Price=0.18248
+2024-06-10 16:23:31,453 -   SELL: Strategy=RSI71 & Stochastic10_3_85_15, Price=0.15803
+2024-06-10 16:23:31,453 -   BUY: Strategy=RSI71 & Stochastic10_3_85_15, Price=0.13548
+2024-06-10 16:23:31,453 -   SELL: Strategy=RSI71 & Stochastic10_3_85_15, Price=0.17402
+2024-06-10 16:23:31,453 - Unknown use case for strategy RSI71 & Stochastic10_3_85_15
+2024-06-10 16:23:31,453 - Completed Strategy: RSI71 & Stochastic10_3_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10779.01489632059, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,454 -   BUY: Strategy=RSI71 & Stochastic21_5_80_20, Price=0.07642
+2024-06-10 16:23:31,454 -   SELL: Strategy=RSI71 & Stochastic21_5_80_20, Price=0.07246
+2024-06-10 16:23:31,454 -   BUY: Strategy=RSI71 & Stochastic21_5_80_20, Price=0.07221
+2024-06-10 16:23:31,454 -   SELL: Strategy=RSI71 & Stochastic21_5_80_20, Price=0.07035
+2024-06-10 16:23:31,454 -   BUY: Strategy=RSI71 & Stochastic21_5_80_20, Price=0.07618
+2024-06-10 16:23:31,455 -   SELL: Strategy=RSI71 & Stochastic21_5_80_20, Price=0.0625
+2024-06-10 16:23:31,455 -   BUY: Strategy=RSI71 & Stochastic21_5_80_20, Price=0.07335
+2024-06-10 16:23:31,455 -   SELL: Strategy=RSI71 & Stochastic21_5_80_20, Price=0.08641
+2024-06-10 16:23:31,455 -   BUY: Strategy=RSI71 & Stochastic21_5_80_20, Price=0.09535
+2024-06-10 16:23:31,455 -   SELL: Strategy=RSI71 & Stochastic21_5_80_20, Price=0.08014
+2024-06-10 16:23:31,455 -   BUY: Strategy=RSI71 & Stochastic21_5_80_20, Price=0.07875
+2024-06-10 16:23:31,456 -   SELL: Strategy=RSI71 & Stochastic21_5_80_20, Price=0.20007
+2024-06-10 16:23:31,456 -   BUY: Strategy=RSI71 & Stochastic21_5_80_20, Price=0.14252
+2024-06-10 16:23:31,456 -   SELL: Strategy=RSI71 & Stochastic21_5_80_20, Price=0.15803
+2024-06-10 16:23:31,456 -   BUY: Strategy=RSI71 & Stochastic21_5_80_20, Price=0.15063
+2024-06-10 16:23:31,456 -   SELL: Strategy=RSI71 & Stochastic21_5_80_20, Price=0.16969
+2024-06-10 16:23:31,456 - Unknown use case for strategy RSI71 & Stochastic21_5_80_20
+2024-06-10 16:23:31,456 - Completed Strategy: RSI71 & Stochastic21_5_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 23813.84592840267, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,457 -   BUY: Strategy=RSI71 & Stochastic21_5_85_15, Price=0.07642
+2024-06-10 16:23:31,457 -   SELL: Strategy=RSI71 & Stochastic21_5_85_15, Price=0.07246
+2024-06-10 16:23:31,457 -   BUY: Strategy=RSI71 & Stochastic21_5_85_15, Price=0.07154
+2024-06-10 16:23:31,457 -   SELL: Strategy=RSI71 & Stochastic21_5_85_15, Price=0.06253
+2024-06-10 16:23:31,457 -   BUY: Strategy=RSI71 & Stochastic21_5_85_15, Price=0.06485
+2024-06-10 16:23:31,457 -   SELL: Strategy=RSI71 & Stochastic21_5_85_15, Price=0.07398
+2024-06-10 16:23:31,457 -   BUY: Strategy=RSI71 & Stochastic21_5_85_15, Price=0.07618
+2024-06-10 16:23:31,457 -   SELL: Strategy=RSI71 & Stochastic21_5_85_15, Price=0.07594
+2024-06-10 16:23:31,457 -   BUY: Strategy=RSI71 & Stochastic21_5_85_15, Price=0.06131
+2024-06-10 16:23:31,457 -   SELL: Strategy=RSI71 & Stochastic21_5_85_15, Price=0.06213
+2024-06-10 16:23:31,457 -   BUY: Strategy=RSI71 & Stochastic21_5_85_15, Price=0.05858
+2024-06-10 16:23:31,457 -   SELL: Strategy=RSI71 & Stochastic21_5_85_15, Price=0.0602
+2024-06-10 16:23:31,457 -   BUY: Strategy=RSI71 & Stochastic21_5_85_15, Price=0.07335
+2024-06-10 16:23:31,457 -   SELL: Strategy=RSI71 & Stochastic21_5_85_15, Price=0.08641
+2024-06-10 16:23:31,457 -   BUY: Strategy=RSI71 & Stochastic21_5_85_15, Price=0.09101
+2024-06-10 16:23:31,458 -   SELL: Strategy=RSI71 & Stochastic21_5_85_15, Price=0.0807
+2024-06-10 16:23:31,458 -   BUY: Strategy=RSI71 & Stochastic21_5_85_15, Price=0.15399
+2024-06-10 16:23:31,458 -   SELL: Strategy=RSI71 & Stochastic21_5_85_15, Price=0.15693
+2024-06-10 16:23:31,458 -   BUY: Strategy=RSI71 & Stochastic21_5_85_15, Price=0.14252
+2024-06-10 16:23:31,458 -   SELL: Strategy=RSI71 & Stochastic21_5_85_15, Price=0.15803
+2024-06-10 16:23:31,458 -   BUY: Strategy=RSI71 & Stochastic21_5_85_15, Price=0.14973
+2024-06-10 16:23:31,458 -   SELL: Strategy=RSI71 & Stochastic21_5_85_15, Price=0.17402
+2024-06-10 16:23:31,458 - Unknown use case for strategy RSI71 & Stochastic21_5_85_15
+2024-06-10 16:23:31,458 - Completed Strategy: RSI71 & Stochastic21_5_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 13464.733152885523, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,459 -   BUY: Strategy=RSI72 & Stochastic14_3_80_20, Price=0.07642
+2024-06-10 16:23:31,459 -   SELL: Strategy=RSI72 & Stochastic14_3_80_20, Price=0.07035
+2024-06-10 16:23:31,459 -   BUY: Strategy=RSI72 & Stochastic14_3_80_20, Price=0.07618
+2024-06-10 16:23:31,459 -   SELL: Strategy=RSI72 & Stochastic14_3_80_20, Price=0.06416
+2024-06-10 16:23:31,459 -   BUY: Strategy=RSI72 & Stochastic14_3_80_20, Price=0.06376
+2024-06-10 16:23:31,459 -   SELL: Strategy=RSI72 & Stochastic14_3_80_20, Price=0.06213
+2024-06-10 16:23:31,459 -   BUY: Strategy=RSI72 & Stochastic14_3_80_20, Price=0.06033
+2024-06-10 16:23:31,459 -   SELL: Strategy=RSI72 & Stochastic14_3_80_20, Price=0.06001
+2024-06-10 16:23:31,459 -   BUY: Strategy=RSI72 & Stochastic14_3_80_20, Price=0.0684
+2024-06-10 16:23:31,459 -   SELL: Strategy=RSI72 & Stochastic14_3_80_20, Price=0.07081
+2024-06-10 16:23:31,459 -   BUY: Strategy=RSI72 & Stochastic14_3_80_20, Price=0.09535
+2024-06-10 16:23:31,459 -   SELL: Strategy=RSI72 & Stochastic14_3_80_20, Price=0.08715
+2024-06-10 16:23:31,459 -   BUY: Strategy=RSI72 & Stochastic14_3_80_20, Price=0.16907
+2024-06-10 16:23:31,459 -   SELL: Strategy=RSI72 & Stochastic14_3_80_20, Price=0.17024
+2024-06-10 16:23:31,459 - Unknown use case for strategy RSI72 & Stochastic14_3_80_20
+2024-06-10 16:23:31,459 - Completed Strategy: RSI72 & Stochastic14_3_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 7159.8520256123065, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,460 -   BUY: Strategy=RSI72 & Stochastic14_3_85_15, Price=0.07642
+2024-06-10 16:23:31,460 -   SELL: Strategy=RSI72 & Stochastic14_3_85_15, Price=0.06253
+2024-06-10 16:23:31,460 -   BUY: Strategy=RSI72 & Stochastic14_3_85_15, Price=0.06485
+2024-06-10 16:23:31,460 -   SELL: Strategy=RSI72 & Stochastic14_3_85_15, Price=0.06416
+2024-06-10 16:23:31,460 -   BUY: Strategy=RSI72 & Stochastic14_3_85_15, Price=0.06131
+2024-06-10 16:23:31,460 -   SELL: Strategy=RSI72 & Stochastic14_3_85_15, Price=0.06001
+2024-06-10 16:23:31,460 -   BUY: Strategy=RSI72 & Stochastic14_3_85_15, Price=0.05858
+2024-06-10 16:23:31,460 -   SELL: Strategy=RSI72 & Stochastic14_3_85_15, Price=0.0602
+2024-06-10 16:23:31,461 -   BUY: Strategy=RSI72 & Stochastic14_3_85_15, Price=0.07176
+2024-06-10 16:23:31,461 -   SELL: Strategy=RSI72 & Stochastic14_3_85_15, Price=0.07818
+2024-06-10 16:23:31,461 -   BUY: Strategy=RSI72 & Stochastic14_3_85_15, Price=0.09101
+2024-06-10 16:23:31,461 -   SELL: Strategy=RSI72 & Stochastic14_3_85_15, Price=0.08191
+2024-06-10 16:23:31,461 -   BUY: Strategy=RSI72 & Stochastic14_3_85_15, Price=0.15399
+2024-06-10 16:23:31,461 -   SELL: Strategy=RSI72 & Stochastic14_3_85_15, Price=0.15693
+2024-06-10 16:23:31,461 -   BUY: Strategy=RSI72 & Stochastic14_3_85_15, Price=0.16907
+2024-06-10 16:23:31,461 -   SELL: Strategy=RSI72 & Stochastic14_3_85_15, Price=0.17024
+2024-06-10 16:23:31,461 - Unknown use case for strategy RSI72 & Stochastic14_3_85_15
+2024-06-10 16:23:31,461 - Completed Strategy: RSI72 & Stochastic14_3_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 8193.034168976656, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,462 -   BUY: Strategy=RSI72 & Stochastic10_3_80_20, Price=0.07642
+2024-06-10 16:23:31,462 -   SELL: Strategy=RSI72 & Stochastic10_3_80_20, Price=0.06253
+2024-06-10 16:23:31,462 -   BUY: Strategy=RSI72 & Stochastic10_3_80_20, Price=0.06485
+2024-06-10 16:23:31,462 -   SELL: Strategy=RSI72 & Stochastic10_3_80_20, Price=0.07594
+2024-06-10 16:23:31,462 -   BUY: Strategy=RSI72 & Stochastic10_3_80_20, Price=0.06033
+2024-06-10 16:23:31,462 -   SELL: Strategy=RSI72 & Stochastic10_3_80_20, Price=0.06044
+2024-06-10 16:23:31,462 -   BUY: Strategy=RSI72 & Stochastic10_3_80_20, Price=0.09535
+2024-06-10 16:23:31,462 -   SELL: Strategy=RSI72 & Stochastic10_3_80_20, Price=0.08715
+2024-06-10 16:23:31,462 -   BUY: Strategy=RSI72 & Stochastic10_3_80_20, Price=0.15399
+2024-06-10 16:23:31,462 -   SELL: Strategy=RSI72 & Stochastic10_3_80_20, Price=0.17024
+2024-06-10 16:23:31,462 - Unknown use case for strategy RSI72 & Stochastic10_3_80_20
+2024-06-10 16:23:31,462 - Completed Strategy: RSI72 & Stochastic10_3_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 9699.49053902605, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,463 -   BUY: Strategy=RSI72 & Stochastic10_3_85_15, Price=0.07642
+2024-06-10 16:23:31,463 -   SELL: Strategy=RSI72 & Stochastic10_3_85_15, Price=0.0649
+2024-06-10 16:23:31,463 -   BUY: Strategy=RSI72 & Stochastic10_3_85_15, Price=0.06485
+2024-06-10 16:23:31,463 -   SELL: Strategy=RSI72 & Stochastic10_3_85_15, Price=0.06416
+2024-06-10 16:23:31,463 -   BUY: Strategy=RSI72 & Stochastic10_3_85_15, Price=0.06131
+2024-06-10 16:23:31,463 -   SELL: Strategy=RSI72 & Stochastic10_3_85_15, Price=0.0602
+2024-06-10 16:23:31,464 -   BUY: Strategy=RSI72 & Stochastic10_3_85_15, Price=0.07176
+2024-06-10 16:23:31,464 -   SELL: Strategy=RSI72 & Stochastic10_3_85_15, Price=0.07818
+2024-06-10 16:23:31,464 -   BUY: Strategy=RSI72 & Stochastic10_3_85_15, Price=0.09101
+2024-06-10 16:23:31,464 -   SELL: Strategy=RSI72 & Stochastic10_3_85_15, Price=0.08191
+2024-06-10 16:23:31,464 -   BUY: Strategy=RSI72 & Stochastic10_3_85_15, Price=0.15399
+2024-06-10 16:23:31,464 -   SELL: Strategy=RSI72 & Stochastic10_3_85_15, Price=0.15693
+2024-06-10 16:23:31,464 -   BUY: Strategy=RSI72 & Stochastic10_3_85_15, Price=0.18248
+2024-06-10 16:23:31,464 -   SELL: Strategy=RSI72 & Stochastic10_3_85_15, Price=0.17024
+2024-06-10 16:23:31,465 - Unknown use case for strategy RSI72 & Stochastic10_3_85_15
+2024-06-10 16:23:31,465 - Completed Strategy: RSI72 & Stochastic10_3_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 7690.915772369907, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,465 -   BUY: Strategy=RSI72 & Stochastic21_5_80_20, Price=0.07642
+2024-06-10 16:23:31,466 -   SELL: Strategy=RSI72 & Stochastic21_5_80_20, Price=0.07035
+2024-06-10 16:23:31,466 -   BUY: Strategy=RSI72 & Stochastic21_5_80_20, Price=0.07618
+2024-06-10 16:23:31,466 -   SELL: Strategy=RSI72 & Stochastic21_5_80_20, Price=0.06235
+2024-06-10 16:23:31,466 -   BUY: Strategy=RSI72 & Stochastic21_5_80_20, Price=0.06033
+2024-06-10 16:23:31,466 -   SELL: Strategy=RSI72 & Stochastic21_5_80_20, Price=0.06001
+2024-06-10 16:23:31,466 -   BUY: Strategy=RSI72 & Stochastic21_5_80_20, Price=0.09535
+2024-06-10 16:23:31,466 -   SELL: Strategy=RSI72 & Stochastic21_5_80_20, Price=0.08014
+2024-06-10 16:23:31,466 -   BUY: Strategy=RSI72 & Stochastic21_5_80_20, Price=0.07875
+2024-06-10 16:23:31,466 -   SELL: Strategy=RSI72 & Stochastic21_5_80_20, Price=0.13559
+2024-06-10 16:23:31,466 -   BUY: Strategy=RSI72 & Stochastic21_5_80_20, Price=0.14252
+2024-06-10 16:23:31,466 -   SELL: Strategy=RSI72 & Stochastic21_5_80_20, Price=0.17024
+2024-06-10 16:23:31,466 - Unknown use case for strategy RSI72 & Stochastic21_5_80_20
+2024-06-10 16:23:31,466 - Completed Strategy: RSI72 & Stochastic21_5_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 12954.909852837909, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,468 -   BUY: Strategy=RSI72 & Stochastic21_5_85_15, Price=0.07642
+2024-06-10 16:23:31,468 -   SELL: Strategy=RSI72 & Stochastic21_5_85_15, Price=0.06253
+2024-06-10 16:23:31,468 -   BUY: Strategy=RSI72 & Stochastic21_5_85_15, Price=0.06494
+2024-06-10 16:23:31,468 -   SELL: Strategy=RSI72 & Stochastic21_5_85_15, Price=0.07035
+2024-06-10 16:23:31,468 -   BUY: Strategy=RSI72 & Stochastic21_5_85_15, Price=0.06485
+2024-06-10 16:23:31,468 -   SELL: Strategy=RSI72 & Stochastic21_5_85_15, Price=0.07594
+2024-06-10 16:23:31,468 -   BUY: Strategy=RSI72 & Stochastic21_5_85_15, Price=0.06131
+2024-06-10 16:23:31,468 -   SELL: Strategy=RSI72 & Stochastic21_5_85_15, Price=0.06213
+2024-06-10 16:23:31,468 -   BUY: Strategy=RSI72 & Stochastic21_5_85_15, Price=0.05858
+2024-06-10 16:23:31,469 -   SELL: Strategy=RSI72 & Stochastic21_5_85_15, Price=0.0602
+2024-06-10 16:23:31,469 -   BUY: Strategy=RSI72 & Stochastic21_5_85_15, Price=0.09101
+2024-06-10 16:23:31,469 -   SELL: Strategy=RSI72 & Stochastic21_5_85_15, Price=0.08715
+2024-06-10 16:23:31,469 -   BUY: Strategy=RSI72 & Stochastic21_5_85_15, Price=0.15399
+2024-06-10 16:23:31,469 -   SELL: Strategy=RSI72 & Stochastic21_5_85_15, Price=0.15693
+2024-06-10 16:23:31,469 -   BUY: Strategy=RSI72 & Stochastic21_5_85_15, Price=0.14252
+2024-06-10 16:23:31,469 -   SELL: Strategy=RSI72 & Stochastic21_5_85_15, Price=0.17024
+2024-06-10 16:23:31,469 - Unknown use case for strategy RSI72 & Stochastic21_5_85_15
+2024-06-10 16:23:31,469 - Completed Strategy: RSI72 & Stochastic21_5_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 12600.521403108121, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,470 -   BUY: Strategy=RSI73 & Stochastic14_3_80_20, Price=0.07642
+2024-06-10 16:23:31,470 -   SELL: Strategy=RSI73 & Stochastic14_3_80_20, Price=0.07035
+2024-06-10 16:23:31,470 -   BUY: Strategy=RSI73 & Stochastic14_3_80_20, Price=0.07618
+2024-06-10 16:23:31,470 -   SELL: Strategy=RSI73 & Stochastic14_3_80_20, Price=0.06416
+2024-06-10 16:23:31,470 -   BUY: Strategy=RSI73 & Stochastic14_3_80_20, Price=0.06376
+2024-06-10 16:23:31,470 -   SELL: Strategy=RSI73 & Stochastic14_3_80_20, Price=0.06213
+2024-06-10 16:23:31,470 -   BUY: Strategy=RSI73 & Stochastic14_3_80_20, Price=0.06033
+2024-06-10 16:23:31,470 -   SELL: Strategy=RSI73 & Stochastic14_3_80_20, Price=0.06044
+2024-06-10 16:23:31,470 -   BUY: Strategy=RSI73 & Stochastic14_3_80_20, Price=0.0684
+2024-06-10 16:23:31,470 -   SELL: Strategy=RSI73 & Stochastic14_3_80_20, Price=0.07081
+2024-06-10 16:23:31,470 -   BUY: Strategy=RSI73 & Stochastic14_3_80_20, Price=0.09535
+2024-06-10 16:23:31,470 -   SELL: Strategy=RSI73 & Stochastic14_3_80_20, Price=0.08715
+2024-06-10 16:23:31,471 -   BUY: Strategy=RSI73 & Stochastic14_3_80_20, Price=0.13048
+2024-06-10 16:23:31,471 -   SELL: Strategy=RSI73 & Stochastic14_3_80_20, Price=0.20007
+2024-06-10 16:23:31,471 -   BUY: Strategy=RSI73 & Stochastic14_3_80_20, Price=0.16907
+2024-06-10 16:23:31,471 -   SELL: Strategy=RSI73 & Stochastic14_3_80_20, Price=0.17024
+2024-06-10 16:23:31,471 - Unknown use case for strategy RSI73 & Stochastic14_3_80_20
+2024-06-10 16:23:31,471 - Completed Strategy: RSI73 & Stochastic14_3_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 11057.142324270233, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,471 -   BUY: Strategy=RSI73 & Stochastic14_3_85_15, Price=0.07642
+2024-06-10 16:23:31,472 -   SELL: Strategy=RSI73 & Stochastic14_3_85_15, Price=0.06253
+2024-06-10 16:23:31,472 -   BUY: Strategy=RSI73 & Stochastic14_3_85_15, Price=0.06485
+2024-06-10 16:23:31,472 -   SELL: Strategy=RSI73 & Stochastic14_3_85_15, Price=0.06416
+2024-06-10 16:23:31,472 -   BUY: Strategy=RSI73 & Stochastic14_3_85_15, Price=0.06131
+2024-06-10 16:23:31,472 -   SELL: Strategy=RSI73 & Stochastic14_3_85_15, Price=0.0602
+2024-06-10 16:23:31,472 -   BUY: Strategy=RSI73 & Stochastic14_3_85_15, Price=0.07176
+2024-06-10 16:23:31,472 -   SELL: Strategy=RSI73 & Stochastic14_3_85_15, Price=0.07818
+2024-06-10 16:23:31,472 -   BUY: Strategy=RSI73 & Stochastic14_3_85_15, Price=0.09101
+2024-06-10 16:23:31,472 -   SELL: Strategy=RSI73 & Stochastic14_3_85_15, Price=0.08191
+2024-06-10 16:23:31,472 -   BUY: Strategy=RSI73 & Stochastic14_3_85_15, Price=0.15399
+2024-06-10 16:23:31,472 -   SELL: Strategy=RSI73 & Stochastic14_3_85_15, Price=0.17024
+2024-06-10 16:23:31,472 - Unknown use case for strategy RSI73 & Stochastic14_3_85_15
+2024-06-10 16:23:31,472 - Completed Strategy: RSI73 & Stochastic14_3_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 8616.503813805579, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,473 -   BUY: Strategy=RSI73 & Stochastic10_3_80_20, Price=0.07642
+2024-06-10 16:23:31,473 -   SELL: Strategy=RSI73 & Stochastic10_3_80_20, Price=0.06253
+2024-06-10 16:23:31,473 -   BUY: Strategy=RSI73 & Stochastic10_3_80_20, Price=0.06485
+2024-06-10 16:23:31,473 -   SELL: Strategy=RSI73 & Stochastic10_3_80_20, Price=0.07594
+2024-06-10 16:23:31,473 -   BUY: Strategy=RSI73 & Stochastic10_3_80_20, Price=0.06033
+2024-06-10 16:23:31,473 -   SELL: Strategy=RSI73 & Stochastic10_3_80_20, Price=0.06044
+2024-06-10 16:23:31,473 -   BUY: Strategy=RSI73 & Stochastic10_3_80_20, Price=0.09535
+2024-06-10 16:23:31,473 -   SELL: Strategy=RSI73 & Stochastic10_3_80_20, Price=0.08715
+2024-06-10 16:23:31,473 -   BUY: Strategy=RSI73 & Stochastic10_3_80_20, Price=0.15399
+2024-06-10 16:23:31,474 -   SELL: Strategy=RSI73 & Stochastic10_3_80_20, Price=0.17024
+2024-06-10 16:23:31,474 - Unknown use case for strategy RSI73 & Stochastic10_3_80_20
+2024-06-10 16:23:31,474 - Completed Strategy: RSI73 & Stochastic10_3_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 9699.49053902605, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,474 -   BUY: Strategy=RSI73 & Stochastic10_3_85_15, Price=0.07642
+2024-06-10 16:23:31,474 -   SELL: Strategy=RSI73 & Stochastic10_3_85_15, Price=0.0649
+2024-06-10 16:23:31,474 -   BUY: Strategy=RSI73 & Stochastic10_3_85_15, Price=0.06485
+2024-06-10 16:23:31,475 -   SELL: Strategy=RSI73 & Stochastic10_3_85_15, Price=0.06416
+2024-06-10 16:23:31,475 -   BUY: Strategy=RSI73 & Stochastic10_3_85_15, Price=0.06131
+2024-06-10 16:23:31,475 -   SELL: Strategy=RSI73 & Stochastic10_3_85_15, Price=0.0602
+2024-06-10 16:23:31,475 -   BUY: Strategy=RSI73 & Stochastic10_3_85_15, Price=0.07176
+2024-06-10 16:23:31,475 -   SELL: Strategy=RSI73 & Stochastic10_3_85_15, Price=0.07818
+2024-06-10 16:23:31,475 -   BUY: Strategy=RSI73 & Stochastic10_3_85_15, Price=0.09101
+2024-06-10 16:23:31,475 -   SELL: Strategy=RSI73 & Stochastic10_3_85_15, Price=0.08191
+2024-06-10 16:23:31,475 -   BUY: Strategy=RSI73 & Stochastic10_3_85_15, Price=0.15399
+2024-06-10 16:23:31,475 -   SELL: Strategy=RSI73 & Stochastic10_3_85_15, Price=0.17024
+2024-06-10 16:23:31,475 - Unknown use case for strategy RSI73 & Stochastic10_3_85_15
+2024-06-10 16:23:31,475 - Completed Strategy: RSI73 & Stochastic10_3_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 8943.084879513546, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,476 -   BUY: Strategy=RSI73 & Stochastic21_5_80_20, Price=0.07642
+2024-06-10 16:23:31,476 -   SELL: Strategy=RSI73 & Stochastic21_5_80_20, Price=0.07035
+2024-06-10 16:23:31,476 -   BUY: Strategy=RSI73 & Stochastic21_5_80_20, Price=0.07618
+2024-06-10 16:23:31,476 -   SELL: Strategy=RSI73 & Stochastic21_5_80_20, Price=0.06044
+2024-06-10 16:23:31,476 -   BUY: Strategy=RSI73 & Stochastic21_5_80_20, Price=0.09535
+2024-06-10 16:23:31,476 -   SELL: Strategy=RSI73 & Stochastic21_5_80_20, Price=0.08014
+2024-06-10 16:23:31,476 -   BUY: Strategy=RSI73 & Stochastic21_5_80_20, Price=0.07875
+2024-06-10 16:23:31,476 -   SELL: Strategy=RSI73 & Stochastic21_5_80_20, Price=0.13559
+2024-06-10 16:23:31,476 -   BUY: Strategy=RSI73 & Stochastic21_5_80_20, Price=0.14595
+2024-06-10 16:23:31,476 -   SELL: Strategy=RSI73 & Stochastic21_5_80_20, Price=0.17024
+2024-06-10 16:23:31,476 -   BUY: Strategy=RSI73 & Stochastic21_5_80_20, Price=0.16378
+2024-06-10 16:23:31,476 - Unknown use case for strategy RSI73 & Stochastic21_5_80_20
+2024-06-10 16:23:31,476 - Completed Strategy: RSI73 & Stochastic21_5_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 11967.003881910148, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,477 -   BUY: Strategy=RSI73 & Stochastic21_5_85_15, Price=0.07642
+2024-06-10 16:23:31,477 -   SELL: Strategy=RSI73 & Stochastic21_5_85_15, Price=0.06253
+2024-06-10 16:23:31,477 -   BUY: Strategy=RSI73 & Stochastic21_5_85_15, Price=0.06494
+2024-06-10 16:23:31,477 -   SELL: Strategy=RSI73 & Stochastic21_5_85_15, Price=0.07035
+2024-06-10 16:23:31,477 -   BUY: Strategy=RSI73 & Stochastic21_5_85_15, Price=0.06485
+2024-06-10 16:23:31,477 -   SELL: Strategy=RSI73 & Stochastic21_5_85_15, Price=0.07594
+2024-06-10 16:23:31,478 -   BUY: Strategy=RSI73 & Stochastic21_5_85_15, Price=0.06131
+2024-06-10 16:23:31,478 -   SELL: Strategy=RSI73 & Stochastic21_5_85_15, Price=0.06213
+2024-06-10 16:23:31,478 -   BUY: Strategy=RSI73 & Stochastic21_5_85_15, Price=0.05858
+2024-06-10 16:23:31,478 -   SELL: Strategy=RSI73 & Stochastic21_5_85_15, Price=0.0602
+2024-06-10 16:23:31,478 -   BUY: Strategy=RSI73 & Stochastic21_5_85_15, Price=0.09101
+2024-06-10 16:23:31,478 -   SELL: Strategy=RSI73 & Stochastic21_5_85_15, Price=0.08715
+2024-06-10 16:23:31,478 -   BUY: Strategy=RSI73 & Stochastic21_5_85_15, Price=0.15399
+2024-06-10 16:23:31,478 -   SELL: Strategy=RSI73 & Stochastic21_5_85_15, Price=0.17024
+2024-06-10 16:23:31,478 -   BUY: Strategy=RSI73 & Stochastic21_5_85_15, Price=0.16378
+2024-06-10 16:23:31,478 - Unknown use case for strategy RSI73 & Stochastic21_5_85_15
+2024-06-10 16:23:31,478 - Completed Strategy: RSI73 & Stochastic21_5_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 11108.105124895352, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,479 -   BUY: Strategy=RSI74 & Stochastic14_3_80_20, Price=0.07642
+2024-06-10 16:23:31,479 -   SELL: Strategy=RSI74 & Stochastic14_3_80_20, Price=0.07035
+2024-06-10 16:23:31,479 -   BUY: Strategy=RSI74 & Stochastic14_3_80_20, Price=0.07618
+2024-06-10 16:23:31,479 -   SELL: Strategy=RSI74 & Stochastic14_3_80_20, Price=0.06416
+2024-06-10 16:23:31,479 -   BUY: Strategy=RSI74 & Stochastic14_3_80_20, Price=0.06376
+2024-06-10 16:23:31,479 -   SELL: Strategy=RSI74 & Stochastic14_3_80_20, Price=0.06213
+2024-06-10 16:23:31,479 -   BUY: Strategy=RSI74 & Stochastic14_3_80_20, Price=0.06033
+2024-06-10 16:23:31,479 -   SELL: Strategy=RSI74 & Stochastic14_3_80_20, Price=0.06044
+2024-06-10 16:23:31,479 -   BUY: Strategy=RSI74 & Stochastic14_3_80_20, Price=0.0684
+2024-06-10 16:23:31,479 -   SELL: Strategy=RSI74 & Stochastic14_3_80_20, Price=0.07081
+2024-06-10 16:23:31,479 -   BUY: Strategy=RSI74 & Stochastic14_3_80_20, Price=0.09535
+2024-06-10 16:23:31,479 -   SELL: Strategy=RSI74 & Stochastic14_3_80_20, Price=0.08715
+2024-06-10 16:23:31,479 -   BUY: Strategy=RSI74 & Stochastic14_3_80_20, Price=0.13048
+2024-06-10 16:23:31,480 -   SELL: Strategy=RSI74 & Stochastic14_3_80_20, Price=0.17024
+2024-06-10 16:23:31,480 -   BUY: Strategy=RSI74 & Stochastic14_3_80_20, Price=0.15842
+2024-06-10 16:23:31,480 - Unknown use case for strategy RSI74 & Stochastic14_3_80_20
+2024-06-10 16:23:31,480 - Completed Strategy: RSI74 & Stochastic14_3_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 9376.914670210055, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,480 -   BUY: Strategy=RSI74 & Stochastic14_3_85_15, Price=0.07642
+2024-06-10 16:23:31,481 -   SELL: Strategy=RSI74 & Stochastic14_3_85_15, Price=0.06253
+2024-06-10 16:23:31,481 -   BUY: Strategy=RSI74 & Stochastic14_3_85_15, Price=0.06485
+2024-06-10 16:23:31,481 -   SELL: Strategy=RSI74 & Stochastic14_3_85_15, Price=0.06416
+2024-06-10 16:23:31,481 -   BUY: Strategy=RSI74 & Stochastic14_3_85_15, Price=0.06131
+2024-06-10 16:23:31,481 -   SELL: Strategy=RSI74 & Stochastic14_3_85_15, Price=0.06044
+2024-06-10 16:23:31,481 -   BUY: Strategy=RSI74 & Stochastic14_3_85_15, Price=0.07176
+2024-06-10 16:23:31,481 -   SELL: Strategy=RSI74 & Stochastic14_3_85_15, Price=0.07818
+2024-06-10 16:23:31,481 -   BUY: Strategy=RSI74 & Stochastic14_3_85_15, Price=0.09101
+2024-06-10 16:23:31,481 -   SELL: Strategy=RSI74 & Stochastic14_3_85_15, Price=0.08191
+2024-06-10 16:23:31,481 -   BUY: Strategy=RSI74 & Stochastic14_3_85_15, Price=0.15399
+2024-06-10 16:23:31,481 -   SELL: Strategy=RSI74 & Stochastic14_3_85_15, Price=0.21713
+2024-06-10 16:23:31,481 -   BUY: Strategy=RSI74 & Stochastic14_3_85_15, Price=0.16907
+2024-06-10 16:23:31,481 -   SELL: Strategy=RSI74 & Stochastic14_3_85_15, Price=0.17024
+2024-06-10 16:23:31,481 -   BUY: Strategy=RSI74 & Stochastic14_3_85_15, Price=0.15842
+2024-06-10 16:23:31,481 - Unknown use case for strategy RSI74 & Stochastic14_3_85_15
+2024-06-10 16:23:31,481 - Completed Strategy: RSI74 & Stochastic14_3_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 11149.228399927606, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,482 -   BUY: Strategy=RSI74 & Stochastic10_3_80_20, Price=0.07642
+2024-06-10 16:23:31,482 -   SELL: Strategy=RSI74 & Stochastic10_3_80_20, Price=0.06253
+2024-06-10 16:23:31,482 -   BUY: Strategy=RSI74 & Stochastic10_3_80_20, Price=0.06485
+2024-06-10 16:23:31,482 -   SELL: Strategy=RSI74 & Stochastic10_3_80_20, Price=0.06213
+2024-06-10 16:23:31,482 -   BUY: Strategy=RSI74 & Stochastic10_3_80_20, Price=0.06033
+2024-06-10 16:23:31,482 -   SELL: Strategy=RSI74 & Stochastic10_3_80_20, Price=0.06044
+2024-06-10 16:23:31,482 -   BUY: Strategy=RSI74 & Stochastic10_3_80_20, Price=0.09535
+2024-06-10 16:23:31,482 -   SELL: Strategy=RSI74 & Stochastic10_3_80_20, Price=0.08715
+2024-06-10 16:23:31,483 -   BUY: Strategy=RSI74 & Stochastic10_3_80_20, Price=0.15399
+2024-06-10 16:23:31,483 -   SELL: Strategy=RSI74 & Stochastic10_3_80_20, Price=0.21713
+2024-06-10 16:23:31,483 -   BUY: Strategy=RSI74 & Stochastic10_3_80_20, Price=0.16907
+2024-06-10 16:23:31,483 -   SELL: Strategy=RSI74 & Stochastic10_3_80_20, Price=0.17024
+2024-06-10 16:23:31,483 -   BUY: Strategy=RSI74 & Stochastic10_3_80_20, Price=0.15842
+2024-06-10 16:23:31,483 - Unknown use case for strategy RSI74 & Stochastic10_3_80_20
+2024-06-10 16:23:31,483 - Completed Strategy: RSI74 & Stochastic10_3_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10227.404854994953, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,483 -   BUY: Strategy=RSI74 & Stochastic10_3_85_15, Price=0.07642
+2024-06-10 16:23:31,484 -   SELL: Strategy=RSI74 & Stochastic10_3_85_15, Price=0.0649
+2024-06-10 16:23:31,484 -   BUY: Strategy=RSI74 & Stochastic10_3_85_15, Price=0.06485
+2024-06-10 16:23:31,484 -   SELL: Strategy=RSI74 & Stochastic10_3_85_15, Price=0.06416
+2024-06-10 16:23:31,484 -   BUY: Strategy=RSI74 & Stochastic10_3_85_15, Price=0.06131
+2024-06-10 16:23:31,484 -   SELL: Strategy=RSI74 & Stochastic10_3_85_15, Price=0.06044
+2024-06-10 16:23:31,484 -   BUY: Strategy=RSI74 & Stochastic10_3_85_15, Price=0.07176
+2024-06-10 16:23:31,484 -   SELL: Strategy=RSI74 & Stochastic10_3_85_15, Price=0.07818
+2024-06-10 16:23:31,484 -   BUY: Strategy=RSI74 & Stochastic10_3_85_15, Price=0.09101
+2024-06-10 16:23:31,484 -   SELL: Strategy=RSI74 & Stochastic10_3_85_15, Price=0.08191
+2024-06-10 16:23:31,484 -   BUY: Strategy=RSI74 & Stochastic10_3_85_15, Price=0.15399
+2024-06-10 16:23:31,484 -   SELL: Strategy=RSI74 & Stochastic10_3_85_15, Price=0.21713
+2024-06-10 16:23:31,484 -   BUY: Strategy=RSI74 & Stochastic10_3_85_15, Price=0.18248
+2024-06-10 16:23:31,484 -   SELL: Strategy=RSI74 & Stochastic10_3_85_15, Price=0.17024
+2024-06-10 16:23:31,484 -   BUY: Strategy=RSI74 & Stochastic10_3_85_15, Price=0.15842
+2024-06-10 16:23:31,484 - Unknown use case for strategy RSI74 & Stochastic10_3_85_15
+2024-06-10 16:23:31,484 - Completed Strategy: RSI74 & Stochastic10_3_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10721.42127218363, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,485 -   BUY: Strategy=RSI74 & Stochastic21_5_80_20, Price=0.07642
+2024-06-10 16:23:31,485 -   SELL: Strategy=RSI74 & Stochastic21_5_80_20, Price=0.07035
+2024-06-10 16:23:31,485 -   BUY: Strategy=RSI74 & Stochastic21_5_80_20, Price=0.07618
+2024-06-10 16:23:31,485 -   SELL: Strategy=RSI74 & Stochastic21_5_80_20, Price=0.06044
+2024-06-10 16:23:31,485 -   BUY: Strategy=RSI74 & Stochastic21_5_80_20, Price=0.09535
+2024-06-10 16:23:31,485 -   SELL: Strategy=RSI74 & Stochastic21_5_80_20, Price=0.08014
+2024-06-10 16:23:31,485 -   BUY: Strategy=RSI74 & Stochastic21_5_80_20, Price=0.07875
+2024-06-10 16:23:31,485 -   SELL: Strategy=RSI74 & Stochastic21_5_80_20, Price=0.13559
+2024-06-10 16:23:31,486 -   BUY: Strategy=RSI74 & Stochastic21_5_80_20, Price=0.14595
+2024-06-10 16:23:31,486 -   SELL: Strategy=RSI74 & Stochastic21_5_80_20, Price=0.17024
+2024-06-10 16:23:31,486 -   BUY: Strategy=RSI74 & Stochastic21_5_80_20, Price=0.16378
+2024-06-10 16:23:31,486 - Unknown use case for strategy RSI74 & Stochastic21_5_80_20
+2024-06-10 16:23:31,486 - Completed Strategy: RSI74 & Stochastic21_5_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 11967.003881910148, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,486 -   BUY: Strategy=RSI74 & Stochastic21_5_85_15, Price=0.07642
+2024-06-10 16:23:31,486 -   SELL: Strategy=RSI74 & Stochastic21_5_85_15, Price=0.06253
+2024-06-10 16:23:31,486 -   BUY: Strategy=RSI74 & Stochastic21_5_85_15, Price=0.06494
+2024-06-10 16:23:31,487 -   SELL: Strategy=RSI74 & Stochastic21_5_85_15, Price=0.07035
+2024-06-10 16:23:31,487 -   BUY: Strategy=RSI74 & Stochastic21_5_85_15, Price=0.06485
+2024-06-10 16:23:31,487 -   SELL: Strategy=RSI74 & Stochastic21_5_85_15, Price=0.06213
+2024-06-10 16:23:31,487 -   BUY: Strategy=RSI74 & Stochastic21_5_85_15, Price=0.05858
+2024-06-10 16:23:31,487 -   SELL: Strategy=RSI74 & Stochastic21_5_85_15, Price=0.06044
+2024-06-10 16:23:31,487 -   BUY: Strategy=RSI74 & Stochastic21_5_85_15, Price=0.09101
+2024-06-10 16:23:31,487 -   SELL: Strategy=RSI74 & Stochastic21_5_85_15, Price=0.08715
+2024-06-10 16:23:31,487 -   BUY: Strategy=RSI74 & Stochastic21_5_85_15, Price=0.15399
+2024-06-10 16:23:31,487 -   SELL: Strategy=RSI74 & Stochastic21_5_85_15, Price=0.21713
+2024-06-10 16:23:31,487 -   BUY: Strategy=RSI74 & Stochastic21_5_85_15, Price=0.14595
+2024-06-10 16:23:31,487 -   SELL: Strategy=RSI74 & Stochastic21_5_85_15, Price=0.17024
+2024-06-10 16:23:31,487 -   BUY: Strategy=RSI74 & Stochastic21_5_85_15, Price=0.16378
+2024-06-10 16:23:31,487 - Unknown use case for strategy RSI74 & Stochastic21_5_85_15
+2024-06-10 16:23:31,487 - Completed Strategy: RSI74 & Stochastic21_5_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 13395.051940015966, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,488 -   BUY: Strategy=RSI75 & Stochastic14_3_80_20, Price=0.07642
+2024-06-10 16:23:31,488 -   SELL: Strategy=RSI75 & Stochastic14_3_80_20, Price=0.06416
+2024-06-10 16:23:31,488 -   BUY: Strategy=RSI75 & Stochastic14_3_80_20, Price=0.06376
+2024-06-10 16:23:31,488 -   SELL: Strategy=RSI75 & Stochastic14_3_80_20, Price=0.06213
+2024-06-10 16:23:31,488 -   BUY: Strategy=RSI75 & Stochastic14_3_80_20, Price=0.06033
+2024-06-10 16:23:31,488 -   SELL: Strategy=RSI75 & Stochastic14_3_80_20, Price=0.06044
+2024-06-10 16:23:31,488 -   BUY: Strategy=RSI75 & Stochastic14_3_80_20, Price=0.0684
+2024-06-10 16:23:31,488 -   SELL: Strategy=RSI75 & Stochastic14_3_80_20, Price=0.07081
+2024-06-10 16:23:31,488 -   BUY: Strategy=RSI75 & Stochastic14_3_80_20, Price=0.09535
+2024-06-10 16:23:31,488 -   SELL: Strategy=RSI75 & Stochastic14_3_80_20, Price=0.09179
+2024-06-10 16:23:31,489 -   BUY: Strategy=RSI75 & Stochastic14_3_80_20, Price=0.13048
+2024-06-10 16:23:31,489 -   SELL: Strategy=RSI75 & Stochastic14_3_80_20, Price=0.17024
+2024-06-10 16:23:31,489 -   BUY: Strategy=RSI75 & Stochastic14_3_80_20, Price=0.15842
+2024-06-10 16:23:31,489 - Unknown use case for strategy RSI75 & Stochastic14_3_80_20
+2024-06-10 16:23:31,489 - Completed Strategy: RSI75 & Stochastic14_3_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10694.606481653906, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,489 -   BUY: Strategy=RSI75 & Stochastic14_3_85_15, Price=0.07642
+2024-06-10 16:23:31,489 -   SELL: Strategy=RSI75 & Stochastic14_3_85_15, Price=0.06253
+2024-06-10 16:23:31,489 -   BUY: Strategy=RSI75 & Stochastic14_3_85_15, Price=0.06485
+2024-06-10 16:23:31,490 -   SELL: Strategy=RSI75 & Stochastic14_3_85_15, Price=0.06416
+2024-06-10 16:23:31,490 -   BUY: Strategy=RSI75 & Stochastic14_3_85_15, Price=0.06131
+2024-06-10 16:23:31,490 -   SELL: Strategy=RSI75 & Stochastic14_3_85_15, Price=0.06044
+2024-06-10 16:23:31,490 -   BUY: Strategy=RSI75 & Stochastic14_3_85_15, Price=0.07729
+2024-06-10 16:23:31,490 -   SELL: Strategy=RSI75 & Stochastic14_3_85_15, Price=0.07791
+2024-06-10 16:23:31,490 -   BUY: Strategy=RSI75 & Stochastic14_3_85_15, Price=0.07756
+2024-06-10 16:23:31,490 -   SELL: Strategy=RSI75 & Stochastic14_3_85_15, Price=0.08191
+2024-06-10 16:23:31,490 -   BUY: Strategy=RSI75 & Stochastic14_3_85_15, Price=0.07982
+2024-06-10 16:23:31,490 -   SELL: Strategy=RSI75 & Stochastic14_3_85_15, Price=0.08633
+2024-06-10 16:23:31,490 -   BUY: Strategy=RSI75 & Stochastic14_3_85_15, Price=0.15399
+2024-06-10 16:23:31,490 -   SELL: Strategy=RSI75 & Stochastic14_3_85_15, Price=0.21713
+2024-06-10 16:23:31,490 -   BUY: Strategy=RSI75 & Stochastic14_3_85_15, Price=0.16907
+2024-06-10 16:23:31,490 -   SELL: Strategy=RSI75 & Stochastic14_3_85_15, Price=0.17024
+2024-06-10 16:23:31,490 -   BUY: Strategy=RSI75 & Stochastic14_3_85_15, Price=0.15842
+2024-06-10 16:23:31,490 - Unknown use case for strategy RSI75 & Stochastic14_3_85_15
+2024-06-10 16:23:31,490 - Completed Strategy: RSI75 & Stochastic14_3_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 13091.90378101116, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,491 -   BUY: Strategy=RSI75 & Stochastic10_3_80_20, Price=0.07642
+2024-06-10 16:23:31,491 -   SELL: Strategy=RSI75 & Stochastic10_3_80_20, Price=0.06253
+2024-06-10 16:23:31,491 -   BUY: Strategy=RSI75 & Stochastic10_3_80_20, Price=0.06485
+2024-06-10 16:23:31,491 -   SELL: Strategy=RSI75 & Stochastic10_3_80_20, Price=0.06213
+2024-06-10 16:23:31,491 -   BUY: Strategy=RSI75 & Stochastic10_3_80_20, Price=0.06033
+2024-06-10 16:23:31,491 -   SELL: Strategy=RSI75 & Stochastic10_3_80_20, Price=0.06044
+2024-06-10 16:23:31,491 -   BUY: Strategy=RSI75 & Stochastic10_3_80_20, Price=0.09535
+2024-06-10 16:23:31,491 -   SELL: Strategy=RSI75 & Stochastic10_3_80_20, Price=0.09179
+2024-06-10 16:23:31,492 -   BUY: Strategy=RSI75 & Stochastic10_3_80_20, Price=0.15399
+2024-06-10 16:23:31,492 -   SELL: Strategy=RSI75 & Stochastic10_3_80_20, Price=0.21713
+2024-06-10 16:23:31,492 -   BUY: Strategy=RSI75 & Stochastic10_3_80_20, Price=0.16907
+2024-06-10 16:23:31,492 -   SELL: Strategy=RSI75 & Stochastic10_3_80_20, Price=0.17024
+2024-06-10 16:23:31,492 -   BUY: Strategy=RSI75 & Stochastic10_3_80_20, Price=0.15842
+2024-06-10 16:23:31,492 - Unknown use case for strategy RSI75 & Stochastic10_3_80_20
+2024-06-10 16:23:31,492 - Completed Strategy: RSI75 & Stochastic10_3_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 10771.927614916656, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,492 -   BUY: Strategy=RSI75 & Stochastic10_3_85_15, Price=0.07642
+2024-06-10 16:23:31,493 -   SELL: Strategy=RSI75 & Stochastic10_3_85_15, Price=0.0649
+2024-06-10 16:23:31,493 -   BUY: Strategy=RSI75 & Stochastic10_3_85_15, Price=0.06485
+2024-06-10 16:23:31,493 -   SELL: Strategy=RSI75 & Stochastic10_3_85_15, Price=0.06416
+2024-06-10 16:23:31,493 -   BUY: Strategy=RSI75 & Stochastic10_3_85_15, Price=0.06131
+2024-06-10 16:23:31,493 -   SELL: Strategy=RSI75 & Stochastic10_3_85_15, Price=0.06044
+2024-06-10 16:23:31,493 -   BUY: Strategy=RSI75 & Stochastic10_3_85_15, Price=0.07729
+2024-06-10 16:23:31,493 -   SELL: Strategy=RSI75 & Stochastic10_3_85_15, Price=0.07791
+2024-06-10 16:23:31,493 -   BUY: Strategy=RSI75 & Stochastic10_3_85_15, Price=0.07756
+2024-06-10 16:23:31,493 -   SELL: Strategy=RSI75 & Stochastic10_3_85_15, Price=0.08191
+2024-06-10 16:23:31,493 -   BUY: Strategy=RSI75 & Stochastic10_3_85_15, Price=0.07982
+2024-06-10 16:23:31,493 -   SELL: Strategy=RSI75 & Stochastic10_3_85_15, Price=0.09179
+2024-06-10 16:23:31,493 -   BUY: Strategy=RSI75 & Stochastic10_3_85_15, Price=0.15399
+2024-06-10 16:23:31,493 -   SELL: Strategy=RSI75 & Stochastic10_3_85_15, Price=0.21713
+2024-06-10 16:23:31,493 -   BUY: Strategy=RSI75 & Stochastic10_3_85_15, Price=0.18248
+2024-06-10 16:23:31,493 -   SELL: Strategy=RSI75 & Stochastic10_3_85_15, Price=0.17024
+2024-06-10 16:23:31,493 -   BUY: Strategy=RSI75 & Stochastic10_3_85_15, Price=0.15842
+2024-06-10 16:23:31,493 - Unknown use case for strategy RSI75 & Stochastic10_3_85_15
+2024-06-10 16:23:31,493 - Completed Strategy: RSI75 & Stochastic10_3_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 13385.78922532101, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,494 -   BUY: Strategy=RSI75 & Stochastic21_5_80_20, Price=0.07642
+2024-06-10 16:23:31,494 -   SELL: Strategy=RSI75 & Stochastic21_5_80_20, Price=0.06044
+2024-06-10 16:23:31,494 -   BUY: Strategy=RSI75 & Stochastic21_5_80_20, Price=0.09535
+2024-06-10 16:23:31,494 -   SELL: Strategy=RSI75 & Stochastic21_5_80_20, Price=0.08014
+2024-06-10 16:23:31,494 -   BUY: Strategy=RSI75 & Stochastic21_5_80_20, Price=0.07875
+2024-06-10 16:23:31,494 -   SELL: Strategy=RSI75 & Stochastic21_5_80_20, Price=0.13559
+2024-06-10 16:23:31,495 -   BUY: Strategy=RSI75 & Stochastic21_5_80_20, Price=0.14595
+2024-06-10 16:23:31,495 -   SELL: Strategy=RSI75 & Stochastic21_5_80_20, Price=0.17024
+2024-06-10 16:23:31,495 -   BUY: Strategy=RSI75 & Stochastic21_5_80_20, Price=0.16378
+2024-06-10 16:23:31,495 - Unknown use case for strategy RSI75 & Stochastic21_5_80_20
+2024-06-10 16:23:31,495 - Completed Strategy: RSI75 & Stochastic21_5_80_20, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 12958.72573879055, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
+2024-06-10 16:23:31,496 -   BUY: Strategy=RSI75 & Stochastic21_5_85_15, Price=0.07642
+2024-06-10 16:23:31,496 -   SELL: Strategy=RSI75 & Stochastic21_5_85_15, Price=0.06253
+2024-06-10 16:23:31,496 -   BUY: Strategy=RSI75 & Stochastic21_5_85_15, Price=0.06494
+2024-06-10 16:23:31,496 -   SELL: Strategy=RSI75 & Stochastic21_5_85_15, Price=0.06213
+2024-06-10 16:23:31,496 -   BUY: Strategy=RSI75 & Stochastic21_5_85_15, Price=0.05858
+2024-06-10 16:23:31,496 -   SELL: Strategy=RSI75 & Stochastic21_5_85_15, Price=0.06044
+2024-06-10 16:23:31,496 -   BUY: Strategy=RSI75 & Stochastic21_5_85_15, Price=0.07756
+2024-06-10 16:23:31,496 -   SELL: Strategy=RSI75 & Stochastic21_5_85_15, Price=0.08633
+2024-06-10 16:23:31,496 -   BUY: Strategy=RSI75 & Stochastic21_5_85_15, Price=0.15399
+2024-06-10 16:23:31,496 -   SELL: Strategy=RSI75 & Stochastic21_5_85_15, Price=0.21713
+2024-06-10 16:23:31,496 -   BUY: Strategy=RSI75 & Stochastic21_5_85_15, Price=0.14595
+2024-06-10 16:23:31,496 -   SELL: Strategy=RSI75 & Stochastic21_5_85_15, Price=0.17024
+2024-06-10 16:23:31,496 -   BUY: Strategy=RSI75 & Stochastic21_5_85_15, Price=0.16378
+2024-06-10 16:23:31,496 - Unknown use case for strategy RSI75 & Stochastic21_5_85_15
+2024-06-10 16:23:31,496 - Completed Strategy: RSI75 & Stochastic21_5_85_15, Coin: Concatenated-DOGEUSDT-4h-2023-4-concatenated, Profit: 14352.777224015224, Use Case: Unknown Use Case, Timeframe: Unknown Timeframe
+
