@@ -168,9 +168,13 @@ coin_profit_df['Profit of Recommended Strategy'] = coin_profit_df.apply(
     lambda row: row[row['Recommended Strategy']], axis=1
 )
 
+# Calculate the percentage increase for each coin
+initial_investment = 10000
+coin_profit_df['Percentage Increase'] = ((coin_profit_df['Profit of Recommended Strategy'] - initial_investment) / initial_investment) * 100
+
 # Assuming coin_profit_df is already created as per the code provided
 # Keep only the first and last two columns
-coin_profit_df = coin_profit_df.iloc[:, [-2, -1]]
+coin_profit_df = coin_profit_df.iloc[:, [-3, -2, -1]]
 
 # Save the modified DataFrame to a CSV file
 coin_profit_df.to_csv('coin_profit_recommended.csv')
