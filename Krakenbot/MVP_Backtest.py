@@ -4,8 +4,15 @@ import logging
 from itertools import combinations
 import TA_functions
 
-# Set up logging
-logging.basicConfig(filename='trade_logs.log', level=logging.INFO, format='%(asctime)s - %(message)s')
+# Function to set up logging for each coin file
+def setup_logging(coin_name):
+    logger = logging.getLogger(coin_name)
+    logger.setLevel(logging.INFO)
+    handler = logging.FileHandler(f'{coin_name}_trade_logs.log')
+    formatter = logging.Formatter('%(asctime)s - %(message)s')
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    return logger
 
 # Map indicator functions to their names
 indicator_names = {
@@ -74,10 +81,8 @@ profit_dfs = []
 
 # Example list of files to process
 files = [
-    #'Concatenated-BTCUSDT-5m-2023-24-concatenated.csv',
     'Concatenated-BTCUSDT-1h-2023-4.csv',
     'Concatenated-ETHUSDT-1h-2023-4.csv',
-    'Concatenated-BTCUSDT-5m-2023-24-concatenated.csv'
     # Add other file names as needed
 ]
 
@@ -86,8 +91,11 @@ for file in files:
     df = pd.read_csv(f"./data/{file}")
     coin_name = file.split('.')[0]  # Use the file name without extension as the coin name
 
+    # Set up logging for the current coin
+    logger = setup_logging(coin_name)
+
     # Log the coin being processed
-    logging.info(f"Processing Coin: {coin_name}")
+    logger.info(f"Processing Coin: {coin_name}")
 
     # Create a dictionary to store the profits for the current coin
     coin_profits = {}
@@ -124,13 +132,13 @@ for file in files:
                 fiat_amount = 0
                 position = True
                 trade_message = f"  BUY: Strategy={name1} & {name2}, Price={trading_data['Close'].iloc[i]}"
-                logging.info(trade_message)
+                logger.info(trade_message)
             elif positions[i] == -1 and position:
                 fiat_amount = coin_holdings * trading_data['Close'].iloc[i]
                 coin_holdings = 0
                 position = False
                 trade_message = f"  SELL: Strategy={name1} & {name2}, Price={trading_data['Close'].iloc[i]}"
-                logging.info(trade_message)
+                logger.info(trade_message)
         
         # Final value if still holding coins
         if coin_holdings > 0:
@@ -141,10 +149,10 @@ for file in files:
         use_case, timeframe = determine_use_case(name1, name2)
         
         if use_case == 'Unknown Use Case':
-            logging.warning(f"Unknown use case for strategy {strategy_name}")
+            logger.warning(f"Unknown use case for strategy {strategy_name}")
 
         coin_profits[f'{strategy_name} ({use_case}, {timeframe})'] = fiat_amount
-        logging.info(f"Completed Strategy: {strategy_name}, Coin: {coin_name}, Profit: {fiat_amount}, Use Case: {use_case}, Timeframe: {timeframe}\n")
+        logger.info(f"Completed Strategy: {strategy_name}, Coin: {coin_name}, Profit: {fiat_amount}, Use Case: {use_case}, Timeframe: {timeframe}\n")
 
     coin_profits_df = pd.DataFrame(coin_profits, index=[coin_name])
     profit_dfs.append(coin_profits_df)
@@ -160,7 +168,11 @@ coin_profit_df['Profit of Recommended Strategy'] = coin_profit_df.apply(
     lambda row: row[row['Recommended Strategy']], axis=1
 )
 
-# Save the trades log to a CSV file
-coin_profit_df.to_csv('coin_profit.csv')
+# Assuming coin_profit_df is already created as per the code provided
+# Keep only the first and last two columns
+coin_profit_df = coin_profit_df.iloc[:, [-2, -1]]
+
+# Save the modified DataFrame to a CSV file
+coin_profit_df.to_csv('coin_profit_recommended.csv')
 
 print(coin_profit_df)
