@@ -15,3 +15,5 @@ kraken-react-app/server/tempkeys.txt
 data/trade_logs_full_backup.log
 Kraken_OHLCVT
 coin_profit_may2020.csv
+Krakenbot/unzipper
+Krakenbot/Binance_data_concatenator.py

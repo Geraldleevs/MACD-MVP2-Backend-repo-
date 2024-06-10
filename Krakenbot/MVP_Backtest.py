@@ -81,8 +81,9 @@ profit_dfs = []
 
 # Example list of files to process
 files = [
-    'Concatenated-BTCUSDT-1h-2023-4.csv',
-    'Concatenated-ETHUSDT-1h-2023-4.csv',
+    'Concatenated-BTCUSDT-1h-2023-concatenated.csv',
+    'Concatenated-ETHUSDT-1h-2023-concatenated.csv',
+    'Concatenated-DOGEUSDT-1h-2023-concatenated.csv'
     # Add other file names as needed
 ]
 
