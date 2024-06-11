@@ -1,6 +1,7 @@
 tempkeys
 Kraken_OHLCVT
 .DS_Store
+.env
 
 year_data/APEUSDT_full.csv
 year_data/BTCUSDT_full.csv

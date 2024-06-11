@@ -31,6 +31,11 @@
 
 `Ctrl + C to stop`
 
+You may create a `.env` file to set the following env variables
+- `DJANGO_SECRET_KEY=RandomSecretKeyForDjango`
+- `PYTHON_ENV=development|production`
+  - `development` for debug mode
+
 ## REST API Endpoints
 ### Recommendations
 ```
