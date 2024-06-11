@@ -8,8 +8,8 @@ import TA_functions
 def setup_logging(coin_name):
     logger = logging.getLogger(coin_name)
     logger.setLevel(logging.INFO)
-    handler = logging.FileHandler(f'{coin_name}_trade_logs.log')
-    formatter = logging.Formatter('%(asctime)s - %(message)s')
+    handler = logging.FileHandler(f'{coin_name}_trade_logs.csv')
+    formatter = logging.Formatter('%(message)s')
     handler.setFormatter(formatter)
     logger.addHandler(handler)
     return logger
@@ -81,15 +81,15 @@ profit_dfs = []
 
 # Example list of files to process
 files = [
-    #short term - trades are based on hourly closing data
+    # short term - trades are based on hourly closing data
     'Concatenated-BTCUSDT-1h-2023-concatenated.csv',
     'Concatenated-ETHUSDT-1h-2023-concatenated.csv',
     'Concatenated-DOGEUSDT-1h-2023-concatenated.csv',
-    #medium term - trades are based on 4h closing data
+    # medium term - trades are based on 4h closing data
     'Concatenated-BTCUSDT-4h-2023-4-concatenated.csv',
     'Concatenated-ETHUSDT-4h-2023-4-concatenated.csv',
     'Concatenated-DOGEUSDT-4h-2023-4-concatenated.csv',
-    #long term - trades are based on daily closing data
+    # long term - trades are based on daily closing data
     'Concatenated-BTCUSDT-1d-2023-4-concatenated.csv',
     'Concatenated-ETHUSDT-1d-2023-4-concatenated.csv',
     'Concatenated-DOGEUSDT-1d-2023-4-concatenated.csv',
@@ -101,8 +101,17 @@ for file in files:
     df = pd.read_csv(f"./data/{file}")
     coin_name = file.split('.')[0]  # Use the file name without extension as the coin name
 
+    # Convert the close_time column from Unix timestamps in milliseconds to datetime
+    df['close_time'] = pd.to_datetime(df['Close_time'], unit='ms')
+
+    # Debugging: Print first few rows of the close_time column to verify correct conversion
+    print(df[['close_time']].head())
+
     # Set up logging for the current coin
     logger = setup_logging(coin_name)
+
+    # Log the column headers
+    logger.info("close_time,action,strategy,price")
 
     # Log the coin being processed
     logger.info(f"Processing Coin: {coin_name}")
@@ -141,13 +150,13 @@ for file in files:
                 coin_holdings = fiat_amount / trading_data['Close'].iloc[i]
                 fiat_amount = 0
                 position = True
-                trade_message = f"  BUY: Strategy={name1} & {name2}, Price={trading_data['Close'].iloc[i]}"
+                trade_message = f"{trading_data['close_time'].iloc[i]},BUY,{name1} & {name2},{trading_data['Close'].iloc[i]}"
                 logger.info(trade_message)
             elif positions[i] == -1 and position:
                 fiat_amount = coin_holdings * trading_data['Close'].iloc[i]
                 coin_holdings = 0
                 position = False
-                trade_message = f"  SELL: Strategy={name1} & {name2}, Price={trading_data['Close'].iloc[i]}"
+                trade_message = f"{trading_data['close_time'].iloc[i]},SELL,{name1} & {name2},{trading_data['Close'].iloc[i]}"
                 logger.info(trade_message)
         
         # Final value if still holding coins
