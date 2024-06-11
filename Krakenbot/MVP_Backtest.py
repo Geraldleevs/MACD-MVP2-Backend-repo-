@@ -9,7 +9,7 @@ def setup_logging(coin_name):
     logger = logging.getLogger(coin_name)
     logger.setLevel(logging.INFO)
     handler = logging.FileHandler(f'{coin_name}_trade_logs.csv')
-    formatter = logging.Formatter('%(message)s')
+    formatter = logging.Formatter('%(message)s')  # Only log the message
     handler.setFormatter(formatter)
     logger.addHandler(handler)
     return logger
@@ -98,23 +98,17 @@ files = [
 
 # Process each file
 for file in files:
-    df = pd.read_csv(f"./data/{file}")
+    df = pd.read_csv(f"./data/{file}", usecols=['Close', 'High', 'Low', 'Close_time'])
     coin_name = file.split('.')[0]  # Use the file name without extension as the coin name
 
     # Convert the close_time column from Unix timestamps in milliseconds to datetime
     df['close_time'] = pd.to_datetime(df['Close_time'], unit='ms')
-
-    # Debugging: Print first few rows of the close_time column to verify correct conversion
-    print(df[['close_time']].head())
 
     # Set up logging for the current coin
     logger = setup_logging(coin_name)
 
     # Log the column headers
     logger.info("close_time,action,strategy,price")
-
-    # Log the coin being processed
-    logger.info(f"Processing Coin: {coin_name}")
 
     # Create a dictionary to store the profits for the current coin
     coin_profits = {}
@@ -171,7 +165,9 @@ for file in files:
             logger.warning(f"Unknown use case for strategy {strategy_name}")
 
         coin_profits[f'{strategy_name} ({use_case}, {timeframe})'] = fiat_amount
-        logger.info(f"Completed Strategy: {strategy_name}, Coin: {coin_name}, Profit: {fiat_amount}, Use Case: {use_case}, Timeframe: {timeframe}\n")
+
+        # Log the end of the strategy
+        logger.info(f"End of strategy: {strategy_name}\n")
 
     coin_profits_df = pd.DataFrame(coin_profits, index=[coin_name])
     profit_dfs.append(coin_profits_df)
