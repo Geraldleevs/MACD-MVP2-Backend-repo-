@@ -1,0 +1,8 @@
+Dockerfile
+.dockerignore
+.vs
+.vscode
+venv
+*.csv
+*.sqlite3
+*.log

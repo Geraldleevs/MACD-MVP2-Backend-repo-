@@ -1,0 +1,7 @@
+version: "3.9"
+services:
+  krakenbot:
+    build: .
+    container_name: krakenbot
+    ports:
+      - "8000:8000"

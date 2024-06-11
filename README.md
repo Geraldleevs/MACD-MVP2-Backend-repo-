@@ -26,8 +26,13 @@
 ### Starting Server
 `python manage.py runserver` or use vscode's `run and debug` `Django Server` script
 
-### REST API Endpoints
-#### Recommendations
+## Starting with Docker
+`docker compose up`
+
+`Ctrl + C to stop`
+
+## REST API Endpoints
+### Recommendations
 ```
 URL: http://127.0.0.1:8000/recommendations
 Query: token_id, timeframe
@@ -43,7 +48,7 @@ Response:
 ]
 ```
 
-##### Example
+#### Example
 ```
 Request: http://127.0.0.1:8000/recommendations?token_id=btc&timeframe=4h
 Response:
