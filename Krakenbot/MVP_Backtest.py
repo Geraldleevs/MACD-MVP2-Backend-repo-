@@ -38,7 +38,38 @@ indicator_names = {
     TA_functions.use_stochastic_21_5_80_20: 'Stochastic21_5_80_20',
     TA_functions.use_stochastic_21_5_85_15: 'Stochastic21_5_85_15'
 }
+# Performance Metrics Calculation Functions
+def calculate_mean_return(returns):
+    return np.mean(returns)
 
+def calculate_std_return(returns):
+    return np.std(returns)
+
+def calculate_sharpe_ratio(returns, risk_free_rate=0.0):
+    mean_return = calculate_mean_return(returns)
+    std_return = calculate_std_return(returns)
+    return (mean_return - risk_free_rate) / std_return if std_return != 0 else np.nan
+
+def calculate_max_drawdown(returns):
+    cumulative_returns = np.cumprod(1 + returns) - 1
+    peak = np.maximum.accumulate(cumulative_returns)
+    drawdown = (cumulative_returns - peak) / peak
+    return np.min(drawdown)
+
+# Evaluate Strategy Function
+def evaluate_strategy(strategy_returns, strategy_name):
+    mean_return = calculate_mean_return(strategy_returns)
+    std_return = calculate_std_return(strategy_returns)
+    sharpe_ratio = calculate_sharpe_ratio(strategy_returns)
+    max_drawdown = calculate_max_drawdown(strategy_returns)
+
+    return {
+        'Strategy': strategy_name,
+        'Mean Return': mean_return,
+        'Standard Deviation of Return': std_return,
+        'Sharpe Ratio': sharpe_ratio,
+        'Maximum Drawdown': max_drawdown
+    }
 # Define use cases and recommended timeframes
 use_cases = {
     ('RSI', 'MACD'): ('Identifying and confirming trend reversals', '1H'),
@@ -139,18 +170,18 @@ for file in files:
         fiat_amount = 10000
         position = False
 
-        for i in range(len(positions)):
-            if positions[i] == 1 and not position:
-                coin_holdings = fiat_amount / trading_data['Close'].iloc[i]
+        for I in range(len(positions)):
+            if positions[I] == 1 and not position:
+                coin_holdings = fiat_amount / trading_data['Close'].iloc[I]
                 fiat_amount = 0
                 position = True
-                trade_message = f"{trading_data['close_time'].iloc[i]},BUY,{name1} & {name2},{trading_data['Close'].iloc[i]}"
+                trade_message = f"{trading_data['close_time'].iloc[I]},BUY,{name1} & {name2},{trading_data['Close'].iloc[I]}"
                 logger.info(trade_message)
-            elif positions[i] == -1 and position:
-                fiat_amount = coin_holdings * trading_data['Close'].iloc[i]
+            elif positions[I] == -1 and position:
+                fiat_amount = coin_holdings * trading_data['Close'].iloc[I]
                 coin_holdings = 0
                 position = False
-                trade_message = f"{trading_data['close_time'].iloc[i]},SELL,{name1} & {name2},{trading_data['Close'].iloc[i]}"
+                trade_message = f"{trading_data['close_time'].iloc[I]},SELL,{name1} & {name2},{trading_data['Close'].iloc[I]}"
                 logger.info(trade_message)
         
         # Final value if still holding coins
@@ -163,6 +194,14 @@ for file in files:
         
         if use_case == 'Unknown Use Case':
             logger.warning(f"Unknown use case for strategy {strategy_name}")
+
+        # Evaluate the strategy performance
+        strategy_returns = trading_data['Close'].pct_change().dropna()
+        performance_metrics = evaluate_strategy(strategy_returns, strategy_name)
+
+        # Log performance metrics
+        for key, value in performance_metrics.items():
+            logger.info(f"{key}: {value}")
 
         coin_profits[f'{strategy_name} ({use_case}, {timeframe})'] = fiat_amount
 

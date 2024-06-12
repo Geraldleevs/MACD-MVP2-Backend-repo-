@@ -1,0 +1,84 @@
+import pandas as pd
+import plotly.graph_objects as go
+import os
+
+# Load the new trade logs file
+new_trade_logs_path = 'Concatenated-BTCUSDT-1d-2023-4-concatenated_trade_logs.csv'  # Update this path as needed
+
+# Read the new trade logs file as a CSV
+new_trade_df = pd.read_csv(new_trade_logs_path)
+
+# Remove rows where 'close_time' contains 'End of strategy' or other non-datetime values
+new_trade_df = new_trade_df[~new_trade_df['close_time'].str.contains('End of strategy|Unknown use case', na=False)]
+
+# Try converting the 'close_time' to datetime and filter out rows that fail
+new_trade_df['close_time'] = pd.to_datetime(new_trade_df['close_time'], errors='coerce')
+new_trade_df = new_trade_df.dropna(subset=['close_time'])
+
+# Convert the 'price' column to numeric
+new_trade_df['price'] = pd.to_numeric(new_trade_df['price'], errors='coerce')
+new_trade_df = new_trade_df.dropna(subset=['price'])
+
+# Load the CSV file with the trading data
+csv_file_path = 'data/Concatenated-BTCUSDT-1h-2023-4.csv'  # Update this path as needed
+crypto_data = pd.read_csv(csv_file_path)
+
+# Convert timestamp to datetime
+crypto_data['open_time'] = pd.to_datetime(crypto_data['open_time'], unit='ms')
+
+# Ensure all necessary columns are numeric
+crypto_data['Open'] = pd.to_numeric(crypto_data['Open'], errors='coerce')
+crypto_data['High'] = pd.to_numeric(crypto_data['High'], errors='coerce')
+crypto_data['Low'] = pd.to_numeric(crypto_data['Low'], errors='coerce')
+crypto_data['Close'] = pd.to_numeric(crypto_data['Close'], errors='coerce')
+
+# Create a function to find the closest matching price and its timestamp in the historic data
+def match_price(trade_price, data):
+    idx = (data['Close'] - trade_price).abs().idxmin()
+    return data.loc[idx, 'open_time'], data.loc[idx, 'Close']
+
+# Match each trade price to the closest price in the historic data
+new_trade_df['Matched_Time'] = new_trade_df['price'].apply(lambda x: match_price(x, crypto_data)[0])
+new_trade_df['Matched_Price'] = new_trade_df['price'].apply(lambda x: match_price(x, crypto_data)[1])
+
+# Create output directory if it doesn't exist
+output_dir = 'strategy_visualizations'
+os.makedirs(output_dir, exist_ok=True)
+
+# Plot each strategy separately
+strategies = new_trade_df['strategy'].dropna().unique()
+
+for strategy in strategies:
+    strategy_df = new_trade_df[new_trade_df['strategy'] == strategy]
+    
+    # Create the candlestick chart
+    fig = go.Figure(data=[go.Candlestick(x=crypto_data['open_time'],
+                                         open=crypto_data['Open'],
+                                         high=crypto_data['High'],
+                                         low=crypto_data['Low'],
+                                         close=crypto_data['Close'])])
+
+    # Add buy and sell markers with larger size for visibility
+    fig.add_trace(go.Scatter(x=strategy_df[strategy_df['action'] == 'BUY']['Matched_Time'],
+                             y=strategy_df[strategy_df['action'] == 'BUY']['Matched_Price'],
+                             mode='markers',
+                             marker=dict(color='green', symbol='triangle-up', size=15),  # Increased size
+                             name='Buy'))
+
+    fig.add_trace(go.Scatter(x=strategy_df[strategy_df['action'] == 'SELL']['Matched_Time'],
+                             y=strategy_df[strategy_df['action'] == 'SELL']['Matched_Price'],
+                             mode='markers',
+                             marker=dict(color='red', symbol='triangle-down', size=15),  # Increased size
+                             name='Sell'))
+
+    # Update layout
+    fig.update_layout(title=f'Candlestick chart with Buy and Sell signals - {strategy}',
+                      xaxis_title='Time',
+                      yaxis_title='Price',
+                      xaxis_rangeslider_visible=False)  # Hide the range slider for a clearer view
+
+    # Save the plot as an HTML file
+    output_file = os.path.join(output_dir, f"{strategy.replace(' ', '_')}_candlestick_chart.html")
+    fig.write_html(output_file)
+    
+    
