@@ -2,7 +2,12 @@ import numpy as np
 import pandas as pd
 import logging
 from itertools import combinations
-import TA_functions
+
+try:
+    import TA_functions
+except ModuleNotFoundError:
+    import Krakenbot.TA_functions as TA_functions
+
 
 # Function to set up logging for each coin file
 def setup_logging(coin_name):
@@ -13,6 +18,7 @@ def setup_logging(coin_name):
     handler.setFormatter(formatter)
     logger.addHandler(handler)
     return logger
+
 
 # Map indicator functions to their names
 indicator_names = {
@@ -39,6 +45,7 @@ indicator_names = {
     TA_functions.use_stochastic_21_5_85_15: 'Stochastic21_5_85_15'
 }
 
+
 # Define use cases and recommended timeframes
 use_cases = {
     ('RSI', 'MACD'): ('Identifying and confirming trend reversals', '1H'),
@@ -56,6 +63,7 @@ use_cases = {
     # Additional use cases can be added here
 }
 
+
 # Function to determine the base type of an indicator
 def get_base_type(indicator_name):
     if 'RSI' in indicator_name:
@@ -64,6 +72,7 @@ def get_base_type(indicator_name):
         return 'Stochastic'
     else:
         return indicator_name
+
 
 # Function to determine the use case and timeframe
 def determine_use_case(indicator1, indicator2):
@@ -76,11 +85,9 @@ def determine_use_case(indicator1, indicator2):
         use_case = ('Unknown Use Case', 'Unknown Timeframe')
     return use_case
 
-# Initialize the list to collect all profit DataFrames
-profit_dfs = []
 
 # Example list of files to process
-files = [
+ALL_FILES = [
     # short term - trades are based on hourly closing data
     'Concatenated-BTCUSDT-1h-2023-concatenated.csv',
     'Concatenated-ETHUSDT-1h-2023-concatenated.csv',
@@ -96,102 +103,115 @@ files = [
     # Add other file names as needed
 ]
 
-# Process each file
-for file in files:
-    df = pd.read_csv(f"./data/{file}", usecols=['Close', 'High', 'Low', 'Close_time'])
-    coin_name = file.split('.')[0]  # Use the file name without extension as the coin name
 
-    # Convert the close_time column from Unix timestamps in milliseconds to datetime
-    df['close_time'] = pd.to_datetime(df['Close_time'], unit='ms')
+def main(token_id = '', timeframe = ''):
+    # Initialize the list to collect all profit DataFrames
+    profit_dfs = []
 
-    # Set up logging for the current coin
-    logger = setup_logging(coin_name)
+    files = [file for file in ALL_FILES if token_id in file and timeframe in file]
 
-    # Log the column headers
-    logger.info("close_time,action,strategy,price")
+    # Process each file
+    for file in files:
+        df = pd.read_csv(f"./data/{file}", usecols=['Close', 'High', 'Low', 'Close_time'])
+        coin_name = file.split('.')[0]  # Use the file name without extension as the coin name
 
-    # Create a dictionary to store the profits for the current coin
-    coin_profits = {}
+        # Convert the close_time column from Unix timestamps in milliseconds to datetime
+        df['close_time'] = pd.to_datetime(df['Close_time'], unit='ms')
 
-    # Calculate trading signals for all indicators once
-    trading_signals = {name: func(df) for func, name in indicator_names.items()}
+        # Set up logging for the current coin
+        logger = setup_logging(coin_name)
 
-    # Generate combinations of indicators, avoiding comparisons of the same type
-    indicator_combinations = [
-        (name1, name2) for name1, name2 in combinations(indicator_names.values(), 2)
-        if get_base_type(name1) != get_base_type(name2)
-    ]
+        # Log the column headers
+        logger.info("close_time,action,strategy,price")
 
-    for (name1, name2) in indicator_combinations:
-        trading_data = df.copy()
-        trading_data['buy_sell_1'] = trading_signals[name1].iloc[:, -1]
-        trading_data['buy_sell_2'] = trading_signals[name2].iloc[:, -1]
+        # Create a dictionary to store the profits for the current coin
+        coin_profits = {}
 
-        # Vectorized buy/sell logic
-        buy_signals = (trading_data['buy_sell_1'] == 1) & (trading_data['buy_sell_2'] == 1)
-        sell_signals = (trading_data['buy_sell_1'] == -1) & (trading_data['buy_sell_2'] == -1)
+        # Calculate trading signals for all indicators once
+        trading_signals = {name: func(df) for func, name in indicator_names.items()}
 
-        positions = np.where(buy_signals, 1, np.where(sell_signals, -1, 0))
-        positions = pd.Series(positions).ffill().fillna(0).values
+        # Generate combinations of indicators, avoiding comparisons of the same type
+        indicator_combinations = [
+            (name1, name2) for name1, name2 in combinations(indicator_names.values(), 2)
+            if get_base_type(name1) != get_base_type(name2)
+        ]
 
-        # Calculate coin holdings and fiat amount
-        coin_holdings = 0
-        fiat_amount = 10000
-        position = False
+        for (name1, name2) in indicator_combinations:
+            trading_data = df.copy()
+            trading_data['buy_sell_1'] = trading_signals[name1].iloc[:, -1]
+            trading_data['buy_sell_2'] = trading_signals[name2].iloc[:, -1]
 
-        for i in range(len(positions)):
-            if positions[i] == 1 and not position:
-                coin_holdings = fiat_amount / trading_data['Close'].iloc[i]
-                fiat_amount = 0
-                position = True
-                trade_message = f"{trading_data['close_time'].iloc[i]},BUY,{name1} & {name2},{trading_data['Close'].iloc[i]}"
-                logger.info(trade_message)
-            elif positions[i] == -1 and position:
-                fiat_amount = coin_holdings * trading_data['Close'].iloc[i]
-                coin_holdings = 0
-                position = False
-                trade_message = f"{trading_data['close_time'].iloc[i]},SELL,{name1} & {name2},{trading_data['Close'].iloc[i]}"
-                logger.info(trade_message)
-        
-        # Final value if still holding coins
-        if coin_holdings > 0:
-            fiat_amount = coin_holdings * trading_data['Close'].iloc[-1]
+            # Vectorized buy/sell logic
+            buy_signals = (trading_data['buy_sell_1'] == 1) & (trading_data['buy_sell_2'] == 1)
+            sell_signals = (trading_data['buy_sell_1'] == -1) & (trading_data['buy_sell_2'] == -1)
+
+            positions = np.where(buy_signals, 1, np.where(sell_signals, -1, 0))
+            positions = pd.Series(positions).ffill().fillna(0).values
+
+            # Calculate coin holdings and fiat amount
             coin_holdings = 0
+            fiat_amount = 10000
+            position = False
 
-        strategy_name = f'{name1} & {name2}'
-        use_case, timeframe = determine_use_case(name1, name2)
-        
-        if use_case == 'Unknown Use Case':
-            logger.warning(f"Unknown use case for strategy {strategy_name}")
+            for i in range(len(positions)):
+                if positions[i] == 1 and not position:
+                    coin_holdings = fiat_amount / trading_data['Close'].iloc[i]
+                    fiat_amount = 0
+                    position = True
+                    trade_message = f"{trading_data['close_time'].iloc[i]},BUY,{name1} & {name2},{trading_data['Close'].iloc[i]}"
+                    logger.info(trade_message)
+                elif positions[i] == -1 and position:
+                    fiat_amount = coin_holdings * trading_data['Close'].iloc[i]
+                    coin_holdings = 0
+                    position = False
+                    trade_message = f"{trading_data['close_time'].iloc[i]},SELL,{name1} & {name2},{trading_data['Close'].iloc[i]}"
+                    logger.info(trade_message)
 
-        coin_profits[f'{strategy_name} ({use_case}, {timeframe})'] = fiat_amount
+            # Final value if still holding coins
+            if coin_holdings > 0:
+                fiat_amount = coin_holdings * trading_data['Close'].iloc[-1]
+                coin_holdings = 0
 
-        # Log the end of the strategy
-        logger.info(f"End of strategy: {strategy_name}\n")
+            strategy_name = f'{name1} & {name2}'
+            use_case, timeframe = determine_use_case(name1, name2)
 
-    coin_profits_df = pd.DataFrame(coin_profits, index=[coin_name])
-    profit_dfs.append(coin_profits_df)
+            if use_case == 'Unknown Use Case':
+                logger.warning(f"Unknown use case for strategy {strategy_name}")
 
-# Concatenate all the profit DataFrames into a single DataFrame
-coin_profit_df = pd.concat(profit_dfs)
+            coin_profits[f'{strategy_name} ({use_case}, {timeframe})'] = fiat_amount
 
-# Determine the best strategy for each coin
-coin_profit_df['Recommended Strategy'] = coin_profit_df.idxmax(axis=1)
+            # Log the end of the strategy
+            logger.info(f"End of strategy: {strategy_name}\n")
 
-# Add a column with the profit of the recommended strategy
-coin_profit_df['Profit of Recommended Strategy'] = coin_profit_df.apply(
-    lambda row: row[row['Recommended Strategy']], axis=1
-)
+        coin_profits_df = pd.DataFrame(coin_profits, index=[coin_name])
+        profit_dfs.append(coin_profits_df)
 
-# Calculate the percentage increase for each coin
-initial_investment = 10000
-coin_profit_df['Percentage Increase'] = ((coin_profit_df['Profit of Recommended Strategy'] - initial_investment) / initial_investment) * 100
+    # Concatenate all the profit DataFrames into a single DataFrame
+    coin_profit_df = pd.concat(profit_dfs)
 
-# Assuming coin_profit_df is already created as per the code provided
-# Keep only the first and last two columns
-coin_profit_df = coin_profit_df.iloc[:, [-3, -2, -1]]
+    # Determine the best strategy for each coin
+    coin_profit_df['Recommended Strategy'] = coin_profit_df.idxmax(axis=1)
 
-# Save the modified DataFrame to a CSV file
-coin_profit_df.to_csv('coin_profit_recommended.csv')
+    # Add a column with the profit of the recommended strategy
+    coin_profit_df['Profit of Recommended Strategy'] = coin_profit_df.apply(
+        lambda row: row[row['Recommended Strategy']], axis=1
+    )
 
-print(coin_profit_df)
+    # Calculate the percentage increase for each coin
+    initial_investment = 10000
+    coin_profit_df['Percentage Increase'] = ((coin_profit_df['Profit of Recommended Strategy'] - initial_investment) / initial_investment) * 100
+
+    # Assuming coin_profit_df is already created as per the code provided
+    # Keep only the first and last two columns
+    coin_profit_df = coin_profit_df.iloc[:, [-3, -2, -1]]
+
+    return coin_profit_df
+
+
+if __name__ == '__main__':
+    result = main()
+
+    # Save the modified DataFrame to a CSV file
+    result.to_csv('coin_profit_recommended.csv')
+
+    print(result)

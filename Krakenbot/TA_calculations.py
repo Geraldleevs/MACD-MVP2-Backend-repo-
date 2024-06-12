@@ -51,7 +51,7 @@ def macd(close, fast_period = 12, slow_period = 26, smoothing = 9):
     return macd, signal, histogram
 
 def ichimoku_cloud(high, low, close, conversion_period = 9, base_period = 26, leading_period = 52):
-    """ This function takes in price data for high, low, close and also conversion, base and leading periods 
+    """ This function takes in price data for high, low, close and also conversion, base and leading periods
     returning conversion and base line also leading and lagging spans"""
     #calculate conversion line using high and low prices of last 9 periods
     conversion_line = (high.rolling(conversion_period).max() + low.rolling(conversion_period).min()) / 2
@@ -65,12 +65,12 @@ def ichimoku_cloud(high, low, close, conversion_period = 9, base_period = 26, le
 
     #calculate lagging span by shifting using base period
     lagging_span = close.shift(-base_period)
-    
+
     return conversion_line, base_line, leading_span_a, leading_span_b, lagging_span
 
 def calculate_atr(data, period = 14):
     """calculate ATR using high, low, close data and period"""
-    
+
     #separate price data
     high = data['High']
     low = data['Low']
@@ -83,7 +83,7 @@ def calculate_atr(data, period = 14):
 
     #for each remaining close data calculate ATR
     for i in range(1, len(close)):
-        
+
         range1 = high[i] - low[i]
         range2 = abs(high[i] - close[i-1])
         range3 = abs(low[i] - close[i-1])
@@ -92,12 +92,12 @@ def calculate_atr(data, period = 14):
         atr[i] = ((period - 1) * atr[i-1] + true_range) / period
 
     return atr
+
 def atr(high, low, close, period=14):
     """Calculate the Average True Range (ATR) for a given period."""
     tr = pd.concat([high - low, abs(high - close.shift()), abs(low - close.shift())], axis=1).max(axis=1)
     atr = tr.rolling(period).mean()
     return atr
-
 
 def calculate_donchian_channels(data, window_size = 20):
     """calculate donchain using closing data and n value of 20 parameters
@@ -112,7 +112,7 @@ def calculate_donchian_channels(data, window_size = 20):
     lower_channel = close.rolling(window=window_size).min()
     #calculate midline using upper and lower channel /2
     mid_line = (upper_channel + lower_channel) / 2
-    
+
     return upper_channel, lower_channel, mid_line
 
 def rsi(series, period=14):
@@ -156,8 +156,8 @@ def stochastic_oscillator(high, low, close, k_period=14, d_period=3):
     """Calculate the Stochastic Oscillator."""
     low_min = low.rolling(window=k_period).min()
     high_max = high.rolling(window=k_period).max()
-    
+
     K = ((close - low_min) / (high_max - low_min)) * 100
     D = K.rolling(window=d_period).mean()
-    
+
     return K, D
