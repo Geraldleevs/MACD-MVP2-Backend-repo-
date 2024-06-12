@@ -47,16 +47,6 @@ def get_ohlc_data(pair='XBTUSD', interval=5, since=None):
         print(f"Failed to fetch data. Status code: {response.status_code}")
         return None, None
 
-def rsi(series, period=14):
-    delta = series.diff(1)
-    gain = delta.where(delta > 0, 0)
-    loss = -delta.where(delta < 0, 0)
-    avg_gain = gain.rolling(window=period).mean()
-    avg_loss = loss.rolling(window=period).mean()
-    rs = avg_gain / avg_loss
-    rsi = 100 - (100 / (1 + rs))
-    return rsi
-
 def apply_trading_strategy(df, indicators, min_data_points=50):
     if 'atr' in indicators:
         df = use_atr(df)
@@ -111,7 +101,7 @@ def execute_trade(trade_type, balance, position_size, price):
 
 if __name__ == '__main__':
     last_checked = None
-    interval_minutes = 5  # Set this to your desired interval in minutes
+    interval_minutes = 1  # Set this to your desired interval in minutes
 
     # Initialize fake balance
     balance = {'usd': 10000, 'btc': 0}
@@ -152,7 +142,13 @@ if __name__ == '__main__':
             new_df.reset_index(drop=True, inplace=True)  # Ensure the new DataFrame index is unique
 
             # Concatenate new data with the existing data and drop duplicates based on 'Timestamp'
-            df = pd.concat([df, new_df], ignore_index=True).drop_duplicates(subset='Timestamp').reset_index(drop=True)
+            df = pd.concat([df, new_df]).drop_duplicates(subset='Timestamp').reset_index(drop=True)
+
+            # Keep only the last 50 rows to ensure indices remain unique
+            df = df.tail(50).reset_index(drop=True)
+
+            # Debugging: print the indices to ensure they are unique
+            print(f"\nIndices after concatenation: {df.index}")
 
             # Debugging: print the closing prices
             print(f"\nClosing Prices:\n{df['Close'].tolist()}")
