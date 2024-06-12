@@ -27,3 +27,12 @@ Krakenbot/unzipper
 Krakenbot/Binance_data_concatenator.py
 
 *.sqlite3
+Concatenated-BTCUSDT-1d-2023-4-concatenated_trade_logs.csv
+Concatenated-BTCUSDT-1h-2023-concatenated_trade_logs.csv
+Concatenated-BTCUSDT-4h-2023-4-concatenated_trade_logs.csv
+Concatenated-DOGEUSDT-1d-2023-4-concatenated_trade_logs.csv
+Concatenated-DOGEUSDT-1h-2023-concatenated_trade_logs.csv
+Concatenated-DOGEUSDT-4h-2023-4-concatenated_trade_logs.csv
+Concatenated-ETHUSDT-1d-2023-4-concatenated_trade_logs.csv
+Concatenated-ETHUSDT-1h-2023-concatenated_trade_logs.csv
+Concatenated-ETHUSDT-4h-2023-4-concatenated_trade_logs.csv
