@@ -5,11 +5,17 @@
 - Jerry Chin
 
 ### Libraries Installation
-`pip install numpy`
-`pip install pandas`
-`pip install streamlit`
-`pip install django`
-`pip install djangorestframework`
+```bash
+pip install -r requirements.txt
+
+# OR
+
+pip install numpy
+pip install pandas
+pip install streamlit
+pip install django
+pip install djangorestframework
+```
 
 ### running on streamlit
 `python -m streamlit run Krakenbot\StreamLit_Livetrading.py`
@@ -30,10 +36,12 @@
 
 `Ctrl + C to stop`
 
-You may create a `.env` file to set the following env variables
-- `DJANGO_SECRET_KEY=RandomSecretKeyForDjango`
-- `PYTHON_ENV=development|production`
-  - `development` for debug mode
+You **may** create a `.env` file to set the following env variables
+```bash
+DJANGO_SECRET_KEY="RandomSecretKeyForDjango"
+PYTHON_ENV="development|production" # development for debug mode
+PORT="8000"
+```
 
 ## REST API Endpoints
 ### Recommendations
@@ -64,4 +72,13 @@ Response:
 		"profit_percent": 127.13315808518672
 	}
 ]
+```
+
+## Google Cloud Deployment
+### Environment Variables
+```bash
+DJANGO_SECRET_KEY="SomeSecretKey"
+PYTHON_ENV="deployment"
+ADDRESS="0.0.0.0" # Must be set
+# PORT is set somewhere else on Google Cloud, not in environment variable
 ```
