@@ -1,9 +1,11 @@
 Dockerfile
 .dockerignore
-.vs
 .vscode
+.git
+.env
 venv
 *.csv
 *.sqlite3
 *.log
-.env
+*.md
+requirements.txt

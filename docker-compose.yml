@@ -1,10 +1,14 @@
 version: "3.9"
 services:
   krakenbot:
-    build: .
+    build:
+      args:
+        PORT: ${PORT}
     environment:
       DJANGO_SECRET_KEY: "${DJANGO_SECRET_KEY}"
       PYTHON_ENV: "${PYTHON_ENV}"
+      ADDRESS: "0.0.0.0"
+      PORT: "${PORT}"
     container_name: krakenbot
     ports:
-      - "8000:8000"
+      - "8000:${PORT}"
