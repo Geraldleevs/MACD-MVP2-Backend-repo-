@@ -108,7 +108,7 @@ def main(token_id = '', timeframe = ''):
     # Initialize the list to collect all profit DataFrames
     profit_dfs = []
 
-    files = [file for file in ALL_FILES if token_id == file[1] and timeframe == file[2]]
+    files = [file for file in ALL_FILES if token_id in file[1] and timeframe in file[2]]
 
     if len(files) < 1:
         return pd.DataFrame([])
