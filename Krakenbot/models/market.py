@@ -3,7 +3,10 @@ SAMPLE_MARKET = [
 	{ 'token': 'BNB', 'price': 472.46 },
 	{ 'token': 'SOL', 'price': 117.71 },
 	{ 'token': 'ETH', 'price': 2725.45 },
-	{ 'token': 'DOGE', 'price': 0.11 }
+	{ 'token': 'DOGE', 'price': 0.11 },
+	{ 'token': 'XRP', 'price': 0.40 },
+	{ 'token': 'ADA', 'price': 0.43 },
+	{ 'token': 'TON', 'price': 5.21 }
 ]
 
 class Market:
