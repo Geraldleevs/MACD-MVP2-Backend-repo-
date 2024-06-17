@@ -1,8 +1,9 @@
-FROM python:3.7-slim
+FROM python:3.12.4-slim
+ARG PORT=8080
 RUN mkdir -p /app
 WORKDIR /app
-COPY requirements.txt .
+COPY docker-requirements.txt ./requirements.txt
 RUN pip install -r requirements.txt --no-cache-dir
-ADD . ./
-EXPOSE 8000
-CMD python manage.py migrate && python manage.py runserver 0.0.0.0:8000
+ADD . .
+EXPOSE ${PORT}
+CMD python manage.py migrate && python manage.py runserver

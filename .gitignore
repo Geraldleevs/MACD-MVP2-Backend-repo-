@@ -2,6 +2,7 @@ tempkeys
 Kraken_OHLCVT
 .DS_Store
 .env
+venv
 
 year_data/APEUSDT_full.csv
 year_data/BTCUSDT_full.csv
@@ -22,17 +23,10 @@ kraken-react-app/server/tempkeys.txt
 trade_logs.log
 data/trade_logs_full_backup.log
 
-Krakenbot/__pycache__
+*/__pycache__
+__pycache__
 Krakenbot/unzipper
 Krakenbot/Binance_data_concatenator.py
 
 *.sqlite3
-Concatenated-BTCUSDT-1d-2023-4-concatenated_trade_logs.csv
-Concatenated-BTCUSDT-1h-2023-concatenated_trade_logs.csv
-Concatenated-BTCUSDT-4h-2023-4-concatenated_trade_logs.csv
-Concatenated-DOGEUSDT-1d-2023-4-concatenated_trade_logs.csv
-Concatenated-DOGEUSDT-1h-2023-concatenated_trade_logs.csv
-Concatenated-DOGEUSDT-4h-2023-4-concatenated_trade_logs.csv
-Concatenated-ETHUSDT-1d-2023-4-concatenated_trade_logs.csv
-Concatenated-ETHUSDT-1h-2023-concatenated_trade_logs.csv
-Concatenated-ETHUSDT-4h-2023-4-concatenated_trade_logs.csv
+*trade_logs.csv

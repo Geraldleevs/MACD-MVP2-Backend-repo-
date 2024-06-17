@@ -9,6 +9,11 @@ def main():
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Krakenbot.settings')
     try:
         from django.core.management import execute_from_command_line
+        from django.core.management.commands.runserver import Command as runserver
+        PORT = os.environ.get("PORT")
+        ADDR = os.environ.get("ADDRESS")
+        runserver.default_addr = ADDR if ADDR else '127.0.0.1'
+        runserver.default_port = PORT if PORT else 8080
     except ImportError as exc:
         raise ImportError(
             "Couldn't import Django. Are you sure it's installed and "

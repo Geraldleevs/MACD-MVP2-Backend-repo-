@@ -7,5 +7,11 @@ class Recommendation:
 
 	def recommend(self):
 		result = backtest(self.token_id, self.timeframe).reset_index().to_numpy()
-		result = [{'token': value[0], 'strategy': value[1], 'profit': value[2], 'profit_percent': value[3]} for value in result]
+		result = [{'token': value[0],
+							'strategy': value[1],
+							'profit': value[2],
+							'profit_percent': value[3],
+							'summary': 'Summary',
+							'strategy_description': 'Strategy Description'
+							} for value in result]
 		return result

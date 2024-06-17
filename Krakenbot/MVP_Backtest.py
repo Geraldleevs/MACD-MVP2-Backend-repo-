@@ -89,17 +89,17 @@ def determine_use_case(indicator1, indicator2):
 # Example list of files to process
 ALL_FILES = [
     # short term - trades are based on hourly closing data
-    'Concatenated-BTCUSDT-1h-2023-concatenated.csv',
-    'Concatenated-ETHUSDT-1h-2023-concatenated.csv',
-    'Concatenated-DOGEUSDT-1h-2023-concatenated.csv',
+    ('Concatenated-BTCUSDT-1h-2023-concatenated.csv', 'BTC', '1h'),
+    ('Concatenated-ETHUSDT-1h-2023-concatenated.csv', 'ETH', '1h'),
+    ('Concatenated-DOGEUSDT-1h-2023-concatenated.csv', 'DOGE', '1h'),
     # medium term - trades are based on 4h closing data
-    'Concatenated-BTCUSDT-4h-2023-4-concatenated.csv',
-    'Concatenated-ETHUSDT-4h-2023-4-concatenated.csv',
-    'Concatenated-DOGEUSDT-4h-2023-4-concatenated.csv',
+    ('Concatenated-BTCUSDT-4h-2023-4-concatenated.csv', 'BTC', '4h'),
+    ('Concatenated-ETHUSDT-4h-2023-4-concatenated.csv', 'ETH', '4h'),
+    ('Concatenated-DOGEUSDT-4h-2023-4-concatenated.csv', 'DOGE', '4h'),
     # long term - trades are based on daily closing data
-    'Concatenated-BTCUSDT-1d-2023-4-concatenated.csv',
-    'Concatenated-ETHUSDT-1d-2023-4-concatenated.csv',
-    'Concatenated-DOGEUSDT-1d-2023-4-concatenated.csv',
+    ('Concatenated-BTCUSDT-1d-2023-4-concatenated.csv', 'BTC', '1d'),
+    ('Concatenated-ETHUSDT-1d-2023-4-concatenated.csv', 'ETH', '1d'),
+    ('Concatenated-DOGEUSDT-1d-2023-4-concatenated.csv', 'DOGE', '1d'),
     # Add other file names as needed
 ]
 
@@ -108,10 +108,13 @@ def main(token_id = '', timeframe = ''):
     # Initialize the list to collect all profit DataFrames
     profit_dfs = []
 
-    files = [file for file in ALL_FILES if token_id in file and timeframe in file]
+    files = [file for file in ALL_FILES if token_id in file[1] and timeframe in file[2]]
+
+    if len(files) < 1:
+        return pd.DataFrame([])
 
     # Process each file
-    for file in files:
+    for (file, coin_id, _) in files:
         df = pd.read_csv(f"./data/{file}", usecols=['Close', 'High', 'Low', 'Close_time'])
         coin_name = file.split('.')[0]  # Use the file name without extension as the coin name
 
@@ -183,7 +186,7 @@ def main(token_id = '', timeframe = ''):
             # Log the end of the strategy
             logger.info(f"End of strategy: {strategy_name}\n")
 
-        coin_profits_df = pd.DataFrame(coin_profits, index=[coin_name])
+        coin_profits_df = pd.DataFrame(coin_profits, index=[coin_id])
         profit_dfs.append(coin_profits_df)
 
     # Concatenate all the profit DataFrames into a single DataFrame
