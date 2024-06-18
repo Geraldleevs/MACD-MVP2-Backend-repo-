@@ -19,19 +19,28 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-env_key = os.environ.get("DJANGO_SECRET_KEY")
+env_key = os.environ.get('DJANGO_SECRET_KEY')
 default_key = 'krakenbotdjangodefaultsecretkeyxeh)n76im*jn%0n185ami6ad*l0nly=vp7ujre^(h=3w*d&99j'
 SECRET_KEY = env_key if env_key else default_key
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True if os.environ.get("PYTHON_ENV") == 'development' else False
+DEBUG = True if os.environ.get('PYTHON_ENV') == 'development' else False
 
 ALLOWED_HOSTS = ['*']
 
-
 # Application definition
+firebase_admin_settings = {
+	'type': 'service_account',
+    'project_id': os.environ.get('FIREBASE_PROJECT_ID'),
+    'private_key_id': os.environ.get('FIREBASE_PRIVATE_KEY_ID'),
+    'private_key': '\n'.join(os.environ.get('FIREBASE_PRIVATE_KEY').split(r'\n')),
+    'client_email': os.environ.get('FIREBASE_CLIENT_EMAIL'),
+    'client_id': os.environ.get('FIREBASE_CLIENT_ID'),
+    'auth_uri': 'https://accounts.google.com/o/oauth2/auth',
+    'token_uri': 'https://oauth2.googleapis.com/token',
+    'auth_provider_x509_cert_url': 'https://www.googleapis.com/oauth2/v1/certs',
+    'client_x509_cert_url': os.environ.get('FIREBASE_CLIENT_X509_CERT_URL'),
+    'universe_domain': 'googleapis.com',
+}
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -41,7 +50,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'corsheaders',
     'Krakenbot_app',
 ]
 
@@ -53,11 +61,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-]
-
-CORS_ALLOWED_ORIGINS = [
-    "https://oauth2.googleapis.com",
 ]
 
 ROOT_URLCONF = 'Krakenbot.urls'

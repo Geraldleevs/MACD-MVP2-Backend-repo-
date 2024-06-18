@@ -9,3 +9,5 @@ venv
 *.log
 *.md
 requirements.txt
+*firebase-adminsdk*.json
+**/__pycache__

@@ -13,8 +13,10 @@ pip install -r requirements.txt
 pip install numpy
 pip install pandas
 pip install streamlit
-pip install django
+pip install Django
 pip install djangorestframework
+pip install requests
+pip install firebase
 ```
 
 ### running on streamlit
@@ -23,6 +25,24 @@ pip install djangorestframework
 ### CSV for downloaded binance header
 `open_time,open,high,low,close,volume,close_time,quote_volume,count,taker_buy_volume,taker_buy_quote_volume,ignore` - Binance default
 `open_time,Open,High,Low,Close,Volume,Close_time,Quote_volume,Count,Taker_buy_volume,Taker_buy_quote_volume,Ignore` - Mach D usable
+
+## ENV Variables
+```bash
+DJANGO_SECRET_KEY="ANY_SECRET_STRING"
+API_URL="https://mach-d-trading-xr6ou3pjdq-nw.a.run.app" # The api url, for Google scheduler authentication
+GCLOUD_EMAIL="firebase-adminsdk...@...gserviceaccount.com" # Your Google scheduler's service account email
+PYTHON_ENV="development" # development | production
+ADDRESS="127.0.0.1" # Use 0.0.0.0 in docker / cloud
+PORT="8080"
+
+# These are from firebase credentials.json, download it from the firebase project and copy down
+FIREBASE_PROJECT_ID="project_id"
+FIREBASE_PRIVATE_KEY_ID="private_key_id"
+FIREBASE_PRIVATE_KEY="private_key"
+FIREBASE_CLIENT_EMAIL="client_email"
+FIREBASE_CLIENT_ID="client_id"
+FIREBASE_CLIENT_X509_CERT_URL="client_x509_cert_url"
+```
 
 ## Django-REST Server
 ### Setup Server
@@ -48,62 +68,7 @@ docker rm KrakenBot # Remove container
 docker rmi KrakenBot # Remove image
 ```
 
-You **may** create a `.env` file to set the following env variables
-```bash
-DJANGO_SECRET_KEY="RandomSecretKeyForDjango"
-PYTHON_ENV="development|production" # development for debug mode
-PORT="8000"
-```
-
 ## REST API Endpoints
-### Recommendations
-
-Fetch recommendations: `http://127.0.0.1:8000/api/recommendation [GET]`
-
-<details>
-<summary>
-Endpoint details
-</summary>
-
-```
-URL: http://127.0.0.1:8000/api/recommendation
-Query: token_id, timeframe
-Response:
-[
-  {
-    "token_id": string,
-    "timeframe": string,
-    "strategy": string,
-    "profit": number,
-    "profit_percent": number,
-    "summary": string,
-    "strategy_description": string,
-    "updated_on": Date
-  },
-  ...
-]
-```
-
-#### Example
-```
-Request: http://127.0.0.1:8000/api/recommendation?token_id=btc&timeframe=4h
-Response:
-[
-  {
-    "token_id": "BTC",
-    "timeframe": "4h",
-    "strategy": "MACD & Donchian (Breakout and momentum confirmation, 1H)",
-    "profit": 22713.315808518673,
-    "profit_percent": 127.13315808518672,
-    "summary": "Summary",
-    "strategy_description": "Strategy Description"
-    "updated_on": "2024-06-17T14:22:20.913234Z"
-  }
-]
-```
-</details>
-
-<hr/>
 
 ### Market
 
@@ -144,7 +109,7 @@ Response:
 
 ### Backtest
 
-Trigger backtest and save in database: `http://127.0.0.1:8000/api/backtest [POST]`
+Trigger backtest and save in firebase database: `http://127.0.0.1:8000/api/backtest [POST]`
 
 <details>
 <summary>
@@ -172,10 +137,7 @@ None (Status: 200)
 ## Google Cloud Deployment
 ### Environment Variables
 ```bash
-DJANGO_SECRET_KEY="SomeSecretKey"
-GCLOUD_EMAIL="....@...iam.gserviceaccount.com" # For scheduler API call for backtest
-API_URL="THIS CLOUD API URL" # For backtest API
-PYTHON_ENV="deployment"
+# ...everything from the ENV variable above
 ADDRESS="0.0.0.0" # Must be set
 # PORT is set somewhere else on Google Cloud, not in environment variable
 ```
