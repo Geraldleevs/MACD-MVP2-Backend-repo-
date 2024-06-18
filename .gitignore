@@ -23,7 +23,7 @@ kraken-react-app/server/tempkeys.txt
 trade_logs.log
 data/trade_logs_full_backup.log
 
-*/__pycache__
+**/__pycache__
 __pycache__
 Krakenbot/unzipper
 Krakenbot/Binance_data_concatenator.py

@@ -1,4 +1,5 @@
-from Krakenbot.MVP_Backtest import main as backtest
+from Krakenbot.serializers.backtest import BackTestSerializer
+from Krakenbot_app.models import BackTestModel
 
 class Recommendation:
 	def __init__(self, token_id = '', timeframe = ''):
@@ -6,12 +7,12 @@ class Recommendation:
 		self.timeframe = timeframe
 
 	def recommend(self):
-		result = backtest(self.token_id, self.timeframe).reset_index().to_numpy()
-		result = [{'token': value[0],
-							'strategy': value[1],
-							'profit': value[2],
-							'profit_percent': value[3],
-							'summary': 'Summary',
-							'strategy_description': 'Strategy Description'
-							} for value in result]
-		return result
+		filters = {}
+		if self.token_id:
+			filters['token_id'] = self.token_id
+
+		if self.timeframe:
+			filters['timeframe'] = self.timeframe
+
+		results = BackTestModel.objects.filter(**filters).order_by('token_id', 'timeframe')
+		return BackTestSerializer(results, many=True).data

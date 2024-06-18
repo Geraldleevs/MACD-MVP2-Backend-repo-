@@ -4,11 +4,10 @@ services:
     build:
       args:
         PORT: ${PORT}
+    env_file:
+      - .env
     environment:
-      DJANGO_SECRET_KEY: "${DJANGO_SECRET_KEY}"
-      PYTHON_ENV: "${PYTHON_ENV}"
       ADDRESS: "0.0.0.0"
-      PORT: "${PORT}"
     container_name: krakenbot
     ports:
       - "8000:${PORT}"
