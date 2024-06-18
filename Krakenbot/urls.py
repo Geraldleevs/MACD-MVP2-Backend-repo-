@@ -20,5 +20,6 @@ import Krakenbot.views as views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/recommendation', views.RecommendationView.as_view(), name='recommendation'),
-    path('api/market', views.MarketView.as_view(), name='market')
+    path('api/market', views.MarketView.as_view(), name='market'),
+    path('api/backtest', views.BackTestView.as_view(), name='backtest'),
 ]

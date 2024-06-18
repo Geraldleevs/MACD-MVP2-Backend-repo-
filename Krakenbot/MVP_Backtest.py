@@ -114,7 +114,7 @@ def main(token_id = '', timeframe = ''):
         return pd.DataFrame([])
 
     # Process each file
-    for (file, coin_id, _) in files:
+    for (file, coin_id, file_timeframe) in files:
         df = pd.read_csv(f"./data/{file}", usecols=['Close', 'High', 'Low', 'Close_time'])
         coin_name = file.split('.')[0]  # Use the file name without extension as the coin name
 
@@ -186,7 +186,7 @@ def main(token_id = '', timeframe = ''):
             # Log the end of the strategy
             logger.info(f"End of strategy: {strategy_name}\n")
 
-        coin_profits_df = pd.DataFrame(coin_profits, index=[coin_id])
+        coin_profits_df = pd.DataFrame(coin_profits, index=[f'{coin_id} | {file_timeframe}'])
         profit_dfs.append(coin_profits_df)
 
     # Concatenate all the profit DataFrames into a single DataFrame

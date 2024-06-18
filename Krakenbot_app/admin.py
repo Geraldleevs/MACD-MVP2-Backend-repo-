@@ -1,3 +1,5 @@
 from django.contrib import admin
 
-# Register your models here.
+from Krakenbot_app.models import BackTestModel
+
+admin.register(BackTestModel)
