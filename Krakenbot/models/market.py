@@ -1,3 +1,5 @@
+from rest_framework.request import Request
+
 SAMPLE_MARKET = [
 	{ 'token': 'BTC', 'price': 52746.70 },
 	{ 'token': 'BNB', 'price': 472.46 },
@@ -10,9 +12,10 @@ SAMPLE_MARKET = [
 ]
 
 class Market:
-	def __init__(self, token_id = ''):
-		self.token_id = token_id
+	def get_market(self, request: Request):
+		token_id = request.query_params.get('token_id', None)
 
-	def get_market(self):
-		result = [marketToken for marketToken in SAMPLE_MARKET if self.token_id in marketToken['token']]
-		return result
+		if token_id is None or token_id == '':
+			return SAMPLE_MARKET
+
+		return [marketToken for marketToken in SAMPLE_MARKET if token_id.upper() == marketToken['token'].upper()]

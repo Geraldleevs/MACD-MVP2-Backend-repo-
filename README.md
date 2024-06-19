@@ -134,6 +134,77 @@ None (Status: 200)
 
 <hr/>
 
+### Buy/Sell
+
+Buy/Sell tokens: `http://127.0.0.1:8000/api/trade [POST]`
+
+<details>
+<summary>
+Endpoint details
+</summary>
+
+```
+URL: http://127.0.0.1:8000/api/trade
+Authorization: Bearer {JWT_Token}
+Body:
+{
+  uid: string,
+  token_id: string,
+  amount: number,
+  value: number,
+  trade_type: string
+}
+Response:
+{
+  id: string,
+  token_id: string,
+  amount: number
+}
+```
+
+#### Example (Buy)
+```
+Request: http://127.0.0.1:8000/api/trade
+Authorization: Bearer ANY_VALID_TOKEN
+Body:
+{
+  uid: "Gmcjdq33QxPSggpJx7CsTK42cQR2",
+  token_id: "BTC",
+  amount: 10,
+  value: 54432.12,
+  trade_type: "buy"
+}
+Response:
+{
+  id: "BTC",
+  token_id: "BTC",
+  amount: 10
+}
+```
+
+#### Example (Sell)
+```
+Request: http://127.0.0.1:8000/api/trade
+Authorization: Bearer ANY_VALID_TOKEN
+Body:
+{
+  uid: "Gmcjdq33QxPSggpJx7CsTK42cQR2",
+  token_id: "BTC",
+  amount: 10,
+  value: 54432.12,
+  trade_type: "sell"
+}
+Response:
+{
+  id: "BTC",
+  token_id: "BTC",
+  amount: 10
+}
+```
+</details>
+
+<hr/>
+
 ## Google Cloud Deployment
 ### Environment Variables
 ```bash

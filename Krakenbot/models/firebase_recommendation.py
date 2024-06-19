@@ -1,6 +1,3 @@
-import firebase_admin
-from firebase_admin.credentials import Certificate
-from firebase_admin import firestore
 from Krakenbot import settings
 from typing import TypedDict
 from datetime import datetime
@@ -16,12 +13,9 @@ class RecommendationField(TypedDict):
 	strategy_description: str
 	updated_on: datetime
 
-
-class FirebaseClientRecommendation:
+class FirebaseRecommendation:
 	def __init__(self):
-		firebase_admin.initialize_app(Certificate(settings.firebase_admin_settings))
-		self.__db = firestore.client()
-		self.__collection = self.__db.collection(u'recommendation')
+		self.__collection = settings.firebase.collection(u'recommendation')
 
 	def create(self, data: RecommendationField):
 		doc_ref = self.__collection.document()
