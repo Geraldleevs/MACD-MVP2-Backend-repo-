@@ -192,8 +192,7 @@ for file in files:
         strategy_name = f'{name1} & {name2}'
         use_case, timeframe = determine_use_case(name1, name2)
         
-        if use_case == 'Unknown Use Case':
-            logger.warning(f"Unknown use case for strategy {strategy_name}")
+        
 
         # Evaluate the strategy performance
         strategy_returns = trading_data['Close'].pct_change().dropna()
@@ -205,8 +204,7 @@ for file in files:
 
         coin_profits[f'{strategy_name} ({use_case}, {timeframe})'] = fiat_amount
 
-        # Log the end of the strategy
-        logger.info(f"End of strategy: {strategy_name}\n")
+        
 
     coin_profits_df = pd.DataFrame(coin_profits, index=[coin_name])
     profit_dfs.append(coin_profits_df)

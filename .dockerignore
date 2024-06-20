@@ -1,0 +1,11 @@
+Dockerfile
+.dockerignore
+.vscode
+.git
+.env
+venv
+*.csv
+*.sqlite3
+*.log
+*.md
+requirements.txt

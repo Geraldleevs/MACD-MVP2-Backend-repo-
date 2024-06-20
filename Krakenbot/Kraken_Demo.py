@@ -58,13 +58,7 @@ def apply_trading_strategy(df, indicators, min_data_points=50):
         df = use_sma(df)
         df.rename(columns={'buy_sell': 'buy_sell_sma'}, inplace=True)
     if 'rsi' in indicators:
-        if len(df) < min_data_points:
-            print(f"Warning: Not enough data points ({len(df)}) for reliable RSI calculation.")
-        df['rsi'] = rsi(df['Close'])
-        df['prev_rsi'] = df['rsi'].shift(1)
-        df['buy_sell'] = 0
-        df.loc[(df['rsi'] < 30) & (df['prev_rsi'] >= 30), 'buy_sell'] = 1
-        df.loc[(df['rsi'] > 70) & (df['prev_rsi'] <= 70), 'buy_sell'] = -1
+        df = use_rsi70_30(df)
         df.rename(columns={'buy_sell': 'buy_sell_rsi'}, inplace=True)
     if 'ichimoku' in indicators:
         df = use_ichimoku(df)
@@ -142,7 +136,25 @@ if __name__ == '__main__':
             new_df.reset_index(drop=True, inplace=True)  # Ensure the new DataFrame index is unique
 
             # Concatenate new data with the existing data and drop duplicates based on 'Timestamp'
+            df.reset_index(drop=True, inplace=True)
+            new_df.reset_index(drop=True, inplace=True)
             df = pd.concat([df, new_df]).drop_duplicates(subset='Timestamp').reset_index(drop=True)
+
+            # Identify and print duplicate rows based on 'Timestamp'
+            duplicate_rows = df[df.duplicated(subset='Timestamp', keep=False)]
+            if not duplicate_rows.empty:
+                print("Duplicate rows based on 'Timestamp':")
+                print(duplicate_rows)
+
+            # Check if the DataFrame is empty after concatenation
+            if df.empty:
+                print("DataFrame is empty after concatenation.")
+                continue
+
+            # Check if 'Close' column exists
+            if 'Close' not in df.columns:
+                print("Column 'Close' not found in DataFrame.")
+                continue
 
             # Keep only the last 50 rows to ensure indices remain unique
             df = df.tail(50).reset_index(drop=True)
@@ -191,6 +203,9 @@ if __name__ == '__main__':
 
             print(f"Balance: USD {balance['usd']}, BTC {balance['btc']}")
             last_checked = last_timestamp
+
+        else:
+            print("No new data fetched.")
 
         # Sleep for a short duration before checking again to avoid making too many requests
         time.sleep(60)  # Check every minute after fetching the latest data

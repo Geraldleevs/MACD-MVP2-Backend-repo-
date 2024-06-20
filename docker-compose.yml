@@ -1,0 +1,13 @@
+version: "3.9"
+services:
+  krakenbot:
+    build:
+      args:
+        PORT: ${PORT}
+    env_file:
+      - .env
+    environment:
+      ADDRESS: "0.0.0.0"
+    container_name: krakenbot
+    ports:
+      - "8000:${PORT}"
