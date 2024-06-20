@@ -113,7 +113,7 @@ def create_strategy_plot_with_indicators(historic_data, strategy_name):
     return fig
 
 # Create and save plots for each strategy
-output_dir = 'path_to_save/strategies_visual'
+output_dir = 'strategies_visualization'
 
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
