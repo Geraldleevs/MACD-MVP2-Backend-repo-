@@ -1,84 +1,153 @@
 import pandas as pd
 import plotly.graph_objects as go
+import plotly.subplots as sp
+import plotly.io as pio
 import os
+import re
 
-# Load the new trade logs file
-new_trade_logs_path = 'Concatenated-BTCUSDT-1d-2023-4-concatenated_trade_logs.csv'  # Update this path as needed
+# Load the historic data and trade log files
+historic_data_path = 'data/Concatenated-BTCUSDT-1d-2023-4-concatenated.csv'
+trade_logs_path = 'Concatenated-BTCUSDT-1d-2023-4-concatenated_trade_logs.csv'
 
-# Read the new trade logs file as a CSV
-new_trade_df = pd.read_csv(new_trade_logs_path)
+historic_data = pd.read_csv(historic_data_path)
+trade_logs = pd.read_csv(trade_logs_path)
 
-# Remove rows where 'close_time' contains 'End of strategy' or other non-datetime values
-new_trade_df = new_trade_df[~new_trade_df['close_time'].str.contains('End of strategy|Unknown use case', na=False)]
+# Convert timestamp to readable date format for plotting
+historic_data['open_time'] = pd.to_datetime(historic_data['open_time'], unit='ms')
 
-# Try converting the 'close_time' to datetime and filter out rows that fail
-new_trade_df['close_time'] = pd.to_datetime(new_trade_df['close_time'], errors='coerce')
-new_trade_df = new_trade_df.dropna(subset=['close_time'])
+# Extract strategy details from the trade logs
+strategies = {}
+current_strategy = None
 
-# Convert the 'price' column to numeric
-new_trade_df['price'] = pd.to_numeric(new_trade_df['price'], errors='coerce')
-new_trade_df = new_trade_df.dropna(subset=['price'])
+for index, row in trade_logs.iterrows():
+    if pd.notna(row['close_time']) and "Strategy:" in str(row['close_time']):
+        current_strategy = re.search(r'Strategy: (.+)', str(row['close_time'])).group(1)
+        strategies[current_strategy] = []
+        # Debug print to check current strategy being processed
+        print(f"Processing strategy: {current_strategy}")
+    elif pd.notna(row['close_time']) and re.match(r'\d{4}-\d{2}-\d{2}', str(row['close_time'])):
+        if current_strategy is not None:
+            timestamp = pd.to_datetime(row['close_time']).timestamp() * 1000
+            trade = {
+                'timestamp': int(timestamp),
+                'action': row['action'],
+                'price': float(row['price']) if pd.notna(row['price']) else None
+            }
+            strategies[current_strategy].append(trade)
+            # Debug print to check trades being added
+            print(f"Added trade for strategy {current_strategy}: {trade}")
 
-# Load the CSV file with the trading data
-csv_file_path = 'data/Concatenated-BTCUSDT-1h-2023-4.csv'  # Update this path as needed
-crypto_data = pd.read_csv(csv_file_path)
+# Function to calculate simple moving average
+def sma(data, window):
+    return data.rolling(window=window).mean()
 
-# Convert timestamp to datetime
-crypto_data['open_time'] = pd.to_datetime(crypto_data['open_time'], unit='ms')
+# Function to calculate MACD
+def macd(data, fastperiod=12, slowperiod=26, signalperiod=9):
+    exp1 = data.ewm(span=fastperiod, adjust=False).mean()
+    exp2 = data.ewm(span=slowperiod, adjust=False).mean()
+    macd_line = exp1 - exp2
+    signal_line = macd_line.ewm(span=signalperiod, adjust=False).mean()
+    macd_hist = macd_line - signal_line
+    return macd_line, signal_line, macd_hist
 
-# Ensure all necessary columns are numeric
-crypto_data['Open'] = pd.to_numeric(crypto_data['Open'], errors='coerce')
-crypto_data['High'] = pd.to_numeric(crypto_data['High'], errors='coerce')
-crypto_data['Low'] = pd.to_numeric(crypto_data['Low'], errors='coerce')
-crypto_data['Close'] = pd.to_numeric(crypto_data['Close'], errors='coerce')
+# Function to calculate RSI
+def rsi(data, window=14):
+    delta = data.diff()
+    gain = (delta.where(delta > 0, 0)).rolling(window=window).mean()
+    loss = (-delta.where(delta < 0, 0)).rolling(window=window).mean()
+    rs = gain / loss
+    return 100 - (100 / (1 + rs))
 
-# Create a function to find the closest matching price and its timestamp in the historic data
-def match_price(trade_price, data):
-    idx = (data['Close'] - trade_price).abs().idxmin()
-    return data.loc[idx, 'open_time'], data.loc[idx, 'Close']
+# Function to calculate Stochastic Oscillator
+def stochastic(high, low, close, k_period=14, d_period=3):
+    low_min = low.rolling(window=k_period).min()
+    high_max = high.rolling(window=k_period).max()
+    k = 100 * (close - low_min) / (high_max - low_min)
+    d = k.rolling(window=d_period).mean()
+    return k, d
 
-# Match each trade price to the closest price in the historic data
-new_trade_df['Matched_Time'] = new_trade_df['price'].apply(lambda x: match_price(x, crypto_data)[0])
-new_trade_df['Matched_Price'] = new_trade_df['price'].apply(lambda x: match_price(x, crypto_data)[1])
+# Function to create a combined plot for each strategy
+def create_strategy_plot_with_indicators(historic_data, strategy_name, trades):
+    fig = sp.make_subplots(rows=6, cols=1, shared_xaxes=True, vertical_spacing=0.02, 
+                           subplot_titles=('Candlestick Chart', 'MACD', 'RSI', 'SMA', 'Stochastic', 'Ichimoku & Donchian'))
 
-# Create output directory if it doesn't exist
-output_dir = 'strategy_visualizations'
-os.makedirs(output_dir, exist_ok=True)
+    # Candlestick chart
+    fig.add_trace(go.Candlestick(
+        x=historic_data['open_time'],
+        open=historic_data['Open'],
+        high=historic_data['High'],
+        low=historic_data['Low'],
+        close=historic_data['Close']
+    ), row=1, col=1)
 
-# Plot each strategy separately
-strategies = new_trade_df['strategy'].dropna().unique()
+    # Add buy and sell signals to the candlestick chart
+    buy_signals = [trade for trade in trades if trade['action'] == 'BUY']
+    sell_signals = [trade for trade in trades if trade['action'] == 'SELL']
 
-for strategy in strategies:
-    strategy_df = new_trade_df[new_trade_df['strategy'] == strategy]
-    
-    # Create the candlestick chart
-    fig = go.Figure(data=[go.Candlestick(x=crypto_data['open_time'],
-                                         open=crypto_data['Open'],
-                                         high=crypto_data['High'],
-                                         low=crypto_data['Low'],
-                                         close=crypto_data['Close'])])
+    # Debug prints to ensure signals are being processed correctly
+    print(f"Strategy: {strategy_name}")
+    print(f"Buy Signals: {buy_signals}")
+    print(f"Sell Signals: {sell_signals}")
 
-    # Add buy and sell markers with larger size for visibility
-    fig.add_trace(go.Scatter(x=strategy_df[strategy_df['action'] == 'BUY']['Matched_Time'],
-                             y=strategy_df[strategy_df['action'] == 'BUY']['Matched_Price'],
-                             mode='markers',
-                             marker=dict(color='green', symbol='triangle-up', size=15),  # Increased size
-                             name='Buy'))
+    fig.add_trace(go.Scatter(
+        x=[pd.to_datetime(trade['timestamp'], unit='ms') for trade in buy_signals],
+        y=[trade['price'] for trade in buy_signals],
+        mode='markers',
+        marker=dict(symbol='triangle-up', color='green', size=10),
+        name='BUY Signal'
+    ), row=1, col=1)
 
-    fig.add_trace(go.Scatter(x=strategy_df[strategy_df['action'] == 'SELL']['Matched_Time'],
-                             y=strategy_df[strategy_df['action'] == 'SELL']['Matched_Price'],
-                             mode='markers',
-                             marker=dict(color='red', symbol='triangle-down', size=15),  # Increased size
-                             name='Sell'))
+    fig.add_trace(go.Scatter(
+        x=[pd.to_datetime(trade['timestamp'], unit='ms') for trade in sell_signals],
+        y=[trade['price'] for trade in sell_signals],
+        mode='markers',
+        marker=dict(symbol='triangle-down', color='red', size=10),
+        name='SELL Signal'
+    ), row=1, col=1)
 
-    # Update layout
-    fig.update_layout(title=f'Candlestick chart with Buy and Sell signals - {strategy}',
-                      xaxis_title='Time',
-                      yaxis_title='Price',
-                      xaxis_rangeslider_visible=False)  # Hide the range slider for a clearer view
+    # MACD
+    macd_line, signal_line, _ = macd(historic_data['Close'])
+    fig.add_trace(go.Scatter(x=historic_data['open_time'], y=macd_line, mode='lines', name='MACD Line'), row=2, col=1)
+    fig.add_trace(go.Scatter(x=historic_data['open_time'], y=signal_line, mode='lines', name='MACD Signal'), row=2, col=1)
 
-    # Save the plot as an HTML file
-    output_file = os.path.join(output_dir, f"{strategy.replace(' ', '_')}_candlestick_chart.html")
-    fig.write_html(output_file)
-    
-    
+    # RSI
+    historic_data['RSI'] = rsi(historic_data['Close'])
+    fig.add_trace(go.Scatter(x=historic_data['open_time'], y=historic_data['RSI'], mode='lines', name='RSI'), row=3, col=1)
+
+    # SMA
+    historic_data['SMA20'] = sma(historic_data['Close'], window=20)
+    historic_data['SMA50'] = sma(historic_data['Close'], window=50)
+    fig.add_trace(go.Scatter(x=historic_data['open_time'], y=historic_data['SMA20'], mode='lines', name='SMA 20'), row=4, col=1)
+    fig.add_trace(go.Scatter(x=historic_data['open_time'], y=historic_data['SMA50'], mode='lines', name='SMA 50'), row=4, col=1)
+
+    # Stochastic
+    k, d = stochastic(historic_data['High'], historic_data['Low'], historic_data['Close'])
+    fig.add_trace(go.Scatter(x=historic_data['open_time'], y=k, mode='lines', name='%K'), row=5, col=1)
+    fig.add_trace(go.Scatter(x=historic_data['open_time'], y=d, mode='lines', name='%D'), row=5, col=1)
+
+    # Ichimoku & Donchian
+    nine_period_high = historic_data['High'].rolling(window=9).max()
+    nine_period_low = historic_data['Low'].rolling(window=9).min()
+    historic_data['tenkan_sen'] = (nine_period_high + nine_period_low) / 2
+    twenty_six_period_high = historic_data['High'].rolling(window=26).max()
+    twenty_six_period_low = historic_data['Low'].rolling(window=26).min()
+    historic_data['kijun_sen'] = (twenty_six_period_high + twenty_six_period_low) / 2
+    historic_data['donchian_upper'] = historic_data['High'].rolling(window=20).max()
+    historic_data['donchian_lower'] = historic_data['Low'].rolling(window=20).min()
+    fig.add_trace(go.Scatter(x=historic_data['open_time'], y=historic_data['tenkan_sen'], mode='lines', name='Tenkan-sen'), row=6, col=1)
+    fig.add_trace(go.Scatter(x=historic_data['open_time'], y=historic_data['kijun_sen'], mode='lines', name='Kijun-sen'), row=6, col=1)
+    fig.add_trace(go.Scatter(x=historic_data['open_time'], y=historic_data['donchian_upper'], mode='lines', name='Donchian Upper'), row=6, col=1)
+    fig.add_trace(go.Scatter(x=historic_data['open_time'], y=historic_data['donchian_lower'], mode='lines', name='Donchian Lower'), row=6, col=1)
+    return fig
+
+# Create and save plots for each strategy
+output_dir = 'path_to_save/strategies_visual'
+
+if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
+
+for strategy_name, trades in strategies.items():
+    fig = create_strategy_plot_with_indicators(historic_data, strategy_name, trades)
+    pio.write_html(fig, file=f'{output_dir}/{strategy_name}.html', auto_open=False)
+
+print(f"Visualizations saved in: {output_dir}")
