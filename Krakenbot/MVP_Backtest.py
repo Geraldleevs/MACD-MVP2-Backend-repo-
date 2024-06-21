@@ -14,6 +14,16 @@ def setup_logging(coin_name):
     logger.addHandler(handler)
     return logger
 
+# Function to set up logging for performance metrics
+def setup_performance_logging():
+    logger = logging.getLogger('performance_metrics')
+    logger.setLevel(logging.INFO)
+    handler = logging.FileHandler('performance_metrics_logs.csv')
+    formatter = logging.Formatter('%(message)s')  # Only log the message
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    return logger
+
 # Map indicator functions to their names
 indicator_names = {
     TA_functions.use_macd: 'MACD',
@@ -38,6 +48,7 @@ indicator_names = {
     TA_functions.use_stochastic_21_5_80_20: 'Stochastic21_5_80_20',
     TA_functions.use_stochastic_21_5_85_15: 'Stochastic21_5_85_15'
 }
+
 # Performance Metrics Calculation Functions
 def calculate_mean_return(returns):
     return np.mean(returns)
@@ -70,6 +81,7 @@ def evaluate_strategy(strategy_returns, strategy_name):
         'Sharpe Ratio': sharpe_ratio,
         'Maximum Drawdown': max_drawdown
     }
+
 # Define use cases and recommended timeframes
 use_cases = {
     ('RSI', 'MACD'): ('Identifying and confirming trend reversals', '1H'),
@@ -126,6 +138,9 @@ files = [
     'Concatenated-DOGEUSDT-1d-2023-4-concatenated.csv',
     # Add other file names as needed
 ]
+
+# Set up logging for performance metrics
+performance_logger = setup_performance_logging()
 
 # Process each file
 for file in files:
@@ -191,8 +206,7 @@ for file in files:
 
         strategy_name = f'{name1} & {name2}'
         use_case, timeframe = determine_use_case(name1, name2)
-        
-        
+
 
         # Evaluate the strategy performance
         strategy_returns = trading_data['Close'].pct_change().dropna()
@@ -200,7 +214,7 @@ for file in files:
 
         # Log performance metrics
         for key, value in performance_metrics.items():
-            logger.info(f"{key}: {value}")
+            performance_logger.info(f"{coin_name},{strategy_name},{key},{value}")
 
         coin_profits[f'{strategy_name} ({use_case}, {timeframe})'] = fiat_amount
 
