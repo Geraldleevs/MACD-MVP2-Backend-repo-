@@ -39,15 +39,16 @@ class Trade:
 				return session
 			except IndexError:
 				raise BadRequestException()
-
 		'''
+
 		try:
 			amount = float(amount)
 			value = float(value)
 		except ValueError:
 			raise BadRequestException()
 
-		if (trade_type != 'BUY' and trade_type != 'SELL') or amount <= 0 or value <= 0 or token_id == '' or session_id == '':
+		# if (trade_type != 'BUY' and trade_type != 'SELL') or amount <= 0 or value <= 0 or token_id == '' or session_id == '':
+		if (trade_type != 'BUY' and trade_type != 'SELL') or amount <= 0 or value <= 0 or token_id == '':
 			raise BadRequestException()
 
 		'''
@@ -63,6 +64,10 @@ class Trade:
 		elif trade_type == 'SELL':
 			firebase.sell(token_id, amount, value)
 
+		'''
+		# This code is for fetching reserved token price for user to buy, to prevent user tricking the system
 		firebase.close_session(session_id)
 		firebase.clear_expired_session()
+		'''
+
 		return firebase.get_wallet(token_id)[0]
