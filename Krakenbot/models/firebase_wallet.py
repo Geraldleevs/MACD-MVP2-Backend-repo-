@@ -1,9 +1,10 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from Krakenbot import settings
 from typing import TypedDict
+from django.utils import timezone
 from google.cloud.firestore_v1.base_query import FieldFilter
 from google.cloud.firestore_v1.collection import CollectionReference
-from Krakenbot.exceptions import NotEnoughTokenException
+from Krakenbot.exceptions import NotEnoughTokenException, SessionExpiredException
 
 class WalletField(TypedDict):
 	token_id: str
@@ -21,13 +22,43 @@ class FirebaseWallet:
 		self.__user_doc = settings.firebase.collection(u'users').document(uid)
 		self.__wallet_collection: CollectionReference = self.__user_doc.collection('wallet')
 		self.__transaction_collection: CollectionReference = self.__user_doc.collection('transaction')
+		self.__session_collection: CollectionReference = self.__user_doc.collection('trade_session')
+
+	def create_price_session(self, token_id, price):
+		expired_on = timezone.now() + timedelta(minutes=5+1) # Extra 1 minute for API request latency
+		session = self.__session_collection.document()
+		session.set({ 'token_id': token_id, 'price': price, 'expired_on': expired_on })
+		return {**session.get().to_dict(), 'session_id': session.id}
+
+	def fetch_session_price(self, session_id, token_id):
+		now = timezone.now()
+		session = self.__session_collection.document(session_id)
+		session = session.get()
+		session_dict = session.to_dict()
+
+		try:
+			if session.exists and session_dict['token_id'] == token_id and session_dict['expired_on'] >= now:
+				return session_dict['price']
+			raise SessionExpiredException()
+		except KeyError:
+			raise SessionExpiredException()
+
+	def clear_expired_session(self):
+		now = timezone.now()
+		sessions = self.__session_collection.where(filter=FieldFilter('expired_on', '<', now)).get()
+		for session in sessions:
+			session.reference.delete()
+
+	def close_session(self, session_id):
+		session = self.__session_collection.document(session_id)
+		session.delete()
 
 	def buy(self, token_id, amount, value):
 		wallet = self.__wallet_collection.document(token_id)
 		wallet_doc = wallet.get()
 		transaction = self.__transaction_collection.document()
 		transaction.set({
-			'time': datetime.now(),
+			'time': timezone.now(),
 			'token_id': token_id,
 			'amount': amount,
 			'price': value / amount,
@@ -50,7 +81,7 @@ class FirebaseWallet:
 
 		transaction = self.__transaction_collection.document()
 		transaction.set({
-			'time': datetime.now(),
+			'time': timezone.now(),
 			'token_id': token_id,
 			'amount': -amount,
 			'price': value / amount,

@@ -6,3 +6,6 @@ class NotAuthorisedException(Exception):
 
 class BadRequestException(Exception):
 	pass
+
+class SessionExpiredException(Exception):
+	pass

@@ -1,6 +1,7 @@
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from Krakenbot.exceptions import SessionExpiredException
 from Krakenbot.models.backtest import BackTest
 from Krakenbot.models.firebase_wallet import NotEnoughTokenException
 from Krakenbot.models.market import Market
@@ -30,3 +31,5 @@ class TradeView(APIView):
 			return Response(status=400)
 		except NotEnoughTokenException:
 			return Response(status=400)
+		except SessionExpiredException:
+			return Response(status=401)

@@ -12,8 +12,9 @@ SAMPLE_MARKET = [
 ]
 
 class Market:
-	def get_market(self, request: Request):
-		token_id = request.query_params.get('token_id', None)
+	def get_market(self, request: Request = { 'query_params': {} }, token_id = None):
+		if token_id is None:
+			token_id = request.query_params.get('token_id', None)
 
 		if token_id is None or token_id == '':
 			return SAMPLE_MARKET
