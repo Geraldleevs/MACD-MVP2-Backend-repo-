@@ -32,4 +32,4 @@ class TradeView(APIView):
 		except NotEnoughTokenException:
 			return Response(status=400)
 		except SessionExpiredException:
-			return Response(status=401)
+			return Response(status=403)
