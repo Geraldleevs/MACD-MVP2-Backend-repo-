@@ -1,6 +1,6 @@
-tempkeys
+**/tempkeys.txt
 Kraken_OHLCVT
-.DS_Store
+**/.DS_Store
 .env
 venv
 

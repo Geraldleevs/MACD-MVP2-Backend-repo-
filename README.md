@@ -15,6 +15,7 @@ pip install pandas
 pip install streamlit
 pip install django
 pip install djangorestframework
+pip install plotly
 ```
 
 ### running on streamlit
