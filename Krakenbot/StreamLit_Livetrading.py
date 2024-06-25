@@ -19,7 +19,7 @@ class KrakenAppStreamlit:
     def load_api_keys(self):
         if not hasattr(self, 'api_key') or not hasattr(self, 'api_sec'):
             # Read API keys from a file (tempkeys)
-            with open("Krakenbot/tempkeys", "r") as f:
+            with open("Krakenbot/tempkeys.txt", "r") as f:
                 lines = f.read().splitlines()
                 self.api_key = lines[0]
                 self.api_sec = lines[1]
