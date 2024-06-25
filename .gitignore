@@ -1,6 +1,6 @@
-**/tempkeys.txt
+tempkeys
 Kraken_OHLCVT
-**/.DS_Store
+.DS_Store
 .env
 venv
 
@@ -30,6 +30,3 @@ Krakenbot/Binance_data_concatenator.py
 
 *.sqlite3
 *trade_logs.csv
-strategies_visualization
-coin_profit_recommended.csv
-performance_metrics_logs.csv
