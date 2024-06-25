@@ -15,6 +15,7 @@ class Market:
 		('XXBT', 'BTC'),
 		('XBT', 'BTC'),
 		('XXDG', 'XDG'),
+		('XDG', 'DOGE'),
 		('XXLM', 'XLM'),
 		('XXMR', 'XMR'),
 		('XXRP', 'XRP'),

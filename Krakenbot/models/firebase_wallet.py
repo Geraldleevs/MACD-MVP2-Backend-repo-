@@ -1,10 +1,8 @@
-from datetime import datetime, timedelta
 from Krakenbot import settings
-from typing import TypedDict
 from django.utils import timezone
 from google.cloud.firestore_v1.base_query import FieldFilter
 from google.cloud.firestore_v1.collection import CollectionReference
-from Krakenbot.exceptions import NotEnoughTokenException, SessionExpiredException
+from Krakenbot.exceptions import NotEnoughTokenException
 
 class FirebaseWallet:
 	def __init__(self, uid):
