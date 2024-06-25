@@ -33,3 +33,15 @@ Krakenbot/Binance_data_concatenator.py
 strategies_visualization
 coin_profit_recommended.csv
 performance_metrics_logs.csv
+
+#ALL THE OHLC data output change this from CSV as you need
+ohlc_data_with_ta_ETHGBP_1min.csv
+ohlc_data_with_ta_ETHGBP_15min.csv
+ohlc_data_with_ta_ETHGBP_60min.csv
+ohlc_data_with_ta_ETHGBP_240min.csv
+ohlc_data_with_ta_ETHGBP_1440min.csv
+ohlc_data_with_ta_XBTGBP_1min.csv
+ohlc_data_with_ta_XBTGBP_15min.csv
+ohlc_data_with_ta_XBTGBP_60min.csv
+ohlc_data_with_ta_XBTGBP_240min.csv
+ohlc_data_with_ta_XBTGBP_1440min.csv
