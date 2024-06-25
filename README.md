@@ -82,7 +82,7 @@ Endpoint details
 
 ```
 URL: http://127.0.0.1:8000/api/market
-Query: token_id
+Query: convert_from, convert_to
 Response:
 [
   {
@@ -95,12 +95,12 @@ Response:
 
 #### Example
 ```
-Request: http://127.0.0.1:8000/api/market?token_id=eth
+Request: http://127.0.0.1:8000/api/market?convert_from=eth&convert_to=btc
 Response:
 [
   {
-    "token": "ETH",
-    "price": 2725.45
+    "token": "BTC",
+    "price": "0.055080"
   }
 ]
 ```

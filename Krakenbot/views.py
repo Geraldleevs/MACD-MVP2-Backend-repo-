@@ -9,8 +9,11 @@ from Krakenbot.models.trade import BadRequestException, NotAuthorisedException, 
 
 class MarketView(APIView):
 	def get(self, request: Request):
-		result = Market().get_market(request)
-		return Response(result, 200)
+		try:
+			result = Market().get_market(request)
+			return Response(result, status=200)
+		except BadRequestException:
+			return Response(status=400)
 
 class BackTestView(APIView):
 	def post(self, request: Request):
