@@ -7,12 +7,10 @@ import firebase_admin.auth
 
 class Trade:
 	def parse_request(self, request: Request):
-		trade_type = request.data.get('trade_type', '').upper()
-		session_id = request.data.get('session_id', '')
 		uid = request.data.get('uid', '')
-		token_id = request.data.get('token_id', '').upper()
-		amount = request.data.get('amount', '')
-		value = request.data.get('value', '')
+		from_token = request.data.get('from_token', '').upper()
+		to_token = request.data.get('to_token', '').upper()
+		from_amount = request.data.get('from_amount', '')
 		jwt_token = get_authorization_header(request).decode('utf-8').split(' ')
 
 		if uid == '' or len(jwt_token) < 2:
@@ -24,50 +22,23 @@ class Trade:
 		except Exception:
 			raise NotAuthorisedException()
 
-		return (trade_type, session_id, uid, token_id, amount, value)
+		return (uid, from_token, to_token, from_amount)
 
 	def trade(self, request: Request):
-		(trade_type, session_id, uid, token_id, amount, value) = self.parse_request(request)
+		(uid, from_token, to_token, from_amount) = self.parse_request(request)
 		firebase = FirebaseWallet(uid)
 
-		'''
-		# This code is for reserving token price for 5 mins for user to buy
-		if trade_type == 'RESERVE':
-			try:
-				price = Market().get_market(token_id=token_id)[0]['price']
-				session = firebase.create_price_session(token_id, price)
-				return session
-			except IndexError:
-				raise BadRequestException()
-		'''
-
 		try:
-			amount = float(amount)
-			value = float(value)
+			price = Market().get_market(convert_from=from_token, convert_to=to_token)[0]
+			from_amount = float(from_amount)
+			print('price', price)
+			to_amount = from_amount * price['price']
+		except IndexError:
+			raise BadRequestException()
 		except ValueError:
 			raise BadRequestException()
-
-		# if (trade_type != 'BUY' and trade_type != 'SELL') or amount <= 0 or value <= 0 or token_id == '' or session_id == '':
-		if (trade_type != 'BUY' and trade_type != 'SELL') or amount <= 0 or value <= 0 or token_id == '':
+		except KeyError:
 			raise BadRequestException()
 
-		'''
-		# This code is for fetching reserved token price for user to buy, to prevent user tricking the system
-		price = firebase.fetch_session_price(session_id, token_id)
-
-		if round(amount * price, 2) != value:
-			raise BadRequestException()
-		'''
-
-		if trade_type == 'BUY':
-			firebase.buy(token_id, amount, value)
-		elif trade_type == 'SELL':
-			firebase.sell(token_id, amount, value)
-
-		'''
-		# This code is for fetching reserved token price for user to buy, to prevent user tricking the system
-		firebase.close_session(session_id)
-		firebase.clear_expired_session()
-		'''
-
-		return firebase.get_wallet(token_id)[0]
+		transaction = firebase.trade(from_token, from_amount, to_token, to_amount)
+		return transaction
