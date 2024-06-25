@@ -19,6 +19,15 @@ def setup_logging(coin_name):
     logger.addHandler(handler)
     return logger
 
+# Function to set up logging for performance metrics
+def setup_performance_logging():
+    logger = logging.getLogger('performance_metrics')
+    logger.setLevel(logging.INFO)
+    handler = logging.FileHandler('performance_metrics_logs.csv')
+    formatter = logging.Formatter('%(message)s')  # Only log the message
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    return logger
 
 # Map indicator functions to their names
 indicator_names = {
@@ -45,6 +54,38 @@ indicator_names = {
     TA_functions.use_stochastic_21_5_85_15: 'Stochastic21_5_85_15'
 }
 
+# Performance Metrics Calculation Functions
+def calculate_mean_return(returns):
+    return np.mean(returns)
+
+def calculate_std_return(returns):
+    return np.std(returns)
+
+def calculate_sharpe_ratio(returns, risk_free_rate=0.0):
+    mean_return = calculate_mean_return(returns)
+    std_return = calculate_std_return(returns)
+    return (mean_return - risk_free_rate) / std_return if std_return != 0 else np.nan
+
+def calculate_max_drawdown(returns):
+    cumulative_returns = np.cumprod(1 + returns) - 1
+    peak = np.maximum.accumulate(cumulative_returns)
+    drawdown = (cumulative_returns - peak) / peak
+    return np.min(drawdown)
+
+# Evaluate Strategy Function
+def evaluate_strategy(strategy_returns, strategy_name):
+    mean_return = calculate_mean_return(strategy_returns)
+    std_return = calculate_std_return(strategy_returns)
+    sharpe_ratio = calculate_sharpe_ratio(strategy_returns)
+    max_drawdown = calculate_max_drawdown(strategy_returns)
+
+    return {
+        'Strategy': strategy_name,
+        'Mean Return': mean_return,
+        'Standard Deviation of Return': std_return,
+        'Sharpe Ratio': sharpe_ratio,
+        'Maximum Drawdown': max_drawdown
+    }
 
 # Define use cases and recommended timeframes
 use_cases = {
@@ -113,6 +154,9 @@ def main(token_id = '', timeframe = ''):
     if len(files) < 1:
         return pd.DataFrame([])
 
+    # Set up logging for performance metrics
+    performance_logger = setup_performance_logging()
+
     # Process each file
     for (file, coin_id, file_timeframe) in files:
         df = pd.read_csv(f"./data/{file}", usecols=['Close', 'High', 'Low', 'Close_time'])
@@ -178,13 +222,15 @@ def main(token_id = '', timeframe = ''):
             strategy_name = f'{name1} & {name2}'
             use_case, timeframe = determine_use_case(name1, name2)
 
-            if use_case == 'Unknown Use Case':
-                logger.warning(f"Unknown use case for strategy {strategy_name}")
+            # Evaluate the strategy performance
+            strategy_returns = trading_data['Close'].pct_change().dropna()
+            performance_metrics = evaluate_strategy(strategy_returns, strategy_name)
+
+            # Log performance metrics
+            for key, value in performance_metrics.items():
+                performance_logger.info(f"{coin_name},{strategy_name},{key},{value}")
 
             coin_profits[f'{strategy_name} ({use_case}, {timeframe})'] = fiat_amount
-
-            # Log the end of the strategy
-            logger.info(f"End of strategy: {strategy_name}\n")
 
         coin_profits_df = pd.DataFrame(coin_profits, index=[f'{coin_id} | {file_timeframe}'])
         profit_dfs.append(coin_profits_df)

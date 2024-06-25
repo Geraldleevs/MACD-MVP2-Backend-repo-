@@ -1,0 +1,240 @@
+import pandas as pd
+import plotly.graph_objects as go
+import plotly.io as pio
+import plotly.subplots as sp
+import os
+import re
+
+# Load the historic data and trade log files
+historic_data_path = 'data/Concatenated-BTCUSDT-1h-2023-concatenated.csv'
+trade_logs_path = 'Concatenated-BTCUSDT-1h-2023-concatenated_trade_logs.csv'
+
+historic_data = pd.read_csv(historic_data_path)
+trade_logs = pd.read_csv(trade_logs_path)
+
+# Convert timestamps in the historic data to datetime format
+historic_data['open_time'] = pd.to_datetime(historic_data['open_time'], unit='ms')
+historic_data['Close_time'] = pd.to_datetime(historic_data['Close_time'], unit='ms')
+
+# Filter out invalid datetime entries in trade logs
+valid_trade_logs = trade_logs[trade_logs['close_time'].apply(lambda x: re.match(r'^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d+$', str(x)) is not None)].copy()
+
+# Convert trade log timestamps to datetime
+valid_trade_logs.loc[:, 'close_time'] = pd.to_datetime(valid_trade_logs['close_time'])
+
+# Remove duplicates
+valid_trade_logs.drop_duplicates(subset=['close_time', 'action', 'strategy'], inplace=True)
+
+# Function to calculate simple moving average
+def sma(data, window):
+    return data.rolling(window=window).mean()
+
+# Function to calculate MACD
+def macd(data, fastperiod=12, slowperiod=26, signalperiod=9):
+    exp1 = data.ewm(span=fastperiod, adjust=False).mean()
+    exp2 = data.ewm(span=slowperiod, adjust=False).mean()
+    macd_line = exp1 - exp2
+    signal_line = macd_line.ewm(span=signalperiod, adjust=False).mean()
+    macd_hist = macd_line - signal_line
+    return macd_line, signal_line, macd_hist
+
+# Function to calculate RSI
+def rsi(data, window=14):
+    delta = data.diff()
+    gain = (delta.where(delta > 0, 0)).rolling(window=window).mean()
+    loss = (-delta.where(delta < 0, 0)).rolling(window=window).mean()
+    rs = gain / loss
+    return 100 - (100 / (1 + rs))
+
+# Function to calculate Stochastic Oscillator
+def stochastic(high, low, close, k_period=14, d_period=3):
+    low_min = low.rolling(window=k_period).min()
+    high_max = high.rolling(window=k_period).max()
+    k = 100 * (close - low_min) / (high_max - low_min)
+    d = k.rolling(window=d_period).mean()
+    return k, d
+
+# Function to create a combined plot for each strategy
+def create_strategy_plot_with_indicators(historic_data, trade_logs, strategy_name):
+    fig = sp.make_subplots(rows=6, cols=1, shared_xaxes=True, vertical_spacing=0.02, 
+                           subplot_titles=('Candlestick Chart', 'MACD', 'RSI', 'SMA', 'Stochastic', 'Ichimoku & Donchian'))
+
+    # Candlestick chart
+    fig.add_trace(go.Candlestick(
+        x=historic_data['open_time'],
+        open=historic_data['Open'],
+        high=historic_data['High'],
+        low=historic_data['Low'],
+        close=historic_data['Close']
+    ), row=1, col=1)
+
+    # Filter trade logs for the current strategy
+    strategy_trades = trade_logs[trade_logs['strategy'] == strategy_name]
+
+    # Add buy and sell markers
+    buy_trades = strategy_trades[strategy_trades['action'] == 'BUY']
+    sell_trades = strategy_trades[strategy_trades['action'] == 'SELL']
+
+    fig.add_trace(go.Scatter(
+        x=buy_trades['close_time'],
+        y=buy_trades.apply(lambda row: historic_data[historic_data['Close_time'] == row['close_time']]['Close'].values[0], axis=1),
+        mode='markers',
+        marker=dict(color='green', symbol='triangle-up', size=15),  # Increased size for better visibility
+        name='BUY'
+    ), row=1, col=1)
+
+    fig.add_trace(go.Scatter(
+        x=sell_trades['close_time'],
+        y=sell_trades.apply(lambda row: historic_data[historic_data['Close_time'] == row['close_time']]['Close'].values[0], axis=1),
+        mode='markers',
+        marker=dict(color='red', symbol='triangle-down', size=15),  # Increased size for better visibility
+        name='SELL'
+    ), row=1, col=1)
+
+    
+    # MACD
+    macd_line, signal_line, _ = macd(historic_data['Close'])
+    fig.add_trace(go.Scatter(x=historic_data['open_time'], y=macd_line, mode='lines', name='MACD Line'), row=2, col=1)
+    fig.add_trace(go.Scatter(x=historic_data['open_time'], y=signal_line, mode='lines', name='MACD Signal'), row=2, col=1)
+
+    # Add buy and sell markers to MACD
+    fig.add_trace(go.Scatter(
+        x=buy_trades['close_time'],
+        y=buy_trades.apply(lambda row: macd_line[historic_data['Close_time'] == row['close_time']].values[0], axis=1),
+        mode='markers',
+        marker=dict(color='green', symbol='triangle-up', size=10),  # Increased size for better visibility
+        name='BUY MACD'
+    ), row=2, col=1)
+
+    fig.add_trace(go.Scatter(
+        x=sell_trades['close_time'],
+        y=sell_trades.apply(lambda row: macd_line[historic_data['Close_time'] == row['close_time']].values[0], axis=1),
+        mode='markers',
+        marker=dict(color='red', symbol='triangle-down', size=10),  # Increased size for better visibility
+        name='SELL MACD'
+    ), row=2, col=1)
+
+
+    # RSI
+    historic_data['RSI'] = rsi(historic_data['Close'])
+    fig.add_trace(go.Scatter(x=historic_data['open_time'], y=historic_data['RSI'], mode='lines', name='RSI'), row=3, col=1)
+
+    # Add buy and sell markers to RSI
+    fig.add_trace(go.Scatter(
+        x=buy_trades['close_time'],
+        y=buy_trades.apply(lambda row: historic_data[historic_data['Close_time'] == row['close_time']]['RSI'].values[0], axis=1),
+        mode='markers',
+        marker=dict(color='green', symbol='triangle-up', size=10),  # Increased size for better visibility
+        name='BUY RSI'
+    ), row=3, col=1)
+
+    fig.add_trace(go.Scatter(
+        x=sell_trades['close_time'],
+        y=sell_trades.apply(lambda row: historic_data[historic_data['Close_time'] == row['close_time']]['RSI'].values[0], axis=1),
+        mode='markers',
+        marker=dict(color='red', symbol='triangle-down', size=10),  # Increased size for better visibility
+        name='SELL RSI'
+    ), row=3, col=1)
+
+    # SMA
+    historic_data['SMA20'] = sma(historic_data['Close'], window=20)
+    historic_data['SMA50'] = sma(historic_data['Close'], window=50)
+    fig.add_trace(go.Scatter(x=historic_data['open_time'], y=historic_data['SMA20'], mode='lines', name='SMA 20'), row=4, col=1)
+    fig.add_trace(go.Scatter(x=historic_data['open_time'], y=historic_data['SMA50'], mode='lines', name='SMA 50'), row=4, col=1)
+
+    # Add buy and sell markers to SMA
+    fig.add_trace(go.Scatter(
+        x=buy_trades['close_time'],
+        y=buy_trades.apply(lambda row: historic_data[historic_data['Close_time'] == row['close_time']]['SMA20'].values[0], axis=1),
+        mode='markers',
+        marker=dict(color='green', symbol='triangle-up', size=10),  # Increased size for better visibility
+        name='BUY SMA'
+    ), row=4, col=1)
+
+    fig.add_trace(go.Scatter(
+        x=sell_trades['close_time'],
+        y=sell_trades.apply(lambda row: historic_data[historic_data['Close_time'] == row['close_time']]['SMA20'].values[0], axis=1),
+        mode='markers',
+        marker=dict(color='red', symbol='triangle-down', size=10),  # Increased size for better visibility
+        name='SELL SMA'
+    ), row=4, col=1)
+
+    # Stochastic
+    k, d = stochastic(historic_data['High'], historic_data['Low'], historic_data['Close'])
+    fig.add_trace(go.Scatter(x=historic_data['open_time'], y=k, mode='lines', name='%K'), row=5, col=1)
+    fig.add_trace(go.Scatter(x=historic_data['open_time'], y=d, mode='lines', name='%D'), row=5, col=1)
+
+    # Add buy and sell markers to Stochastic
+    fig.add_trace(go.Scatter(
+        x=buy_trades['close_time'],
+        y=buy_trades.apply(lambda row: k[historic_data['Close_time'] == row['close_time']].values[0], axis=1),
+        mode='markers',
+        marker=dict(color='green', symbol='triangle-up', size=10),  # Increased size for better visibility
+        name='BUY Stochastic'
+    ), row=5, col=1)
+
+    fig.add_trace(go.Scatter(
+        x=sell_trades['close_time'],
+        y=sell_trades.apply(lambda row: d[historic_data['Close_time'] == row['close_time']].values[0], axis=1),
+        mode='markers',
+        marker=dict(color='red', symbol='triangle-down', size=10),  # Increased size for better visibility
+        name='SELL Stochastic'
+    ), row=5, col=1)
+
+            # Ichimoku & Donchian
+    nine_period_high = historic_data['High'].rolling(window=9).max()
+    nine_period_low = historic_data['Low'].rolling(window=9).min()
+    historic_data['tenkan_sen'] = (nine_period_high + nine_period_low) / 2
+    twenty_six_period_high = historic_data['High'].rolling(window=26).max()
+    twenty_six_period_low = historic_data['Low'].rolling(window=26).min()
+    historic_data['kijun_sen'] = (twenty_six_period_high + twenty_six_period_low) / 2
+    historic_data['donchian_upper'] = historic_data['High'].rolling(window=20).max()
+    historic_data['donchian_lower'] = historic_data['Low'].rolling(window=20).min()
+    
+    fig.add_trace(go.Scatter(x=historic_data['open_time'], y=historic_data['tenkan_sen'], mode='lines', name='Tenkan-sen'), row=6, col=1)
+    fig.add_trace(go.Scatter(x=historic_data['open_time'], y=historic_data['kijun_sen'], mode='lines', name='Kijun-sen'), row=6, col=1)
+    fig.add_trace(go.Scatter(x=historic_data['open_time'], y=historic_data['donchian_upper'], mode='lines', name='Donchian Upper'), row=6, col=1)
+    fig.add_trace(go.Scatter(x=historic_data['open_time'], y=historic_data['donchian_lower'], mode='lines', name='Donchian Lower'), row=6, col=1)
+
+    # Add buy and sell markers to Ichimoku & Donchian
+    fig.add_trace(go.Scatter(
+        x=buy_trades['close_time'],
+        y=buy_trades.apply(lambda row: historic_data[historic_data['Close_time'] == row['close_time']]['tenkan_sen'].values[0], axis=1),
+        mode='markers',
+        marker=dict(color='green', symbol='triangle-up', size=10),  # Increased size for better visibility
+        name='BUY Ichimoku/Donchian'
+    ), row=6, col=1)
+
+    fig.add_trace(go.Scatter(
+        x=sell_trades['close_time'],
+        y=sell_trades.apply(lambda row: historic_data[historic_data['Close_time'] == row['close_time']]['tenkan_sen'].values[0], axis=1),
+        mode='markers',
+        marker=dict(color='red', symbol='triangle-down', size=10),  # Increased size for better visibility
+        name='SELL Ichimoku/Donchian'
+    ), row=6, col=1)
+
+
+    # Update layout
+    fig.update_layout(
+        title=f'Strategy: {strategy_name} - Indicators and Candlestick Chart with Buy/Sell Signals',
+        xaxis_title='Time',
+        yaxis_title='Price',
+        showlegend=True,
+        height=1200,  # Adjust height for better visibility
+        xaxis_rangeslider_visible=False  # Disable range slider
+    )
+    
+    return fig
+
+# Create and save plots for each strategy
+output_dir = 'strategies_visualization'
+
+if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
+
+for strategy_name in valid_trade_logs['strategy'].unique():
+    fig = create_strategy_plot_with_indicators(historic_data, valid_trade_logs, strategy_name)
+    pio.write_html(fig, file=f'{output_dir}/{strategy_name}.html', auto_open=False)
+
+print(f"Visualizations saved in: {output_dir}")
+

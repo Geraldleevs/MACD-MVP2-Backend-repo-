@@ -15,6 +15,7 @@ pip install pandas
 pip install streamlit
 pip install Django
 pip install djangorestframework
+pip install plotly
 pip install requests
 pip install firebase
 ```
