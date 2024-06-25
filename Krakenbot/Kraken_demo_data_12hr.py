@@ -104,7 +104,7 @@ async def process_interval(session, pair, interval):
         print(f"No data fetched for {pair} at {interval} minutes interval.")
 
 async def main():
-    pairs = ['XBTGBP', 'ETHGBP']  # Example pairs
+    pairs = ['XBTGBP', 'ETHGBP', 'DOGEUSDT']  # Example pairs
     intervals = [1, 15, 60, 240, 1440]  # Example intervals in minutes
 
     async with aiohttp.ClientSession() as session:
