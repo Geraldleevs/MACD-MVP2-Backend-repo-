@@ -2,10 +2,14 @@ import aiohttp
 import asyncio
 import pandas as pd
 from datetime import datetime
+import logging
 
 # Import TA calculation functions assuming TA_calculations.py is in the same directory
 import TA_calculations
 import TA_functions
+
+# Configure logging to write to a file, overwriting it with each run
+logging.basicConfig(filename='debug_log.txt', level=logging.INFO, filemode='w', format='%(asctime)s - %(message)s')
 
 async def fetch_ohlc_data(session, pair, interval, since=None):
     url = 'https://api.kraken.com/0/public/OHLC'
@@ -20,7 +24,7 @@ async def fetch_ohlc_data(session, pair, interval, since=None):
         if response.status == 200:
             data = await response.json()
             if data['error']:
-                print(f"Error for {pair} at {interval} minutes interval:", data['error'])
+                logging.error(f"Error for {pair} at {interval} minutes interval: {data['error']}")
                 return None, None
             else:
                 result = data['result']
@@ -42,7 +46,7 @@ async def fetch_ohlc_data(session, pair, interval, since=None):
                             })
                 return ohlc_data, last_timestamp
         else:
-            print(f"Failed to fetch data for {pair} at {interval} minutes interval. Status code: {response.status}")
+            logging.error(f"Failed to fetch data for {pair} at {interval} minutes interval. Status code: {response.status}")
             return None, None
 
 def apply_ta_indicators(df):
@@ -91,30 +95,37 @@ async def process_interval(session, pair, interval):
         # Save the DataFrame to a CSV file
         filename = f'ohlc_data_with_ta_{pair}_{interval}min.csv'
         df.to_csv(filename, index=False)
-        print(f"Data has been saved to {filename}")
+        logging.info(f"Data has been saved to {filename}")
         
         # Print the last row with all TA indicators
-        print(f"Last row with TA indicators for {pair} at {interval} minutes interval:")
-        print(df.tail(1))
+        logging.info(f"Last row with TA indicators for {pair} at {interval} minutes interval:")
+        logging.info(df.tail(1).to_string())
 
         # Print the last timestamp in Unix format (UTC)
         last_timestamp_str = datetime.utcfromtimestamp(last_timestamp).strftime('%Y-%m-%d %H:%M:%S')
-        print(f"Last timestamp fetched for {pair} at {interval} minutes interval (UTC):", last_timestamp_str)
+        logging.info(f"Last timestamp fetched for {pair} at {interval} minutes interval (UTC): {last_timestamp_str}")
     else:
-        print(f"No data fetched for {pair} at {interval} minutes interval.")
+        logging.info(f"No data fetched for {pair} at {interval} minutes interval.")
 
 async def main():
     pairs = ['XBTGBP', 'ETHGBP', 'DOGEUSDT']  # Example pairs
     intervals = [1, 15, 60, 240, 1440]  # Example intervals in minutes
 
+    start_time = datetime.now()
+    logging.info(f"Process started at {start_time}")
+
     async with aiohttp.ClientSession() as session:
         tasks = []
         for pair in pairs:
             for interval in intervals:
-                print(f"Processing {pair} at {interval} minutes interval")
                 tasks.append(process_interval(session, pair, interval))
         
         await asyncio.gather(*tasks)
+
+    end_time = datetime.now()
+    duration = end_time - start_time
+    logging.info(f"Process completed at {end_time}")
+    logging.info(f"Total duration: {duration}")
 
 if __name__ == '__main__':
     asyncio.run(main())
