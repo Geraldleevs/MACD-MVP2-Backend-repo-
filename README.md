@@ -13,7 +13,7 @@ pip install -r requirements.txt
 pip install numpy
 pip install pandas
 pip install streamlit
-pip install Django
+pip install django
 pip install djangorestframework
 pip install plotly
 pip install requests
