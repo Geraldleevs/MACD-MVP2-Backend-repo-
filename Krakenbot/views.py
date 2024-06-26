@@ -5,6 +5,7 @@ from Krakenbot.exceptions import SessionExpiredException
 from Krakenbot.models.backtest import BackTest
 from Krakenbot.models.firebase_wallet import NotEnoughTokenException
 from Krakenbot.models.market import Market
+from Krakenbot.models.news import News
 from Krakenbot.models.trade import BadRequestException, NotAuthorisedException, Trade
 
 class MarketView(APIView):
@@ -18,8 +19,8 @@ class MarketView(APIView):
 class BackTestView(APIView):
 	def post(self, request: Request):
 		try:
-			result = BackTest().backtest(request)
-			return Response(result, status=200)
+			BackTest().backtest(request)
+			return Response(status=200)
 		except NotAuthorisedException:
 			return Response(status=401)
 
@@ -36,3 +37,13 @@ class TradeView(APIView):
 			return Response(status=400)
 		except SessionExpiredException:
 			return Response(status=403)
+
+class NewsView(APIView):
+	def post(self, request: Request):
+		try:
+			News().fetch_news(request)
+			return Response(status=200)
+		except NotAuthorisedException:
+			return Response(status=401)
+		except BadRequestException:
+			return Response(status=400)

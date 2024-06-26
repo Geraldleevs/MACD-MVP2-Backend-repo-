@@ -43,6 +43,11 @@ FIREBASE_PRIVATE_KEY="private_key"
 FIREBASE_CLIENT_EMAIL="client_email"
 FIREBASE_CLIENT_ID="client_id"
 FIREBASE_CLIENT_X509_CERT_URL="client_x509_cert_url"
+
+GNEWS_API_KEY="GNEWS_API_KEY"
+GNEWS_MAX_FETCH="10" # Free account only get max 10
+GNEWS_FETCH_KEYWORD="bitcoin,ethereum,cryptocurrency,doge coin,binance coin,kraken" # Each call fetch only one keyword separated by ',' fetch in sequence
+NEWS_EXPIRED_IN_DAY="0" # When will old news be deleted
 ```
 
 ## Django-REST Server
@@ -127,6 +132,33 @@ None (Status: 200)
 #### Example
 ```
 Request: http://127.0.0.1:8000/api/backtest
+Authorization: Bearer ANY_VALID_TOKEN
+Response:
+None (Status: 200)
+```
+</details>
+
+<hr/>
+
+### News
+
+Fetch GNews and save in firebase database: `http://127.0.0.1:8000/api/news [POST]`
+
+<details>
+<summary>
+Endpoint details
+</summary>
+
+```
+URL: http://127.0.0.1:8000/api/news
+Authorization: Bearer {Google_OIDC_Token}
+Response:
+None (Status: 200)
+```
+
+#### Example
+```
+Request: http://127.0.0.1:8000/api/news
 Authorization: Bearer ANY_VALID_TOKEN
 Response:
 None (Status: 200)

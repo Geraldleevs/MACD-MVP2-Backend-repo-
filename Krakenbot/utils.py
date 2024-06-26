@@ -21,7 +21,7 @@ def authenticate_scheduler_oicd(request: Request):
 
 		if auth['iss'] != 'https://accounts.google.com' or \
 				auth['email'] != os.environ.get('GCLOUD_EMAIL') or \
-				auth['aud'] != os.environ.get('API_URL') + '/api/backtest':
+				auth['aud'] != os.environ.get('API_URL'):
 			raise NotAuthorisedException()
 
 	except Exception:
