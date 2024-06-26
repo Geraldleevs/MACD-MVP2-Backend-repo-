@@ -79,12 +79,15 @@ class Market:
 
 		return [{ 'token': token, 'price': price } for (token, price) in results.items()]
 
-	def get_market(self, request: Request = { 'query_params': {} }, convert_from = None, convert_to = None):
-		if convert_from is None:
+	def get_market(self, request: Request = None, convert_from = '', convert_to = '', exclude = ''):
+		if request is not None:
 			convert_from = request.query_params.get('convert_from', '').upper()
-
-		if convert_to is None:
 			convert_to = request.query_params.get('convert_to', '').upper()
+			exclude = request.query_params.get('exclude', '').upper()
+		else:
+			convert_from = convert_from.upper()
+			convert_to = convert_to.upper()
+			exclude = exclude.upper()
 
 		if convert_from == '' and convert_to == '':
 			raise BadRequestException()
@@ -103,11 +106,16 @@ class Market:
 			raise BadRequestException()
 
 		market = self.fetch_kraken_pair(current_token, reverse_price)
+		market.append({ 'token': current_token, 'price': 1 })
+
 		if not reverse_price and convert_to != '':
 			market = [price for price in market if price['token'] == convert_to]
 		else:
 			other_tokens = firebase_token.all()
 			other_tokens = [token['token_id'] for token in other_tokens]
 			market = [price for price in market if price['token'] in other_tokens]
+
+		if exclude != '':
+			market = [price for price in market if price['token'] != exclude]
 
 		return market

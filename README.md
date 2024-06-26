@@ -82,7 +82,7 @@ Endpoint details
 
 ```
 URL: http://127.0.0.1:8000/api/market
-Query: convert_from, convert_to
+Query: convert_from, convert_to, exclude
 Response:
 [
   {
@@ -135,9 +135,9 @@ None (Status: 200)
 
 <hr/>
 
-### Buy/Sell
+### Trade
 
-Buy/Sell tokens: `http://127.0.0.1:8000/api/trade [POST]`
+Trade tokens: `http://127.0.0.1:8000/api/trade [POST]`
 
 <details>
 <summary>
@@ -150,57 +150,57 @@ Authorization: Bearer {JWT_Token}
 Body:
 {
   uid: string,
-  token_id: string,
-  amount: number,
-  value: number,
-  trade_type: string
+  from_token: string,
+  from_amount: number,
+  to_token: number,
+  demo_init: 'demo_init' # Only for initialise demo account capital
 }
 Response:
 {
-  id: string,
-  token_id: string,
-  amount: number
+  "from_token": string,
+  "to_token": string,
+  "from_amount": number,
+  "to_amount": number,
+  "time": datetime,
+  "id": string
 }
 ```
 
-#### Example (Buy)
+#### Example
 ```
 Request: http://127.0.0.1:8000/api/trade
 Authorization: Bearer ANY_VALID_TOKEN
 Body:
 {
   uid: "Gmcjdq33QxPSggpJx7CsTK42cQR2",
-  token_id: "BTC",
-  amount: 10,
-  value: 54432.12,
-  trade_type: "buy"
+  from_token: "GBP",
+  from_amount: 10,
+  to_token: "ADA"
 }
 Response:
 {
-  id: "BTC",
-  token_id: "BTC",
-  amount: 10
+  "from_token": "GBP",
+  "to_token": "ADA",
+  "from_amount": 10,
+  "to_amount": 32.234148857299424,
+  "time": "2024-06-25T21:32:10.348844Z",
+  "id": "4SbS6hjUdkWfh0jhvpR0"
 }
 ```
 
-#### Example (Sell)
+#### Example Initialise Account
 ```
 Request: http://127.0.0.1:8000/api/trade
 Authorization: Bearer ANY_VALID_TOKEN
 Body:
 {
   uid: "Gmcjdq33QxPSggpJx7CsTK42cQR2",
-  token_id: "BTC",
-  amount: 10,
-  value: 54432.12,
-  trade_type: "sell"
+  from_token: "GBP",
+  from_amount: 10000,
+  demo_init: 'demo_init'
 }
 Response:
-{
-  id: "BTC",
-  token_id: "BTC",
-  amount: 10
-}
+None
 ```
 </details>
 

@@ -3,6 +3,7 @@ from django.utils import timezone
 from google.cloud.firestore_v1.base_query import FieldFilter
 from google.cloud.firestore_v1.collection import CollectionReference
 from Krakenbot.exceptions import NotEnoughTokenException
+from Krakenbot.models.firebase_token import FirebaseToken
 
 class FirebaseWallet:
 	def __init__(self, uid):
@@ -10,9 +11,26 @@ class FirebaseWallet:
 		self.__wallet_collection: CollectionReference = self.__user_doc.collection('wallet')
 		self.__transaction_collection: CollectionReference = self.__user_doc.collection('transaction')
 
+	def demo_init(self, token, amount):
+		transaction = self.__transaction_collection.document()
+		transaction.set({
+			'time': timezone.now(),
+			'from_token': 'Demo Account',
+			'from_amount': 0,
+			'to_token': token,
+			'to_amount': amount,
+		})
+		transaction.update({ 'id': transaction.id })
+		wallet = self.__wallet_collection.document(token)
+		wallet.set({ 'token_id': token, 'amount': amount })
+
 	def trade(self, from_token, from_amount, to_token, to_amount):
 		from_wallet = self.__wallet_collection.document(from_token)
 		from_wallet_doc = from_wallet.get()
+
+		firebase_token = FirebaseToken().get(to_token)
+		if firebase_token.get('is_fiat', False):
+			to_amount = round(to_amount, 2)
 
 		if not from_wallet_doc.exists or from_wallet_doc.to_dict()['amount'] < from_amount:
 			raise NotEnoughTokenException()

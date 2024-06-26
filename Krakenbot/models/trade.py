@@ -12,6 +12,7 @@ class Trade:
 		to_token = request.data.get('to_token', '').upper()
 		from_amount = request.data.get('from_amount', '')
 		jwt_token = get_authorization_header(request).decode('utf-8').split(' ')
+		demo_init = request.data.get('demo_init', '')
 
 		if uid == '' or len(jwt_token) < 2:
 			raise NotAuthorisedException()
@@ -22,16 +23,22 @@ class Trade:
 		except Exception:
 			raise NotAuthorisedException()
 
-		return (uid, from_token, to_token, from_amount)
+		return (uid, from_token, to_token, from_amount, demo_init)
 
 	def trade(self, request: Request):
-		(uid, from_token, to_token, from_amount) = self.parse_request(request)
+		(uid, from_token, to_token, from_amount, demo_init) = self.parse_request(request)
 		firebase = FirebaseWallet(uid)
+
+		if demo_init == 'demo_init':
+			try:
+				firebase.demo_init(from_token, float(from_amount))
+			except ValueError:
+				firebase.demo_init(from_token, 10000)
+			return
 
 		try:
 			price = Market().get_market(convert_from=from_token, convert_to=to_token)[0]
 			from_amount = float(from_amount)
-			print('price', price)
 			to_amount = from_amount * price['price']
 		except IndexError:
 			raise BadRequestException()
