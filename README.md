@@ -169,7 +169,7 @@ None (Status: 200)
 
 ### Trade
 
-Trade tokens: `http://127.0.0.1:8000/api/trade [POST]`
+Trade tokens / Live Trade: `http://127.0.0.1:8000/api/trade [POST]`
 
 <details>
 <summary>
@@ -185,7 +185,10 @@ Body:
   from_token: string,
   from_amount: number,
   to_token: number,
-  demo_init: 'demo_init' # Only for initialise demo account capital
+  demo_init: 'demo_init', # Only for initialise demo account capital
+  livetrade: 'livetrade', # Only for starting livetrade
+  strategy: 'livetrade strategy',
+  timeframe: 'livetrade timeframe'
 }
 Response:
 {
@@ -217,6 +220,30 @@ Response:
   "to_amount": 32.234148857299424,
   "time": "2024-06-25T21:32:10.348844Z",
   "id": "4SbS6hjUdkWfh0jhvpR0"
+}
+```
+
+#### Example Live Trade
+```
+Request: http://127.0.0.1:8000/api/trade
+Authorization: Bearer ANY_VALID_TOKEN
+Body:
+{
+  uid: "Gmcjdq33QxPSggpJx7CsTK42cQR2",
+  from_token: 'GBP',
+  from_amount: 10,
+  to_token: "ADA",
+  livetrade: 'livetrade',
+  strategy: 'RSI74',
+  timeframe: '1d'
+}
+Response:
+{
+  'id': 'SdDKsxUBEcrl6x73ptqz',
+  'strategy': 'RSI74',
+  'timeframe': '2024-06-25T21:32:10.348844Z',
+  'token_id': 'BTC',
+  'amount': 10000,
 }
 ```
 

@@ -24,6 +24,11 @@ class FirebaseWallet:
 		wallet = self.__wallet_collection.document(token)
 		wallet.set({ 'token_id': token, 'amount': amount })
 
+	def update(self, token, change):
+		doc_ref = self.__wallet_collection.document(token)
+		doc = doc_ref.get().to_dict()
+		doc_ref.update({ 'amount': doc['amount'] + change })
+
 	def trade(self, from_token, from_amount, to_token, to_amount):
 		from_wallet = self.__wallet_collection.document(from_token)
 		from_wallet_doc = from_wallet.get()
