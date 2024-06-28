@@ -3,6 +3,6 @@ pandas==2.2.2
 streamlit==1.35.0
 Django==5.0.6
 djangorestframework==3.15.1
-django-cors-headers==4.3.1
 requests==2.32.3
 plotly==5.22.0
+firebase-admin==6.5.0

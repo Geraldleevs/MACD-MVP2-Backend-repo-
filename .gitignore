@@ -33,3 +33,4 @@ Krakenbot/Binance_data_concatenator.py
 strategies_visualization
 coin_profit_recommended.csv
 performance_metrics_logs.csv
+*firebase-adminsdk*.json
