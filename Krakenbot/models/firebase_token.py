@@ -11,6 +11,13 @@ class FirebaseToken:
 		doc = query.get()[0]
 		return { **doc.to_dict(), 'id': doc.id }
 
+	def update_close_price(self, token_id, close_price: float):
+		doc_ref = self.__collection.document(token_id)
+		doc = doc_ref.get()
+
+		if doc.exists:
+			doc_ref.update({'last_close_price': close_price})
+
 	def all(self):
 		docs = self.__collection.stream()
 		return [{**doc.to_dict(), 'id': doc.id} for doc in docs]

@@ -140,6 +140,60 @@ None (Status: 200)
 
 <hr/>
 
+### Update Last Close
+
+Fetch yesterday close price and update in firebase: `http://127.0.0.1:8000/api/update-last-close [POST]`
+
+<details>
+<summary>
+Endpoint details
+</summary>
+
+```
+URL: http://127.0.0.1:8000/api/update-last-close
+Authorization: Bearer {Google_OIDC_Token}
+Response:
+None (Status: 200)
+```
+
+#### Example
+```
+Request: http://127.0.0.1:8000/api/update-last-close
+Authorization: Bearer ANY_VALID_TOKEN
+Response:
+None (Status: 200)
+```
+</details>
+
+<hr/>
+
+### Daily Update
+
+Call backtest and update last close at once (For GCloud Scheduler): `http://127.0.0.1:8000/api/daily-update [POST]`
+
+<details>
+<summary>
+Endpoint details
+</summary>
+
+```
+URL: http://127.0.0.1:8000/api/daily-update
+Authorization: Bearer {Google_OIDC_Token}
+Response:
+None (Status: 200)
+```
+
+#### Example
+```
+Request: http://127.0.0.1:8000/api/daily-update
+Authorization: Bearer ANY_VALID_TOKEN
+Response:
+None (Status: 200)
+```
+</details>
+
+<hr/>
+
 ### News
 
 Fetch GNews and save in firebase database: `http://127.0.0.1:8000/api/news [POST]`

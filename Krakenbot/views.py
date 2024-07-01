@@ -7,6 +7,7 @@ from Krakenbot.models.firebase_wallet import NotEnoughTokenException
 from Krakenbot.models.market import Market
 from Krakenbot.models.news import News
 from Krakenbot.models.trade import BadRequestException, NotAuthorisedException, Trade
+from Krakenbot.models.update_last_close import UpdateLastClose
 
 class MarketView(APIView):
 	def get(self, request: Request):
@@ -20,6 +21,23 @@ class BackTestView(APIView):
 	def post(self, request: Request):
 		try:
 			BackTest().backtest(request)
+			return Response(status=200)
+		except NotAuthorisedException:
+			return Response(status=401)
+
+class UpdateLastCloseView(APIView):
+	def post(self, request: Request):
+		try:
+			UpdateLastClose().update(request)
+			return Response(status=200)
+		except NotAuthorisedException:
+			return Response(status=401)
+
+class DailyUpdateView(APIView):
+	def post(self, request: Request):
+		try:
+			BackTest().backtest(request)
+			UpdateLastClose().update(request)
 			return Response(status=200)
 		except NotAuthorisedException:
 			return Response(status=401)
