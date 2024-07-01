@@ -50,13 +50,13 @@ class Market:
 
 		return results
 
-	def parse_kraken_pair(self, kraken_result, token, reverse_price):
-		def get_price(result, property_path):
-			price = float(result[property_path][0])
-			if property_path == 'bid' and price > 0:
-				price = 1 / price
-			return price
+	def get_price(self, result, property_path):
+		price = float(result[property_path][0])
+		if property_path == 'bid' and price > 0:
+			price = 1 / price
+		return price
 
+	def parse_kraken_pair(self, kraken_result, token, reverse_price):
 		sell = 'bid' if reverse_price else 'ask'
 		buy = 'ask' if reverse_price else 'bid'
 		filtered_results = {}
@@ -68,9 +68,11 @@ class Market:
 		results = {}
 		for (pair, result) in filtered_results.items():
 			if pair.startswith(token):
-				price = get_price(result, sell)
+				price = self.get_price(result, sell)
 			elif pair.endswith(token):
-				price = get_price(result, buy)
+				price = self.get_price(result, buy)
+			else:
+				continue
 
 			result_token = pair.replace(token, '')
 
