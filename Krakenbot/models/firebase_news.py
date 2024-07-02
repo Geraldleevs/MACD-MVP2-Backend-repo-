@@ -26,15 +26,15 @@ class FirebaseNews:
 		doc_ref = self.__collection.document(id)
 		doc_ref.update(data)
 
-	def upsert(self, data: NewsField):
+	def upsert(self, data: NewsField, tag: str):
 		query = self.__collection
 		query = query.where(filter=FieldFilter('url', '==', data['url']))
 		doc = query.get()
 
 		if len(doc) > 0:
-			self.update(doc[0].id, data)
+			self.update(doc[0].id, { **data, 'tag': tag })
 		else:
-			self.create(data)
+			self.create({ **data, 'tag': tag })
 
 	def delete_by_id(self, id):
 		self.__collection.document(id).delete()

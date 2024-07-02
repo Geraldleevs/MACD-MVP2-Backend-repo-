@@ -46,7 +46,10 @@ FIREBASE_CLIENT_X509_CERT_URL="client_x509_cert_url"
 
 GNEWS_API_KEY="GNEWS_API_KEY"
 GNEWS_MAX_FETCH="10" # Free account only get max 10
-GNEWS_FETCH_KEYWORD="bitcoin,ethereum,cryptocurrency,doge coin,binance coin,kraken" # Each call fetch only one keyword separated by ',' fetch in sequence
+GNEWS_FETCH_KEYWORD="bitcoin:BTC,ethereum:ETH,dogecoin:DOGE,cordano:ADA,solana:SOL,ripple coin:XRP"
+# Specify keyword in the form 'search_text:tag'
+# Each call fetch only one keyword separated by ',' fetch in sequence
+
 NEWS_EXPIRED_IN_DAY="0" # When will old news be deleted
 ```
 

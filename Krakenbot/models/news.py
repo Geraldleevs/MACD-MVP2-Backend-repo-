@@ -15,7 +15,7 @@ class News:
 
 	def __init__(self):
 		self.API_KEY = os.environ.get('GNEWS_API_KEY')
-		self.QUERIES = os.environ.get('GNEWS_FETCH_KEYWORD', 'cryptocurrency').split(',')
+		self.QUERIES = os.environ.get('GNEWS_FETCH_KEYWORD', 'bitcoin:BTC').split(',')
 		self.LANG = 'en'
 		try:
 			self.MAX_FETCH = float(os.environ.get('GNEWS_MAX_FETCH'))
@@ -44,14 +44,15 @@ class News:
 		delete_before_time = timezone.now() - timedelta(days=self.EXPIRY_DAY)
 		firebase_news.delete_all_before(delete_before_time)
 
-		fetch_from_time = timezone.now() - timedelta(days=1, hours=12)
+		fetch_from_time = timezone.now() - timedelta(days=5)
 		fetch_from_time = fetch_from_time.strftime('%Y-%m-%dT%H:%M:%SZ')
 
 		cur_query_index = firebase_news.fetch_next_query().get('id', 0) % len(self.QUERIES)
+		[cur_query, cur_tag] = self.QUERIES[cur_query_index].split(':')
 
 		results = requests.get(self.GNEWS_ENDPOINT, params={
 			'apikey': self.API_KEY,
-			'q': self.QUERIES[cur_query_index],
+			'q': cur_query,
 			'lang': self.LANG,
 			'from': fetch_from_time,
 			'max': self.MAX_FETCH
@@ -59,6 +60,6 @@ class News:
 		results = self.parse_gnews(results)
 
 		for result in results:
-			firebase_news.upsert(result)
+			firebase_news.upsert(result, cur_tag)
 
 		firebase_news.update_next_query(cur_query_index + 1)
