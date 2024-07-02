@@ -13,6 +13,7 @@ class News:
 	GNEWS_ENDPOINT = "https://gnews.io/api/v4/search"
 	DEFAULT_MAX_FETCH = 10
 	DEFAULT_EXPIRY_DAY = 14
+	DEFAULT_FETCH_FROM = 7
 
 	def __init__(self):
 		self.API_KEY = os.environ.get('GNEWS_API_KEY')
@@ -20,10 +21,18 @@ class News:
 		self.LANG = 'en'
 		try:
 			self.MAX_FETCH = float(os.environ.get('GNEWS_MAX_FETCH'))
-			self.EXPIRY_DAY = float(os.environ.get('NEWS_EXPIRED_IN_DAY'))
 		except ValueError:
 			self.MAX_FETCH = self.DEFAULT_MAX_FETCH
+
+		try:
+			self.EXPIRY_DAY = float(os.environ.get('NEWS_EXPIRED_IN_DAY'))
+		except ValueError:
 			self.EXPIRY_DAY = self.DEFAULT_EXPIRY_DAY
+
+		try:
+			self.FETCH_FROM = float(os.environ.get('FETCH_NEWS_IN_DAY'))
+		except ValueError:
+			self.FETCH_FROM = self.DEFAULT_FETCH_FROM
 
 	def parse_gnews(self, gnews_result):
 		articles = gnews_result.get('articles', [])
@@ -45,7 +54,7 @@ class News:
 		delete_before_time = timezone.now() - timedelta(days=self.EXPIRY_DAY)
 		firebase_news.delete_all_before(delete_before_time)
 
-		fetch_from_time = timezone.now() - timedelta(days=5)
+		fetch_from_time = timezone.now() - timedelta(days=self.FETCH_FROM)
 		fetch_from_time = fetch_from_time.strftime('%Y-%m-%dT%H:%M:%SZ')
 
 		try:
