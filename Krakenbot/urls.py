@@ -6,6 +6,8 @@ urlpatterns = [
     # path('admin/', admin.site.urls),
     path('api/market', views.MarketView.as_view(), name='market'),
     path('api/backtest', views.BackTestView.as_view(), name='backtest'),
+    path('api/update-last-close', views.UpdateLastCloseView.as_view(), name='update last close'),
+    path('api/daily-update', views.DailyUpdateView.as_view(), name='daily update'),
     path('api/trade', views.TradeView.as_view(), name='trade'),
     path('api/news', views.NewsView.as_view(), name='news'),
 ]
