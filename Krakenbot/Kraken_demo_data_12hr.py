@@ -2,11 +2,19 @@ import aiohttp
 import asyncio
 import pandas as pd
 from datetime import datetime
+import time
+from dotenv import load_dotenv, find_dotenv
 import os
 
 # Import TA calculation functions assuming TA_calculations.py is in the same directory
 import TA_calculations
 import TA_functions
+
+# Load environment variables from .env file
+dotenv_path = find_dotenv()
+if not dotenv_path:
+    raise FileNotFoundError("Could not find .env file")
+load_dotenv(dotenv_path)
 
 async def fetch_ohlc_data(session, pair, interval, since=None):
     url = 'https://api.kraken.com/0/public/OHLC'
@@ -83,26 +91,10 @@ async def process_interval(session, pair, interval):
         
         # Remove the last row
         df = df.iloc[:-1]
-        
-        # Print the last row
-        print(f"Last row for {pair} at {interval} minute interval:")
-        print(df.tail(1).to_string(index=False))
 
-        # Ensure the output directory exists
-        os.makedirs('output', exist_ok=True)
-
-        # Save only the latest row to a CSV file
-        filename = f'output/ohlc_data_with_ta_{pair}_{interval}min.csv'
-        df.tail(1).to_csv(filename, index=False)
-
-def read_pairs_from_file(filename):
-    with open(filename, 'r') as file:
-        pairs = file.read().splitlines()
-    return pairs
-
-async def main(pairs_file):
-    pairs = read_pairs_from_file(pairs_file)
-    intervals = [1, 15, 60, 240, 1440]  # Example intervals in minutes
+async def main():
+    pairs = os.environ.get("BACKTEST_PAIR").split(',')
+    intervals = [1]  # Example intervals in minutes
 
     async with aiohttp.ClientSession() as session:
         tasks = []
@@ -113,9 +105,10 @@ async def main(pairs_file):
         await asyncio.gather(*tasks)
 
 if __name__ == '__main__':
-    import sys
-    if len(sys.argv) != 2:
-        print("Usage: python script.py <pairs_file.txt>")
-    else:
-        pairs_file = sys.argv[1]
-        asyncio.run(main(pairs_file))
+    start_time = time.time()
+    try:
+        asyncio.run(main())
+    except Exception as e:
+        print(f"Error: {e}")
+    end_time = time.time()
+    print(f"Total execution time: {end_time - start_time} seconds")
