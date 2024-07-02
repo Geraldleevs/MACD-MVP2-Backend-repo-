@@ -2,14 +2,11 @@ import aiohttp
 import asyncio
 import pandas as pd
 from datetime import datetime
-import logging
+import os
 
 # Import TA calculation functions assuming TA_calculations.py is in the same directory
 import TA_calculations
 import TA_functions
-
-# Configure logging to write to a file, overwriting it with each run
-logging.basicConfig(filename='debug_log.txt', level=logging.INFO, filemode='w', format='%(asctime)s - %(message)s')
 
 async def fetch_ohlc_data(session, pair, interval, since=None):
     url = 'https://api.kraken.com/0/public/OHLC'
@@ -24,7 +21,6 @@ async def fetch_ohlc_data(session, pair, interval, since=None):
         if response.status == 200:
             data = await response.json()
             if data['error']:
-                logging.error(f"Error for {pair} at {interval} minutes interval: {data['error']}")
                 return None, None
             else:
                 result = data['result']
@@ -36,6 +32,7 @@ async def fetch_ohlc_data(session, pair, interval, since=None):
                             timestamp = int(entry[0])
                             timestamp_str = datetime.utcfromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
                             ohlc_data.append({
+                                'Unix_Timestamp': timestamp,
                                 'Timestamp': timestamp_str,
                                 'Open': float(entry[1]),
                                 'High': float(entry[2]),
@@ -46,37 +43,32 @@ async def fetch_ohlc_data(session, pair, interval, since=None):
                             })
                 return ohlc_data, last_timestamp
         else:
-            logging.error(f"Failed to fetch data for {pair} at {interval} minutes interval. Status code: {response.status}")
             return None, None
 
 def apply_ta_indicators(df):
-    df = TA_functions.use_atr(df)
-    df['signal_atr'] = df['buy_sell'].apply(lambda x: 1 if x == 'buy' else -1 if x == 'sell' else 0)
+    # Apply each indicator and use the 'buy_sell' column directly
+    indicator_functions = [
+        TA_functions.use_macd, 
+        TA_functions.use_sma, 
+        TA_functions.use_rsi70_30, 
+        TA_functions.use_ichimoku, 
+        TA_functions.use_donchian_channel, 
+        TA_functions.use_stochastic_14_3_80_20
+    ]
     
-    df = TA_functions.use_macd(df)
-    df['signal_macd'] = df['buy_sell'].apply(lambda x: 1 if x == 'buy' else -1 if x == 'sell' else 0)
+    for func in indicator_functions:
+        df = func(df)
+        indicator_name = func.__name__.replace('use_', 'indicator_')
+        df[indicator_name] = df['buy_sell']
+        df.drop(['buy_sell'], axis=1, inplace=True)
     
-    df = TA_functions.use_sma(df)
-    df['signal_sma'] = df['buy_sell'].apply(lambda x: 1 if x == 'buy' else -1 if x == 'sell' else 0)
-    
-    df = TA_functions.use_rsi70_30(df)
-    df['signal_rsi'] = df['buy_sell'].apply(lambda x: 1 if x == 'buy' else -1 if x == 'sell' else 0)
-    
-    df = TA_functions.use_ichimoku(df)
-    df['signal_ichimoku'] = df['buy_sell'].apply(lambda x: 1 if x == 'buy' else -1 if x == 'sell' else 0)
-    
-    df = TA_functions.use_donchian_channel(df)
-    df['signal_donchian'] = df['buy_sell'].apply(lambda x: 1 if x == 'buy' else -1 if x == 'sell' else 0)
-    
-    df = TA_functions.use_stochastic_14_3_80_20(df)
-    df['signal_stochastic'] = df['buy_sell'].apply(lambda x: 1 if x == 'buy' else -1 if x == 'sell' else 0)
-    
-    # Combine signals
-    df['combined_signal'] = (df['signal_atr'] + df['signal_macd'] + df['signal_sma'] + 
-                             df['signal_rsi'] + df['signal_ichimoku'] + df['signal_donchian'] + 
-                             df['signal_stochastic'])
-    
-    df['buy_sell'] = df['combined_signal'].apply(lambda x: 'buy' if x > 0 else 'sell' if x < 0 else 'hold')
+    # Combine indicators for each pair of indicators
+    df['indicator_rsi_macd'] = df.apply(lambda x: 1 if x['indicator_rsi70_30'] == 1 and x['indicator_macd'] == 1 else 
+                                                  -1 if x['indicator_rsi70_30'] == -1 and x['indicator_macd'] == -1 else 0, axis=1)
+    df['indicator_sma_ichimoku'] = df.apply(lambda x: 1 if x['indicator_sma'] == 1 and x['indicator_ichimoku'] == 1 else 
+                                                   -1 if x['indicator_sma'] == -1 and x['indicator_ichimoku'] == -1 else 0, axis=1)
+    df['indicator_donchian_stochastic'] = df.apply(lambda x: 1 if x['indicator_donchian_channel'] == 1 and x['indicator_stochastic_14_3_80_20'] == 1 else 
+                                                           -1 if x['indicator_donchian_channel'] == -1 and x['indicator_stochastic_14_3_80_20'] == -1 else 0, axis=1)
 
     return df
 
@@ -92,27 +84,25 @@ async def process_interval(session, pair, interval):
         # Remove the last row
         df = df.iloc[:-1]
         
-        # Save the DataFrame to a CSV file
-        filename = f'ohlc_data_with_ta_{pair}_{interval}min.csv'
-        df.to_csv(filename, index=False)
-        logging.info(f"Data has been saved to {filename}")
-        
-        # Print the last row with all TA indicators
-        logging.info(f"Last row with TA indicators for {pair} at {interval} minutes interval:")
-        logging.info(df.tail(1).to_string())
+        # Print the last row
+        print(f"Last row for {pair} at {interval} minute interval:")
+        print(df.tail(1).to_string(index=False))
 
-        # Print the last timestamp in Unix format (UTC)
-        last_timestamp_str = datetime.utcfromtimestamp(last_timestamp).strftime('%Y-%m-%d %H:%M:%S')
-        logging.info(f"Last timestamp fetched for {pair} at {interval} minutes interval (UTC): {last_timestamp_str}")
-    else:
-        logging.info(f"No data fetched for {pair} at {interval} minutes interval.")
+        # Ensure the output directory exists
+        os.makedirs('output', exist_ok=True)
 
-async def main():
-    pairs = ['XBTGBP', 'ETHGBP', 'DOGEUSDT']  # Example pairs
+        # Save only the latest row to a CSV file
+        filename = f'output/ohlc_data_with_ta_{pair}_{interval}min.csv'
+        df.tail(1).to_csv(filename, index=False)
+
+def read_pairs_from_file(filename):
+    with open(filename, 'r') as file:
+        pairs = file.read().splitlines()
+    return pairs
+
+async def main(pairs_file):
+    pairs = read_pairs_from_file(pairs_file)
     intervals = [1, 15, 60, 240, 1440]  # Example intervals in minutes
-
-    start_time = datetime.now()
-    logging.info(f"Process started at {start_time}")
 
     async with aiohttp.ClientSession() as session:
         tasks = []
@@ -122,10 +112,10 @@ async def main():
         
         await asyncio.gather(*tasks)
 
-    end_time = datetime.now()
-    duration = end_time - start_time
-    logging.info(f"Process completed at {end_time}")
-    logging.info(f"Total duration: {duration}")
-
 if __name__ == '__main__':
-    asyncio.run(main())
+    import sys
+    if len(sys.argv) != 2:
+        print("Usage: python script.py <pairs_file.txt>")
+    else:
+        pairs_file = sys.argv[1]
+        asyncio.run(main(pairs_file))
