@@ -9,3 +9,9 @@ class BadRequestException(Exception):
 
 class SessionExpiredException(Exception):
 	pass
+
+class DatabaseIncorrectDataException(Exception):
+	pass
+
+class ServerErrorException(Exception):
+	pass

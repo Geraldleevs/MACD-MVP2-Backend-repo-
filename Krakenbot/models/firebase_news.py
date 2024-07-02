@@ -3,6 +3,7 @@ from typing import TypedDict
 from datetime import datetime
 from django.utils import timezone
 from google.cloud.firestore_v1.base_query import FieldFilter
+from Krakenbot.exceptions import DatabaseIncorrectDataException
 
 class NewsField(TypedDict):
 	time: datetime
@@ -32,9 +33,12 @@ class FirebaseNews:
 		doc = query.get()
 
 		if len(doc) > 0:
-			self.update(doc[0].id, { **data, 'tag': tag })
+			tags = doc[0].to_dict()['tag']
+			if tag not in tags:
+				tags.append(tag)
+			self.update(doc[0].id, { **data, 'tag': tags })
 		else:
-			self.create({ **data, 'tag': tag })
+			self.create({ **data, 'tag': [tag] })
 
 	def delete_by_id(self, id):
 		self.__collection.document(id).delete()
@@ -46,7 +50,17 @@ class FirebaseNews:
 
 	def fetch_next_query(self):
 		doc = self.__next_fetch.get().to_dict()
-		return doc
+		cur_index = doc.get('id', 0)
+		queries = doc.get('queries', [])
+
+		if len(queries) == 0:
+			raise DatabaseIncorrectDataException()
+
+		cur_index %= len(queries)
+		query = queries[cur_index]
+		tag = query.get('tag', '')
+		query = query.get('query', '')
+		return (cur_index, query, tag)
 
 	def update_next_query(self, update_id = None):
 		if update_id is not None:

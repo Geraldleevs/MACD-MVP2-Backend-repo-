@@ -1,6 +1,7 @@
 from datetime import timedelta
 from typing import List
 from rest_framework.request import Request
+from Krakenbot.exceptions import DatabaseIncorrectDataException, ServerErrorException
 from Krakenbot.models.firebase_news import FirebaseNews, NewsField
 from django.utils import timezone
 import os
@@ -47,19 +48,21 @@ class News:
 		fetch_from_time = timezone.now() - timedelta(days=5)
 		fetch_from_time = fetch_from_time.strftime('%Y-%m-%dT%H:%M:%SZ')
 
-		cur_query_index = firebase_news.fetch_next_query().get('id', 0) % len(self.QUERIES)
-		[cur_query, cur_tag] = self.QUERIES[cur_query_index].split(':')
+		try:
+			(cur_index, query, tag) = firebase_news.fetch_next_query()
 
-		results = requests.get(self.GNEWS_ENDPOINT, params={
-			'apikey': self.API_KEY,
-			'q': cur_query,
-			'lang': self.LANG,
-			'from': fetch_from_time,
-			'max': self.MAX_FETCH
-		}).json()
-		results = self.parse_gnews(results)
+			results = requests.get(self.GNEWS_ENDPOINT, params={
+				'apikey': self.API_KEY,
+				'q': query,
+				'lang': self.LANG,
+				'from': fetch_from_time,
+				'max': self.MAX_FETCH
+			}).json()
+			results = self.parse_gnews(results)
 
-		for result in results:
-			firebase_news.upsert(result, cur_tag)
+			for result in results:
+				firebase_news.upsert(result, tag)
 
-		firebase_news.update_next_query(cur_query_index + 1)
+			firebase_news.update_next_query(cur_index + 1)
+		except DatabaseIncorrectDataException:
+			raise ServerErrorException()
