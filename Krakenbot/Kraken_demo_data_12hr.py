@@ -94,7 +94,7 @@ async def process_interval(session, pair, interval):
 
 async def main():
     pairs = os.environ.get("BACKTEST_PAIR").split(',')
-    intervals = [1]  # Example intervals in minutes
+    intervals = [1, 5, 15, 30, 60, 240, 720, 1440]  # Example intervals in minutes
 
     async with aiohttp.ClientSession() as session:
         tasks = []
