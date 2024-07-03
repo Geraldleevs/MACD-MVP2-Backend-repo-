@@ -6,6 +6,11 @@ from Krakenbot.exceptions import NotEnoughTokenException
 from Krakenbot.models.firebase_token import FirebaseToken
 
 class FirebaseWallet:
+	USER_AMOUNT = 'amount'
+	BOT_AMOUNT = 'krakenbot_amount'
+	USER_NAME = 'User'
+	BOT_NAME = 'Krakenbot'
+
 	def __init__(self, uid):
 		self.__user_doc = settings.firebase.collection(u'users').document(uid)
 		self.__wallet_collection: CollectionReference = self.__user_doc.collection('wallet')
@@ -22,26 +27,14 @@ class FirebaseWallet:
 		})
 		transaction.update({ 'id': transaction.id })
 		wallet = self.__wallet_collection.document(token)
-		wallet.set({ 'token_id': token, 'amount': amount })
+		wallet.set({ 'token_id': token, self.USER_AMOUNT: amount })
 
-	def update(self, token, change):
-		doc_ref = self.__wallet_collection.document(token)
-		doc = doc_ref.get().to_dict()
-		doc_ref.update({ 'amount': doc['amount'] + change })
-
-	def trade(self, from_token, from_amount, to_token, to_amount):
-		from_wallet = self.__wallet_collection.document(from_token)
-		from_wallet_doc = from_wallet.get()
-
-		firebase_token = FirebaseToken().get(to_token)
-		if firebase_token.get('is_fiat', False):
+	def __trade(self, from_token, from_amount, to_token, to_amount, operate_by = USER_NAME):
+		if FirebaseToken().get(to_token).get('is_fiat', False):
 			to_amount = round(to_amount, 2)
 
-		if not from_wallet_doc.exists or from_wallet_doc.to_dict()['amount'] < from_amount:
-			raise NotEnoughTokenException()
-
-		to_wallet = self.__wallet_collection.document(to_token)
-		to_wallet_doc = to_wallet.get()
+		self.__update(from_token, -from_amount, operate_by)
+		self.__upsert(to_token, to_amount, operate_by)
 
 		transaction = self.__transaction_collection.document()
 		transaction.set({
@@ -50,17 +43,59 @@ class FirebaseWallet:
 			'from_amount': from_amount,
 			'to_token': to_token,
 			'to_amount': to_amount,
+			'operated_by': operate_by,
 		})
 		transaction.update({ 'id': transaction.id })
 
-		from_wallet.update({ 'amount': from_wallet_doc.to_dict()['amount'] - from_amount })
-
-		if to_wallet_doc.exists:
-			to_wallet.update({ 'amount': to_wallet_doc.to_dict()['amount'] + to_amount })
-		else:
-			to_wallet.set({ 'token_id': to_token, 'amount': to_amount })
-
 		return transaction.get().to_dict()
+
+	def trade_by_user(self, from_token, from_amount, to_token, to_amount):
+		return self.__trade(from_token, from_amount, to_token, to_amount, self.USER_NAME)
+
+	def trade_by_krakenbot(self, from_token, from_amount, to_token, to_amount):
+		return self.__trade(from_token, from_amount, to_token, to_amount, self.BOT_NAME)
+
+	def __update(self, token, change, type = USER_NAME):
+		amount_field = self.BOT_AMOUNT if type == self.BOT_NAME else self.USER_AMOUNT
+		doc_ref = self.__wallet_collection.document(token)
+		doc = doc_ref.get()
+
+		if change < 0 and (not doc.exists or doc.to_dict().get(amount_field, 0) < (change * -1)):
+			raise NotEnoughTokenException()
+
+		doc_ref.update({ amount_field: doc.to_dict().get(amount_field, 0) + change })
+
+	def __upsert(self, token, change, type = USER_NAME):
+		amount_field = self.BOT_AMOUNT if type == self.BOT_NAME else self.USER_AMOUNT
+		doc_ref = self.__wallet_collection.document(token)
+		doc = doc_ref.get()
+
+		if doc.exists:
+			if doc.to_dict().get(amount_field, 0) < (change * -1):
+				raise NotEnoughTokenException()
+			doc_ref.update({ amount_field: doc.to_dict().get(amount_field, 0) + change })
+		else:
+			doc_ref.set({ 'token_id': token, amount_field: change })
+
+	def update_amount(self, token, change):
+		self.__update(token, change, self.USER_NAME)
+
+	def update_krakenbot_amount(self, token, change):
+		self.__update(token, change, self.BOT_NAME)
+
+	def reserve_krakenbot_amount(self, token, amount):
+		self.__update(token, -amount, self.USER_NAME)
+		self.__update(token, amount, self.BOT_NAME)
+
+		wallet = self.__wallet_collection.document(token)
+		return wallet.get().to_dict()
+
+	def unreserve_krakenbot_amount(self, token, amount):
+		self.__update(token, -amount, self.BOT_NAME)
+		self.__update(token, amount, self.USER_NAME)
+
+		wallet = self.__wallet_collection.document(token)
+		return wallet.get().to_dict()
 
 	def get_wallet(self, token_id = None):
 		if token_id is None:

@@ -48,6 +48,8 @@ GNEWS_API_KEY="GNEWS_API_KEY"
 GNEWS_MAX_FETCH="10" # Free account only get max 10
 GNEWS_FETCH_KEYWORD="bitcoin,ethereum,cryptocurrency,doge coin,binance coin,kraken" # Each call fetch only one keyword separated by ',' fetch in sequence
 NEWS_EXPIRED_IN_DAY="0" # When will old news be deleted
+
+DEMO_ACCOUNT_AMOUNT="10000"
 ```
 
 ## Django-REST Server
@@ -223,7 +225,7 @@ None (Status: 200)
 
 ### Trade
 
-Trade tokens / Live Trade: `http://127.0.0.1:8000/api/trade [POST]`
+Trade tokens: `http://127.0.0.1:8000/api/trade [POST]`
 
 <details>
 <summary>
@@ -235,14 +237,10 @@ URL: http://127.0.0.1:8000/api/trade
 Authorization: Bearer {JWT_Token}
 Body:
 {
-  uid: string,
-  from_token: string,
-  from_amount: number,
-  to_token: number,
-  demo_init: 'demo_init', # Only for initialise demo account capital
-  livetrade: 'livetrade', # Only for starting livetrade
-  strategy: 'livetrade strategy',
-  timeframe: 'livetrade timeframe'
+  "uid": string,
+  "from_token": string,
+  "from_amount": number,
+  "to_token": number
 }
 Response:
 {
@@ -251,7 +249,8 @@ Response:
   "from_amount": number,
   "to_amount": number,
   "time": datetime,
-  "id": string
+  "id": string,
+  "operated_by": "User"
 }
 ```
 
@@ -261,10 +260,10 @@ Request: http://127.0.0.1:8000/api/trade
 Authorization: Bearer ANY_VALID_TOKEN
 Body:
 {
-  uid: "Gmcjdq33QxPSggpJx7CsTK42cQR2",
-  from_token: "GBP",
-  from_amount: 10,
-  to_token: "ADA"
+  "uid": "Gmcjdq33QxPSggpJx7CsTK42cQR2",
+  "from_token": "GBP",
+  "from_amount": 10,
+  "to_token": "ADA"
 }
 Response:
 {
@@ -273,47 +272,188 @@ Response:
   "from_amount": 10,
   "to_amount": 32.234148857299424,
   "time": "2024-06-25T21:32:10.348844Z",
-  "id": "4SbS6hjUdkWfh0jhvpR0"
+  "id": "4SbS6hjUdkWfh0jhvpR0",
+  "operated_by": "User"
 }
 ```
+</details>
 
-#### Example Live Trade
+<hr/>
+
+### Initialise Demo Account
+
+Initialise Demo Account: `http://127.0.0.1:8000/api/trade [POST]`
+
+<details>
+<summary>
+Endpoint details
+</summary>
+
 ```
-Request: http://127.0.0.1:8000/api/trade
-Authorization: Bearer ANY_VALID_TOKEN
+URL: http://127.0.0.1:8000/api/trade
+Authorization: Bearer {JWT_Token}
 Body:
 {
-  uid: "Gmcjdq33QxPSggpJx7CsTK42cQR2",
-  from_token: 'GBP',
-  from_amount: 10,
-  to_token: "ADA",
-  livetrade: 'livetrade',
-  strategy: 'RSI74',
-  timeframe: '1d'
-}
-Response:
-{
-  'id': 'SdDKsxUBEcrl6x73ptqz',
-  'strategy': 'RSI74',
-  'timeframe': '2024-06-25T21:32:10.348844Z',
-  'token_id': 'BTC',
-  'amount': 10000,
-}
-```
-
-#### Example Initialise Account
-```
-Request: http://127.0.0.1:8000/api/trade
-Authorization: Bearer ANY_VALID_TOKEN
-Body:
-{
-  uid: "Gmcjdq33QxPSggpJx7CsTK42cQR2",
-  from_token: "GBP",
-  from_amount: 10000,
-  demo_init: 'demo_init'
+  "uid": string,
+  "demo_init": "demo_init"
 }
 Response:
 None
+```
+</details>
+
+<hr/>
+
+### Start Live Trade
+
+Start Live Trade: `http://127.0.0.1:8000/api/trade [POST]`
+
+<details>
+<summary>
+Endpoint details
+</summary>
+
+```
+URL: http://127.0.0.1:8000/api/trade
+Authorization: Bearer {JWT_Token}
+Body:
+{
+  "uid": string,
+  "from_token": string,
+  "from_amount": number,
+  "to_token": number,
+  "livetrade": "RESERVE",
+  "strategy": string,
+  "timeframe": string
+}
+Response:
+{
+  "id": string,
+  "strategy": string,
+  "timeframe": string,
+  "token_id": string,
+  "amount": number
+}
+```
+
+#### Example
+```
+Request: http://127.0.0.1:8000/api/trade
+Authorization: Bearer ANY_VALID_TOKEN
+Body:
+{
+  "uid": "Gmcjdq33QxPSggpJx7CsTK42cQR2",
+  "from_token": "GBP",
+  "from_amount": 1000,
+  "to_token": "DOGE",
+  "livetrade": "reserve",
+  "strategy": "RSI74",
+  "timeframe": "1d"
+}
+Response:
+{
+  "id": "nlP3vMpnjDJLZHjO7U3t",
+  "strategy": "RSI74",
+  "timeframe": "1d",
+  "token_id": "DOGE",
+  "amount": 1000
+}
+```
+</details>
+
+<hr/>
+
+### End Live Trade (Without Selling the tokens)
+
+End Live Trade: `http://127.0.0.1:8000/api/trade [POST]`
+
+<details>
+<summary>
+Endpoint details
+</summary>
+
+```
+URL: http://127.0.0.1:8000/api/trade
+Authorization: Bearer {JWT_Token}
+Body:
+{
+  "uid": string,
+  "livetrade": "UNRESERVE",
+  "livetrade_id": string
+}
+Response:
+None
+```
+
+#### Example
+```
+Request: http://127.0.0.1:8000/api/trade
+Authorization: Bearer ANY_VALID_TOKEN
+Body:
+{
+  "uid": "Gmcjdq33QxPSggpJx7CsTK42cQR2",
+  "livetrade": "unreserve",
+  "livetrade_id": "4uX4DPceT7opa9W0ky2l"
+}
+Response:
+None
+```
+</details>
+
+<hr/>
+
+### End Live Trade (With selling the tokens)
+
+Sell Live Trade: `http://127.0.0.1:8000/api/trade [POST]`
+
+<details>
+<summary>
+Endpoint details
+</summary>
+
+```
+URL: http://127.0.0.1:8000/api/trade
+Authorization: Bearer {JWT_Token}
+Body:
+{
+  "uid": string,
+  "to_token": string,
+  "livetrade": "SELL",
+  "livetrade_id": string
+}
+Response:
+{
+  "id": string,
+  "time": datetime,
+  "from_token": string,
+  "from_amount": number,
+  "to_token": string,
+  "to_amount": number,
+  "operated_by": "User"
+}
+```
+
+#### Example
+```
+Request: http://127.0.0.1:8000/api/trade
+Authorization: Bearer ANY_VALID_TOKEN
+Body:
+{
+  "uid": "Gmcjdq33QxPSggpJx7CsTK42cQR2",
+  "to_token": "GBP",
+  "livetrade": "sell",
+  "livetrade_id": "4uX4DPceT7opa9W0ky2l"
+}
+Response:
+{
+  "id": "NRmOjVjuJXs5KRWaxbDV",
+  "time": "2024-07-03T00:01:44.277624Z",
+  "from_token": "DOGE",
+  "from_amount": 1000
+  "to_token": "GBP",
+  "to_amount": 100.99,
+  "operated_by": "User"
+}
 ```
 </details>
 
