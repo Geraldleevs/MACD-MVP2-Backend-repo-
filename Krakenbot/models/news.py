@@ -1,6 +1,7 @@
 from datetime import timedelta
 from typing import List
 from rest_framework.request import Request
+from Krakenbot.exceptions import DatabaseIncorrectDataException, ServerErrorException
 from Krakenbot.models.firebase_news import FirebaseNews, NewsField
 from django.utils import timezone
 import os
@@ -12,17 +13,26 @@ class News:
 	GNEWS_ENDPOINT = "https://gnews.io/api/v4/search"
 	DEFAULT_MAX_FETCH = 10
 	DEFAULT_EXPIRY_DAY = 14
+	DEFAULT_FETCH_FROM = 7
 
 	def __init__(self):
 		self.API_KEY = os.environ.get('GNEWS_API_KEY')
-		self.QUERIES = os.environ.get('GNEWS_FETCH_KEYWORD', 'cryptocurrency').split(',')
+		self.QUERIES = os.environ.get('GNEWS_FETCH_KEYWORD', 'bitcoin:BTC').split(',')
 		self.LANG = 'en'
 		try:
 			self.MAX_FETCH = float(os.environ.get('GNEWS_MAX_FETCH'))
-			self.EXPIRY_DAY = float(os.environ.get('NEWS_EXPIRED_IN_DAY'))
 		except ValueError:
 			self.MAX_FETCH = self.DEFAULT_MAX_FETCH
+
+		try:
+			self.EXPIRY_DAY = float(os.environ.get('NEWS_EXPIRED_IN_DAY'))
+		except ValueError:
 			self.EXPIRY_DAY = self.DEFAULT_EXPIRY_DAY
+
+		try:
+			self.FETCH_FROM = float(os.environ.get('FETCH_NEWS_IN_DAY'))
+		except ValueError:
+			self.FETCH_FROM = self.DEFAULT_FETCH_FROM
 
 	def parse_gnews(self, gnews_result):
 		articles = gnews_result.get('articles', [])
@@ -44,21 +54,24 @@ class News:
 		delete_before_time = timezone.now() - timedelta(days=self.EXPIRY_DAY)
 		firebase_news.delete_all_before(delete_before_time)
 
-		fetch_from_time = timezone.now() - timedelta(days=1, hours=12)
+		fetch_from_time = timezone.now() - timedelta(days=self.FETCH_FROM)
 		fetch_from_time = fetch_from_time.strftime('%Y-%m-%dT%H:%M:%SZ')
 
-		cur_query_index = firebase_news.fetch_next_query().get('id', 0) % len(self.QUERIES)
+		try:
+			(cur_index, query, tag) = firebase_news.fetch_next_query()
 
-		results = requests.get(self.GNEWS_ENDPOINT, params={
-			'apikey': self.API_KEY,
-			'q': self.QUERIES[cur_query_index],
-			'lang': self.LANG,
-			'from': fetch_from_time,
-			'max': self.MAX_FETCH
-		}).json()
-		results = self.parse_gnews(results)
+			results = requests.get(self.GNEWS_ENDPOINT, params={
+				'apikey': self.API_KEY,
+				'q': query,
+				'lang': self.LANG,
+				'from': fetch_from_time,
+				'max': self.MAX_FETCH
+			}).json()
+			results = self.parse_gnews(results)
 
-		for result in results:
-			firebase_news.upsert(result)
+			for result in results:
+				firebase_news.upsert(result, tag)
 
-		firebase_news.update_next_query(cur_query_index + 1)
+			firebase_news.update_next_query(cur_index + 1)
+		except DatabaseIncorrectDataException:
+			raise ServerErrorException()
