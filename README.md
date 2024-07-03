@@ -46,8 +46,8 @@ FIREBASE_CLIENT_X509_CERT_URL="client_x509_cert_url"
 
 GNEWS_API_KEY="GNEWS_API_KEY"
 GNEWS_MAX_FETCH="10" # Free account only get max 10
-GNEWS_FETCH_KEYWORD="bitcoin,ethereum,cryptocurrency,doge coin,binance coin,kraken" # Each call fetch only one keyword separated by ',' fetch in sequence
-NEWS_EXPIRED_IN_DAY="0" # When will old news be deleted
+FETCH_NEWS_IN_DAY="13" # When is the earliest news to fetch (E.g. 13 days before)
+NEWS_EXPIRED_IN_DAY="14" # When will old news be deleted
 
 DEMO_ACCOUNT_AMOUNT="10000"
 ```
