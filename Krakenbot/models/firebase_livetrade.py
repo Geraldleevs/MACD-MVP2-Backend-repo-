@@ -2,6 +2,7 @@ from datetime import datetime
 from Krakenbot import settings
 from typing import TypedDict
 from google.cloud.firestore_v1.base_query import FieldFilter
+from django.utils import timezone
 
 class LiveTradeField(TypedDict):
 	livetrade_id: str
@@ -10,6 +11,7 @@ class LiveTradeField(TypedDict):
 	end_time: datetime
 	strategy: str
 	timeframe: str
+	cur_token: str
 	token_id: str
 	amount: float
 	is_active: bool
@@ -25,6 +27,13 @@ class FirebaseLiveTrade:
 		existing_livetrades = user_doc.get('livetrades', [])
 		self.__user_livetrade.update({ 'livetrades': [*existing_livetrades, livetrade_ref]})
 
+	def remove_user_livetrade(self, livetrade_ref):
+		user_doc = self.__user_livetrade.get().to_dict()
+		existing_livetrades = user_doc.get('livetrades', [])
+		if livetrade_ref in existing_livetrades:
+			existing_livetrades.remove(livetrade_ref)
+		self.__user_livetrade.update({ 'livetrades': existing_livetrades })
+
 	def create(self, data: LiveTradeField):
 		doc_ref = self.__livetrade.document()
 		doc_ref.set(data)
@@ -35,6 +44,16 @@ class FirebaseLiveTrade:
 	def update(self, id, data: LiveTradeField):
 		doc_ref = self.__livetrade.document(id)
 		doc_ref.update(data)
+
+	def close(self, id):
+		doc_ref = self.__livetrade.document(id)
+		doc_ref.update({ 'is_active': False, 'end_time': timezone.now() })
+		self.remove_user_livetrade(doc_ref)
+
+	def has(self, id):
+		if id is None or id == '':
+			return False
+		return self.__livetrade.document(id).get().exists
 
 	def delete_by_id(self, id):
 		self.__livetrade.document(id).delete()
