@@ -56,12 +56,27 @@ async def fetch_ohlc_data(session, pair, interval, since=None):
 def apply_ta_indicators(df):
     # Apply each indicator and use the 'buy_sell' column directly
     indicator_functions = [
-        TA_functions.use_macd, 
-        TA_functions.use_sma, 
-        TA_functions.use_rsi70_30, 
-        TA_functions.use_ichimoku, 
-        TA_functions.use_donchian_channel, 
-        TA_functions.use_stochastic_14_3_80_20
+        TA_functions.use_macd,
+        TA_functions.use_sma,
+        TA_functions.use_ichimoku,
+        TA_functions.use_donchian_channel,
+        TA_functions.use_rsi65_25,
+        TA_functions.use_rsi66_26,
+        TA_functions.use_rsi67_27,
+        TA_functions.use_rsi68_28,
+        TA_functions.use_rsi69_29,
+        TA_functions.use_rsi70_30,
+        TA_functions.use_rsi71_31,
+        TA_functions.use_rsi72_32,
+        TA_functions.use_rsi73_33,
+        TA_functions.use_rsi74_34,
+        TA_functions.use_rsi75_35,
+        TA_functions.use_stochastic_14_3_80_20,
+        TA_functions.use_stochastic_14_3_85_15,
+        TA_functions.use_stochastic_10_3_80_20,
+        TA_functions.use_stochastic_10_3_85_15,
+        TA_functions.use_stochastic_21_5_80_20,
+        TA_functions.use_stochastic_21_5_85_15
     ]
     
     for func in indicator_functions:
@@ -80,7 +95,7 @@ def apply_ta_indicators(df):
 
     return df
 
-async def process_interval(session, pair, interval):
+async def process_interval(session, pair, interval, output_folder):
     ohlc_data, last_timestamp = await fetch_ohlc_data(session, pair, interval)
     
     if ohlc_data:
@@ -91,16 +106,24 @@ async def process_interval(session, pair, interval):
         
         # Remove the last row
         df = df.iloc[:-1]
+        '''
+        # Ensure the output folder exists
+        os.makedirs(output_folder, exist_ok=True)
+        
+        # Save to CSV
+        filename = os.path.join(output_folder, f'{pair}_{interval}min.csv')
+        df.to_csv(filename, index=False)'''
 
 async def main():
     pairs = os.environ.get("BACKTEST_PAIR").split(',')
     intervals = [1, 5, 15, 30, 60, 240, 720, 1440]  # Example intervals in minutes
+    '''output_folder = "output_csv_files"  # Define the output folder'''
 
     async with aiohttp.ClientSession() as session:
         tasks = []
         for pair in pairs:
             for interval in intervals:
-                tasks.append(process_interval(session, pair, interval))
+                tasks.append(process_interval(session, pair, interval, '''output_folder'''))
         
         await asyncio.gather(*tasks)
 
