@@ -46,6 +46,7 @@ firebase_admin_settings = {
 }
 firebase_admin.initialize_app(Certificate(firebase_admin_settings))
 firebase = firestore.client()
+db_batch = firebase.batch()
 
 INSTALLED_APPS = [
     'django.contrib.admin',
