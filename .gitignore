@@ -33,9 +33,8 @@ Krakenbot/Binance_data_concatenator.py
 strategies_visualization
 coin_profit_recommended.csv
 performance_metrics_logs.csv
-
-#ALL THE OHLC data output change this from CSV as you need
-/output
-debug_log.txt
+*firebase-adminsdk*.json
 Krakenbot/krakenpair.py
+debug_log.txt
 trading_pairs.txt
+/output

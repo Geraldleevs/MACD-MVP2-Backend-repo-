@@ -16,7 +16,10 @@ pip install streamlit
 pip install django
 pip install djangorestframework
 pip install plotly
+pip install requests
+pip install firebase
 pip install aiohttp asyncio
+
 ```
 
 ### running on streamlit
@@ -25,6 +28,31 @@ pip install aiohttp asyncio
 ### CSV for downloaded binance header
 `open_time,open,high,low,close,volume,close_time,quote_volume,count,taker_buy_volume,taker_buy_quote_volume,ignore` - Binance default
 `open_time,Open,High,Low,Close,Volume,Close_time,Quote_volume,Count,Taker_buy_volume,Taker_buy_quote_volume,Ignore` - Mach D usable
+
+## ENV Variables
+```bash
+DJANGO_SECRET_KEY="ANY_SECRET_STRING"
+API_URL="https://mach-d-trading-xr6ou3pjdq-nw.a.run.app" # The api url, for Google scheduler authentication
+GCLOUD_EMAIL="firebase-adminsdk...@...gserviceaccount.com" # Your Google scheduler's service account email
+PYTHON_ENV="development" # development | production
+ADDRESS="127.0.0.1" # Use 0.0.0.0 in docker / cloud
+PORT="8080"
+
+# These are from firebase credentials.json, download it from the firebase project and copy down
+FIREBASE_PROJECT_ID="project_id"
+FIREBASE_PRIVATE_KEY_ID="private_key_id"
+FIREBASE_PRIVATE_KEY="private_key"
+FIREBASE_CLIENT_EMAIL="client_email"
+FIREBASE_CLIENT_ID="client_id"
+FIREBASE_CLIENT_X509_CERT_URL="client_x509_cert_url"
+
+GNEWS_API_KEY="GNEWS_API_KEY"
+GNEWS_MAX_FETCH="10" # Free account only get max 10
+FETCH_NEWS_IN_DAY="13" # When is the earliest news to fetch (E.g. 13 days before)
+NEWS_EXPIRED_IN_DAY="14" # When will old news be deleted
+
+DEMO_ACCOUNT_AMOUNT="10000"
+```
 
 ## Django-REST Server
 ### Setup Server
@@ -50,62 +78,7 @@ docker rm KrakenBot # Remove container
 docker rmi KrakenBot # Remove image
 ```
 
-You **may** create a `.env` file to set the following env variables
-```bash
-DJANGO_SECRET_KEY="RandomSecretKeyForDjango"
-PYTHON_ENV="development|production" # development for debug mode
-PORT="8000"
-```
-
 ## REST API Endpoints
-### Recommendations
-
-Fetch recommendations: `http://127.0.0.1:8000/api/recommendation [GET]`
-
-<details>
-<summary>
-Endpoint details
-</summary>
-
-```
-URL: http://127.0.0.1:8000/api/recommendation
-Query: token_id, timeframe
-Response:
-[
-  {
-    "token_id": string,
-    "timeframe": string,
-    "strategy": string,
-    "profit": number,
-    "profit_percent": number,
-    "summary": string,
-    "strategy_description": string,
-    "updated_on": Date
-  },
-  ...
-]
-```
-
-#### Example
-```
-Request: http://127.0.0.1:8000/api/recommendation?token_id=btc&timeframe=4h
-Response:
-[
-  {
-    "token_id": "BTC",
-    "timeframe": "4h",
-    "strategy": "MACD & Donchian (Breakout and momentum confirmation, 1H)",
-    "profit": 22713.315808518673,
-    "profit_percent": 127.13315808518672,
-    "summary": "Summary",
-    "strategy_description": "Strategy Description"
-    "updated_on": "2024-06-17T14:22:20.913234Z"
-  }
-]
-```
-</details>
-
-<hr/>
 
 ### Market
 
@@ -118,7 +91,7 @@ Endpoint details
 
 ```
 URL: http://127.0.0.1:8000/api/market
-Query: token_id
+Query: convert_from, convert_to, exclude
 Response:
 [
   {
@@ -131,12 +104,12 @@ Response:
 
 #### Example
 ```
-Request: http://127.0.0.1:8000/api/market?token_id=eth
+Request: http://127.0.0.1:8000/api/market?convert_from=eth&convert_to=btc
 Response:
 [
   {
-    "token": "ETH",
-    "price": 2725.45
+    "token": "BTC",
+    "price": "0.055080"
   }
 ]
 ```
@@ -146,7 +119,7 @@ Response:
 
 ### Backtest
 
-Trigger backtest and save in database: `http://127.0.0.1:8000/api/backtest [POST]`
+Trigger backtest and save in firebase database: `http://127.0.0.1:8000/api/backtest [POST]`
 
 <details>
 <summary>
@@ -171,13 +144,327 @@ None (Status: 200)
 
 <hr/>
 
+### Update Last Close
+
+Fetch yesterday close price and update in firebase: `http://127.0.0.1:8000/api/update-last-close [POST]`
+
+<details>
+<summary>
+Endpoint details
+</summary>
+
+```
+URL: http://127.0.0.1:8000/api/update-last-close
+Authorization: Bearer {Google_OIDC_Token}
+Response:
+None (Status: 200)
+```
+
+#### Example
+```
+Request: http://127.0.0.1:8000/api/update-last-close
+Authorization: Bearer ANY_VALID_TOKEN
+Response:
+None (Status: 200)
+```
+</details>
+
+<hr/>
+
+### Daily Update
+
+Call backtest and update last close at once (For GCloud Scheduler): `http://127.0.0.1:8000/api/daily-update [POST]`
+
+<details>
+<summary>
+Endpoint details
+</summary>
+
+```
+URL: http://127.0.0.1:8000/api/daily-update
+Authorization: Bearer {Google_OIDC_Token}
+Response:
+None (Status: 200)
+```
+
+#### Example
+```
+Request: http://127.0.0.1:8000/api/daily-update
+Authorization: Bearer ANY_VALID_TOKEN
+Response:
+None (Status: 200)
+```
+</details>
+
+<hr/>
+
+### News
+
+Fetch GNews and save in firebase database: `http://127.0.0.1:8000/api/news [POST]`
+
+<details>
+<summary>
+Endpoint details
+</summary>
+
+```
+URL: http://127.0.0.1:8000/api/news
+Authorization: Bearer {Google_OIDC_Token}
+Response:
+None (Status: 200)
+```
+
+#### Example
+```
+Request: http://127.0.0.1:8000/api/news
+Authorization: Bearer ANY_VALID_TOKEN
+Response:
+None (Status: 200)
+```
+</details>
+
+<hr/>
+
+### Trade
+
+Trade tokens: `http://127.0.0.1:8000/api/trade [POST]`
+
+<details>
+<summary>
+Endpoint details
+</summary>
+
+```
+URL: http://127.0.0.1:8000/api/trade
+Authorization: Bearer {JWT_Token}
+Body:
+{
+  "uid": string,
+  "from_token": string,
+  "from_amount": number,
+  "to_token": number
+}
+Response:
+{
+  "from_token": string,
+  "to_token": string,
+  "from_amount": number,
+  "to_amount": number,
+  "time": datetime,
+  "id": string,
+  "operated_by": "User"
+}
+```
+
+#### Example
+```
+Request: http://127.0.0.1:8000/api/trade
+Authorization: Bearer ANY_VALID_TOKEN
+Body:
+{
+  "uid": "Gmcjdq33QxPSggpJx7CsTK42cQR2",
+  "from_token": "GBP",
+  "from_amount": 10,
+  "to_token": "ADA"
+}
+Response:
+{
+  "from_token": "GBP",
+  "to_token": "ADA",
+  "from_amount": 10,
+  "to_amount": 32.234148857299424,
+  "time": "2024-06-25T21:32:10.348844Z",
+  "id": "4SbS6hjUdkWfh0jhvpR0",
+  "operated_by": "User"
+}
+```
+</details>
+
+<hr/>
+
+### Initialise Demo Account
+
+Initialise Demo Account: `http://127.0.0.1:8000/api/trade [POST]`
+
+<details>
+<summary>
+Endpoint details
+</summary>
+
+```
+URL: http://127.0.0.1:8000/api/trade
+Authorization: Bearer {JWT_Token}
+Body:
+{
+  "uid": string,
+  "demo_init": "demo_init"
+}
+Response:
+None
+```
+</details>
+
+<hr/>
+
+### Start Live Trade
+
+Start Live Trade: `http://127.0.0.1:8000/api/trade [POST]`
+
+<details>
+<summary>
+Endpoint details
+</summary>
+
+```
+URL: http://127.0.0.1:8000/api/trade
+Authorization: Bearer {JWT_Token}
+Body:
+{
+  "uid": string,
+  "from_token": string,
+  "from_amount": number,
+  "to_token": number,
+  "livetrade": "RESERVE",
+  "strategy": string,
+  "timeframe": string
+}
+Response:
+{
+  "id": string,
+  "strategy": string,
+  "timeframe": string,
+  "token_id": string,
+  "amount": number
+}
+```
+
+#### Example
+```
+Request: http://127.0.0.1:8000/api/trade
+Authorization: Bearer ANY_VALID_TOKEN
+Body:
+{
+  "uid": "Gmcjdq33QxPSggpJx7CsTK42cQR2",
+  "from_token": "GBP",
+  "from_amount": 1000,
+  "to_token": "DOGE",
+  "livetrade": "reserve",
+  "strategy": "RSI74",
+  "timeframe": "1d"
+}
+Response:
+{
+  "id": "nlP3vMpnjDJLZHjO7U3t",
+  "strategy": "RSI74",
+  "timeframe": "1d",
+  "token_id": "DOGE",
+  "amount": 1000
+}
+```
+</details>
+
+<hr/>
+
+### End Live Trade (Without Selling the tokens)
+
+End Live Trade: `http://127.0.0.1:8000/api/trade [POST]`
+
+<details>
+<summary>
+Endpoint details
+</summary>
+
+```
+URL: http://127.0.0.1:8000/api/trade
+Authorization: Bearer {JWT_Token}
+Body:
+{
+  "uid": string,
+  "livetrade": "UNRESERVE",
+  "livetrade_id": string
+}
+Response:
+None
+```
+
+#### Example
+```
+Request: http://127.0.0.1:8000/api/trade
+Authorization: Bearer ANY_VALID_TOKEN
+Body:
+{
+  "uid": "Gmcjdq33QxPSggpJx7CsTK42cQR2",
+  "livetrade": "unreserve",
+  "livetrade_id": "4uX4DPceT7opa9W0ky2l"
+}
+Response:
+None
+```
+</details>
+
+<hr/>
+
+### End Live Trade (With selling the tokens)
+
+Sell Live Trade: `http://127.0.0.1:8000/api/trade [POST]`
+
+<details>
+<summary>
+Endpoint details
+</summary>
+
+```
+URL: http://127.0.0.1:8000/api/trade
+Authorization: Bearer {JWT_Token}
+Body:
+{
+  "uid": string,
+  "to_token": string,
+  "livetrade": "SELL",
+  "livetrade_id": string
+}
+Response:
+{
+  "id": string,
+  "time": datetime,
+  "from_token": string,
+  "from_amount": number,
+  "to_token": string,
+  "to_amount": number,
+  "operated_by": "User"
+}
+```
+
+#### Example
+```
+Request: http://127.0.0.1:8000/api/trade
+Authorization: Bearer ANY_VALID_TOKEN
+Body:
+{
+  "uid": "Gmcjdq33QxPSggpJx7CsTK42cQR2",
+  "to_token": "GBP",
+  "livetrade": "sell",
+  "livetrade_id": "4uX4DPceT7opa9W0ky2l"
+}
+Response:
+{
+  "id": "NRmOjVjuJXs5KRWaxbDV",
+  "time": "2024-07-03T00:01:44.277624Z",
+  "from_token": "DOGE",
+  "from_amount": 1000
+  "to_token": "GBP",
+  "to_amount": 100.99,
+  "operated_by": "User"
+}
+```
+</details>
+
+<hr/>
+
 ## Google Cloud Deployment
 ### Environment Variables
 ```bash
-DJANGO_SECRET_KEY="SomeSecretKey"
-GCLOUD_EMAIL="....@...iam.gserviceaccount.com" # For scheduler API call for backtest
-API_URL="THIS CLOUD API URL" # For backtest API
-PYTHON_ENV="deployment"
+# ...everything from the ENV variable above
 ADDRESS="0.0.0.0" # Must be set
 # PORT is set somewhere else on Google Cloud, not in environment variable
 ```
