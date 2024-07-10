@@ -18,6 +18,7 @@ pip install djangorestframework
 pip install plotly
 pip install requests
 pip install firebase
+pip install aiohttp
 ```
 
 ### running on streamlit
@@ -50,6 +51,9 @@ FETCH_NEWS_IN_DAY="13" # When is the earliest news to fetch (E.g. 13 days before
 NEWS_EXPIRED_IN_DAY="14" # When will old news be deleted
 
 DEMO_ACCOUNT_AMOUNT="10000"
+MAX_TOKEN_HISTORY_IN_DAYS="7"
+TOKEN_HISTORY_INTERVAL_IN_MINUTES="120"
+FIAT="GBP"
 ```
 
 ## Django-REST Server
@@ -144,7 +148,7 @@ None (Status: 200)
 
 ### Update Last Close
 
-Fetch yesterday close price and update in firebase: `http://127.0.0.1:8000/api/update-last-close [POST]`
+Fetch history close price and update in firebase: `http://127.0.0.1:8000/api/update-history-prices [POST]`
 
 <details>
 <summary>
@@ -152,7 +156,7 @@ Endpoint details
 </summary>
 
 ```
-URL: http://127.0.0.1:8000/api/update-last-close
+URL: http://127.0.0.1:8000/api/update-history-prices
 Authorization: Bearer {Google_OIDC_Token}
 Response:
 None (Status: 200)
@@ -160,34 +164,7 @@ None (Status: 200)
 
 #### Example
 ```
-Request: http://127.0.0.1:8000/api/update-last-close
-Authorization: Bearer ANY_VALID_TOKEN
-Response:
-None (Status: 200)
-```
-</details>
-
-<hr/>
-
-### Daily Update
-
-Call backtest and update last close at once (For GCloud Scheduler): `http://127.0.0.1:8000/api/daily-update [POST]`
-
-<details>
-<summary>
-Endpoint details
-</summary>
-
-```
-URL: http://127.0.0.1:8000/api/daily-update
-Authorization: Bearer {Google_OIDC_Token}
-Response:
-None (Status: 200)
-```
-
-#### Example
-```
-Request: http://127.0.0.1:8000/api/daily-update
+Request: http://127.0.0.1:8000/api/update-history-prices
 Authorization: Bearer ANY_VALID_TOKEN
 Response:
 None (Status: 200)

@@ -1,3 +1,4 @@
+import asyncio
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -7,7 +8,7 @@ from Krakenbot.models.firebase_wallet import NotEnoughTokenException
 from Krakenbot.models.market import Market
 from Krakenbot.models.news import News
 from Krakenbot.models.trade import BadRequestException, NotAuthorisedException, Trade
-from Krakenbot.models.update_last_close import UpdateLastClose
+from Krakenbot.models.update_history_prices import UpdateHistoryPrices
 
 class MarketView(APIView):
 	def get(self, request: Request):
@@ -25,19 +26,10 @@ class BackTestView(APIView):
 		except NotAuthorisedException:
 			return Response(status=401)
 
-class UpdateLastCloseView(APIView):
+class UpdateHistoryPricesView(APIView):
 	def post(self, request: Request):
 		try:
-			UpdateLastClose().update(request)
-			return Response(status=200)
-		except NotAuthorisedException:
-			return Response(status=401)
-
-class DailyUpdateView(APIView):
-	def post(self, request: Request):
-		try:
-			BackTest().backtest(request)
-			UpdateLastClose().update(request)
+			asyncio.run(UpdateHistoryPrices().update(request))
 			return Response(status=200)
 		except NotAuthorisedException:
 			return Response(status=401)

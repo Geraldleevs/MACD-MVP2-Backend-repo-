@@ -1,9 +1,12 @@
+from datetime import datetime
 from Krakenbot import settings
 from google.cloud.firestore_v1.base_query import FieldFilter
 
 class FirebaseToken:
 	def __init__(self):
 		self.__collection = settings.firebase.collection(u'token')
+		self.__batch = settings.db_batch
+		self.__batch_writing = False
 
 	def get(self, token_id):
 		query = self.__collection
@@ -11,12 +14,23 @@ class FirebaseToken:
 		doc = query.get()[0]
 		return { **doc.to_dict(), 'id': doc.id }
 
-	def update_close_price(self, token_id, close_price: float):
+	def start_batch_write(self):
+		self.__batch_writing = True
+
+	def commit_batch_write(self):
+		self.__batch.commit()
+		self.__batch_writing = False
+
+	def update_history_prices(self, token_id, start_time: datetime, close_prices: list[float]):
 		doc_ref = self.__collection.document(token_id)
 		doc = doc_ref.get()
+		update_data = {'history_prices': { 'start_time': start_time, 'data': close_prices }}
 
 		if doc.exists:
-			doc_ref.update({'last_close_price': close_price})
+			if self.__batch_writing:
+				self.__batch.update(doc_ref, update_data)
+			else:
+				doc_ref.update(update_data)
 
 	def all(self):
 		docs = self.__collection.stream()

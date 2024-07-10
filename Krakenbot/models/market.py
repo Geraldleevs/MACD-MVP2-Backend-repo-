@@ -1,32 +1,11 @@
 from rest_framework.request import Request
 from Krakenbot.exceptions import BadRequestException
 from Krakenbot.models.firebase_token import FirebaseToken
+from Krakenbot.utils import clean_kraken_pair
 import requests
 
 class Market:
 	KRAKEN_PAIR_API = 'https://api.kraken.com/0/public/Ticker'
-	DEFAULT_CURRENCY = 'GBP'
-	KRAKEN_CLEAN_PAIRS = [
-		('XETC', 'ETC'),
-		('XETH', 'ETH'),
-		('XLTC', 'LTC'),
-		('XMLN', 'MLN'),
-		('XREP', 'REP'),
-		('XXBT', 'BTC'),
-		('XBT', 'BTC'),
-		('XXDG', 'XDG'),
-		('XDG', 'DOGE'),
-		('XXLM', 'XLM'),
-		('XXMR', 'XMR'),
-		('XXRP', 'XRP'),
-		('XZEC', 'ZEC'),
-		('ZAUD', 'AUD'),
-		('ZEUR', 'EUR'),
-		('ZGBP', 'GBP'),
-		('ZUSD', 'USD'),
-		('ZCAD', 'CAD'),
-		('ZJPY', 'JPY')
-	]
 
 	def __fetch_kraken_pair(self, token, reverse_price = False):
 		result = requests.get(self.KRAKEN_PAIR_API).json()
@@ -34,21 +13,9 @@ class Market:
 		if len(result['error']) > 0:
 			return []
 
-		result = self.__clean_kraken_pair(result)
+		result = clean_kraken_pair(result)
 		result = self.__parse_kraken_pair(result, token, reverse_price)
 		return result
-
-	def __clean_kraken_pair(self, kraken_result):
-		results = {}
-
-		for (pair, result) in kraken_result['result'].items():
-			for (clean_pair, replace_with) in self.KRAKEN_CLEAN_PAIRS:
-				if clean_pair in pair:
-					pair = pair.replace(clean_pair, replace_with)
-
-			results[pair] = {'ask': result['a'], 'bid': result['b'], 'last_close': result['o']}
-
-		return results
 
 	def __get_price(self, result, property_path):
 		price = float(result[property_path][0])
@@ -59,6 +26,9 @@ class Market:
 		return (price, last_open)
 
 	def __parse_kraken_pair(self, kraken_result, token, reverse_price):
+		for (pair, result) in kraken_result.items():
+			kraken_result[pair] = {'ask': result['a'], 'bid': result['b'], 'last_close': result['o']}
+
 		sell = 'bid' if reverse_price else 'ask'
 		buy = 'ask' if reverse_price else 'bid'
 		filtered_results = {}
@@ -83,7 +53,7 @@ class Market:
 
 		return [{ 'token': token, 'price': price, 'last_close': last_close } for (token, (price, last_close)) in results.items()]
 
-	def get_market(self, request: Request = None, convert_from = '', convert_to = '', exclude = ''):
+	def get_market(self, request: Request | None = None, convert_from = '', convert_to = '', exclude = ''):
 		if request is not None:
 			convert_from = request.query_params.get('convert_from', '').upper()
 			convert_to = request.query_params.get('convert_to', '').upper()
@@ -110,7 +80,7 @@ class Market:
 			raise BadRequestException()
 
 		market = self.__fetch_kraken_pair(current_token, reverse_price)
-		market.append({ 'token': current_token, 'price': 1 })
+		market.append({ 'token': current_token, 'price': 1, 'last_close': 1 })
 
 		if not reverse_price and convert_to != '':
 			market = [price for price in market if price['token'] == convert_to]
