@@ -1,4 +1,5 @@
 import os
+import pandas as pd
 from datetime import datetime, timedelta
 from random import randint
 from Krakenbot.exceptions import NotEnoughTokenException
@@ -24,10 +25,8 @@ class AutoLiveTrade:
 	def __init__(self):
 		self.FIAT = os.environ.get('FIAT', 'GBP')
 
-	def __apply_backtest(self, pairs: list[str], intervals: list[int], since: datetime) -> dict[str, dict[str, int]]:
-		# Parse the since here from datetime to timestamp to call Kraken API
-		since = since.timestamp()
-
+	# TODO: This function should be removed once the Branch `Demo-Branch-WIP-NEW` is merged
+	def __apply_backtest(self, pairs: list[str], intervals: list[int], since: datetime) -> dict[str, dict[str, pd.DataFrame]]:
 		results = {}
 
 		for pair in pairs:
@@ -64,28 +63,27 @@ class AutoLiveTrade:
 		all_tokens = FirebaseToken().all()
 		all_tokens = { token['id'] + self.FIAT: token['id'] for token in all_tokens if token['is_fiat'] == False }
 
+		# TODO: Replace this with any other time duration, this is for backtest since 366 days before
 		since = timezone.now() - timedelta(days=366)
 
-		backtest_result = self.__apply_backtest(all_tokens.keys(), [self.INTERVAL[timeframe]], since)
-		results = { all_tokens[pair]: value for (pair, value) in backtest_result.items() }
+		# TODO: This function call should be replaced by the `apply_backtest` function in `Realtime_Backtest.py` from Branch `Demo-Branch-WIP-NEW`
+		# results = apply_backtest(all_tokens.keys(), [self.INTERVAL[timeframe]], since)
+		results = self.__apply_backtest(all_tokens.keys(), [self.INTERVAL[timeframe]], since)
+
+		results = { all_tokens[pair]: value for (pair, value) in results.items() } # To replace pair with just token id, e.g. BTCGBP -> BTC
 
 		trade_decisions = { 'buy': [], 'sell': [] }
 
 		for livetrade in livetrades:
 			try:
+				## TODO: Use `get_livetrade_result` from the Branch `Demo-Branch-WIP-NEW` to get the decision of buy/sell
+				# decision = get_livetrade_result(results[livetrade['token_id']][str(self.INTERVAL[timeframe])], livetrade['strategy'])
 				decision = results[livetrade['token_id']][str(self.INTERVAL[timeframe])]
 
-				if decision == 0:
-					print("Do Nothing")
-					continue
-				elif decision == -1 and livetrade['cur_token'] == livetrade['token_id']:
-					print("Sell")
+				if decision == -1 and livetrade['cur_token'] == livetrade['token_id']:
 					trade_decisions['sell'].append(livetrade)
-					pass
 				elif decision == 1 and livetrade['cur_token'] != livetrade['token_id']:
-					print("Buy")
 					trade_decisions['buy'].append(livetrade)
-					pass
 			except KeyError:
 				pass
 
