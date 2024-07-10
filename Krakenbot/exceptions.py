@@ -15,3 +15,7 @@ class DatabaseIncorrectDataException(Exception):
 
 class ServerErrorException(Exception):
 	pass
+
+
+class NoUserSelectedException(Exception):
+	pass

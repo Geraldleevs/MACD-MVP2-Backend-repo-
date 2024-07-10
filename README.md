@@ -173,6 +173,41 @@ None (Status: 200)
 
 <hr/>
 
+### Auto Livetrade
+
+Check and perform livetrade based on backtest result: `http://127.0.0.1:8000/api/auto-livetrade [POST]`
+
+<details>
+<summary>
+Endpoint details
+</summary>
+
+```
+URL: http://127.0.0.1:8000/api/auto-livetrade
+Authorization: Bearer {Google_OIDC_Token}
+Body:
+{
+  "timeframe": '1min' | '5min' | '15min' | '30min' | '1h' | '4h' | '1d'
+}
+Response:
+None (Status: 200)
+```
+
+#### Example
+```
+Request: http://127.0.0.1:8000/api/auto-livetrade
+Authorization: Bearer ANY_VALID_TOKEN
+Body:
+{
+  "timeframe": "1h"
+}
+Response:
+None (Status: 200)
+```
+</details>
+
+<hr/>
+
 ### News
 
 Fetch GNews and save in firebase database: `http://127.0.0.1:8000/api/news [POST]`

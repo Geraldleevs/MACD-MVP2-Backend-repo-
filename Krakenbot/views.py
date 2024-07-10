@@ -3,6 +3,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from Krakenbot.exceptions import ServerErrorException, SessionExpiredException
+from Krakenbot.models.auto_livetrade import AutoLiveTrade
 from Krakenbot.models.backtest import BackTest
 from Krakenbot.models.firebase_wallet import NotEnoughTokenException
 from Krakenbot.models.market import Market
@@ -59,3 +60,11 @@ class NewsView(APIView):
 			return Response(status=400)
 		except ServerErrorException:
 			return Response(status=500)
+
+class AutoLiveTradeView(APIView):
+	def post(self, request: Request):
+		try:
+			asyncio.run(AutoLiveTrade().livetrade(request))
+			return Response(status=200)
+		except NotAuthorisedException:
+			return Response(status=401)

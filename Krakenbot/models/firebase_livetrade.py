@@ -3,6 +3,7 @@ from Krakenbot import settings
 from typing import TypedDict
 from google.cloud.firestore_v1.base_query import FieldFilter
 from django.utils import timezone
+from Krakenbot.exceptions import NoUserSelectedException
 
 class LiveTradeField(TypedDict):
 	livetrade_id: str
@@ -17,17 +18,21 @@ class LiveTradeField(TypedDict):
 	is_active: bool
 
 class FirebaseLiveTrade:
-	def __init__(self, uid):
+	def __init__(self, uid = None):
 		self.uid = uid
 		self.__livetrade = settings.firebase.collection(u'livetrade')
 		self.__user_livetrade = settings.firebase.collection(u'users').document(uid)
 
 	def add_user_livetrade(self, livetrade_ref):
+		if self.uid is None:
+			raise NoUserSelectedException()
 		user_doc = self.__user_livetrade.get().to_dict()
 		existing_livetrades = user_doc.get('livetrades', [])
 		self.__user_livetrade.update({ 'livetrades': [*existing_livetrades, livetrade_ref]})
 
 	def remove_user_livetrade(self, livetrade_ref):
+		if self.uid is None:
+			raise NoUserSelectedException()
 		user_doc = self.__user_livetrade.get().to_dict()
 		existing_livetrades = user_doc.get('livetrades', [])
 		if livetrade_ref in existing_livetrades:
