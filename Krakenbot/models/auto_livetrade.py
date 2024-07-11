@@ -35,9 +35,24 @@ class AutoLiveTrade:
 				trade_result = FirebaseWallet(decision['uid']).trade_by_krakenbot(from_token, from_amount, to_token, to_amount)
 				firebase_livetrade.update(decision['livetrade_id'], { 'amount': trade_result['to_amount'], 'cur_token': trade_result['to_token'] })
 			except KeyError:
-				pass
+				message = {
+					'message': 'Livetrade Trading Fails due to Invalid Fields',
+					'Livetrade': decision.get('livetrade_id'),
+					'UID': decision.get('uid', 'No User Found'),
+					'From': f'{decision.get('amount', 'No Amount')} {decision.get('cur_token', 'No Token Found')}',
+					'To': f'{decision.get('amount', 0) * prices.get(decision.get('token_id', ''), 0)} {self.FIAT if decision.get('cur_token', '1') == decision.get('token_id', '2') else decision.get('token_id', 'No Token Found')}',
+				}
+				log_warning(message)
+
 			except NotEnoughTokenException:
-				pass
+				message = {
+					'message': 'Livetrade Trading Fails due to Not Enough Token',
+					'Livetrade': decision.get('livetrade_id'),
+					'UID': decision.get('uid'),
+					'From': f'{decision.get('amount')} {decision.get('cur_token')}',
+					'To': f'{decision.get('amount') * prices.get(decision.get('token_id'))} {self.FIAT if decision.get('cur_token') == decision.get('token_id') else decision.get('token_id')}',
+				}
+				log_warning(message)
 
 	async def livetrade(self, request: Request):
 		authenticate_scheduler_oicd(request)
