@@ -19,6 +19,8 @@ pip install plotly
 pip install requests
 pip install firebase
 pip install aiohttp
+pip install aiohttp asyncio
+
 ```
 
 ### running on streamlit
@@ -47,6 +49,7 @@ FIREBASE_CLIENT_X509_CERT_URL="client_x509_cert_url"
 
 GNEWS_API_KEY="GNEWS_API_KEY"
 GNEWS_MAX_FETCH="10" # Free account only get max 10
+GNEWS_FETCH_KEYWORD="bitcoin:BTC,ethereum:ETH,dogecoin:DOGE,cordano:ADA,solana:SOL,ripple coin:XRP"
 FETCH_NEWS_IN_DAY="13" # When is the earliest news to fetch (E.g. 13 days before)
 NEWS_EXPIRED_IN_DAY="14" # When will old news be deleted
 
@@ -478,3 +481,38 @@ Response:
 ADDRESS="0.0.0.0" # Must be set
 # PORT is set somewhere else on Google Cloud, not in environment variable
 ```
+
+### How to Deploy
+
+1. Install [Docker](https://www.docker.com/products/docker-desktop/) and [GCloud CLI](https://cloud.google.com/sdk/docs/install)
+2. Start Docker
+3. Initialise GCloud CLI and Login
+    ```bash
+    gcloud init
+    ```
+4. Authorise Docker for GCloud
+   ```bash
+   gcloud auth configure-docker
+   ```
+5. (Optional) If you've already built the docker before, you need to dispose the old docker image first
+   ```bash
+   docker compose down --rmi local
+   docker rmi gcr.io/[PROJECT_NAME]/machd-krakenbot:v0
+   ```
+6. Build Docker Image
+   ```bash
+   docker compose up
+   # Ctrl + C after it is done building
+   # Last Line should be 'Watching for file changes with StatReloader'
+   ```
+7. Push docker image to Google Cloud
+   ```bash
+   docker tag machd-krakenbot gcr.io/[PROJECT_NAME]/machd-krakenbot:v0
+   docker push gcr.io/[PROJECT_NAME]/machd-krakenbot:v0
+   ```
+8. Navigate to [Google Cloud Run](https://console.cloud.google.com/run) and click into the `[PROJECT_NAME]`
+9.  Click `Edit & deploy new revision`
+10. Under `Container(s) > Edit Container > Container image URL`, click `SELECT`
+11. Select the latest image (Should be the first one) under `Artifact Registry > gcr.io/[project-name] > machd-krakenbot`
+12. If there is any new environment variable, add/edit under `Edit Container > Variables & Secrets`
+13. Click `Deploy` at the bottom

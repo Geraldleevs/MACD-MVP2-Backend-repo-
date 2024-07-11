@@ -37,3 +37,4 @@ performance_metrics_logs.csv
 Krakenbot/krakenpair.py
 debug_log.txt
 trading_pairs.txt
+/output
