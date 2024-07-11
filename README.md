@@ -19,6 +19,8 @@ pip install plotly
 pip install requests
 pip install firebase
 pip install aiohttp
+pip install aiohttp asyncio
+
 ```
 
 ### running on streamlit
