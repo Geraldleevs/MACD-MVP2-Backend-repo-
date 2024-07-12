@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'corsheaders',
     'Krakenbot_app',
 ]
 
@@ -67,7 +68,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
+
+CORS_ALLOWED_ORIGINS = os.environ.get('CORS', '').split(';')
 
 ROOT_URLCONF = 'Krakenbot.urls'
 

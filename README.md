@@ -38,6 +38,7 @@ GCLOUD_EMAIL="firebase-adminsdk...@...gserviceaccount.com" # Your Google schedul
 PYTHON_ENV="development" # development | production
 ADDRESS="127.0.0.1" # Use 0.0.0.0 in docker / cloud
 PORT="8080"
+CORS="https://mach-d-rlqsy3.flutterflow.app/" # Split by ';'
 
 # These are from firebase credentials.json, download it from the firebase project and copy down
 FIREBASE_PROJECT_ID="project_id"
