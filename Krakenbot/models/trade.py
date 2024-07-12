@@ -70,6 +70,7 @@ class Trade:
 					'timeframe': timeframe,
 					'cur_token': from_token,
 					'token_id': to_token,
+					'initial_amount': from_amount,
 					'amount': from_amount,
 					'is_active': True
 				})
