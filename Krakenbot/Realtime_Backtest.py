@@ -1,21 +1,15 @@
 import aiohttp
 import asyncio
 import pandas as pd
-from datetime import datetime, timedelta
+from datetime import datetime
 import time
-from dotenv import load_dotenv, find_dotenv
 import os
 from typing import List, Dict
 
-# Import TA calculation functions assuming TA_calculations.py is in the same directory
-import TA_calculations
-import TA_functions
-
-# Load environment variables from .env file
-dotenv_path = find_dotenv()
-if not dotenv_path:
-    raise FileNotFoundError("Could not find .env file")
-load_dotenv(dotenv_path)
+try:
+    import TA_functions
+except ModuleNotFoundError:
+    import Krakenbot.TA_functions as TA_functions
 
 async def fetch_ohlc_data(session, pair, interval, since=None):
     url = 'https://api.kraken.com/0/public/OHLC'
@@ -39,7 +33,7 @@ async def fetch_ohlc_data(session, pair, interval, since=None):
                     if key != 'last':
                         for entry in result[key]:
                             timestamp = int(entry[0])
-                            timestamp_str = datetime.utcfromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
+                            timestamp_str = datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
                             ohlc_data.append({
                                 'Unix_Timestamp': timestamp,
                                 'Timestamp': timestamp_str,
@@ -79,45 +73,45 @@ def apply_ta_indicators(df):
         TA_functions.use_stochastic_21_5_80_20,
         TA_functions.use_stochastic_21_5_85_15
     ]
-    
+
     for func in indicator_functions:
         df = func(df)
         indicator_name = func.__name__.replace('use_', 'indicator_')
         df[indicator_name] = df['buy_sell']
         df.drop(['buy_sell'], axis=1, inplace=True)
-    
+
     # Combine indicators for each pair of indicators
-    df['indicator_rsi_macd'] = df.apply(lambda x: 1 if x['indicator_rsi70_30'] == 1 and x['indicator_macd'] == 1 else 
+    df['indicator_rsi_macd'] = df.apply(lambda x: 1 if x['indicator_rsi70_30'] == 1 and x['indicator_macd'] == 1 else
                                                   -1 if x['indicator_rsi70_30'] == -1 and x['indicator_macd'] == -1 else 0, axis=1)
-    df['indicator_sma_ichimoku'] = df.apply(lambda x: 1 if x['indicator_sma'] == 1 and x['indicator_ichimoku'] == 1 else 
+    df['indicator_sma_ichimoku'] = df.apply(lambda x: 1 if x['indicator_sma'] == 1 and x['indicator_ichimoku'] == 1 else
                                                    -1 if x['indicator_sma'] == -1 and x['indicator_ichimoku'] == -1 else 0, axis=1)
-    df['indicator_donchian_stochastic'] = df.apply(lambda x: 1 if x['indicator_donchian_channel'] == 1 and x['indicator_stochastic_14_3_80_20'] == 1 else 
+    df['indicator_donchian_stochastic'] = df.apply(lambda x: 1 if x['indicator_donchian_channel'] == 1 and x['indicator_stochastic_14_3_80_20'] == 1 else
                                                            -1 if x['indicator_donchian_channel'] == -1 and x['indicator_stochastic_14_3_80_20'] == -1 else 0, axis=1)
 
     return df
 
-async def process_interval(session, pair, interval, since):
+async def process_interval(session, pair, interval, since = None):
     ohlc_data, last_timestamp = await fetch_ohlc_data(session, pair, interval, since)
-    
+
     if ohlc_data:
         df = pd.DataFrame(ohlc_data)
-        
+
         # Apply technical analysis indicators
         df = apply_ta_indicators(df)
-        
+
         # Remove the last row
         df = df.iloc[:-1]
-        
+
         return df
     return None
 
-async def apply_backtest(pairs: List[str], intervals: List[int], since: datetime) -> Dict[str, Dict[str, pd.DataFrame]]:
-    since_timestamp = since.timestamp()
+async def apply_backtest(pairs: List[str], intervals: List[int], since: datetime = None) -> Dict[str, Dict[str, pd.DataFrame]]:
+    since_timestamp = since.timestamp() if since is not None else None
     results = {}
 
     async with aiohttp.ClientSession() as session:
         tasks = [process_interval(session, pair, interval, since_timestamp) for pair in pairs for interval in intervals]
-        
+
         raw_data = await asyncio.gather(*tasks)
 
         for i, pair in enumerate(pairs):
@@ -127,32 +121,33 @@ async def apply_backtest(pairs: List[str], intervals: List[int], since: datetime
                 if df is not None:
                     pair_data[str(interval)] = df
             results[pair] = pair_data
-    
+
     return results
 
 def get_livetrade_result(df: pd.DataFrame, strategy: str) -> int:
+    strategy = strategy.lower()
     strategy_mapping = {
         'macd': 'indicator_macd',
         'sma': 'indicator_sma',
         'ichimoku': 'indicator_ichimoku',
-        'donchian_channel': 'indicator_donchian_channel',
-        'rsi65_25': 'indicator_rsi65_25',
-        'rsi66_26': 'indicator_rsi66_26',
-        'rsi67_27': 'indicator_rsi67_27',
-        'rsi68_28': 'indicator_rsi68_28',
-        'rsi69_29': 'indicator_rsi69_29',
-        'rsi70_30': 'indicator_rsi70_30',
-        'rsi71_31': 'indicator_rsi71_31',
-        'rsi72_32': 'indicator_rsi72_32',
-        'rsi73_33': 'indicator_rsi73_33',
-        'rsi74_34': 'indicator_rsi74_34',
-        'rsi75_35': 'indicator_rsi75_35',
-        'stochastic_14_3_80_20': 'indicator_stochastic_14_3_80_20',
-        'stochastic_14_3_85_15': 'indicator_stochastic_14_3_85_15',
-        'stochastic_10_3_80_20': 'indicator_stochastic_10_3_80_20',
-        'stochastic_10_3_85_15': 'indicator_stochastic_10_3_85_15',
-        'stochastic_21_5_80_20': 'indicator_stochastic_21_5_80_20',
-        'stochastic_21_5_85_15': 'indicator_stochastic_21_5_85_15',
+        'donchian': 'indicator_donchian_channel',
+        'rsi65': 'indicator_rsi65_25',
+        'rsi66': 'indicator_rsi66_26',
+        'rsi67': 'indicator_rsi67_27',
+        'rsi68': 'indicator_rsi68_28',
+        'rsi69': 'indicator_rsi69_29',
+        'rsi70': 'indicator_rsi70_30',
+        'rsi71': 'indicator_rsi71_31',
+        'rsi72': 'indicator_rsi72_32',
+        'rsi73': 'indicator_rsi73_33',
+        'rsi74': 'indicator_rsi74_34',
+        'rsi75': 'indicator_rsi75_35',
+        'stochastic14_3_80_20': 'indicator_stochastic_14_3_80_20',
+        'stochastic14_3_85_15': 'indicator_stochastic_14_3_85_15',
+        'stochastic10_3_80_20': 'indicator_stochastic_10_3_80_20',
+        'stochastic10_3_85_15': 'indicator_stochastic_10_3_85_15',
+        'stochastic21_5_80_20': 'indicator_stochastic_21_5_80_20',
+        'stochastic21_5_85_15': 'indicator_stochastic_21_5_85_15',
         'rsi_macd': 'indicator_rsi_macd',
         'sma_ichimoku': 'indicator_sma_ichimoku',
         'donchian_stochastic': 'indicator_donchian_stochastic'
@@ -168,14 +163,13 @@ def get_livetrade_result(df: pd.DataFrame, strategy: str) -> int:
 async def main():
     pairs = ['XBTGBP', 'ETHGBP', 'DOGEUSDT']
     intervals = [1, 60, 240, 1440]
-    since = datetime.now() - timedelta(days=366)
-    results = await apply_backtest(pairs, intervals, since)
-    
+    results = await apply_backtest(pairs, intervals)
+
     # Create output directory if it doesn't exist
     output_dir = 'output'
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
-    
+
     for pair in results:
         for interval in results[pair]:
             df = results[pair][interval]

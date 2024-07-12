@@ -1,4 +1,6 @@
+import json
 import os
+import sys
 import requests
 from Krakenbot.exceptions import NotAuthorisedException
 from rest_framework.request import Request
@@ -74,3 +76,22 @@ def clean_kraken_pair(kraken_result) -> dict[str, any]:
 		results[pair] = result
 
 	return results
+
+
+def log_warning(message):
+	log(message, 'WARNING')
+
+
+def log_error(message):
+	log(message, 'ERROR')
+
+
+def log(message, severity = 'INFO'):
+	entry = {
+			'severity': severity,
+			'message': message,
+			'component': 'arbitrary-property'
+	}
+
+	print(json.dumps(entry))
+	sys.stdout.flush()
