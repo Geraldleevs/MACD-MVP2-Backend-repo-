@@ -78,7 +78,7 @@ def apply_ta_indicators(df):
     new_columns['indicator_aroon'] = np.where(aroon_up > aroon_down, 1, -1)
 
     # RSI variations
-    for overbought, oversold in zip(range(70, 76), range(30, 26, -1)):
+    for overbought, oversold in zip(range(70, 76), range(30, 36)):
         rsi = talib.RSI(df['Close'], timeperiod=14)
         col_name = f'RSI{overbought}_{oversold}'
         new_columns[col_name] = rsi
