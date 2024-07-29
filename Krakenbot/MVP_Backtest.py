@@ -5,6 +5,10 @@ from itertools import combinations
 import talib
 import time
 
+def dev_print(message, no_print):
+    if no_print is False:
+        print(message)
+
 # Function to set up logging for performance metrics
 def setup_performance_logging():
     logger = logging.getLogger('performance_metrics')
@@ -459,9 +463,9 @@ ALL_FILES = [
     # Add other file names as needed
 ]
 
-def main(token_id='', timeframe=''):
+def main(token_id='', timeframe='', no_print=True):
     start_time = time.time()
-    
+
     # Initialize the list to collect all profit DataFrames
     profit_dfs = []
 
@@ -470,7 +474,7 @@ def main(token_id='', timeframe=''):
     if len(files) < 1:
         return pd.DataFrame([])
 
-    print(f"Files to process: {len(files)}")
+    dev_print(f"Files to process: {len(files)}", no_print)
 
     # Set up logging for performance metrics
     performance_logger = setup_performance_logging()
@@ -482,7 +486,7 @@ def main(token_id='', timeframe=''):
         df['close_time'] = pd.to_datetime(df['Close_time'], unit='ms')
         dfs[(coin_id, file_timeframe)] = df
 
-    print(f"Time to read files: {time.time() - start_time} seconds")
+    dev_print(f"Time to read files: {time.time() - start_time} seconds", no_print)
 
     # Process each file
     for (file, coin_id, file_timeframe) in files:
@@ -495,7 +499,7 @@ def main(token_id='', timeframe=''):
         # Calculate trading signals for all indicators once
         trading_signals = {name: func(df) for func, name in indicator_names.items()}
 
-        print(f"Time to calculate trading signals for {coin_name}: {time.time() - start_time} seconds")
+        dev_print(f"Time to calculate trading signals for {coin_name}: {time.time() - start_time} seconds", no_print)
 
         # Generate combinations of indicators, avoiding comparisons of the same type
         indicator_combinations = [
@@ -553,7 +557,7 @@ def main(token_id='', timeframe=''):
     # Concatenate all the profit DataFrames into a single DataFrame
     coin_profit_df = pd.concat(profit_dfs)
 
-    print(f"Time to process all files: {time.time() - start_time} seconds")
+    dev_print(f"Time to process all files: {time.time() - start_time} seconds", no_print)
 
     # Determine the best strategy for each coin and other columns in one go
     coin_profit_df = pd.concat([
@@ -561,7 +565,7 @@ def main(token_id='', timeframe=''):
         coin_profit_df.idxmax(axis=1).rename('Recommended Strategy'),
         coin_profit_df.max(axis=1).rename('Profit of Recommended Strategy'),
     ], axis=1)
-    
+
     # Calculate the percentage increase for each coin
     initial_investment = 10000
     coin_profit_df['Percentage Increase'] = ((coin_profit_df['Profit of Recommended Strategy'] - initial_investment) / initial_investment) * 100
@@ -569,12 +573,12 @@ def main(token_id='', timeframe=''):
     # Keep only the last three columns
     coin_profit_df = coin_profit_df.iloc[:, -3:]
 
-    print(f"Total runtime: {time.time() - start_time} seconds")
-    
+    dev_print(f"Total runtime: {time.time() - start_time} seconds", no_print)
+
     return coin_profit_df
 
 if __name__ == '__main__':
-    result = main()
+    result = main(no_print=False)
 
     # Save the modified DataFrame to a CSV file
     result.to_csv('coin_profit_recommended.csv')

@@ -8,6 +8,10 @@ import os
 from typing import List, Dict
 import talib
 
+def dev_print(message, no_print):
+    if no_print is False:
+        print(message)
+
 async def fetch_ohlc_data(session, pair, interval, since=None):
     url = 'https://api.kraken.com/0/public/OHLC'
     params = {
@@ -45,7 +49,7 @@ async def fetch_ohlc_data(session, pair, interval, since=None):
         else:
             return None, None
 
-def apply_ta_indicators(df):
+def apply_ta_indicators(df, no_print = True):
     start_time = time.time()
     new_columns = {}
 
@@ -345,27 +349,27 @@ def apply_ta_indicators(df):
     df = pd.concat([df, pd.DataFrame(new_columns)], axis=1)
 
     end_time = time.time()
-    print(f"TA indicators applied in {end_time - start_time:.2f} seconds")
+    dev_print(f"TA indicators applied in {end_time - start_time:.2f} seconds", no_print)
     return df
 
-async def process_interval(session, pair, interval, since = None):
+async def process_interval(session, pair, interval, since = None, no_print = True):
     ohlc_data, last_timestamp = await fetch_ohlc_data(session, pair, interval, since)
 
     if ohlc_data:
         df = pd.DataFrame(ohlc_data)
 
         # Apply technical analysis indicators
-        df = apply_ta_indicators(df)
+        df = apply_ta_indicators(df, no_print)
 
         return df
     return None
 
-async def apply_backtest(pairs: List[str], intervals: List[int], since: datetime = None) -> Dict[str, Dict[str, pd.DataFrame]]:
+async def apply_backtest(pairs: List[str], intervals: List[int], since: datetime = None, no_print = True) -> Dict[str, Dict[str, pd.DataFrame]]:
     since_timestamp = since.timestamp() if since is not None else None
     results = {}
 
     async with aiohttp.ClientSession() as session:
-        tasks = [process_interval(session, pair, interval, since_timestamp) for pair in pairs for interval in intervals]
+        tasks = [process_interval(session, pair, interval, since_timestamp, no_print) for pair in pairs for interval in intervals]
 
         raw_data = await asyncio.gather(*tasks)
 
@@ -461,7 +465,7 @@ def get_livetrade_result(df: pd.DataFrame, strategy: str) -> int:
 async def main():
     pairs = ['XBTGBP', 'ETHGBP', 'DOGEUSDT']
     intervals = [1, 60, 240, 1440]
-    results = await apply_backtest(pairs, intervals)
+    results = await apply_backtest(pairs, intervals, no_print=False)
 
     # Create output directory if it doesn't exist
     output_dir = 'output'
