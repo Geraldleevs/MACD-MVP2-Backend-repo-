@@ -22,7 +22,7 @@ class AutoLiveTrade:
 	def __init__(self):
 		self.FIAT = os.environ.get('FIAT', 'GBP')
 
-	def __trade(self, trade_decisions: list[dict], market_prices: list[dict[str, str | float]]):
+	def __trade(self, trade_decisions: list[dict], market_prices: list[dict[str, str | float]], trade_type: str):
 		firebase_livetrade = FirebaseLiveTrade()
 		prices = { price['token']: price['price'] for price in market_prices }
 		trade_count = 0
@@ -56,7 +56,7 @@ class AutoLiveTrade:
 				}
 				log_warning(message)
 
-		log(f'Trade Count: {trade_count}')
+		log(f'Trade Count ({trade_type}): {trade_count}')
 
 	async def livetrade(self, request: Request):
 		authenticate_scheduler_oicd(request)
@@ -93,5 +93,5 @@ class AutoLiveTrade:
 				}
 				log_warning(message)
 
-		self.__trade(trade_decisions['buy'], Market().get_market(convert_from=self.FIAT))
-		self.__trade(trade_decisions['sell'], Market().get_market(convert_to=self.FIAT))
+		self.__trade(trade_decisions['buy'], Market().get_market(convert_from=self.FIAT), 'Buy')
+		self.__trade(trade_decisions['sell'], Market().get_market(convert_to=self.FIAT), 'Sell')
