@@ -6,7 +6,7 @@ from rest_framework.request import Request
 from Krakenbot.models.firebase_token import FirebaseToken
 from Krakenbot.models.firebase_wallet import FirebaseWallet
 from Krakenbot.models.market import Market
-from Krakenbot.utils import authenticate_scheduler_oicd, log_warning
+from Krakenbot.utils import authenticate_scheduler_oicd, log_warning, log
 
 class AutoLiveTrade:
 	INTERVAL = {
@@ -25,6 +25,7 @@ class AutoLiveTrade:
 	def __trade(self, trade_decisions: list[dict], market_prices: list[dict[str, str | float]]):
 		firebase_livetrade = FirebaseLiveTrade()
 		prices = { price['token']: price['price'] for price in market_prices }
+		trade_count = 0
 
 		for decision in trade_decisions:
 			try:
@@ -34,6 +35,7 @@ class AutoLiveTrade:
 				to_amount = from_amount * prices[decision['token_id']]
 				trade_result = FirebaseWallet(decision['uid']).trade_by_krakenbot(from_token, from_amount, to_token, to_amount)
 				firebase_livetrade.update(decision['livetrade_id'], { 'amount': trade_result['to_amount'], 'cur_token': trade_result['to_token'] })
+				trade_count += 1
 			except KeyError:
 				message = {
 					'message': 'Livetrade Trading Fails due to Invalid Fields',
@@ -53,6 +55,8 @@ class AutoLiveTrade:
 					'To': f'{decision.get('amount') * prices.get(decision.get('token_id'))} {self.FIAT if decision.get('cur_token') == decision.get('token_id') else decision.get('token_id')}',
 				}
 				log_warning(message)
+
+		log(f'Trade Count: {trade_count}')
 
 	async def livetrade(self, request: Request):
 		authenticate_scheduler_oicd(request)
@@ -82,7 +86,7 @@ class AutoLiveTrade:
 					trade_decisions['buy'].append(livetrade)
 			except (KeyError, ValueError, IndexError):
 				message = {
-					'message': 'Livetrade Fails',
+					'message': 'Livetrade Fails due to Unknown Strategy',
 					'Livetrade': livetrade.get('livetrade_id', 'ID Not Found'),
 					'Timeframe': timeframe,
 					'Strategy': livetrade.get('strategy', 'Strategy Not Found'),

@@ -79,14 +79,23 @@ def clean_kraken_pair(kraken_result) -> dict[str, any]:
 
 
 def log_warning(message):
+	'''
+	Google Cloud Log Warning
+	'''
 	log(message, 'WARNING')
 
 
 def log_error(message):
+	'''
+	Google Cloud Log Error
+	'''
 	log(message, 'ERROR')
 
 
 def log(message, severity = 'INFO'):
+	'''
+	Google Cloud Log
+	'''
 	entry = {
 			'severity': severity,
 			'message': message,

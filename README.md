@@ -20,8 +20,24 @@ pip install requests
 pip install firebase
 pip install aiohttp
 pip install aiohttp asyncio
-
 ```
+
+#### To install TA-Lib
+
+Windows x64
+
+1. Download pip wheel (`TA_Lib-0.4.29-cp312-cp312-win_amd64.whl`) on https://github.com/cgohlke/talib-build/releases
+2. Run
+   ```bash
+    pip install TA_Lib-0.4.29-cp312-cp312-win_amd64.whl
+   ```
+
+#### For other OS Systems
+
+- Follow instructions on the TA-Lib's [README](https://github.com/TA-Lib/ta-lib-python/blob/master/README.md)
+
+<hr />
+
 
 ### running on streamlit
 `python -m streamlit run Krakenbot\StreamLit_Livetrading.py`
