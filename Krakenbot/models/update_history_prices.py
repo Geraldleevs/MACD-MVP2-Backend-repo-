@@ -44,7 +44,10 @@ class UpdateHistoryPrices:
 		authenticate_scheduler_oicd(request)
 		firebase = FirebaseToken()
 		pairs = [token.get('token_id') + self.FIAT for token in firebase.all() if token.get('token_id') != self.FIAT]
+
+		firebase.start_batch_write()
 		firebase.update_history_prices(self.FIAT, timezone.now() - timedelta(days=7), [1, 1])
+		firebase.update_history_prices('USD', timezone.now() - timedelta(days=7), [1, 1])
 
 		async with aiohttp.ClientSession() as session:
 			tasks = [self.__fetch_kraken_OHLC(session, pair) for pair in pairs]
@@ -52,9 +55,11 @@ class UpdateHistoryPrices:
 			results = [(pair.replace(self.FIAT, ''), start_time, close_prices) for (pair, start_time, close_prices) in results if close_prices != [0, 0]]
 			all_tokens = [token for (token, _, close_prices) in results if close_prices != [0, 0]]
 
-			firebase.start_batch_write()
+			usd_pairs = [
+				token.get('token_id') + 'USD' for token in firebase.all()
+				if token.get('token_id') not in ['USD', self.FIAT, *all_tokens]
+			]
 
-			usd_pairs = [token.get('token_id') + 'USD' for token in firebase.all() if token.get('token_id') != self.FIAT and token.get('token_id') not in all_tokens]
 			if len(usd_pairs) > 0:
 				tasks = [self.__fetch_kraken_OHLC(session, pair) for pair in usd_pairs]
 				usd_results = await asyncio.gather(*tasks)
