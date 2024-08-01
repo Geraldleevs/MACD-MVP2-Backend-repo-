@@ -4,7 +4,7 @@ import aiohttp
 from datetime import timedelta
 from rest_framework.request import Request
 from Krakenbot.models.firebase_token import FirebaseToken
-from Krakenbot.utils import authenticate_scheduler_oicd, clean_kraken_pair
+from Krakenbot.utils import authenticate_scheduler_oicd, clean_kraken_pair, usd_to_gbp
 from django.utils import timezone
 
 class UpdateHistoryPrices:
@@ -49,8 +49,21 @@ class UpdateHistoryPrices:
 		async with aiohttp.ClientSession() as session:
 			tasks = [self.__fetch_kraken_OHLC(session, pair) for pair in pairs]
 			results = await asyncio.gather(*tasks)
+			results = [(pair.replace(self.FIAT, ''), start_time, close_prices) for (pair, start_time, close_prices) in results if close_prices != [0, 0]]
+			all_tokens = [token for (token, _, close_prices) in results if close_prices != [0, 0]]
 
 			firebase.start_batch_write()
-			for (pair, start_time, close_prices) in results:
-				firebase.update_history_prices(pair.replace(self.FIAT, ''), start_time, close_prices)
+
+			usd_pairs = [token.get('token_id') + 'USD' for token in firebase.all() if token.get('token_id') != self.FIAT and token.get('token_id') not in all_tokens]
+			if len(usd_pairs) > 0:
+				tasks = [self.__fetch_kraken_OHLC(session, pair) for pair in usd_pairs]
+				usd_results = await asyncio.gather(*tasks)
+				usd_results = [(pair.replace('USD', ''), start_time, close_prices) for (pair, start_time, close_prices) in usd_results]
+				for (token, start_time, close_prices) in usd_results:
+					usd_rate = await usd_to_gbp()
+					close_prices = [close_price * usd_rate for close_price in close_prices]
+					firebase.update_history_prices(token, start_time, close_prices)
+
+			for (token, start_time, close_prices) in results:
+				firebase.update_history_prices(token, start_time, close_prices)
 			firebase.commit_batch_write()

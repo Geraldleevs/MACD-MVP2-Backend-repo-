@@ -78,6 +78,22 @@ def clean_kraken_pair(kraken_result) -> dict[str, any]:
 	return results
 
 
+async def usd_to_gbp() -> float:
+	'''
+	Return USD to GBP Rate
+	'''
+	KRAKEN_API = 'https://api.kraken.com/0/public/Ticker'
+	result = requests.get(KRAKEN_API, { 'pair': 'GBPUSD' }).json()
+
+	if len(result['error']) > 0:
+		return 0
+
+	try:
+		return 1 / float(result['result']['ZGBPZUSD']['c'][0])
+	except (KeyError, ValueError):
+		return 0
+
+
 def log_warning(message):
 	'''
 	Google Cloud Log Warning

@@ -33,14 +33,18 @@ class FirebaseToken:
 				doc_ref.update(update_data)
 
 	def all(self):
-		docs = self.__collection.stream()
+		query = self.__collection
+		query = query.where(filter=FieldFilter('is_active', '==', True))
+		docs = query.stream()
 		return [{**doc.to_dict(), 'id': doc.id} for doc in docs]
 
-	def filter(self, token_id = None):
+	def filter(self, token_id = None, is_active = True):
 		query = self.__collection
 
 		if token_id is not None and token_id != '':
 			query = query.where(filter=FieldFilter('token_id', '==', token_id))
+		if is_active is not None:
+			query = query.where(filter=FieldFilter('is_active', '==', is_active))
 
 		docs = query.stream()
 		return [{**doc.to_dict(), 'id': doc.id} for doc in docs]
