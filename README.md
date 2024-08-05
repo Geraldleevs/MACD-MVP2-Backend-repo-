@@ -75,6 +75,7 @@ MAX_TOKEN_HISTORY_IN_DAYS="7"
 TOKEN_HISTORY_INTERVAL_IN_MINUTES="120"
 FIAT="GBP"
 TIMEFRAME_MAP="very_short->1min;short->1h;medium->4h;long->1d"
+BACKTEST_TIMEFRAME="1->1min;60->1h;240->4h;1440->1d"
 ```
 
 ## Django-REST Server
