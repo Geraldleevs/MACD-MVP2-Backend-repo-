@@ -448,6 +448,10 @@ def determine_use_case(indicator1, indicator2):
 
 # Example list of files to process
 ALL_FILES = [
+    # very short term (Added temporarily for quicker live trade, uses 1h files)
+    ('Concatenated-BTCUSDT-1h-2023-concatenated.csv', 'BTC', '1min'),
+    ('Concatenated-ETHUSDT-1h-2023-concatenated.csv', 'ETH', '1min'),
+    ('Concatenated-DOGEUSDT-1h-2023-concatenated.csv', 'DOGE', '1min'),
     # short term - trades are based on hourly closing data
     ('Concatenated-BTCUSDT-1h-2023-concatenated.csv', 'BTC', '1h'),
     ('Concatenated-ETHUSDT-1h-2023-concatenated.csv', 'ETH', '1h'),
