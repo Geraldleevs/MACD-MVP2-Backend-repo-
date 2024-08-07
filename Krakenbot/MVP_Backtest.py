@@ -1,21 +1,16 @@
-import asyncio
-from datetime import datetime, timedelta
-import os
-import aiohttp
 import numpy as np
 import pandas as pd
 import logging
 from itertools import combinations
-import requests
 import talib
 import time
 
 try:
-    from Krakenbot.models.local_firebase_candle import LocalFirebaseCandle
-    from Krakenbot.utils import clean_kraken_pair
+    from Krakenbot.update_candles import main as update_candles
+    from Krakenbot.get_candles import main as get_candles
 except ModuleNotFoundError:
-    from models.local_firebase_candle import LocalFirebaseCandle
-    from utils import clean_kraken_pair
+    from update_candles import main as update_candles
+    from get_candles import main as get_candles
 
 def dev_print(message, no_print):
     if no_print is False:
@@ -458,50 +453,6 @@ def determine_use_case(indicator1, indicator2):
         use_case = default_use_case
     return use_case
 
-async def update_candles(pair: str, timeframe: dict, session: aiohttp.ClientSession):
-    KRAKEN_OHLC_API = 'https://api.kraken.com/0/public/OHLC'
-    firebase = LocalFirebaseCandle(pair, timeframe['label'])
-    last = firebase.fetch_last()
-    last = last[0]['Unix_Timestamp'] if len(last) > 0 else 1
-
-    async with session.get(KRAKEN_OHLC_API, params={ 'pair': pair, 'interval': timeframe['duration'], 'since': last - 1 }) as response:
-        if response.status == 200:
-            results = await response.json()
-            if len(results['error']) > 0:
-                return None
-
-            results = clean_kraken_pair(results)[pair]
-            results = [{
-                'Unix_Timestamp': result[0],
-                'Open': float(result[1]),
-                'High': float(result[2]),
-                'Low': float(result[3]),
-                'Close': float(result[4])
-            } for result in results]
-            results = pd.DataFrame(results)
-            firebase.save(results)
-
-            a_year_before = datetime.now() - timedelta(days=367)
-            firebase.remove_older_than(time=a_year_before)
-
-            candles = firebase.fetch_all()
-            token_id = firebase.fetch_cur_token()
-
-            if candles is not None and token_id is not None:
-                return { 'pair': pair, 'timeframe': timeframe['label'], 'candles': candles, 'token_id': token_id }
-            return None
-
-async def fetch_candles():
-    firebase = LocalFirebaseCandle()
-    all_pairs = firebase.fetch_pairs()
-    all_timeframes = os.environ.get('BACKTEST_TIMEFRAME', '').split(';')
-    all_timeframes = [{ 'duration': int(timeframe.split('->')[0]), 'label': timeframe.split('->')[1] } for timeframe in all_timeframes]
-
-    async with aiohttp.ClientSession() as session:
-        tasks = [update_candles(pair, timeframe, session) for pair in all_pairs for timeframe in all_timeframes]
-        results = await asyncio.gather(*tasks)
-        return [result for result in results if result is not None]
-
 def backtest(df: pd.DataFrame, token_id: str, data_timeframe: str, performance_logger: logging.Logger | None = None):
     # Calculate trading signals for all indicators once
     trading_signals = {name: func(df) for func, name in indicator_names.items()}
@@ -567,7 +518,8 @@ def backtest(df: pd.DataFrame, token_id: str, data_timeframe: str, performance_l
 
 def main(no_print=True):
     start_time = time.time()
-    candles = asyncio.run(fetch_candles())
+    update_candles()
+    candles = get_candles()
 
     if len(candles) < 1:
         return pd.DataFrame([])
