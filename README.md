@@ -493,6 +493,25 @@ Response:
 
 <hr/>
 
+### Update Candles
+
+Update Candles: `http://127.0.0.1:8000/api/update-candles [POST]`
+
+<details>
+<summary>
+Endpoint details
+</summary>
+
+```
+URL: http://127.0.0.1:8000/api/trade
+Authorization: Bearer {Google_OIDC_Token}
+Response:
+None
+```
+</details>
+
+<hr/>
+
 ## Google Cloud Deployment
 ### Environment Variables
 ```bash

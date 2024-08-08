@@ -11,3 +11,4 @@ venv
 requirements.txt
 *firebase-adminsdk*.json
 **/__pycache__
+data
