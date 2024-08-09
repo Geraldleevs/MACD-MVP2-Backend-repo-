@@ -40,3 +40,4 @@ trading_pairs.txt
 /output
 /talib
 data/Kraken/*.csv
+Krakenbot/kraken_data_api
