@@ -9,6 +9,7 @@ from Krakenbot.models.firebase_wallet import NotEnoughTokenException
 from Krakenbot.models.market import Market
 from Krakenbot.models.news import News
 from Krakenbot.models.trade import BadRequestException, NotAuthorisedException, Trade
+from Krakenbot.models.update_candles import UpdateCandles
 from Krakenbot.models.update_history_prices import UpdateHistoryPrices
 
 class MarketView(APIView):
@@ -65,6 +66,14 @@ class AutoLiveTradeView(APIView):
 	def post(self, request: Request):
 		try:
 			asyncio.run(AutoLiveTrade().livetrade(request))
+			return Response(status=200)
+		except NotAuthorisedException:
+			return Response(status=401)
+
+class UpdateCandlesView(APIView):
+	def post(self, request: Request):
+		try:
+			UpdateCandles().update(request)
 			return Response(status=200)
 		except NotAuthorisedException:
 			return Response(status=401)

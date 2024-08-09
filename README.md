@@ -75,6 +75,7 @@ MAX_TOKEN_HISTORY_IN_DAYS="7"
 TOKEN_HISTORY_INTERVAL_IN_MINUTES="120"
 FIAT="GBP"
 TIMEFRAME_MAP="very_short->1min;short->1h;medium->4h;long->1d"
+BACKTEST_TIMEFRAME="1->1min;60->1h;240->4h;1440->1d"
 ```
 
 ## Django-REST Server
@@ -487,6 +488,25 @@ Response:
   "to_amount": 100.99,
   "operated_by": "User"
 }
+```
+</details>
+
+<hr/>
+
+### Update Candles
+
+Update Candles: `http://127.0.0.1:8000/api/update-candles [POST]`
+
+<details>
+<summary>
+Endpoint details
+</summary>
+
+```
+URL: http://127.0.0.1:8000/api/trade
+Authorization: Bearer {Google_OIDC_Token}
+Response:
+None
 ```
 </details>
 

@@ -5,6 +5,13 @@ from itertools import combinations
 import talib
 import time
 
+try:
+    from Krakenbot.update_candles import main as update_candles
+    from Krakenbot.get_candles import main as get_candles
+except ModuleNotFoundError:
+    from update_candles import main as update_candles
+    from get_candles import main as get_candles
+
 def dev_print(message, no_print):
     if no_print is False:
         print(message)
@@ -446,145 +453,96 @@ def determine_use_case(indicator1, indicator2):
         use_case = default_use_case
     return use_case
 
-# Example list of files to process
-ALL_FILES = [
-    # very short term (Added temporarily for quicker live trade, uses 1h files)
-    ('Concatenated-BTCUSDT-1h-2023-concatenated.csv', 'BTC', '1min'),
-    ('Concatenated-ETHUSDT-1h-2023-concatenated.csv', 'ETH', '1min'),
-    ('Concatenated-DOGEUSDT-1h-2023-concatenated.csv', 'DOGE', '1min'),
-    # short term - trades are based on hourly closing data
-    ('Concatenated-BTCUSDT-1h-2023-concatenated.csv', 'BTC', '1h'),
-    ('Concatenated-ETHUSDT-1h-2023-concatenated.csv', 'ETH', '1h'),
-    ('Concatenated-DOGEUSDT-1h-2023-concatenated.csv', 'DOGE', '1h'),
-    # medium term - trades are based on 4h closing data
-    ('Concatenated-BTCUSDT-4h-2023-4-concatenated.csv', 'BTC', '4h'),
-    ('Concatenated-ETHUSDT-4h-2023-4-concatenated.csv', 'ETH', '4h'),
-    ('Concatenated-DOGEUSDT-4h-2023-4-concatenated.csv', 'DOGE', '4h'),
-    # long term - trades are based on daily closing data
-    ('Concatenated-BTCUSDT-1d-2023-4-concatenated.csv', 'BTC', '1d'),
-    ('Concatenated-ETHUSDT-1d-2023-4-concatenated.csv', 'ETH', '1d'),
-    ('Concatenated-DOGEUSDT-1d-2023-4-concatenated.csv', 'DOGE', '1d'),
-    # Add other file names as needed
-]
+def backtest(df: pd.DataFrame, token_id: str, data_timeframe: str, performance_logger: logging.Logger | None = None):
+    # Calculate trading signals for all indicators once
+    trading_signals = {name: func(df) for func, name in indicator_names.items()}
+    best_strategy = { 'Strategy': '', 'Profit': 0, 'Percentage': 0 }
+    initial_investment = 10000
 
-def main(token_id='', timeframe='', no_print=True):
+    # Generate combinations of indicators, avoiding comparisons of the same type
+    for name1, name2 in combinations(indicator_names.values(), 2):
+        trading_data = df.copy()
+        trading_data['buy_sell_1'] = trading_signals[name1]
+        trading_data['buy_sell_2'] = trading_signals[name2]
+
+        # Vectorized buy/sell logic
+        buy_signals = (trading_data['buy_sell_1'] == 1) & (trading_data['buy_sell_2'] == 1)
+        sell_signals = (trading_data['buy_sell_1'] == -1) & (trading_data['buy_sell_2'] == -1)
+
+        positions = np.where(buy_signals, 1, np.where(sell_signals, -1, 0))
+        positions = pd.Series(positions).ffill().fillna(0).values
+
+        # Calculate coin holdings and fiat amount
+        coin_holdings = 0
+        fiat_amount = initial_investment
+        position = False
+
+        for i in range(len(positions)):
+            if positions[i] == 1 and not position:
+                coin_holdings = fiat_amount / trading_data['Close'].iloc[i]
+                fiat_amount = 0
+                position = True
+            elif positions[i] == -1 and position:
+                fiat_amount = coin_holdings * trading_data['Close'].iloc[i]
+                coin_holdings = 0
+                position = False
+
+        # Final value if still holding coins
+        fiat_amount += coin_holdings * trading_data['Close'].iloc[-1]
+
+        strategy_name = f'{name1} & {name2}'
+        use_case, timeframe = determine_use_case(name1, name2)
+
+        # Evaluate the strategy performance
+        strategy_returns = trading_data['Close'].pct_change().dropna()
+        performance_metrics = evaluate_strategy(strategy_returns, strategy_name)
+
+        # Log performance metrics
+        if performance_logger is not None:
+            coin_name = f'{token_id}-{data_timeframe}'
+            for key, value in performance_metrics.items():
+                performance_logger.info(f"{coin_name},{strategy_name},{key},{value}")
+
+        if fiat_amount > best_strategy['Profit']:
+            best_strategy = {
+                'Strategy': f'{strategy_name} ({use_case}, {timeframe})',
+                'Profit': fiat_amount,
+                'Percentage': (fiat_amount - initial_investment) / initial_investment * 100
+            }
+
+    return {
+        'Recommended Strategy': best_strategy['Strategy'],
+        'Profit of Recommended Strategy': best_strategy['Profit'],
+        'Percentage Increase': best_strategy['Percentage']
+    }
+
+def main(no_print=True):
     start_time = time.time()
+    update_candles()
+    candles = get_candles()
 
-    # Initialize the list to collect all profit DataFrames
-    profit_dfs = []
-
-    files = [file for file in ALL_FILES if token_id in file[1] and timeframe in file[2]]
-
-    if len(files) < 1:
+    if len(candles) < 1:
         return pd.DataFrame([])
-
-    dev_print(f"Files to process: {len(files)}", no_print)
 
     # Set up logging for performance metrics
     performance_logger = setup_performance_logging()
 
-    # Read and process all files at once
-    dfs = {}
-    for (file, coin_id, file_timeframe) in files:
-        df = pd.read_csv(f"./data/{file}", usecols=['Open', 'High', 'Low', 'Close', 'Close_time'])
-        df['close_time'] = pd.to_datetime(df['Close_time'], unit='ms')
-        dfs[(coin_id, file_timeframe)] = df
-
-    dev_print(f"Time to read files: {time.time() - start_time} seconds", no_print)
+    best_strategies = []
+    df_ids = []
 
     # Process each file
-    for (file, coin_id, file_timeframe) in files:
-        df = dfs[(coin_id, file_timeframe)]
-        coin_name = file.split('.')[0]  # Use the file name without extension as the coin name
-
-        # Create a dictionary to store the profits for the current coin
-        coin_profits = {}
-
-        # Calculate trading signals for all indicators once
-        trading_signals = {name: func(df) for func, name in indicator_names.items()}
-
-        dev_print(f"Time to calculate trading signals for {coin_name}: {time.time() - start_time} seconds", no_print)
-
-        # Generate combinations of indicators, avoiding comparisons of the same type
-        indicator_combinations = [
-            (name1, name2) for name1, name2 in combinations(indicator_names.values(), 2)
-        ]
-
-        for (name1, name2) in indicator_combinations:
-            trading_data = df.copy()
-            trading_data['buy_sell_1'] = trading_signals[name1]
-            trading_data['buy_sell_2'] = trading_signals[name2]
-
-            # Vectorized buy/sell logic
-            buy_signals = (trading_data['buy_sell_1'] == 1) & (trading_data['buy_sell_2'] == 1)
-            sell_signals = (trading_data['buy_sell_1'] == -1) & (trading_data['buy_sell_2'] == -1)
-
-            positions = np.where(buy_signals, 1, np.where(sell_signals, -1, 0))
-            positions = pd.Series(positions).ffill().fillna(0).values
-
-            # Calculate coin holdings and fiat amount
-            coin_holdings = 0
-            fiat_amount = 10000
-            position = False
-
-            for i in range(len(positions)):
-                if positions[i] == 1 and not position:
-                    coin_holdings = fiat_amount / trading_data['Close'].iloc[i]
-                    fiat_amount = 0
-                    position = True
-                elif positions[i] == -1 and position:
-                    fiat_amount = coin_holdings * trading_data['Close'].iloc[i]
-                    coin_holdings = 0
-                    position = False
-
-            # Final value if still holding coins
-            if coin_holdings > 0:
-                fiat_amount = coin_holdings * trading_data['Close'].iloc[-1]
-                coin_holdings = 0
-
-            strategy_name = f'{name1} & {name2}'
-            use_case, timeframe = determine_use_case(name1, name2)
-
-            # Evaluate the strategy performance
-            strategy_returns = trading_data['Close'].pct_change().dropna()
-            performance_metrics = evaluate_strategy(strategy_returns, strategy_name)
-
-            # Log performance metrics
-            for key, value in performance_metrics.items():
-                performance_logger.info(f"{coin_name},{strategy_name},{key},{value}")
-
-            coin_profits[f'{strategy_name} ({use_case}, {timeframe})'] = fiat_amount
-
-        coin_profits_df = pd.DataFrame(coin_profits, index=[f'{coin_id} | {file_timeframe}'])
-        profit_dfs.append(coin_profits_df)
-
-    # Concatenate all the profit DataFrames into a single DataFrame
-    coin_profit_df = pd.concat(profit_dfs)
-
-    dev_print(f"Time to process all files: {time.time() - start_time} seconds", no_print)
-
-    # Determine the best strategy for each coin and other columns in one go
-    coin_profit_df = pd.concat([
-        coin_profit_df,
-        coin_profit_df.idxmax(axis=1).rename('Recommended Strategy'),
-        coin_profit_df.max(axis=1).rename('Profit of Recommended Strategy'),
-    ], axis=1)
-
-    # Calculate the percentage increase for each coin
-    initial_investment = 10000
-    coin_profit_df['Percentage Increase'] = ((coin_profit_df['Profit of Recommended Strategy'] - initial_investment) / initial_investment) * 100
-
-    # Keep only the last three columns
-    coin_profit_df = coin_profit_df.iloc[:, -3:]
+    for candle in candles:
+        token_id = candle['token_id']
+        timeframe = candle['timeframe']
+        best_strategies.append(backtest(candle['candles'], token_id, timeframe, performance_logger))
+        dev_print(f"Time to process {token_id} | {timeframe}: {time.time() - start_time} seconds", no_print)
+        df_ids.append(f'{token_id} | {timeframe}')
 
     dev_print(f"Total runtime: {time.time() - start_time} seconds", no_print)
-
+    coin_profit_df = pd.DataFrame(best_strategies, index=df_ids)
     return coin_profit_df
 
 if __name__ == '__main__':
     result = main(no_print=False)
-
-    # Save the modified DataFrame to a CSV file
     result.to_csv('coin_profit_recommended.csv')
-
     print(result)
