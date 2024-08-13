@@ -21,8 +21,11 @@ class Market:
 		price = float(result[property_path][0])
 		last_open = float(result['last_close'])
 		if property_path == 'bid' and price > 0:
-			last_open = 1 / last_open
 			price = 1 / price
+			try:
+				last_open = 1 / last_open
+			except ZeroDivisionError:
+				last_open = 0
 		return (price, last_open)
 
 	def __parse_kraken_pair(self, kraken_result, token, reverse_price):
