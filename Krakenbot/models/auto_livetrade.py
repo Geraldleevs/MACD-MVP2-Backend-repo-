@@ -33,7 +33,9 @@ class AutoLiveTrade:
 				to_token = self.FIAT if decision['cur_token'] == decision['token_id'] else decision['token_id']
 				from_amount = decision['amount']
 				to_amount = from_amount * prices[decision['token_id']]
-				trade_result = FirebaseWallet(decision['uid']).trade_by_krakenbot(from_token, from_amount, to_token, to_amount)
+				bot_name = decision['name']
+				bot_id = decision['livetrade_id']
+				trade_result = FirebaseWallet(decision['uid']).trade_by_krakenbot(from_token, from_amount, to_token, to_amount, bot_name, bot_id)
 				firebase_livetrade.update(decision['livetrade_id'], { 'amount': trade_result['to_amount'], 'cur_token': trade_result['to_token'] })
 				trade_count += 1
 			except KeyError:

@@ -4,6 +4,7 @@ from typing import TypedDict
 from google.cloud.firestore_v1.base_query import FieldFilter
 from django.utils import timezone
 from Krakenbot.exceptions import NoUserSelectedException
+import os
 
 class LiveTradeField(TypedDict):
 	livetrade_id: str
@@ -18,10 +19,24 @@ class LiveTradeField(TypedDict):
 	is_active: bool
 
 class FirebaseLiveTrade:
+	__count_doc_id = '_count'
+
 	def __init__(self, uid = None):
 		self.uid = uid
+		self.__bot_name = os.environ.get('BOT_NAME', 'Krakenbot')
 		self.__livetrade = settings.firebase.collection(u'livetrade')
 		self.__user_livetrade = settings.firebase.collection(u'users').document(uid)
+
+	def get_count(self):
+		count_doc = self.__livetrade.document(self.__count_doc_id).get()
+		count = count_doc.to_dict().get('count', 0)
+		return count
+
+	def add_and_get_count(self):
+		count_doc = self.__livetrade.document(self.__count_doc_id)
+		count = count_doc.get().to_dict().get('count', 0) + 1
+		count_doc.set({ 'count': count })
+		return count
 
 	def add_user_livetrade(self, livetrade_ref):
 		if self.uid is None:
@@ -40,8 +55,9 @@ class FirebaseLiveTrade:
 		self.__user_livetrade.update({ 'livetrades': existing_livetrades })
 
 	def create(self, data: LiveTradeField):
+		doc_count = self.add_and_get_count()
 		doc_ref = self.__livetrade.document()
-		doc_ref.set(data)
+		doc_ref.set({**data, 'name': f'{self.__bot_name}-{doc_count}'})
 		doc_ref.update({ 'livetrade_id': doc_ref.id })
 		self.add_user_livetrade(doc_ref)
 		return doc_ref.id

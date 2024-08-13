@@ -29,7 +29,7 @@ class FirebaseWallet:
 		wallet = self.__wallet_collection.document(token)
 		wallet.set({ 'token_id': token, self.USER_AMOUNT: amount })
 
-	def __trade(self, from_token, from_amount, to_token, to_amount, operate_by = USER_NAME):
+	def __trade(self, from_token, from_amount, to_token, to_amount, operate_by = USER_NAME, bot_id = None):
 		if FirebaseToken().get(to_token).get('is_fiat', False):
 			to_amount = round(to_amount, 2)
 
@@ -44,6 +44,7 @@ class FirebaseWallet:
 			'to_token': to_token,
 			'to_amount': to_amount,
 			'operated_by': operate_by,
+			'bot_id': bot_id
 		})
 		transaction.update({ 'id': transaction.id })
 
@@ -52,8 +53,8 @@ class FirebaseWallet:
 	def trade_by_user(self, from_token, from_amount, to_token, to_amount):
 		return self.__trade(from_token, from_amount, to_token, to_amount, self.USER_NAME)
 
-	def trade_by_krakenbot(self, from_token, from_amount, to_token, to_amount):
-		return self.__trade(from_token, from_amount, to_token, to_amount, self.BOT_NAME)
+	def trade_by_krakenbot(self, from_token, from_amount, to_token, to_amount, name, bot_id):
+		return self.__trade(from_token, from_amount, to_token, to_amount, name, bot_id)
 
 	def __update(self, token, change, type = USER_NAME):
 		amount_field = self.BOT_AMOUNT if type == self.BOT_NAME else self.USER_AMOUNT
