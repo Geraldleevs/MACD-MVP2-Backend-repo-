@@ -38,13 +38,15 @@ class FirebaseToken:
 		docs = query.stream()
 		return [{**doc.to_dict(), 'id': doc.id} for doc in docs]
 
-	def filter(self, token_id = None, is_active = True):
+	def filter(self, token_id = None, is_active = True, is_fiat = None):
 		query = self.__collection
 
 		if token_id is not None and token_id != '':
 			query = query.where(filter=FieldFilter('token_id', '==', token_id))
 		if is_active is not None:
 			query = query.where(filter=FieldFilter('is_active', '==', is_active))
+		if is_fiat is not None:
+			query = query.where(filter=FieldFilter('is_fiat', '==', is_fiat))
 
 		docs = query.stream()
 		return [{**doc.to_dict(), 'id': doc.id} for doc in docs]

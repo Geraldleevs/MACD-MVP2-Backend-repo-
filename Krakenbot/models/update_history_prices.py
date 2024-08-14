@@ -44,10 +44,10 @@ class UpdateHistoryPrices:
 		authenticate_scheduler_oicd(request)
 		firebase = FirebaseToken()
 		pairs = [token.get('token_id') + self.FIAT for token in firebase.all() if token.get('token_id') != self.FIAT]
+		pairs.append('GBPUSD')
 
 		firebase.start_batch_write()
 		firebase.update_history_prices(self.FIAT, timezone.now() - timedelta(days=7), [1, 1])
-		firebase.update_history_prices('USD', timezone.now() - timedelta(days=7), [1, 1])
 
 		async with aiohttp.ClientSession() as session:
 			tasks = [self.__fetch_kraken_OHLC(session, pair) for pair in pairs]
@@ -70,5 +70,7 @@ class UpdateHistoryPrices:
 					firebase.update_history_prices(token, start_time, close_prices)
 
 			for (token, start_time, close_prices) in results:
+				if token == 'USD':
+					close_prices = [1 / price for price in close_prices]
 				firebase.update_history_prices(token, start_time, close_prices)
 			firebase.commit_batch_write()

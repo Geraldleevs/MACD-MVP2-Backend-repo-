@@ -533,10 +533,12 @@ def main(no_print=True):
     # Process each file
     for candle in candles:
         token_id = candle['token_id']
+        fiat = candle['fiat']
         timeframe = candle['timeframe']
         best_strategies.append(backtest(candle['candles'], token_id, timeframe, performance_logger))
-        dev_print(f"Time to process {token_id} | {timeframe}: {time.time() - start_time} seconds", no_print)
-        df_ids.append(f'{token_id} | {timeframe}')
+        backtest_id = f'{fiat}:{token_id} | {timeframe}'
+        dev_print(f"Time to process {backtest_id}: {time.time() - start_time} seconds", no_print)
+        df_ids.append(backtest_id)
 
     dev_print(f"Total runtime: {time.time() - start_time} seconds", no_print)
     coin_profit_df = pd.DataFrame(best_strategies, index=df_ids)

@@ -1,7 +1,9 @@
+import asyncio
+from typing import Literal
 from rest_framework.request import Request
 from Krakenbot.exceptions import BadRequestException
 from Krakenbot.models.firebase_token import FirebaseToken
-from Krakenbot.utils import clean_kraken_pair
+from Krakenbot.utils import clean_kraken_pair, usd_to_gbp
 import requests
 
 class Market:
@@ -56,15 +58,21 @@ class Market:
 
 		return [{ 'token': token, 'price': price, 'last_close': last_close } for (token, (price, last_close)) in results.items()]
 
-	def get_market(self, request: Request | None = None, convert_from = '', convert_to = '', exclude = ''):
+	def get_market(self, request: Request | None = None, convert_from = '', convert_to = '', exclude = '', force_convert: Literal['FORCE'] = ''):
+		'''
+		force_convert can only be used when convert from/to GBP
+		'''
+
 		if request is not None:
 			convert_from = request.query_params.get('convert_from', '').upper()
 			convert_to = request.query_params.get('convert_to', '').upper()
 			exclude = request.query_params.get('exclude', '').upper()
+			force_convert = request.query_params.get('force_convert', '').upper()
 		else:
 			convert_from = convert_from.upper()
 			convert_to = convert_to.upper()
 			exclude = exclude.upper()
+			force_convert = force_convert.upper()
 
 		if convert_from == '' and convert_to == '':
 			raise BadRequestException()
@@ -94,5 +102,15 @@ class Market:
 
 		if exclude != '':
 			market = [price for price in market if price['token'] != exclude]
+
+		if force_convert == 'FORCE' and (convert_to == 'GBP' or convert_from == 'GBP'):
+			all_market_token = [price['token'] for price in market]
+			usd_market = self.__fetch_kraken_pair('USD', reverse_price)
+			usd_market = [price for price in usd_market if price['token'] in other_tokens and price['token'] not in all_market_token]
+			usd_rate = asyncio.run(usd_to_gbp())
+			if not reverse_price:
+				usd_rate = 1 / usd_rate
+			usd_market = [{ 'token': price['token'], 'price': price['price'] * usd_rate, 'last_close': price['last_close'] * usd_rate } for price in usd_market]
+			market = [*market, *usd_market]
 
 		return market

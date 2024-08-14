@@ -17,7 +17,8 @@ class BackTest:
 		results = backtest().reset_index().to_numpy()
 		now = timezone.now()
 		results = [{
-			'token_id': value[0].split(' | ')[0],
+			'fiat': value[0].split(' | ')[0].split(':')[0],
+			'token_id': value[0].split(' | ')[0].split(':')[1],
 			'timeframe': value[0].split(' | ')[1],
 			'strategy': value[1],
 			'profit': value[2],

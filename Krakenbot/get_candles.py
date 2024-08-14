@@ -12,7 +12,7 @@ async def __get_candle(pair: str, timeframe: str):
 		token_id = firebase.fetch_cur_token()
 
 		if candles is not None and token_id is not None:
-				return { 'pair': pair, 'timeframe': timeframe, 'candles': candles, 'token_id': token_id }
+				return { 'pair': pair, 'timeframe': timeframe, 'candles': candles, 'token_id': token_id, 'fiat': pair.replace(token_id, '') }
 		return None
 
 async def get_candles():
