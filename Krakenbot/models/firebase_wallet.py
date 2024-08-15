@@ -31,14 +31,17 @@ class FirebaseWallet:
 
 	def __trade(self, from_token, from_amount, to_token, to_amount, operate_by = USER_NAME, bot_id = None):
 		firebase_token = FirebaseToken()
-		if firebase_token.get(to_token).get('is_fiat', False):
+		from_fiat = firebase_token.get(from_token).get('is_fiat', False)
+		to_fiat = firebase_token.get(to_token).get('is_fiat', False)
+
+		if to_fiat:
 			to_amount = round(to_amount, 2)
 
-		if firebase_token.get(from_token).get('is_fiat', False) and firebase_token.get(to_token).get('is_fiat', False):
+		if from_fiat and to_fiat:
 			trade_type = 'Convert'
-		elif firebase_token.get(from_token).get('is_fiat', False):
+		elif from_fiat:
 			trade_type = 'Buy'
-		elif firebase_token.get(to_token).get('is_fiat', False):
+		elif to_fiat:
 			trade_type = 'Sell'
 		else:
 			trade_type = 'Convert'
