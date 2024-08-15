@@ -34,7 +34,9 @@ class FirebaseWallet:
 		if firebase_token.get(to_token).get('is_fiat', False):
 			to_amount = round(to_amount, 2)
 
-		if firebase_token.get(from_token).get('is_fiat', False):
+		if firebase_token.get(from_token).get('is_fiat', False) and firebase_token.get(to_token).get('is_fiat', False):
+			trade_type = 'Convert'
+		elif firebase_token.get(from_token).get('is_fiat', False):
 			trade_type = 'Buy'
 		elif firebase_token.get(to_token).get('is_fiat', False):
 			trade_type = 'Sell'
