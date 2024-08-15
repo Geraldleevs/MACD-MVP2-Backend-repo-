@@ -23,8 +23,8 @@ class BackTest:
 			'strategy': value[1],
 			'profit': value[2],
 			'profit_percent': value[3],
-			'risk': firebase_analysis.get_risk(value[0].split(' | ')[0], self.TIMEFRAMES[value[0].split(' | ')[1]], 'high'),
-			'summary': firebase_analysis.get_description(value[0].split(' | ')[0], self.TIMEFRAMES[value[0].split(' | ')[1]]),
+			'risk': firebase_analysis.get_risk(value[0].split(' | ')[0].split(':')[1], self.TIMEFRAMES[value[0].split(' | ')[1]], 'high'),
+			'summary': firebase_analysis.get_description(value[0].split(' | ')[0].split(':')[1], self.TIMEFRAMES[value[0].split(' | ')[1]]),
 			'strategy_description': firebase_analysis.fetch_strategy_description(),
 			'updated_on': now
 		} for value in results]

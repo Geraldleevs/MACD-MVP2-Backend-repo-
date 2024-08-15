@@ -30,8 +30,16 @@ class FirebaseWallet:
 		wallet.set({ 'token_id': token, self.USER_AMOUNT: amount })
 
 	def __trade(self, from_token, from_amount, to_token, to_amount, operate_by = USER_NAME, bot_id = None):
-		if FirebaseToken().get(to_token).get('is_fiat', False):
+		firebase_token = FirebaseToken()
+		if firebase_token.get(to_token).get('is_fiat', False):
 			to_amount = round(to_amount, 2)
+
+		if firebase_token.get(from_token).get('is_fiat', False):
+			trade_type = 'Buy'
+		elif firebase_token.get(to_token).get('is_fiat', False):
+			trade_type = 'Sell'
+		else:
+			trade_type = 'Convert'
 
 		self.__update(from_token, -from_amount, operate_by)
 		self.__upsert(to_token, to_amount, operate_by)
@@ -44,7 +52,8 @@ class FirebaseWallet:
 			'to_token': to_token,
 			'to_amount': to_amount,
 			'operated_by': operate_by,
-			'bot_id': bot_id
+			'bot_id': bot_id,
+			'trade_type': trade_type
 		})
 		transaction.update({ 'id': transaction.id })
 
