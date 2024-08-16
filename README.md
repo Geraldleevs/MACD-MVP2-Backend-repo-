@@ -116,7 +116,7 @@ Endpoint details
 
 ```
 URL: http://127.0.0.1:8000/api/market
-Query: convert_from, convert_to, exclude, force_convert
+Query: convert_from, convert_to, exclude, force_convert, include_inactive
 Response:
 [
   {
@@ -142,7 +142,7 @@ Response:
 
 #### Example 2
 ```
-Request: http://127.0.0.1:8000/api/market?convert_from=gbp&force_convert=force
+Request: http://127.0.0.1:8000/api/market?convert_from=gbp&force_convert=force&include_inactive=include
 Response:
 [
   {

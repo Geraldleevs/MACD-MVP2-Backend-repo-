@@ -58,24 +58,23 @@ class Market:
 
 		return [{ 'token': token, 'price': price, 'last_close': last_close } for (token, (price, last_close)) in results.items()]
 
-	def get_market(self, request: Request | None = None, convert_from = '', convert_to = '', exclude = '', force_convert: Literal['FORCE'] = ''):
+	def get_market(self, request: Request | None = None, convert_from = '', convert_to = '', exclude = '', force_convert: Literal['FORCE'] = '', include_inactive: Literal['INCLUDE'] = ''):
 		'''
-		force_convert can only be used when convert from/to GBP
+		force_convert can only be used when convert from/to GBP, but not specific pair
 		'''
 
 		if request is not None:
-			convert_from = request.query_params.get('convert_from', '').upper()
-			convert_to = request.query_params.get('convert_to', '').upper()
-			exclude = request.query_params.get('exclude', '').upper()
-			force_convert = request.query_params.get('force_convert', '').upper()
+			convert_from = request.query_params.get('convert_from', '').strip().upper()
+			convert_to = request.query_params.get('convert_to', '').strip().upper()
+			exclude = request.query_params.get('exclude', '').strip().upper()
+			force_convert = request.query_params.get('force_convert', '').strip().upper()
+			include_inactive = request.query_params.get('include_inactive', '').strip().upper()
 		else:
 			convert_from = convert_from.upper()
 			convert_to = convert_to.upper()
 			exclude = exclude.upper()
 			force_convert = force_convert.upper()
-
-		if convert_from == '' and convert_to == '':
-			raise BadRequestException()
+			include_inactive = include_inactive.upper()
 
 		firebase_token = FirebaseToken()
 
@@ -93,24 +92,25 @@ class Market:
 		market = self.__fetch_kraken_pair(current_token, reverse_price)
 		market.append({ 'token': current_token, 'price': 1, 'last_close': 1 })
 
-		if not reverse_price and convert_to != '':
+		specific_convert = not reverse_price and convert_to != ''
+		if specific_convert:
 			market = [price for price in market if price['token'] == convert_to]
 		else:
-			other_tokens = firebase_token.all()
+			other_tokens = firebase_token.filter(is_active=None) if include_inactive == 'INCLUDE' else firebase_token.all()
 			other_tokens = [token['token_id'] for token in other_tokens]
 			market = [price for price in market if price['token'] in other_tokens]
 
 		if exclude != '':
 			market = [price for price in market if price['token'] != exclude]
 
-		if force_convert == 'FORCE' and (convert_to == 'GBP' or convert_from == 'GBP'):
-			all_market_token = [price['token'] for price in market]
-			usd_market = self.__fetch_kraken_pair('USD', reverse_price)
-			usd_market = [price for price in usd_market if price['token'] in other_tokens and price['token'] not in all_market_token]
-			usd_rate = asyncio.run(usd_to_gbp())
-			if not reverse_price:
-				usd_rate = 1 / usd_rate
-			usd_market = [{ 'token': price['token'], 'price': price['price'] * usd_rate, 'last_close': price['last_close'] * usd_rate } for price in usd_market]
-			market = [*market, *usd_market]
+		if specific_convert or force_convert != 'FORCE' or 'GBP' not in [convert_from, convert_to]:
+			return market
 
-		return market
+		all_market_token = [price['token'] for price in market]
+		usd_market = self.__fetch_kraken_pair('USD', reverse_price)
+		usd_market = [price for price in usd_market if price['token'] in other_tokens and price['token'] not in all_market_token]
+		usd_rate = asyncio.run(usd_to_gbp())
+		if not reverse_price:
+			usd_rate = 1 / usd_rate
+		usd_market = [{ 'token': price['token'], 'price': price['price'] * usd_rate, 'last_close': price['last_close'] * usd_rate } for price in usd_market]
+		return [*market, *usd_market]
