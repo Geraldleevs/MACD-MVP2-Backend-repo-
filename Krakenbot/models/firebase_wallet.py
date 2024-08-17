@@ -20,10 +20,12 @@ class FirebaseWallet:
 		transaction = self.__transaction_collection.document()
 		transaction.set({
 			'time': timezone.now(),
-			'from_token': 'Demo Account',
-			'from_amount': 0,
+			'from_token': token,
+			'from_amount': amount,
 			'to_token': token,
 			'to_amount': amount,
+			'operated_by': 'System',
+			'trade_type': 'Buy'
 		})
 		transaction.update({ 'id': transaction.id })
 		wallet = self.__wallet_collection.document(token)
