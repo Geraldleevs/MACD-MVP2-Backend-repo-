@@ -69,6 +69,7 @@ class Trade:
 					'strategy': strategy,
 					'timeframe': timeframe,
 					'cur_token': from_token,
+					'fiat': from_token,
 					'token_id': to_token,
 					'initial_amount': from_amount,
 					'amount': from_amount,
@@ -79,6 +80,7 @@ class Trade:
 					'id': livetrade_id,
 					'strategy': strategy,
 					'timeframe': timeframe,
+					'fiat': from_token,
 					'token_id': to_token,
 					'amount': from_amount,
 				}

@@ -20,18 +20,33 @@ class FirebaseWallet:
 		transaction = self.__transaction_collection.document()
 		transaction.set({
 			'time': timezone.now(),
-			'from_token': 'Demo Account',
-			'from_amount': 0,
+			'from_token': token,
+			'from_amount': amount,
 			'to_token': token,
 			'to_amount': amount,
+			'operated_by': 'System',
+			'trade_type': 'Buy'
 		})
 		transaction.update({ 'id': transaction.id })
 		wallet = self.__wallet_collection.document(token)
 		wallet.set({ 'token_id': token, self.USER_AMOUNT: amount })
 
-	def __trade(self, from_token, from_amount, to_token, to_amount, operate_by = USER_NAME):
-		if FirebaseToken().get(to_token).get('is_fiat', False):
+	def __trade(self, from_token, from_amount, to_token, to_amount, operate_by = USER_NAME, bot_id = None):
+		firebase_token = FirebaseToken()
+		from_fiat = firebase_token.get(from_token).get('is_fiat', False)
+		to_fiat = firebase_token.get(to_token).get('is_fiat', False)
+
+		if to_fiat:
 			to_amount = round(to_amount, 2)
+
+		if from_fiat and to_fiat:
+			trade_type = 'Convert'
+		elif from_fiat:
+			trade_type = 'Buy'
+		elif to_fiat:
+			trade_type = 'Sell'
+		else:
+			trade_type = 'Convert'
 
 		self.__update(from_token, -from_amount, operate_by)
 		self.__upsert(to_token, to_amount, operate_by)
@@ -44,6 +59,8 @@ class FirebaseWallet:
 			'to_token': to_token,
 			'to_amount': to_amount,
 			'operated_by': operate_by,
+			'bot_id': bot_id,
+			'trade_type': trade_type
 		})
 		transaction.update({ 'id': transaction.id })
 
@@ -52,11 +69,11 @@ class FirebaseWallet:
 	def trade_by_user(self, from_token, from_amount, to_token, to_amount):
 		return self.__trade(from_token, from_amount, to_token, to_amount, self.USER_NAME)
 
-	def trade_by_krakenbot(self, from_token, from_amount, to_token, to_amount):
-		return self.__trade(from_token, from_amount, to_token, to_amount, self.BOT_NAME)
+	def trade_by_krakenbot(self, from_token, from_amount, to_token, to_amount, name, bot_id):
+		return self.__trade(from_token, from_amount, to_token, to_amount, name, bot_id)
 
 	def __update(self, token, change, type = USER_NAME):
-		amount_field = self.BOT_AMOUNT if type == self.BOT_NAME else self.USER_AMOUNT
+		amount_field = self.BOT_AMOUNT if type != self.USER_NAME else self.USER_AMOUNT
 		doc_ref = self.__wallet_collection.document(token)
 		doc = doc_ref.get()
 
@@ -66,7 +83,7 @@ class FirebaseWallet:
 		doc_ref.update({ amount_field: doc.to_dict().get(amount_field, 0) + change })
 
 	def __upsert(self, token, change, type = USER_NAME):
-		amount_field = self.BOT_AMOUNT if type == self.BOT_NAME else self.USER_AMOUNT
+		amount_field = self.BOT_AMOUNT if type != self.USER_NAME else self.USER_AMOUNT
 		doc_ref = self.__wallet_collection.document(token)
 		doc = doc_ref.get()
 

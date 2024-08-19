@@ -1,4 +1,3 @@
-import os
 from Krakenbot.Realtime_Backtest import apply_backtest, get_livetrade_result
 from Krakenbot.exceptions import NotEnoughTokenException
 from Krakenbot.models.firebase_livetrade import FirebaseLiveTrade
@@ -19,9 +18,6 @@ class AutoLiveTrade:
 		'1d': 1440,
 	}
 
-	def __init__(self):
-		self.FIAT = os.environ.get('FIAT', 'GBP')
-
 	def __trade(self, trade_decisions: list[dict], market_prices: list[dict[str, str | float]], trade_type: str):
 		firebase_livetrade = FirebaseLiveTrade()
 		prices = { price['token']: price['price'] for price in market_prices }
@@ -30,10 +26,12 @@ class AutoLiveTrade:
 		for decision in trade_decisions:
 			try:
 				from_token = decision['cur_token']
-				to_token = self.FIAT if decision['cur_token'] == decision['token_id'] else decision['token_id']
+				to_token = decision['fiat'] if decision['cur_token'] == decision['token_id'] else decision['token_id']
 				from_amount = decision['amount']
 				to_amount = from_amount * prices[decision['token_id']]
-				trade_result = FirebaseWallet(decision['uid']).trade_by_krakenbot(from_token, from_amount, to_token, to_amount)
+				bot_name = decision['name']
+				bot_id = decision['livetrade_id']
+				trade_result = FirebaseWallet(decision['uid']).trade_by_krakenbot(from_token, from_amount, to_token, to_amount, bot_name, bot_id)
 				firebase_livetrade.update(decision['livetrade_id'], { 'amount': trade_result['to_amount'], 'cur_token': trade_result['to_token'] })
 				trade_count += 1
 			except KeyError:
@@ -42,7 +40,7 @@ class AutoLiveTrade:
 					'Livetrade': decision.get('livetrade_id'),
 					'UID': decision.get('uid', 'No User Found'),
 					'From': f'{decision.get('amount', 'No Amount')} {decision.get('cur_token', 'No Token Found')}',
-					'To': f'{decision.get('amount', 0) * prices.get(decision.get('token_id', ''), 0)} {self.FIAT if decision.get('cur_token', '1') == decision.get('token_id', '2') else decision.get('token_id', 'No Token Found')}',
+					'To': f'{decision.get('amount', 0) * prices.get(decision.get('token_id', ''), 0)} {decision['fiat'] if decision.get('cur_token', '1') == decision.get('token_id', '2') else decision.get('token_id', 'No Token Found')}',
 				}
 				log_warning(message)
 
@@ -52,21 +50,21 @@ class AutoLiveTrade:
 					'Livetrade': decision.get('livetrade_id'),
 					'UID': decision.get('uid'),
 					'From': f'{decision.get('amount')} {decision.get('cur_token')}',
-					'To': f'{decision.get('amount') * prices.get(decision.get('token_id'))} {self.FIAT if decision.get('cur_token') == decision.get('token_id') else decision.get('token_id')}',
+					'To': f'{decision.get('amount') * prices.get(decision.get('token_id'))} {decision['fiat'] if decision.get('cur_token') == decision.get('token_id') else decision.get('token_id')}',
 				}
 				log_warning(message)
 
 		log(f'Trade Count ({trade_type}): {trade_count}')
 
-	async def livetrade(self, request: Request):
-		authenticate_scheduler_oicd(request)
-		timeframe = request.data.get('timeframe', None)
-
+	async def __check_trade(self, timeframe: str, fiat: str):
 		firebase_livetrade = FirebaseLiveTrade()
-		livetrades = firebase_livetrade.filter(timeframe=timeframe, is_active=True)
+		livetrades = firebase_livetrade.filter(timeframe=timeframe, is_active=True, fiat=fiat)
+		if len(livetrades) == 0:
+			return
+		all_livetrade_token = { livetrade['token_id'] for livetrade in livetrades }
 
-		all_tokens = FirebaseToken().all()
-		all_tokens = { token['id'] + self.FIAT: token['id'] for token in all_tokens if token['is_fiat'] == False }
+		all_tokens = FirebaseToken().filter(is_fiat=False)
+		all_tokens = { token['id'] + fiat: token['id'] for token in all_tokens if token['id'] in all_livetrade_token }
 
 		results = await apply_backtest(all_tokens.keys(), [self.INTERVAL[timeframe]])
 		results = { all_tokens[pair]: value for (pair, value) in results.items() } # To replace pair with just token id, e.g. BTCGBP -> BTC
@@ -93,5 +91,15 @@ class AutoLiveTrade:
 				}
 				log_warning(message)
 
-		self.__trade(trade_decisions['buy'], Market().get_market(convert_from=self.FIAT), 'Buy')
-		self.__trade(trade_decisions['sell'], Market().get_market(convert_to=self.FIAT), 'Sell')
+		self.__trade(trade_decisions['buy'], Market().get_market(convert_from=fiat), 'Buy')
+		self.__trade(trade_decisions['sell'], Market().get_market(convert_to=fiat), 'Sell')
+
+	async def livetrade(self, request: Request):
+		authenticate_scheduler_oicd(request)
+		timeframe = request.data.get('timeframe', None)
+
+		firebase_token = FirebaseToken()
+		all_fiat = firebase_token.filter(is_fiat=True)
+
+		for fiat in all_fiat:
+			await self.__check_trade(timeframe, fiat['token_id'])

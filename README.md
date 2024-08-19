@@ -76,6 +76,7 @@ TOKEN_HISTORY_INTERVAL_IN_MINUTES="120"
 FIAT="GBP"
 TIMEFRAME_MAP="very_short->1min;short->1h;medium->4h;long->1d"
 BACKTEST_TIMEFRAME="1->1min;60->1h;240->4h;1440->1d"
+BOT_NAME="KrakenBot"
 ```
 
 ## Django-REST Server
@@ -115,7 +116,7 @@ Endpoint details
 
 ```
 URL: http://127.0.0.1:8000/api/market
-Query: convert_from, convert_to, exclude
+Query: convert_from, convert_to, exclude, force_convert, include_inactive
 Response:
 [
   {
@@ -126,14 +127,33 @@ Response:
 ]
 ```
 
-#### Example
+#### Example 1
 ```
 Request: http://127.0.0.1:8000/api/market?convert_from=eth&convert_to=btc
 Response:
 [
   {
     "token": "BTC",
-    "price": "0.055080"
+    "price": 0.055080,
+    "last_close": 0.055080
+  }
+]
+```
+
+#### Example 2
+```
+Request: http://127.0.0.1:8000/api/market?convert_from=gbp&force_convert=force&include_inactive=include
+Response:
+[
+  {
+    "token": "BTC",
+    "price": ...,
+    "last_close": ...
+  },
+  {
+    "token": "1INCH",
+    "price": ...,
+    "last_close": ...
   }
 ]
 ```
@@ -365,6 +385,7 @@ Response:
   "id": string,
   "strategy": string,
   "timeframe": string,
+  "fiat": string,
   "token_id": string,
   "amount": number
 }
@@ -389,6 +410,7 @@ Response:
   "id": "nlP3vMpnjDJLZHjO7U3t",
   "strategy": "RSI74",
   "timeframe": "1d",
+  "fiat": "GBP",
   "token_id": "DOGE",
   "amount": 1000
 }
