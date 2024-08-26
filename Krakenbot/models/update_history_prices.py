@@ -46,8 +46,6 @@ class UpdateHistoryPrices:
 		all_user_id = FirebaseUsers().get_all_user_id()
 		current_time = timezone.now()
 		for uid in all_user_id:
-			if uid != 'c9VA3UbqQANLXUgdQOqi4jEnO6v2':
-				continue
 			wallet = FirebaseWallet(uid).get_wallet()
 			value = 0
 
