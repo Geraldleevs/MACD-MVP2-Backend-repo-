@@ -4,6 +4,8 @@ import aiohttp
 from datetime import timedelta
 from rest_framework.request import Request
 from Krakenbot.models.firebase_token import FirebaseToken
+from Krakenbot.models.firebase_users import FirebaseUsers
+from Krakenbot.models.firebase_wallet import FirebaseWallet
 from Krakenbot.utils import authenticate_scheduler_oicd, clean_kraken_pair, usd_to_gbp
 from django.utils import timezone
 
@@ -40,6 +42,25 @@ class UpdateHistoryPrices:
 
 					return (pair, start_time, close_prices)
 
+	def __update_user_history(self, prices: dict[str, float]):
+		all_user_id = FirebaseUsers().get_all_user_id()
+		current_time = timezone.now()
+		for uid in all_user_id:
+			wallet = FirebaseWallet(uid).get_wallet()
+			value = 0
+
+			for token in wallet:
+				try:
+					token_id = token['id']
+					total_amount = token.get('amount', 0) + token.get('krakenbot_amount', 0)
+					if total_amount > 0:
+						value += prices.get(token_id, 0) * total_amount
+				except KeyError:
+					continue
+
+			FirebaseUsers(uid).update_portfolio_value(value, current_time)
+
+
 	async def update(self, request: Request):
 		authenticate_scheduler_oicd(request)
 		firebase = FirebaseToken()
@@ -54,6 +75,7 @@ class UpdateHistoryPrices:
 			results = await asyncio.gather(*tasks)
 			results = [(pair.replace(self.FIAT, ''), start_time, close_prices) for (pair, start_time, close_prices) in results if close_prices != [0, 0]]
 			all_tokens = [token for (token, _, close_prices) in results if close_prices != [0, 0]]
+			all_prices = {self.FIAT: 1}
 
 			usd_pairs = [
 				token.get('token_id') + 'USD' for token in firebase.filter(is_active=None)
@@ -67,10 +89,14 @@ class UpdateHistoryPrices:
 				for (token, start_time, close_prices) in usd_results:
 					usd_rate = await usd_to_gbp()
 					close_prices = [close_price * usd_rate for close_price in close_prices]
+					all_prices[token] = close_prices[-1]
 					firebase.update_history_prices(token, start_time, close_prices)
 
 			for (token, start_time, close_prices) in results:
 				if token == 'USD':
 					close_prices = [1 / price for price in close_prices]
 				firebase.update_history_prices(token, start_time, close_prices)
+				all_prices[token] = close_prices[-1]
 			firebase.commit_batch_write()
+
+		self.__update_user_history(all_prices)
