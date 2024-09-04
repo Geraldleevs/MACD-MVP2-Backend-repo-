@@ -32,6 +32,16 @@ class FirebaseToken:
 			else:
 				doc_ref.update(update_data)
 
+	def update(self, token_id, data):
+		doc_ref = self.__collection.document(token_id)
+		doc = doc_ref.get()
+
+		if doc.exists:
+			if self.__batch_writing:
+				self.__batch.update(doc_ref, data)
+			else:
+				doc_ref.update(data)
+
 	def all(self):
 		query = self.__collection
 		query = query.where(filter=FieldFilter('is_active', '==', True))
