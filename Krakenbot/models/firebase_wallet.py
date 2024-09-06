@@ -48,8 +48,8 @@ class FirebaseWallet:
 		else:
 			trade_type = 'Convert'
 
-		self.__update(from_token, -from_amount, None, operate_by)
-		self.__upsert(to_token, to_amount, 2 if to_fiat else None, operate_by)
+		self.__update(from_token, -from_amount, operate_by, 2 if from_fiat else None)
+		self.__upsert(to_token, to_amount, operate_by, 2 if to_fiat else None)
 
 		transaction = self.__transaction_collection.document()
 		transaction.set({
@@ -72,7 +72,7 @@ class FirebaseWallet:
 	def trade_by_krakenbot(self, from_token, from_amount, to_token, to_amount, name, bot_id):
 		return self.__trade(from_token, from_amount, to_token, to_amount, name, bot_id)
 
-	def __update(self, token, change, rounding: int | None = None, type = USER_NAME):
+	def __update(self, token, change, type = USER_NAME, rounding: int | None = None):
 		amount_field = self.BOT_AMOUNT if type != self.USER_NAME else self.USER_AMOUNT
 		doc_ref = self.__wallet_collection.document(token)
 		doc = doc_ref.get()
@@ -86,7 +86,7 @@ class FirebaseWallet:
 
 		doc_ref.update({ amount_field: new_value })
 
-	def __upsert(self, token, change, rounding: int | None = None, type = USER_NAME):
+	def __upsert(self, token, change, type = USER_NAME, rounding: int | None = None):
 		amount_field = self.BOT_AMOUNT if type != self.USER_NAME else self.USER_AMOUNT
 		doc_ref = self.__wallet_collection.document(token)
 		doc = doc_ref.get()
@@ -103,21 +103,25 @@ class FirebaseWallet:
 			doc_ref.set({ 'token_id': token, amount_field: new_value })
 
 	def update_amount(self, token, change):
-		self.__update(token, change, self.USER_NAME)
+		is_fiat = FirebaseToken().get(token).get('is_fiat', False)
+		self.__update(token, change, self.USER_NAME, 2 if is_fiat else None)
 
 	def update_krakenbot_amount(self, token, change):
-		self.__update(token, change, self.BOT_NAME)
+		is_fiat = FirebaseToken().get(token).get('is_fiat', False)
+		self.__update(token, change, self.BOT_NAME, 2 if is_fiat else None)
 
 	def reserve_krakenbot_amount(self, token, amount):
-		self.__update(token, -amount, self.USER_NAME)
-		self.__update(token, amount, self.BOT_NAME)
+		is_fiat = FirebaseToken().get(token).get('is_fiat', False)
+		self.__update(token, -amount, self.USER_NAME, 2 if is_fiat else None)
+		self.__update(token, amount, self.BOT_NAME, 2 if is_fiat else None)
 
 		wallet = self.__wallet_collection.document(token)
 		return wallet.get().to_dict()
 
 	def unreserve_krakenbot_amount(self, token, amount):
-		self.__update(token, -amount, self.BOT_NAME)
-		self.__update(token, amount, self.USER_NAME)
+		is_fiat = FirebaseToken().get(token).get('is_fiat', False)
+		self.__update(token, -amount, self.BOT_NAME, 2 if is_fiat else None)
+		self.__update(token, amount, self.USER_NAME, 2 if is_fiat else None)
 
 		wallet = self.__wallet_collection.document(token)
 		return wallet.get().to_dict()
