@@ -190,7 +190,7 @@ None (Status: 200)
 
 ### Update Last Close
 
-Fetch history close price and update in firebase: `http://127.0.0.1:8000/api/update-history-prices [POST]`
+Fetch token's OHLC, all metrics and update user's wallet value in firebase: `http://127.0.0.1:8000/api/update-history-prices [POST]`
 
 <details>
 <summary>
