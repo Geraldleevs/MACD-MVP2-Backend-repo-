@@ -91,16 +91,16 @@ class FirebaseWallet:
 		doc_ref = self.__wallet_collection.document(token)
 		doc = doc_ref.get()
 
-		new_value = doc.to_dict().get(amount_field, 0) + change
-		if rounding is not None:
-			new_value = round(new_value, rounding)
-
 		if doc.exists:
+			new_value = doc.to_dict().get(amount_field, 0) + change
+			if rounding is not None:
+				new_value = round(new_value, rounding)
+
 			if new_value < 0:
 				raise NotEnoughTokenException()
 			doc_ref.update({ amount_field: new_value })
 		else:
-			doc_ref.set({ 'token_id': token, amount_field: new_value })
+			doc_ref.set({ 'token_id': token, amount_field: change })
 
 	def update_amount(self, token, change):
 		is_fiat = FirebaseToken().get(token).get('is_fiat', False)
