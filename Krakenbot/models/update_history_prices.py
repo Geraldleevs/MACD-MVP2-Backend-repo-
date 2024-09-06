@@ -29,28 +29,30 @@ class UpdateHistoryPrices:
 	async def __fetch_kraken_ohlc(self, session: aiohttp.ClientSession, pair: str):
 		async with session.get(self.KRAKEN_OHLC_API, params={'pair': pair, 'interval': self.INTERVAL}) as response:
 			if response.status == 200:
-					kraken_results = await response.json()
-					if len(kraken_results['error']) > 0:
-						return (pair, timezone.now() - timedelta(minutes=self.HISTORY_COUNT), [0, 0])
+				kraken_results = await response.json()
+				if len(kraken_results['error']) > 0:
+					return (pair, timezone.now() - timedelta(minutes=self.HISTORY_COUNT), [0, 0])
 
-					results = clean_kraken_pair(kraken_results)[pair]
-					try:
-						results = results[-(self.HISTORY_COUNT + 1):] # +1 to get latest one that is not closed yet
-					except IndexError:
-						pass # Get all results (Capped at 720 by Kraken)
+				results = clean_kraken_pair(kraken_results)[pair]
+				try:
+					results = results[-(self.HISTORY_COUNT + 1):] # +1 to get latest one that is not closed yet
+				except IndexError:
+					pass # Get all results (Capped at 720 by Kraken)
 
-					start_time = timezone.datetime.fromtimestamp(results[0][0])
-					close_prices = [float(result[4]) for result in results] # Get close price only
+				start_time = timezone.datetime.fromtimestamp(results[0][0])
+				close_prices = [float(result[4]) for result in results] # Get close price only
 
-					return (pair, start_time, close_prices)
+				return (pair, start_time, close_prices)
+			return (pair, timezone.now() - timedelta(minutes=self.HISTORY_COUNT), [0, 0])
 
 	async def __fetch_gecko_metrics(self, tokens: dict[str, str]):
 		query = { 'vs_currency': self.FIAT, 'ids': ','.join([token for token in tokens]) }
-		try:
-			results = requests.get(self.COIN_GECKO_API, params=query).json()
-		except Exception:
+		results = requests.get(self.COIN_GECKO_API, params=query)
+
+		if results.status_code != 200:
 			return {}
 
+		results = results.json()
 		metrics = {}
 		for result in results:
 			metrics[tokens[result['id']]] = {
@@ -117,7 +119,7 @@ class UpdateHistoryPrices:
 			if len(usd_pairs) > 0:
 				tasks = [self.__fetch_kraken_ohlc(session, pair) for pair in usd_pairs]
 				usd_results = await asyncio.gather(*tasks)
-				usd_results = [(pair.replace('USD', ''), start_time, close_prices) for (pair, start_time, close_prices) in usd_results]
+				usd_results = [(pair.replace('USD', ''), start_time, close_prices) for (pair, start_time, close_prices) in usd_results if close_prices != [0, 0]] # Skip failed tokens
 				for (token, start_time, close_prices) in usd_results:
 					usd_rate = await usd_to_gbp()
 					close_prices = [close_price * usd_rate for close_price in close_prices]
@@ -125,6 +127,8 @@ class UpdateHistoryPrices:
 					firebase.update_history_prices(token, start_time, close_prices)
 
 			for (token, start_time, close_prices) in results:
+				if close_prices == [0, 0]: # Skip failed tokens
+					continue
 				if token == 'USD':
 					close_prices = [1 / price for price in close_prices]
 				firebase.update_history_prices(token, start_time, close_prices)
