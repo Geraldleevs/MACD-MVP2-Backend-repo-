@@ -48,8 +48,8 @@ class FirebaseWallet:
 		else:
 			trade_type = 'Convert'
 
-		self.__update(from_token, -from_amount, operate_by)
-		self.__upsert(to_token, to_amount, operate_by)
+		self.__update(from_token, -from_amount, None, operate_by)
+		self.__upsert(to_token, to_amount, 2 if to_fiat else None, operate_by)
 
 		transaction = self.__transaction_collection.document()
 		transaction.set({
@@ -72,7 +72,7 @@ class FirebaseWallet:
 	def trade_by_krakenbot(self, from_token, from_amount, to_token, to_amount, name, bot_id):
 		return self.__trade(from_token, from_amount, to_token, to_amount, name, bot_id)
 
-	def __update(self, token, change, type = USER_NAME):
+	def __update(self, token, change, rounding: int | None = None, type = USER_NAME):
 		amount_field = self.BOT_AMOUNT if type != self.USER_NAME else self.USER_AMOUNT
 		doc_ref = self.__wallet_collection.document(token)
 		doc = doc_ref.get()
@@ -80,19 +80,27 @@ class FirebaseWallet:
 		if change < 0 and (not doc.exists or doc.to_dict().get(amount_field, 0) < (change * -1)):
 			raise NotEnoughTokenException()
 
-		doc_ref.update({ amount_field: doc.to_dict().get(amount_field, 0) + change })
+		new_value = doc.to_dict().get(amount_field, 0) + change
+		if rounding is not None:
+			new_value = round(new_value, rounding)
 
-	def __upsert(self, token, change, type = USER_NAME):
+		doc_ref.update({ amount_field: new_value })
+
+	def __upsert(self, token, change, rounding: int | None = None, type = USER_NAME):
 		amount_field = self.BOT_AMOUNT if type != self.USER_NAME else self.USER_AMOUNT
 		doc_ref = self.__wallet_collection.document(token)
 		doc = doc_ref.get()
 
+		new_value = doc.to_dict().get(amount_field, 0) + change
+		if rounding is not None:
+			new_value = round(new_value, rounding)
+
 		if doc.exists:
-			if doc.to_dict().get(amount_field, 0) < (change * -1):
+			if new_value < 0:
 				raise NotEnoughTokenException()
-			doc_ref.update({ amount_field: doc.to_dict().get(amount_field, 0) + change })
+			doc_ref.update({ amount_field: new_value })
 		else:
-			doc_ref.set({ 'token_id': token, amount_field: change })
+			doc_ref.set({ 'token_id': token, amount_field: new_value })
 
 	def update_amount(self, token, change):
 		self.__update(token, change, self.USER_NAME)
