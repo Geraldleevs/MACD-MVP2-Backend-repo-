@@ -21,10 +21,10 @@ class FirebaseToken:
 		self.__batch.commit()
 		self.__batch_writing = False
 
-	def update_history_prices(self, token_id, start_time: datetime, close_prices: list[float]):
+	def update_history_prices(self, token_id, times: list[datetime], close_prices: list[float]):
 		doc_ref = self.__collection.document(token_id)
 		doc = doc_ref.get()
-		update_data = {'history_prices': { 'start_time': start_time, 'data': close_prices }}
+		update_data = {'history_prices': { 'start_time': times[0], 'times': times, 'data': close_prices }}
 
 		if doc.exists:
 			if self.__batch_writing:
