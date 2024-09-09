@@ -31,7 +31,7 @@ class UpdateHistoryPrices:
 			if response.status == 200:
 				kraken_results = await response.json()
 				if len(kraken_results['error']) > 0:
-					return (pair, timezone.now() - timedelta(minutes=self.HISTORY_COUNT), [0, 0])
+					return (pair, [timezone.now() - timedelta(minutes=self.HISTORY_COUNT), timezone.now()], [0, 0])
 
 				results = clean_kraken_pair(kraken_results)[pair]
 				try:
@@ -39,10 +39,10 @@ class UpdateHistoryPrices:
 				except IndexError:
 					pass # Get all results (Capped at 720 by Kraken)
 
-				start_time = timezone.datetime.fromtimestamp(results[0][0])
+				times = [timezone.datetime.fromtimestamp(result[0]) for result in results]
 				close_prices = [float(result[4]) for result in results] # Get close price only
 
-				return (pair, start_time, close_prices)
+				return (pair, times, close_prices)
 			return (pair, timezone.now() - timedelta(minutes=self.HISTORY_COUNT), [0, 0])
 
 	async def __fetch_gecko_metrics(self, tokens: dict[str, str]):
@@ -102,12 +102,12 @@ class UpdateHistoryPrices:
 		for metric in metrics:
 			firebase.update(metric, metrics[metric])
 
-		firebase.update_history_prices(self.FIAT, timezone.now() - timedelta(days=7), [1, 1])
+		firebase.update_history_prices(self.FIAT, [timezone.now() - timedelta(days=7), timezone.now()], [1, 1])
 
 		async with aiohttp.ClientSession() as session:
 			tasks = [self.__fetch_kraken_ohlc(session, pair) for pair in pairs]
 			results = await asyncio.gather(*tasks)
-			results = [(pair.replace(self.FIAT, ''), start_time, close_prices) for (pair, start_time, close_prices) in results if close_prices != [0, 0]]
+			results = [(pair.replace(self.FIAT, ''), times, close_prices) for (pair, times, close_prices) in results if close_prices != [0, 0]]
 			all_tokens = [token for (token, _, close_prices) in results if close_prices != [0, 0]]
 			all_prices = {self.FIAT: 1}
 
@@ -119,19 +119,19 @@ class UpdateHistoryPrices:
 			if len(usd_pairs) > 0:
 				tasks = [self.__fetch_kraken_ohlc(session, pair) for pair in usd_pairs]
 				usd_results = await asyncio.gather(*tasks)
-				usd_results = [(pair.replace('USD', ''), start_time, close_prices) for (pair, start_time, close_prices) in usd_results if close_prices != [0, 0]] # Skip failed tokens
-				for (token, start_time, close_prices) in usd_results:
+				usd_results = [(pair.replace('USD', ''), times, close_prices) for (pair, times, close_prices) in usd_results if close_prices != [0, 0]] # Skip failed tokens
+				for (token, times, close_prices) in usd_results:
 					usd_rate = await usd_to_gbp()
 					close_prices = [close_price * usd_rate for close_price in close_prices]
 					all_prices[token] = close_prices[-1]
-					firebase.update_history_prices(token, start_time, close_prices)
+					firebase.update_history_prices(token, times, close_prices)
 
-			for (token, start_time, close_prices) in results:
+			for (token, times, close_prices) in results:
 				if close_prices == [0, 0]: # Skip failed tokens
 					continue
 				if token == 'USD':
 					close_prices = [1 / price for price in close_prices]
-				firebase.update_history_prices(token, start_time, close_prices)
+				firebase.update_history_prices(token, times, close_prices)
 				all_prices[token] = close_prices[-1]
 			firebase.commit_batch_write()
 
