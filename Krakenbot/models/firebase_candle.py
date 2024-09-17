@@ -43,7 +43,20 @@ class FirebaseCandle:
 			commit_array.sort(key=lambda x: x[self.__timestamp_column])
 		return commit_array
 
-	def save(self, data: DataFrame, overwrite = True):
+	def __set_data(self, today, overwrite, commit_array):
+		batch = self.__db_batch
+		cur_date = datetime.fromtimestamp(today, tz=pytz.UTC)
+		ref = self.__candle_data.document(str(int(today)))
+		commit_array = self.__combine_existing(ref, commit_array, overwrite)
+
+		# If old data is already having the whole day's data, do not need to update
+		if commit_array != False:
+			batch.set(ref, { 'date': cur_date, 'candles': commit_array })
+
+	def save(self, data: DataFrame, overwrite = True, batch_save = True):
+		'''
+		Use `batch_save = False` if the dataframe is too big to upload at once, firebase limit 11534336 bytes
+		'''
 		if self.__candle_token is None or self.__candle_data is None:
 			return
 
@@ -62,28 +75,19 @@ class FirebaseCandle:
 		for candle in records:
 			if today <= candle[self.__timestamp_column] < tomorrow:
 				commit_array.append(candle)
-			else:
-				cur_date = datetime.fromtimestamp(today, tz=pytz.UTC)
-				ref = self.__candle_data.document(str(int(today)))
-				commit_array = self.__combine_existing(ref, commit_array, overwrite)
+				continue
 
-				# If old data is already having the whole day's data, do not need to update
-				if commit_array != False:
-					batch.set(ref, { 'date': cur_date, 'candles': commit_array })
+			self.__set_data(today, overwrite, commit_array)
+			commit_array = [candle]
+			today = tomorrow
+			tomorrow += one_day_timestamp
 
-				commit_array = [candle]
-				today = tomorrow
-				tomorrow += one_day_timestamp
+			if not batch_save:
+				batch.commit()
 
 		# Handle leftovers
 		if len(commit_array) > 0:
-			cur_date = datetime.fromtimestamp(today, tz=pytz.UTC)
-			ref = self.__candle_data.document(str(int(today)))
-			commit_array = self.__combine_existing(ref, commit_array, overwrite)
-
-			# If old data is already having the whole day's data, do not need to update
-			if commit_array != False:
-				batch.set(ref, { 'date': cur_date, 'candles': commit_array })
+			self.__set_data(today, overwrite, commit_array)
 
 		batch.commit()
 

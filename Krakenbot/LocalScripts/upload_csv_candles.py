@@ -37,7 +37,7 @@ def __main():
 			data = pd.read_csv(file)
 			data = data[(data['Unix_Timestamp'] >= a_year_before) &
 							(data['Unix_Timestamp'] <= latest_to_commit)]
-			firebase.save(data, overwrite=False)
+			firebase.save(data, overwrite=False, batch_save=False) # Set batch_save to True if data is small
 
 if __name__ == '__main__':
 	__main()
