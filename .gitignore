@@ -42,3 +42,4 @@ trading_pairs.txt
 /talib
 data/Kraken/*.csv
 Krakenbot/kraken_data_api
+Krakenbot/LocalScripts/data/*/*.csv

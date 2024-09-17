@@ -15,4 +15,4 @@ requirements.txt
 **/__pycache__
 data
 output
-LocalScripts
+Krakenbot/LocalScripts

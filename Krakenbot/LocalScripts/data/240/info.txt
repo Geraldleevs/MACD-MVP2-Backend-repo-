@@ -1,0 +1,2 @@
+4-Hour CSV
+Store all csv with the name of "TokenFiat_Timeframe.csv" (E.g. BTCGBP_4h.csv)

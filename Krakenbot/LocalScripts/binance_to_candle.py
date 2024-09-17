@@ -2,6 +2,7 @@ import pandas as pd
 import glob
 
 # Edit These Data As Needed (Do not commit unless needed)
+# Be aware that binance is using ms form of timestamp instead of sec
 first_timestamp = 1691452800000
 
 latest_timestamp = {
@@ -41,16 +42,16 @@ not_parsing_tokens = ['1INCH', 'ARB'] # Tokens that do not need to convert to GB
 # The CSV file headers, this is set for Binance already
 headers = ["open_time", "Open", "High", "Low", "Close", "Volume", "Close_time", "Quote_volume", "Count", "Taker_buy_volume", "Taker_buy_quote_volume", "Ignore"]
 select_columns = ["open_time", "Open", "High", "Low", "Close"] # Only get OHLC, can get other columns if needed
-new_column_names = ['Unix_Timestamp', 'Open', 'High', 'Low', 'Close'] # Change this if you need other column names, should be same length as select_columns
+new_column_names = ['Unix_Timestamp', 'Open', 'High', 'Low', 'Close'] # Change this only if you added other columns
+
+# ============================================================
+#    Don't need to change any code from this line onwards
+# ============================================================
 time_column_name = 'Unix_Timestamp' # For sorting
 open_column_name = 'Open'
 high_column_name = 'High'
 low_column_name = 'Low'
 close_column_name = 'Close'
-
-# ============================================================
-#    Don't need to change any code from this line onwards
-# ============================================================
 
 def __get_other_to_gbp_rate():
 	btc_gbp_1h = pd.read_csv(btc_to_gbp_csv)
@@ -123,6 +124,9 @@ def main():
 				output_file_name = token_name + new_fiat_name + f'_{timeframe}.csv'
 
 			__check_data_accuracy(data, pair_name, timeframe)
+
+			# Convert ms timestamp to sec timestamp
+			data[time_column_name] = data[time_column_name] // 1000
 
 			data.to_csv(output_dir + timeframe + '\\' + output_file_name, index=False)
 
