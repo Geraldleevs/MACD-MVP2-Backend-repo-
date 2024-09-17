@@ -576,3 +576,28 @@ ADDRESS="0.0.0.0" # Must be set
 11. Select the latest image (Should be the first one) under `Artifact Registry > gcr.io/[project-name] > machd-krakenbot`
 12. If there is any new environment variable, add/edit under `Edit Container > Variables & Secrets`
 13. Click `Deploy` at the bottom
+
+
+<hr/>
+
+## Local Scripts
+### Convert and Upload Binance OHLC CSV Data to Firebase
+1. Go to [Binance Data Website](https://www.binance.com/en-GB/landing/data)
+2. Click **Spot** under **K-Line**
+3. Select **Pairs**, **Interval** and **Dates**
+4. Click **Confirm** and **Download**
+5. Move the Files into their own folder (`/Krakenbot/LocalScripts/binance_data/[timeframe]/[token]/*.csv`)
+6. In `binance_to_candle.py`, change `combine_only = True`
+7. Change `first_timestamp`, and `latest_timestamp` if needed
+8. Run the file
+9. In `upload_csv_candles.py`, change `timeframe_dir` to 1440 and `batch_save=True`, and run the file
+10. Re-run the file with different timeframe (60, 240)
+11. For timeframe `1`, you will need `batch_save=False` since the data is too large
+
+#### If need to convert currency into GBP
+1. Move a combined `BTCUSDT_1.csv` back into `/Krakenbot/LocalScripts/binance_data/`
+2.  Download an external `BTCGBP_1.csv` (E.g. from [Bitfinex](https://www.cryptodatadownload.com/data/bitfinex/), but Bitfinex have only 1-hour data)
+       - Bitfinex data's csv first line is a link, remove that
+3. Move `BTCGBP_1.csv` into `/Krakenbot/LocalScripts/binance_data/` besides `BTCUSDT_1.csv`
+4. In `binance_to_candle.py`, change `combine_only = False`, and change other variables if needed (Such as filenames, column names...)
+5. Run the file again

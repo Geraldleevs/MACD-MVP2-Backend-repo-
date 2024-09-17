@@ -2,41 +2,43 @@ import pandas as pd
 import glob
 
 # Edit These Data As Needed (Do not commit unless needed)
+combine_only = False
+
 # Be aware that binance is using ms form of timestamp instead of sec
 first_timestamp = 1691452800000
 
 latest_timestamp = {
-	'1m': 1723075140000,
-	'1h': 1723071600000,
-	'4h': 1723060800000,
-	'1d': 1722988800000
+	'1': 1723075140000,
+	'60': 1723071600000,
+	'240': 1723060800000,
+	'1440': 1722988800000
 }
 
 # Change this only if you have a different interval, default 1 min, 1 hour, 4 hours and 1 day
 expected_length = {
-	'1m': (latest_timestamp['1m'] - first_timestamp) / (60 * 1000), # divide by the length of the interval in milliseconds E.g. 1 min = 60,000 ms
-	'1h': (latest_timestamp['1h'] - first_timestamp) / (60 * 60 * 1000),
-	'4h': (latest_timestamp['4h'] - first_timestamp) / (4 * 60 * 60 * 1000),
-	'1d': (latest_timestamp['1d'] - first_timestamp) / (24 * 60 * 60 * 1000)
+	'1': (latest_timestamp['1'] - first_timestamp) / (60 * 1000), # divide by the length of the interval in milliseconds E.g. 1 min = 60,000 ms
+	'60': (latest_timestamp['60'] - first_timestamp) / (60 * 60 * 1000),
+	'240': (latest_timestamp['240'] - first_timestamp) / (4 * 60 * 60 * 1000),
+	'1440': (latest_timestamp['1440'] - first_timestamp) / (24 * 60 * 60 * 1000)
 }
 
-btc_to_gbp_csv = 'Bitfinex_BTCGBP_1h.csv'
+btc_to_gbp_csv = '.\\Krakenbot\\LocalScripts\\binance_data\\Bitfinex_BTCGBP_1h.csv'
 btc_to_gbp_date_column = 'date'
 btc_to_gbp_timestamp_column = '' # If do not have timestamp, or timestamp is corrupted, set this to ''
 btc_to_gbp_price_column = 'close'
 
-btc_to_other_csv = './Binance Concatenated Data/1m/BTCUSDT.csv' # One full concatenated OHLC csv from BTC to any other token
+btc_to_other_csv = '.\\Krakenbot\\LocalScripts\\binance_data\\BTCUSDT_1.csv' # One full concatenated OHLC csv from BTC to any other token
 btc_to_other_timestamp_column = 'open_time'
 btc_to_other_price_column = 'Close'
 
-other_token_name = 'USDT'
+other_token_name = 'USDT' # The other token in comparison E.g. USDT in BTCUSDT
 new_fiat_name = 'GBP'
 
 # Organise your csv files and folders as
 # '.\\Dir\\[timeframe]\\[token_name]\\[token_name][other_token]-.....csv
-# E.g: .\\Binance Data\\1d\\BTC\\BTCUSDT-1d-2023-08.csv (Should be exactly same csv filename downloaded from binance)
-input_dir = '.\\Binance Data\\'
-output_dir = ".\\Parsed-GBP\\"
+# E.g: .\\Binance Data\\1d\\BTC\\BTCUSDT-1d-2023-08.csv
+input_dir = '.\\Krakenbot\\LocalScripts\\binance_data\\'
+output_dir = ".\\Krakenbot\\LocalScripts\\data\\"
 not_parsing_tokens = ['1INCH', 'ARB'] # Tokens that do not need to convert to GBP
 
 # The CSV file headers, this is set for Binance already
@@ -80,7 +82,7 @@ def __get_other_to_gbp_rate():
 def __combine_all_csv_in_folder(dir: str):
 	print(f'Processing {dir}')
 	data = pd.DataFrame(columns=headers)
-	for file in glob.glob(dir + '\\*'):
+	for file in glob.glob(dir + '*.csv'):
 		pair_name = file.split('\\')[-1].removesuffix('.csv').split('-')[0]
 		token_name = pair_name.removesuffix(other_token_name)
 		df = pd.read_csv(file, names=headers)
@@ -101,19 +103,20 @@ def __check_data_accuracy(data: pd.DataFrame, pair_name: str, timeframe: str):
 
 
 def main():
-	other_to_gbp = __get_other_to_gbp_rate()
+	if not combine_only:
+		other_to_gbp = __get_other_to_gbp_rate()
 
-	for dir in glob.glob(input_dir + '*'):
-		timeframe = dir.split('\\')[-1]
+	for dir in glob.glob(input_dir + '*\\'):
+		timeframe = dir.split('\\')[-2]
 
-		for subdir in glob.glob(dir + '\\*'):
+		for subdir in glob.glob(dir + '*\\'):
 			(data, pair_name, token_name) = __combine_all_csv_in_folder(subdir)
 			data = data[select_columns]
 			data.columns = new_column_names
 			data = data[data[time_column_name] >= first_timestamp]
 			output_file_name = pair_name + f'_{timeframe}.csv'
 
-			if token_name not in not_parsing_tokens:
+			if not combine_only and token_name not in not_parsing_tokens:
 				data = data.merge(other_to_gbp, on=time_column_name)
 				data[open_column_name] = data[open_column_name] * data['other_gbp_close']
 				data[high_column_name] = data[high_column_name] * data['other_gbp_close']

@@ -43,3 +43,4 @@ trading_pairs.txt
 data/Kraken/*.csv
 Krakenbot/kraken_data_api
 Krakenbot/LocalScripts/data/*/*.csv
+Krakenbot/LocalScripts/binance_data/**/*.csv
