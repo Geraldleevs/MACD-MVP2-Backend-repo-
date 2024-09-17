@@ -37,6 +37,7 @@ performance_metrics_logs.csv
 Krakenbot/krakenpair.py
 debug_log.txt
 trading_pairs.txt
+/data
 /output
 /talib
 data/Kraken/*.csv
