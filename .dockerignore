@@ -2,6 +2,8 @@ Dockerfile
 .dockerignore
 .vscode
 .git
+.gitattributes
+.gitignore
 .env
 venv
 *.csv
@@ -12,3 +14,5 @@ requirements.txt
 *firebase-adminsdk*.json
 **/__pycache__
 data
+output
+Krakenbot/LocalScripts
