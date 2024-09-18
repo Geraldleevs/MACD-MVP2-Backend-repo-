@@ -3,6 +3,7 @@ from django.utils import timezone
 from google.cloud.firestore_v1.base_query import FieldFilter
 from google.cloud.firestore_v1.collection import CollectionReference
 from Krakenbot.exceptions import NotEnoughTokenException
+from Krakenbot.models.firebase_livetrade import FirebaseLiveTrade
 from Krakenbot.models.firebase_token import FirebaseToken
 
 class FirebaseWallet:
@@ -31,7 +32,7 @@ class FirebaseWallet:
 		wallet = self.__wallet_collection.document(token)
 		wallet.set({ 'token_id': token, self.USER_AMOUNT: amount })
 
-	def __trade(self, from_token, from_amount, to_token, to_amount, operate_by = USER_NAME, bot_id = None):
+	def __trade(self, from_token, from_amount, to_token, to_amount, operate_by = USER_NAME, bot_id = None, previous_amount = None):
 		firebase_token = FirebaseToken()
 		from_fiat = firebase_token.get(from_token).get('is_fiat', False)
 		to_fiat = firebase_token.get(to_token).get('is_fiat', False)
@@ -48,6 +49,10 @@ class FirebaseWallet:
 		else:
 			trade_type = 'Convert'
 
+		profit = None
+		if to_fiat and previous_amount is not None:
+			profit = round(to_amount - previous_amount, 2)
+
 		self.__update(from_token, -from_amount, operate_by, 2 if from_fiat else None)
 		self.__upsert(to_token, to_amount, operate_by, 2 if to_fiat else None)
 
@@ -60,7 +65,8 @@ class FirebaseWallet:
 			'to_amount': to_amount,
 			'operated_by': operate_by,
 			'bot_id': bot_id,
-			'trade_type': trade_type
+			'trade_type': trade_type,
+			'profit': profit
 		})
 		transaction.update({ 'id': transaction.id })
 
@@ -70,7 +76,17 @@ class FirebaseWallet:
 		return self.__trade(from_token, from_amount, to_token, to_amount, self.USER_NAME)
 
 	def trade_by_krakenbot(self, from_token, from_amount, to_token, to_amount, name, bot_id):
-		return self.__trade(from_token, from_amount, to_token, to_amount, name, bot_id)
+		firebase_livetrade = FirebaseLiveTrade()
+		previous_amount = firebase_livetrade.get(bot_id).get('previous_amount', None)
+		trade_result = self.__trade(from_token, from_amount, to_token, to_amount, name, bot_id, previous_amount)
+
+		to_fiat = FirebaseToken().get(to_token).get('is_fiat', False)
+		if to_fiat:
+			firebase_livetrade.update(bot_id, { 'previous_amount': trade_result.get('to_amount', None) })
+		else:
+			firebase_livetrade.update(bot_id, { 'previous_amount': trade_result.get('from_amount', None) })
+
+		return trade_result
 
 	def __update(self, token, change, type = USER_NAME, rounding: int | None = None):
 		amount_field = self.BOT_AMOUNT if type != self.USER_NAME else self.USER_AMOUNT
