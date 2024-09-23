@@ -516,9 +516,10 @@ def backtest(df: pd.DataFrame, token_id: str, data_timeframe: str, performance_l
         'Percentage Increase': best_strategy['Percentage']
     }
 
-def main(no_print=True):
+def main(no_print=True, update_candle=False):
     start_time = time.time()
-    update_candles()
+    if update_candle:
+        update_candles()
     candles = get_candles()
 
     if len(candles) < 1:
@@ -545,6 +546,6 @@ def main(no_print=True):
     return coin_profit_df
 
 if __name__ == '__main__':
-    result = main(no_print=False)
+    result = main(no_print=False, update_candle=True)
     result.to_csv('coin_profit_recommended.csv')
     print(result)
