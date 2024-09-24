@@ -605,3 +605,21 @@ ADDRESS="0.0.0.0" # Must be set
 3. Move `BTCGBP_1.csv` into `/Krakenbot/LocalScripts/binance_data/` besides `BTCUSDT_1.csv`
 4. In `binance_to_candle.py`, change `combine_only = False`, and change other variables if needed (Such as filenames, column names...)
 5. Run the file again
+
+<hr/>
+
+### Upload Analysis Data to Firebase
+1. Open up `analysis.csv` in `Krakenbot\LocalScripts\`
+2. Add all analysis data under the columns<br/>
+   **DO NOT** change/reorder the columns without updating `upload_analysis.py`
+   - `tokens`: Token ID ***(E.g. BTC)***
+   - `risk`: Risk of that Token + Goal ***(High / Medium / Low)***
+   - `goal_length`: Financial goal of that analysis ***(Long / Medium / Short)***
+   - `summary`: Short analysis/summary of that token + risk + goal
+   - `analysis`: Long/Full version of analysis
+   - `technical_analysis`: Technical version of analysis
+3. Run `upload_analysis.py`
+   - You will need `ENV` file with database credentials ready
+    ```bash
+    python Krakenbot/LocalScripts/upload_analysis.py
+    ```
