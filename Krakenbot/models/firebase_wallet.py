@@ -53,8 +53,8 @@ class FirebaseWallet:
 		if to_fiat and previous_amount is not None:
 			profit = round(to_amount - previous_amount, 2)
 
-		self.__update(from_token, -from_amount, operate_by, 2 if from_fiat else None)
-		self.__upsert(to_token, to_amount, operate_by, 2 if to_fiat else None)
+		from_after_trade = self.__update(from_token, -from_amount, operate_by, 2 if from_fiat else None)
+		to_after_trade = self.__upsert(to_token, to_amount, operate_by, 2 if to_fiat else None)
 
 		transaction = self.__transaction_collection.document()
 		transaction.set({
@@ -66,7 +66,9 @@ class FirebaseWallet:
 			'operated_by': operate_by,
 			'bot_id': bot_id,
 			'trade_type': trade_type,
-			'profit': profit
+			'profit': profit,
+			'from_amount_after_trade': from_after_trade,
+			'to_amount_after_trade': to_after_trade
 		})
 		transaction.update({ 'id': transaction.id })
 
@@ -88,7 +90,7 @@ class FirebaseWallet:
 
 		return trade_result
 
-	def __update(self, token, change, type = USER_NAME, rounding: int | None = None):
+	def __update(self, token, change, type = USER_NAME, rounding: int | None = None) -> float:
 		amount_field = self.BOT_AMOUNT if type != self.USER_NAME else self.USER_AMOUNT
 		doc_ref = self.__wallet_collection.document(token)
 		doc = doc_ref.get()
@@ -102,7 +104,10 @@ class FirebaseWallet:
 
 		doc_ref.update({ amount_field: new_value })
 
-	def __upsert(self, token, change, type = USER_NAME, rounding: int | None = None):
+		updated_doc = doc_ref.get().to_dict()
+		return updated_doc[self.BOT_AMOUNT] + updated_doc[self.USER_AMOUNT]
+
+	def __upsert(self, token, change, type = USER_NAME, rounding: int | None = None) -> float:
 		amount_field = self.BOT_AMOUNT if type != self.USER_NAME else self.USER_AMOUNT
 		doc_ref = self.__wallet_collection.document(token)
 		doc = doc_ref.get()
@@ -117,6 +122,9 @@ class FirebaseWallet:
 			doc_ref.update({ amount_field: new_value })
 		else:
 			doc_ref.set({ 'token_id': token, amount_field: change })
+
+		updated_doc = doc_ref.get().to_dict()
+		return updated_doc[self.BOT_AMOUNT] + updated_doc[self.USER_AMOUNT]
 
 	def update_amount(self, token, change):
 		is_fiat = FirebaseToken().get(token).get('is_fiat', False)
