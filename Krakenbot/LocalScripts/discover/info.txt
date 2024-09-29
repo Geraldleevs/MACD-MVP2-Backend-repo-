@@ -1,5 +1,2 @@
 Save the file as docx format, with token_id as filename
 E.g. BTC.docx
-
-Or save the file as md format, where you will have to apply markdown command on your own
-E.g. BTC.md

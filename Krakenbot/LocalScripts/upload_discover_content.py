@@ -25,13 +25,6 @@ def main():
             md = markdownify(html)
             firebase.save(token_id, md)
 
-    for file in glob.glob(input_dir + '*.md'):
-        print(f'Processing {file}')
-        token_id = file.split('\\')[-1].removesuffix('.md').upper()
-        with open(file, "r", encoding='utf-8') as md_file:
-            markdown = md_file.read().replace('\n', '<br/>')
-            firebase.save(token_id, markdown)
-
 if __name__ == '__main__':
     main()
     print('Done')
