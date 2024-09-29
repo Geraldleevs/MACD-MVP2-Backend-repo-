@@ -599,4 +599,5 @@ ADDRESS="0.0.0.0" # Must be set
 1. Create a `'.docx'` or `'.md'` file in `/Krakenbot/LocalScripts/discover/`
    - Use markdown commands if you are using `'.md'` files
    - Save the file with token_id as name, E.g. `BTC.docx` / `BTC.md`
+   - If multiple files saved with same token name, `'.md'` file is prioritised
 2. Run `upload_discover_content.py`
