@@ -73,6 +73,7 @@ class UpdateHistoryPrices:
 	def __update_user_history(self, prices: dict[str, float]):
 		all_user_id = FirebaseUsers().get_all_user_id()
 		current_time = timezone.now()
+		commit_data = []
 		for uid in all_user_id:
 			wallet = FirebaseWallet(uid).get_wallet()
 			value = 0
@@ -86,7 +87,9 @@ class UpdateHistoryPrices:
 				except KeyError:
 					continue
 
-			FirebaseUsers(uid).update_portfolio_value(value, current_time)
+			commit_data.append({ 'uid': uid, 'time': current_time, 'value': value })
+
+		FirebaseUsers().batch_update_portfolio(commit_data)
 
 
 	async def update(self, request: Request):
