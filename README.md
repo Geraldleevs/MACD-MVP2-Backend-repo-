@@ -7,19 +7,6 @@
 ### Libraries Installation
 ```bash
 pip install -r requirements.txt
-
-# OR
-
-pip install numpy
-pip install pandas
-pip install streamlit
-pip install django
-pip install djangorestframework
-pip install plotly
-pip install requests
-pip install firebase
-pip install aiohttp
-pip install aiohttp asyncio
 ```
 
 #### To install TA-Lib
@@ -605,3 +592,11 @@ ADDRESS="0.0.0.0" # Must be set
 3. Move `BTCGBP_1.csv` into `/Krakenbot/LocalScripts/binance_data/` besides `BTCUSDT_1.csv`
 4. In `binance_to_candle.py`, change `combine_only = False`, and change other variables if needed (Such as filenames, column names...)
 5. Run the file again
+
+<hr/>
+
+### Upload Discover's About Content
+1. Create a `'.docx'` or `'.md'` file in `/Krakenbot/LocalScripts/discover/`
+   - Use markdown commands if you are using `'.md'` files
+   - Save the file with token_id as name, E.g. `BTC.docx` / `BTC.md`
+2. Run `upload_discover_content.py`
