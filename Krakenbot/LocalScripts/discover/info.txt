@@ -1,0 +1,2 @@
+Save the file as docx format, with token_id as filename
+E.g. BTC.docx
