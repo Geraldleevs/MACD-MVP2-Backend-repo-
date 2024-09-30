@@ -14,6 +14,7 @@ from Krakenbot.models.news import News
 from Krakenbot.models.trade import BadRequestException, NotAuthorisedException, Trade
 from Krakenbot.models.update_candles import UpdateCandles
 from Krakenbot.models.update_history_prices import UpdateHistoryPrices
+from decimal import Decimal
 
 class MarketView(APIView):
 	def get(self, request: Request):
