@@ -521,6 +521,25 @@ None
 
 <hr/>
 
+### Recalibrate Bot
+
+Recalibrate Bot Amount from Livetrades: `http://127.0.0.1:8000/api/recalibrate-bot [POST]`
+
+Only works on `PYTHON_ENV="development"`
+
+<details>
+<summary>
+Endpoint details
+</summary>
+
+```
+URL: http://127.0.0.1:8000/api/recalibrate-bot
+Response: None
+```
+</details>
+
+<hr/>
+
 ## Google Cloud Deployment
 ### Environment Variables
 ```bash

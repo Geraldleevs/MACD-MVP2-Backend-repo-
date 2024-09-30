@@ -160,3 +160,7 @@ class FirebaseWallet:
 	def get_transaction(self):
 		docs = self.__transaction_collection.order_by('-time').stream()
 		return [{**doc.to_dict()} for doc in docs]
+
+	def set_bot_amount(self, token, bot_amount):
+		doc_ref = self.__wallet_collection.document(token)
+		doc_ref.update({self.BOT_AMOUNT: bot_amount})

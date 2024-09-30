@@ -1,11 +1,14 @@
 import asyncio
+import os
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from Krakenbot.exceptions import ServerErrorException, SessionExpiredException
 from Krakenbot.models.auto_livetrade import AutoLiveTrade
 from Krakenbot.models.backtest import BackTest
-from Krakenbot.models.firebase_wallet import NotEnoughTokenException
+from Krakenbot.models.firebase_livetrade import FirebaseLiveTrade
+from Krakenbot.models.firebase_users import FirebaseUsers
+from Krakenbot.models.firebase_wallet import FirebaseWallet, NotEnoughTokenException
 from Krakenbot.models.market import Market
 from Krakenbot.models.news import News
 from Krakenbot.models.trade import BadRequestException, NotAuthorisedException, Trade
@@ -77,3 +80,30 @@ class UpdateCandlesView(APIView):
 			return Response(status=200)
 		except NotAuthorisedException:
 			return Response(status=401)
+
+
+class RecalibrateBotView(APIView):
+	def post(self, request: Request):
+		if os.environ.get('PYTHON_ENV') != 'development':
+			return Response(status=404)
+
+		uids = FirebaseUsers().get_all_user_id()
+		for uid in uids:
+			firebase_livetrade = FirebaseLiveTrade()
+			livetrades = firebase_livetrade.filter(uid=uid, is_active=True)
+			if len(livetrades) == 0:
+				continue
+
+			wallet = {}
+			for livetrade in livetrades:
+				cur_token = livetrade.get('cur_token', None)
+				if cur_token is None:
+					continue
+				amount = livetrade.get('amount', 0)
+				wallet[cur_token] = wallet.get(cur_token, 0) + amount
+
+			firebase_wallet = FirebaseWallet(uid)
+			for token in wallet:
+				amount = wallet.get(token, 0)
+				firebase_wallet.set_bot_amount(token, amount)
+		return Response(status=200)
