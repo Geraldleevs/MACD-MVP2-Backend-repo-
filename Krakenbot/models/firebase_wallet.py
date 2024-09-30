@@ -105,7 +105,7 @@ class FirebaseWallet:
 		doc_ref.update({ amount_field: new_value })
 
 		updated_doc = doc_ref.get().to_dict()
-		return updated_doc[self.BOT_AMOUNT] + updated_doc[self.USER_AMOUNT]
+		return updated_doc.get(self.BOT_AMOUNT, 0) + updated_doc.get(self.USER_AMOUNT, 0)
 
 	def __upsert(self, token, change, type = USER_NAME, rounding: int | None = None) -> float:
 		amount_field = self.BOT_AMOUNT if type != self.USER_NAME else self.USER_AMOUNT
@@ -124,7 +124,7 @@ class FirebaseWallet:
 			doc_ref.set({ 'token_id': token, amount_field: change })
 
 		updated_doc = doc_ref.get().to_dict()
-		return updated_doc[self.BOT_AMOUNT] + updated_doc[self.USER_AMOUNT]
+		return updated_doc.get(self.BOT_AMOUNT, 0) + updated_doc.get(self.USER_AMOUNT, 0)
 
 	def update_amount(self, token, change):
 		is_fiat = FirebaseToken().get(token).get('is_fiat', False)
@@ -160,3 +160,7 @@ class FirebaseWallet:
 	def get_transaction(self):
 		docs = self.__transaction_collection.order_by('-time').stream()
 		return [{**doc.to_dict()} for doc in docs]
+
+	def set_bot_amount(self, token, bot_amount):
+		doc_ref = self.__wallet_collection.document(token)
+		doc_ref.update({self.BOT_AMOUNT: bot_amount})

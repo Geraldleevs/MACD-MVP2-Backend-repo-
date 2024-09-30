@@ -86,7 +86,7 @@ class FirebaseLiveTrade:
 		docs = self.__livetrade.stream()
 		return [doc.to_dict() for doc in docs]
 
-	def filter(self, strategy = None, timeframe = None, token_id = None, is_active = None, fiat = None):
+	def filter(self, strategy = None, timeframe = None, token_id = None, is_active = None, fiat = None, uid = None):
 		query = self.__livetrade
 
 		if strategy is not None:
@@ -103,6 +103,9 @@ class FirebaseLiveTrade:
 
 		if fiat is not None:
 			query = query.where(filter=FieldFilter('fiat', '==', fiat))
+
+		if uid is not None:
+			query = query.where(filter=FieldFilter('uid', '==', uid))
 
 		docs = query.stream()
 		return [doc.to_dict() for doc in docs]
