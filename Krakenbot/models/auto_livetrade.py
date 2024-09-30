@@ -1,3 +1,4 @@
+from decimal import Decimal
 from Krakenbot.Realtime_Backtest import apply_backtest, get_livetrade_result
 from Krakenbot.exceptions import NotEnoughTokenException
 from Krakenbot.models.firebase_livetrade import FirebaseLiveTrade
@@ -28,7 +29,7 @@ class AutoLiveTrade:
 				from_token = decision['cur_token']
 				to_token = decision['fiat'] if decision['cur_token'] == decision['token_id'] else decision['token_id']
 				from_amount = decision['amount']
-				to_amount = from_amount * prices[decision['token_id']]
+				to_amount = Decimal(str(from_amount)) * Decimal(str(prices[decision['token_id']]))
 				bot_name = decision['name']
 				bot_id = decision['livetrade_id']
 				trade_result = FirebaseWallet(decision['uid']).trade_by_krakenbot(from_token, from_amount, to_token, to_amount, bot_name, bot_id)
@@ -40,7 +41,7 @@ class AutoLiveTrade:
 					'Livetrade': decision.get('livetrade_id'),
 					'UID': decision.get('uid', 'No User Found'),
 					'From': f'{decision.get('amount', 'No Amount')} {decision.get('cur_token', 'No Token Found')}',
-					'To': f'{decision.get('amount', 0) * prices.get(decision.get('token_id', ''), 0)} {decision['fiat'] if decision.get('cur_token', '1') == decision.get('token_id', '2') else decision.get('token_id', 'No Token Found')}',
+					'To': f'{Decimal(str(decision.get('amount', 0))) * Decimal(str(prices.get(decision.get('token_id', ''), 0)))} {decision['fiat'] if decision.get('cur_token', '1') == decision.get('token_id', '2') else decision.get('token_id', 'No Token Found')}',
 				}
 				log_warning(message)
 
@@ -50,7 +51,7 @@ class AutoLiveTrade:
 					'Livetrade': decision.get('livetrade_id'),
 					'UID': decision.get('uid'),
 					'From': f'{decision.get('amount')} {decision.get('cur_token')}',
-					'To': f'{decision.get('amount') * prices.get(decision.get('token_id'))} {decision['fiat'] if decision.get('cur_token') == decision.get('token_id') else decision.get('token_id')}',
+					'To': f'{Decimal(str(decision.get('amount'))) * Decimal(str(prices.get(decision.get('token_id'))))} {decision['fiat'] if decision.get('cur_token') == decision.get('token_id') else decision.get('token_id')}',
 				}
 				log_warning(message)
 

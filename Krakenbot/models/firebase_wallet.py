@@ -1,3 +1,4 @@
+from decimal import Decimal
 from Krakenbot import settings
 from django.utils import timezone
 from google.cloud.firestore_v1.base_query import FieldFilter
@@ -33,6 +34,10 @@ class FirebaseWallet:
 		wallet.set({ 'token_id': token, self.USER_AMOUNT: amount })
 
 	def __trade(self, from_token, from_amount, to_token, to_amount, operate_by = USER_NAME, bot_id = None, previous_amount = None):
+		from_amount = Decimal(str(from_amount))
+		to_amount = Decimal(str(to_amount))
+		if previous_amount is not None:
+			previous_amount = Decimal(str(previous_amount))
 		firebase_token = FirebaseToken()
 		from_fiat = firebase_token.get(from_token).get('is_fiat', False)
 		to_fiat = firebase_token.get(to_token).get('is_fiat', False)
@@ -90,7 +95,8 @@ class FirebaseWallet:
 
 		return trade_result
 
-	def __update(self, token, change, type = USER_NAME, rounding: int | None = None) -> float:
+	def __update(self, token, change, type = USER_NAME, rounding: int | None = None) -> Decimal:
+		change = Decimal(str(change))
 		amount_field = self.BOT_AMOUNT if type != self.USER_NAME else self.USER_AMOUNT
 		doc_ref = self.__wallet_collection.document(token)
 		doc = doc_ref.get()
@@ -98,22 +104,23 @@ class FirebaseWallet:
 		if change < 0 and (not doc.exists or doc.to_dict().get(amount_field, 0) < (change * -1)):
 			raise NotEnoughTokenException()
 
-		new_value = doc.to_dict().get(amount_field, 0) + change
+		new_value = Decimal(str(doc.to_dict().get(amount_field, 0))) + change
 		if rounding is not None:
 			new_value = round(new_value, rounding)
 
 		doc_ref.update({ amount_field: new_value })
 
 		updated_doc = doc_ref.get().to_dict()
-		return updated_doc.get(self.BOT_AMOUNT, 0) + updated_doc.get(self.USER_AMOUNT, 0)
+		return Decimal(str(updated_doc.get(self.BOT_AMOUNT, 0))) + Decimal(str(updated_doc.get(self.USER_AMOUNT, 0)))
 
-	def __upsert(self, token, change, type = USER_NAME, rounding: int | None = None) -> float:
+	def __upsert(self, token, change, type = USER_NAME, rounding: int | None = None) -> Decimal:
+		change = Decimal(str(change))
 		amount_field = self.BOT_AMOUNT if type != self.USER_NAME else self.USER_AMOUNT
 		doc_ref = self.__wallet_collection.document(token)
 		doc = doc_ref.get()
 
 		if doc.exists:
-			new_value = doc.to_dict().get(amount_field, 0) + change
+			new_value = Decimal(str(doc.to_dict().get(amount_field, 0))) + change
 			if rounding is not None:
 				new_value = round(new_value, rounding)
 
@@ -124,17 +131,20 @@ class FirebaseWallet:
 			doc_ref.set({ 'token_id': token, amount_field: change })
 
 		updated_doc = doc_ref.get().to_dict()
-		return updated_doc.get(self.BOT_AMOUNT, 0) + updated_doc.get(self.USER_AMOUNT, 0)
+		return Decimal(str(updated_doc.get(self.BOT_AMOUNT, 0))) + Decimal(str(updated_doc.get(self.USER_AMOUNT, 0)))
 
 	def update_amount(self, token, change):
+		change = Decimal(str(change))
 		is_fiat = FirebaseToken().get(token).get('is_fiat', False)
 		self.__update(token, change, self.USER_NAME, 2 if is_fiat else None)
 
 	def update_krakenbot_amount(self, token, change):
+		change = Decimal(str(change))
 		is_fiat = FirebaseToken().get(token).get('is_fiat', False)
 		self.__update(token, change, self.BOT_NAME, 2 if is_fiat else None)
 
 	def reserve_krakenbot_amount(self, token, amount):
+		amount = Decimal(str(amount))
 		is_fiat = FirebaseToken().get(token).get('is_fiat', False)
 		self.__update(token, -amount, self.USER_NAME, 2 if is_fiat else None)
 		self.__update(token, amount, self.BOT_NAME, 2 if is_fiat else None)
@@ -143,6 +153,7 @@ class FirebaseWallet:
 		return wallet.get().to_dict()
 
 	def unreserve_krakenbot_amount(self, token, amount):
+		amount = Decimal(str(amount))
 		is_fiat = FirebaseToken().get(token).get('is_fiat', False)
 		self.__update(token, -amount, self.BOT_NAME, 2 if is_fiat else None)
 		self.__update(token, amount, self.USER_NAME, 2 if is_fiat else None)
@@ -162,5 +173,6 @@ class FirebaseWallet:
 		return [{**doc.to_dict()} for doc in docs]
 
 	def set_bot_amount(self, token, bot_amount):
+		bot_amount = Decimal(str(bot_amount))
 		doc_ref = self.__wallet_collection.document(token)
-		doc_ref.update({self.BOT_AMOUNT: bot_amount})
+		doc_ref.update({ self.BOT_AMOUNT: bot_amount })
