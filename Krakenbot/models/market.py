@@ -1,5 +1,4 @@
 import asyncio
-from decimal import Decimal
 from typing import Literal
 from rest_framework.request import Request
 from Krakenbot.exceptions import BadRequestException
@@ -21,8 +20,8 @@ class Market:
 		return result
 
 	def __get_price(self, result, property_path):
-		price = Decimal(str(result[property_path][0]))
-		last_open = Decimal(str(result['last_close']))
+		price = float(result[property_path][0])
+		last_open = float(result['last_close'])
 		if property_path == 'bid' and price > 0:
 			price = 1 / price
 			try:
@@ -113,5 +112,5 @@ class Market:
 		usd_rate = asyncio.run(usd_to_gbp())
 		if not reverse_price:
 			usd_rate = 1 / usd_rate
-		usd_market = [{ 'token': price['token'], 'price': Decimal(str(price['price'])) * usd_rate, 'last_close': Decimal(str(price['last_close'])) * usd_rate } for price in usd_market]
+		usd_market = [{ 'token': price['token'], 'price': price['price'] * usd_rate, 'last_close': price['last_close'] * usd_rate } for price in usd_market]
 		return [*market, *usd_market]

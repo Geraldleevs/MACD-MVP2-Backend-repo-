@@ -1,4 +1,3 @@
-from decimal import Decimal
 import os
 from Krakenbot.exceptions import BadRequestException, NotAuthorisedException
 from Krakenbot.models.firebase_livetrade import FirebaseLiveTrade
@@ -105,8 +104,8 @@ class Trade:
 		try:
 			firebase = FirebaseWallet(uid)
 			price = Market().get_market(convert_from=from_token, convert_to=to_token)[0]['price']
-			from_amount = Decimal(str(from_amount))
-			to_amount = from_amount * Decimal(str(price))
+			from_amount = float(from_amount)
+			to_amount = from_amount * price
 			transaction = firebase.trade_by_user(from_token, from_amount, to_token, to_amount)
 			return transaction
 		except (IndexError, ValueError, KeyError):

@@ -1,4 +1,3 @@
-from decimal import Decimal
 import os
 import asyncio
 import aiohttp
@@ -32,7 +31,7 @@ class UpdateHistoryPrices:
 			if response.status == 200:
 				kraken_results = await response.json()
 				if len(kraken_results['error']) > 0:
-					return (pair, [timezone.now() - timedelta(minutes=self.HISTORY_COUNT), timezone.now()], [Decimal(0), Decimal(0)])
+					return (pair, [timezone.now() - timedelta(minutes=self.HISTORY_COUNT), timezone.now()], [0, 0])
 
 				results = clean_kraken_pair(kraken_results)[pair]
 				try:
@@ -41,10 +40,10 @@ class UpdateHistoryPrices:
 					pass # Get all results (Capped at 720 by Kraken)
 
 				times = [timezone.datetime.fromtimestamp(result[0]) for result in results]
-				close_prices = [Decimal(str(result[4])) for result in results] # Get close price only
+				close_prices = [float(result[4]) for result in results] # Get close price only
 
 				return (pair, times, close_prices)
-			return (pair, timezone.now() - timedelta(minutes=self.HISTORY_COUNT), [Decimal(0), Decimal(0)])
+			return (pair, timezone.now() - timedelta(minutes=self.HISTORY_COUNT), [0, 0])
 
 	async def __fetch_gecko_metrics(self, tokens: dict[str, str]):
 		query = { 'vs_currency': self.FIAT, 'ids': ','.join([token for token in tokens]) }
@@ -77,14 +76,14 @@ class UpdateHistoryPrices:
 		commit_data = []
 		for uid in all_user_id:
 			wallet = FirebaseWallet(uid).get_wallet()
-			value = Decimal(0)
+			value = 0
 
 			for token in wallet:
 				try:
 					token_id = token['id']
-					total_amount = Decimal(str(token.get('amount', 0))) + Decimal(str(token.get('krakenbot_amount', 0)))
+					total_amount = token.get('amount', 0) + token.get('krakenbot_amount', 0)
 					if total_amount > 0:
-						value += Decimal(str(prices.get(token_id, 0))) * total_amount
+						value += prices.get(token_id, 0) * total_amount
 				except KeyError:
 					continue
 
