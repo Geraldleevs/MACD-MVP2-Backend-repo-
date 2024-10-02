@@ -3,7 +3,7 @@ from typing import Literal
 from rest_framework.request import Request
 from Krakenbot.exceptions import BadRequestException
 from Krakenbot.models.firebase_token import FirebaseToken
-from Krakenbot.utils import clean_kraken_pair, usd_to_gbp
+from Krakenbot.utils import acc_calc, clean_kraken_pair, usd_to_gbp
 import requests
 
 class Market:
@@ -23,9 +23,9 @@ class Market:
 		price = float(result[property_path][0])
 		last_open = float(result['last_close'])
 		if property_path == 'bid' and price > 0:
-			price = 1 / price
+			price = acc_calc(1, '/', price)
 			try:
-				last_open = 1 / last_open
+				last_open = acc_calc(1, '/', last_open)
 			except ZeroDivisionError:
 				last_open = 0
 		return (price, last_open)
@@ -111,6 +111,12 @@ class Market:
 		usd_market = [price for price in usd_market if price['token'] in other_tokens and price['token'] not in all_market_token]
 		usd_rate = asyncio.run(usd_to_gbp())
 		if not reverse_price:
-			usd_rate = 1 / usd_rate
-		usd_market = [{ 'token': price['token'], 'price': price['price'] * usd_rate, 'last_close': price['last_close'] * usd_rate } for price in usd_market]
+			usd_rate = acc_calc(1, '/', usd_rate)
+
+		usd_market = [{
+			'token': price['token'],
+			'price': acc_calc(price['price'], '*', usd_rate),
+			'last_close': acc_calc(price['last_close'], '*', usd_rate)
+		} for price in usd_market]
+
 		return [*market, *usd_market]

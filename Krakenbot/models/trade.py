@@ -2,6 +2,7 @@ import os
 from Krakenbot.exceptions import BadRequestException, NotAuthorisedException
 from Krakenbot.models.firebase_livetrade import FirebaseLiveTrade
 from Krakenbot.models.firebase_wallet import FirebaseWallet
+from Krakenbot.utils import acc_calc
 from rest_framework.request import Request
 from rest_framework.authentication import get_authorization_header
 from Krakenbot.models.market import Market
@@ -105,7 +106,7 @@ class Trade:
 			firebase = FirebaseWallet(uid)
 			price = Market().get_market(convert_from=from_token, convert_to=to_token)[0]['price']
 			from_amount = float(from_amount)
-			to_amount = from_amount * price
+			to_amount = acc_calc(from_amount, '*', price)
 			transaction = firebase.trade_by_user(from_token, from_amount, to_token, to_amount)
 			return transaction
 		except (IndexError, ValueError, KeyError):

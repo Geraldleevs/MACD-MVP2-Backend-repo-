@@ -14,6 +14,7 @@ from Krakenbot.models.news import News
 from Krakenbot.models.trade import BadRequestException, NotAuthorisedException, Trade
 from Krakenbot.models.update_candles import UpdateCandles
 from Krakenbot.models.update_history_prices import UpdateHistoryPrices
+from Krakenbot.utils import acc_calc
 
 class MarketView(APIView):
 	def get(self, request: Request):
@@ -100,7 +101,7 @@ class RecalibrateBotView(APIView):
 				if cur_token is None:
 					continue
 				amount = livetrade.get('amount', 0)
-				wallet[cur_token] = wallet.get(cur_token, 0) + amount
+				wallet[cur_token] = acc_calc(wallet.get(cur_token, 0), '+', amount)
 
 			firebase_wallet = FirebaseWallet(uid)
 			for token in wallet:
