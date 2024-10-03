@@ -44,5 +44,5 @@ data/Kraken/*.csv
 Krakenbot/kraken_data_api
 Krakenbot/LocalScripts/data/*/*.csv
 Krakenbot/LocalScripts/binance_data/**/*.csv
-Krakenbot/LocalScripts/discover/*.docx
+Krakenbot/LocalScripts/discover/[a-zA-Z0-9]*.docx
 Krakenbot/LocalScripts/discover/*.md
