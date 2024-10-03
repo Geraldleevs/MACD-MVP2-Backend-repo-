@@ -90,6 +90,18 @@ docker rm KrakenBot # Remove container
 docker rmi KrakenBot # Remove image
 ```
 
+## <span style="color: #FF0000">**IMPORTANT FOR DEVELOPERS**</span>
+### **Inaccurate Calculations**
+- Use `utils.py > acc_calc(num1, op, num2, decimal_point)` for any calculations, especially money/token related
+  - `num1` and `num2` can be in any form, including `float`, `int`, `str`, `Decimal`
+  - `op` can be `+`, `-`, `*`, `/`, `%`
+  - `decimal_point` defaulted to 18, which is standard decimal points for cryptocurrencies
+- <span style="color: #FF0000">**DO NOT**</span> perform your own calculation, as python has serious floating-point issue, especially on cryptocurrencies with many decimal points
+  - Unless you perform necessary steps to prevent that
+
+
+<hr />
+
 ## REST API Endpoints
 
 ### Market

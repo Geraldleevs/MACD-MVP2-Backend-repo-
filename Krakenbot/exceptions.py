@@ -19,3 +19,7 @@ class ServerErrorException(Exception):
 
 class NoUserSelectedException(Exception):
 	pass
+
+
+class InvalidCalculationException(Exception):
+	pass
