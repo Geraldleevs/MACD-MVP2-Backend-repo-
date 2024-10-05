@@ -3,7 +3,7 @@ import os
 import sys
 import requests
 from typing import Literal
-from decimal import Decimal
+from decimal import ROUND_DOWN, Decimal, Context, setcontext
 from rest_framework.request import Request
 from Krakenbot.exceptions import InvalidCalculationException
 from rest_framework.authentication import get_authorization_header
@@ -109,6 +109,7 @@ def acc_calc(
 		decimal_count = 18
 	) -> float:
 	try:
+		setcontext(Context(prec=decimal_count, rounding=ROUND_DOWN))
 		num1 = Decimal(str(num1))
 		num2 = Decimal(str(num2))
 	except Exception:
@@ -134,7 +135,6 @@ def acc_calc(
 		case _:
 			raise InvalidCalculationException()
 
-	result = round(result, decimal_count)
 	return float(result)
 
 
