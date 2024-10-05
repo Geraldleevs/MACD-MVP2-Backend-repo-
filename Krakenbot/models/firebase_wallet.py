@@ -5,6 +5,7 @@ from google.cloud.firestore_v1.collection import CollectionReference
 from Krakenbot.exceptions import NotEnoughTokenException
 from Krakenbot.models.firebase_livetrade import FirebaseLiveTrade
 from Krakenbot.models.firebase_token import FirebaseToken
+from Krakenbot.utils import acc_calc
 
 class FirebaseWallet:
 	USER_AMOUNT = 'amount'
@@ -51,10 +52,10 @@ class FirebaseWallet:
 
 		profit = None
 		if to_fiat and previous_amount is not None:
-			profit = round(to_amount - previous_amount, 2)
+			profit = acc_calc(to_amount, '-', previous_amount, 2)
 
-		self.__update(from_token, -from_amount, operate_by, 2 if from_fiat else None)
-		self.__upsert(to_token, to_amount, operate_by, 2 if to_fiat else None)
+		from_after_trade = self.__update(from_token, -from_amount, operate_by, 2 if from_fiat else None)
+		to_after_trade = self.__upsert(to_token, to_amount, operate_by, 2 if to_fiat else None)
 
 		transaction = self.__transaction_collection.document()
 		transaction.set({
@@ -66,7 +67,9 @@ class FirebaseWallet:
 			'operated_by': operate_by,
 			'bot_id': bot_id,
 			'trade_type': trade_type,
-			'profit': profit
+			'profit': profit,
+			'from_amount_after_trade': from_after_trade,
+			'to_amount_after_trade': to_after_trade
 		})
 		transaction.update({ 'id': transaction.id })
 
@@ -88,7 +91,7 @@ class FirebaseWallet:
 
 		return trade_result
 
-	def __update(self, token, change, type = USER_NAME, rounding: int | None = None):
+	def __update(self, token, change, type = USER_NAME, rounding: int | None = None) -> float:
 		amount_field = self.BOT_AMOUNT if type != self.USER_NAME else self.USER_AMOUNT
 		doc_ref = self.__wallet_collection.document(token)
 		doc = doc_ref.get()
@@ -96,19 +99,22 @@ class FirebaseWallet:
 		if change < 0 and (not doc.exists or doc.to_dict().get(amount_field, 0) < (change * -1)):
 			raise NotEnoughTokenException()
 
-		new_value = doc.to_dict().get(amount_field, 0) + change
+		new_value = acc_calc(doc.to_dict().get(amount_field, 0), '+', change)
 		if rounding is not None:
 			new_value = round(new_value, rounding)
 
 		doc_ref.update({ amount_field: new_value })
 
-	def __upsert(self, token, change, type = USER_NAME, rounding: int | None = None):
+		updated_doc = doc_ref.get().to_dict()
+		return acc_calc(updated_doc.get(self.BOT_AMOUNT, 0), '+', updated_doc.get(self.USER_AMOUNT, 0))
+
+	def __upsert(self, token, change, type = USER_NAME, rounding: int | None = None) -> float:
 		amount_field = self.BOT_AMOUNT if type != self.USER_NAME else self.USER_AMOUNT
 		doc_ref = self.__wallet_collection.document(token)
 		doc = doc_ref.get()
 
 		if doc.exists:
-			new_value = doc.to_dict().get(amount_field, 0) + change
+			new_value = acc_calc(doc.to_dict().get(amount_field, 0), '+', change)
 			if rounding is not None:
 				new_value = round(new_value, rounding)
 
@@ -117,6 +123,9 @@ class FirebaseWallet:
 			doc_ref.update({ amount_field: new_value })
 		else:
 			doc_ref.set({ 'token_id': token, amount_field: change })
+
+		updated_doc = doc_ref.get().to_dict()
+		return acc_calc(updated_doc.get(self.BOT_AMOUNT, 0), '+', updated_doc.get(self.USER_AMOUNT, 0))
 
 	def update_amount(self, token, change):
 		is_fiat = FirebaseToken().get(token).get('is_fiat', False)
@@ -152,3 +161,7 @@ class FirebaseWallet:
 	def get_transaction(self):
 		docs = self.__transaction_collection.order_by('-time').stream()
 		return [{**doc.to_dict()} for doc in docs]
+
+	def set_bot_amount(self, token, bot_amount):
+		doc_ref = self.__wallet_collection.document(token)
+		doc_ref.update({self.BOT_AMOUNT: bot_amount})

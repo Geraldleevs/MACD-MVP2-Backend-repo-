@@ -1,6 +1,14 @@
 from datetime import datetime
+from typing import TypedDict
 from Krakenbot import settings
 from google.cloud.firestore_v1.base_query import FieldFilter
+
+from Krakenbot.exceptions import NoUserSelectedException
+
+class PortfolioValues(TypedDict):
+	uid: str
+	value: float
+	time: datetime
 
 class FirebaseUsers:
 	def __init__(self, uid = None):
@@ -11,16 +19,38 @@ class FirebaseUsers:
 			self.__user_doc = None
 
 	def update_portfolio_value(self, value: float, time: datetime):
-		portfolio = self.__user_doc.get().to_dict().get('portfolio', [])
+		'''
+		raise `NoUserSelectedException` if not initialised with uid
+		'''
+		if self.__user_doc is None:
+			raise NoUserSelectedException()
+
 		time = datetime(time.year, time.month, time.day, time.hour, tzinfo=time.tzinfo)
 		current_timestamp = time.timestamp()
-		if len(portfolio) > 0:
-			last_timestamp = portfolio[-1]['time'].timestamp()
-			if last_timestamp - current_timestamp == 0:
-				portfolio.pop()
-		portfolio.append({ 'time': time, 'value': value })
+		portfolio = self.__user_doc.collection('portfolio').document(str(current_timestamp))
+		portfolio.set({ 'time': time, 'value': value })
 
-		self.__user_doc.update({ 'portfolio': portfolio })
+	def batch_update_portfolio(self, values: list[PortfolioValues]):
+		batch = settings.db_batch
+
+		for value in values:
+			time = value['time']
+			time = datetime(time.year, time.month, time.day, time.hour, tzinfo=time.tzinfo)
+			current_timestamp = time.timestamp()
+			user_portfolio = self.__users.document(value['uid']).collection('portfolio').document(str(current_timestamp))
+			batch.set(user_portfolio, { 'time': time, 'value': value['value'] })
+
+		batch.commit()
+
+	def get(self):
+		'''
+		raise `NoUserSelectedException` if not initialised with uid
+		'''
+		if self.__user_doc is None:
+			raise NoUserSelectedException()
+
+		doc = self.__user_doc.get()
+		return doc.to_dict()
 
 	def __get_all(self, include_deactivated: None | bool = None):
 		if include_deactivated == False:

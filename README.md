@@ -7,19 +7,6 @@
 ### Libraries Installation
 ```bash
 pip install -r requirements.txt
-
-# OR
-
-pip install numpy
-pip install pandas
-pip install streamlit
-pip install django
-pip install djangorestframework
-pip install plotly
-pip install requests
-pip install firebase
-pip install aiohttp
-pip install aiohttp asyncio
 ```
 
 #### To install TA-Lib
@@ -102,6 +89,18 @@ docker stop KrakenBot
 docker rm KrakenBot # Remove container
 docker rmi KrakenBot # Remove image
 ```
+
+## <span style="color: #FF0000">**IMPORTANT FOR DEVELOPERS**</span>
+### **Inaccurate Calculations**
+- Use `utils.py > acc_calc(num1, op, num2, decimal_point)` for any calculations, especially money/token related
+  - `num1` and `num2` can be in any form, including `float`, `int`, `str`, `Decimal`
+  - `op` can be `+`, `-`, `*`, `/`, `%`
+  - `decimal_point` defaulted to 18, which is standard decimal points for cryptocurrencies
+- <span style="color: #FF0000">**DO NOT**</span> perform your own calculation, as python has serious floating-point issue, especially on cryptocurrencies with many decimal points
+  - Unless you perform necessary steps to prevent that
+
+
+<hr />
 
 ## REST API Endpoints
 
@@ -534,6 +533,25 @@ None
 
 <hr/>
 
+### Recalibrate Bot
+
+Recalibrate Bot Amount from Livetrades: `http://127.0.0.1:8000/api/recalibrate-bot [POST]`
+
+Only works on `PYTHON_ENV="development"`
+
+<details>
+<summary>
+Endpoint details
+</summary>
+
+```
+URL: http://127.0.0.1:8000/api/recalibrate-bot
+Response: None
+```
+</details>
+
+<hr/>
+
 ## Google Cloud Deployment
 ### Environment Variables
 ```bash
@@ -605,6 +623,13 @@ ADDRESS="0.0.0.0" # Must be set
 3. Move `BTCGBP_1.csv` into `/Krakenbot/LocalScripts/binance_data/` besides `BTCUSDT_1.csv`
 4. In `binance_to_candle.py`, change `combine_only = False`, and change other variables if needed (Such as filenames, column names...)
 5. Run the file again
+
+<hr/>
+
+### Upload Discover's About Content
+1. Create a `'.docx'` file in `/Krakenbot/LocalScripts/discover/`
+   - Save the file with token_id as name, E.g. `BTC.docx`
+2. Run `upload_discover_content.py`
 
 <hr/>
 

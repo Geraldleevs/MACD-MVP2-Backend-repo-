@@ -7,7 +7,7 @@ from rest_framework.request import Request
 from Krakenbot.models.firebase_token import FirebaseToken
 from Krakenbot.models.firebase_users import FirebaseUsers
 from Krakenbot.models.firebase_wallet import FirebaseWallet
-from Krakenbot.utils import authenticate_scheduler_oicd, clean_kraken_pair, usd_to_gbp
+from Krakenbot.utils import acc_calc, authenticate_scheduler_oicd, clean_kraken_pair, usd_to_gbp
 from django.utils import timezone
 
 class UpdateHistoryPrices:
@@ -73,6 +73,7 @@ class UpdateHistoryPrices:
 	def __update_user_history(self, prices: dict[str, float]):
 		all_user_id = FirebaseUsers().get_all_user_id()
 		current_time = timezone.now()
+		commit_data = []
 		for uid in all_user_id:
 			wallet = FirebaseWallet(uid).get_wallet()
 			value = 0
@@ -80,13 +81,15 @@ class UpdateHistoryPrices:
 			for token in wallet:
 				try:
 					token_id = token['id']
-					total_amount = token.get('amount', 0) + token.get('krakenbot_amount', 0)
+					total_amount = acc_calc(token.get('amount', 0), '+', token.get('krakenbot_amount', 0))
 					if total_amount > 0:
-						value += prices.get(token_id, 0) * total_amount
+						value += acc_calc(prices.get(token_id, 0), '*', total_amount)
 				except KeyError:
 					continue
 
-			FirebaseUsers(uid).update_portfolio_value(value, current_time)
+			commit_data.append({ 'uid': uid, 'time': current_time, 'value': value })
+
+		FirebaseUsers().batch_update_portfolio(commit_data)
 
 
 	async def update(self, request: Request):
@@ -122,7 +125,7 @@ class UpdateHistoryPrices:
 				usd_results = [(pair.replace('USD', ''), times, close_prices) for (pair, times, close_prices) in usd_results if close_prices != [0, 0]] # Skip failed tokens
 				for (token, times, close_prices) in usd_results:
 					usd_rate = await usd_to_gbp()
-					close_prices = [close_price * usd_rate for close_price in close_prices]
+					close_prices = [acc_calc(close_price, '*', usd_rate) for close_price in close_prices]
 					all_prices[token] = close_prices[-1]
 					firebase.update_history_prices(token, times, close_prices)
 
@@ -130,7 +133,7 @@ class UpdateHistoryPrices:
 				if close_prices == [0, 0]: # Skip failed tokens
 					continue
 				if token == 'USD':
-					close_prices = [1 / price for price in close_prices]
+					close_prices = [acc_calc(1, '/', price) for price in close_prices]
 				firebase.update_history_prices(token, times, close_prices)
 				all_prices[token] = close_prices[-1]
 			firebase.commit_batch_write()
