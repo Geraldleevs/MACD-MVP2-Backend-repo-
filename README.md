@@ -61,8 +61,8 @@ DEMO_ACCOUNT_AMOUNT="10000"
 MAX_TOKEN_HISTORY_IN_DAYS="7"
 TOKEN_HISTORY_INTERVAL_IN_MINUTES="120"
 FIAT="GBP"
-TIMEFRAME_MAP="very_short->1min;short->1h;medium->4h;long->1d"
-BACKTEST_TIMEFRAME="1->1min;60->1h;240->4h;1440->1d"
+TIMEFRAME_MAP="short->1h;medium->4h;long->1d"
+BACKTEST_TIMEFRAME="60->1h;240->4h;1440->1d" # Do not use 1min for whole year data, server can't handle
 BOT_NAME="KrakenBot"
 ```
 
@@ -630,3 +630,21 @@ ADDRESS="0.0.0.0" # Must be set
 1. Create a `'.docx'` file in `/Krakenbot/LocalScripts/discover/`
    - Save the file with token_id as name, E.g. `BTC.docx`
 2. Run `upload_discover_content.py`
+
+<hr/>
+
+### Upload Analysis Data to Firebase
+1. Open up `analysis.csv` in `Krakenbot\LocalScripts\`
+2. Add all analysis data under the columns<br/>
+   **DO NOT** change/reorder the columns without updating `upload_analysis.py`
+   - `tokens`: Token ID ***(E.g. BTC)***
+   - `risk`: Risk of that Token + Goal ***(High / Medium / Low)***
+   - `goal_length`: Financial goal of that analysis ***(Long / Medium / Short)***
+   - `summary`: Short analysis/summary of that token + risk + goal
+   - `analysis`: Long/Full version of analysis
+   - `technical_analysis`: Technical version of analysis
+3. Run `upload_analysis.py`
+   - You will need `ENV` file with database credentials ready
+    ```bash
+    python Krakenbot/LocalScripts/upload_analysis.py
+    ```
