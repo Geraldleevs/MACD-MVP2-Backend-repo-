@@ -19,7 +19,13 @@ from Krakenbot.utils import acc_calc
 class MarketView(APIView):
 	def get(self, request: Request):
 		try:
-			result = Market().get_market(request)
+			convert_from = request.query_params.get('convert_from', '').strip().upper()
+			convert_to = request.query_params.get('convert_to', '').strip().upper()
+			exclude = request.query_params.get('exclude', '').strip().upper()
+			force_convert = request.query_params.get('force_convert', '').strip().upper()
+			include_inactive = request.query_params.get('include_inactive', '').strip().upper()
+
+			result = Market().get_market(convert_from, convert_to, exclude, force_convert, include_inactive)
 			return Response(result, status=200)
 		except BadRequestException:
 			return Response(status=400)
@@ -104,7 +110,8 @@ class RecalibrateBotView(APIView):
 				wallet[cur_token] = acc_calc(wallet.get(cur_token, 0), '+', amount)
 
 			firebase_wallet = FirebaseWallet(uid)
-			for token in wallet:
+			all_tokens = [token['id'] for token in firebase_wallet.get_wallet()]
+			for token in all_tokens:
 				amount = wallet.get(token, 0)
 				firebase_wallet.set_bot_amount(token, amount)
 		return Response(status=200)

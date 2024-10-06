@@ -10,20 +10,26 @@ class Market:
 	KRAKEN_PAIR_API = 'https://api.kraken.com/0/public/Ticker'
 
 	def __fetch_kraken_pair(self, token, reverse_price = False):
-		result = requests.get(self.KRAKEN_PAIR_API).json()
+		try:
+			result = requests.get(self.KRAKEN_PAIR_API).json()
 
-		if len(result['error']) > 0:
+			if len(result['error']) > 0:
+				return []
+
+			result = clean_kraken_pair(result)
+			result = self.__parse_kraken_pair(result, token, reverse_price)
+			return result
+		except Exception:
 			return []
 
-		result = clean_kraken_pair(result)
-		result = self.__parse_kraken_pair(result, token, reverse_price)
-		return result
-
 	def __get_price(self, result, property_path):
-		price = float(result[property_path][0])
-		last_open = float(result['last_close'])
-		if property_path == 'bid' and price > 0:
-			price = acc_calc(1, '/', price)
+		price = result[property_path][0]
+		last_open = result['last_close']
+		if property_path == 'bid':
+			try:
+				price = acc_calc(1, '/', price)
+			except ZeroDivisionError:
+				price = 0
 			try:
 				last_open = acc_calc(1, '/', last_open)
 			except ZeroDivisionError:
@@ -58,24 +64,14 @@ class Market:
 
 		return [{ 'token': token, 'price': price, 'last_close': last_close } for (token, (price, last_close)) in results.items()]
 
-	def get_market(self, request: Request | None = None, convert_from = '', convert_to = '', exclude = '', force_convert: Literal['FORCE'] = '', include_inactive: Literal['INCLUDE'] = ''):
-		'''
-		force_convert can only be used when convert from/to GBP, but not specific pair
-		'''
+	def get_market(self, convert_from = '', convert_to = '', exclude = '', force_convert: Literal['FORCE'] = '', include_inactive: Literal['INCLUDE'] = ''):
+		'''force_convert can only be used when convert from/to GBP, but not specific pair'''
 
-		if request is not None:
-			convert_from = request.query_params.get('convert_from', '').strip().upper()
-			convert_to = request.query_params.get('convert_to', '').strip().upper()
-			exclude = request.query_params.get('exclude', '').strip().upper()
-			force_convert = request.query_params.get('force_convert', '').strip().upper()
-			include_inactive = request.query_params.get('include_inactive', '').strip().upper()
-		else:
-			convert_from = convert_from.upper()
-			convert_to = convert_to.upper()
-			exclude = exclude.upper()
-			force_convert = force_convert.upper()
-			include_inactive = include_inactive.upper()
-
+		convert_from = convert_from.upper()
+		convert_to = convert_to.upper()
+		exclude = exclude.upper()
+		force_convert = force_convert.upper()
+		include_inactive = include_inactive.upper()
 		firebase_token = FirebaseToken()
 
 		try:
@@ -90,18 +86,28 @@ class Market:
 			raise BadRequestException()
 
 		market = self.__fetch_kraken_pair(current_token, reverse_price)
-		market.append({ 'token': current_token, 'price': 1, 'last_close': 1 })
+		market.append({ 'token': current_token, 'price': 1, 'last_close': 1 }) # Add price for current token too
 
-		specific_convert = not reverse_price and convert_to != ''
+		specific_convert = convert_to != '' and not reverse_price
 		if specific_convert:
 			market = [price for price in market if price['token'] == convert_to]
 		else:
-			other_tokens = firebase_token.filter(is_active=None) if include_inactive == 'INCLUDE' else firebase_token.all()
+			is_active = None if include_inactive == 'INCLUDE' else True
+			other_tokens = firebase_token.filter(is_active=is_active)
 			other_tokens = [token['token_id'] for token in other_tokens]
 			market = [price for price in market if price['token'] in other_tokens]
 
 		if exclude != '':
 			market = [price for price in market if price['token'] != exclude]
+
+		# Add string version of prices
+		market = [{
+			'token': price['token'],
+			'price': float(price['price']),
+			'last_close': float(price['last_close']),
+			'price_str': str(price['price']),
+			'last_close_str': str(price['last_close'])
+		} for price in market]
 
 		if specific_convert or force_convert != 'FORCE' or 'GBP' not in [convert_from, convert_to]:
 			return market
@@ -115,8 +121,10 @@ class Market:
 
 		usd_market = [{
 			'token': price['token'],
-			'price': acc_calc(price['price'], '*', usd_rate),
-			'last_close': acc_calc(price['last_close'], '*', usd_rate)
+			'price': float(acc_calc(price['price'], '*', usd_rate)),
+			'last_close': float(acc_calc(price['last_close'], '*', usd_rate)),
+			'price_str': str(acc_calc(price['last_close'], '*', usd_rate)),
+			'last_close_str': str(acc_calc(price['last_close'], '*', usd_rate))
 		} for price in usd_market]
 
 		return [*market, *usd_market]

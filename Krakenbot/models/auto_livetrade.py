@@ -20,19 +20,23 @@ class AutoLiveTrade:
 
 	def __trade(self, trade_decisions: list[dict], market_prices: list[dict[str, str | float]], trade_type: str):
 		firebase_livetrade = FirebaseLiveTrade()
-		prices = { price['token']: price['price'] for price in market_prices }
+		prices = { price['token']: price['price_str'] for price in market_prices }
 		trade_count = 0
 
 		for decision in trade_decisions:
 			try:
 				from_token = decision['cur_token']
 				to_token = decision['fiat'] if decision['cur_token'] == decision['token_id'] else decision['token_id']
-				from_amount = decision['amount']
+				from_amount = decision['amount_str']
 				to_amount = acc_calc(from_amount, '*', prices[decision['token_id']])
 				bot_name = decision['name']
 				bot_id = decision['livetrade_id']
 				trade_result = FirebaseWallet(decision['uid']).trade_by_krakenbot(from_token, from_amount, to_token, to_amount, bot_name, bot_id)
-				firebase_livetrade.update(decision['livetrade_id'], { 'amount': trade_result['to_amount'], 'cur_token': trade_result['to_token'] })
+				firebase_livetrade.update(decision['livetrade_id'], {
+					'amount': float(trade_result['to_amount']),
+					'amount_str': str(trade_result['to_amount_str']),
+					'cur_token': trade_result['to_token']
+				})
 				trade_count += 1
 			except KeyError:
 				to_amount = acc_calc(decision.get('amount', 0), '*', prices.get(decision.get('token_id', ''), 0))
