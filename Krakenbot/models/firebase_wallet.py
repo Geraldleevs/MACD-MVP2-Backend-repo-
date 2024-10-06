@@ -108,9 +108,9 @@ class FirebaseWallet:
 		doc = doc_ref.get()
 
 		if rounding is None:
-			new_value = acc_calc(doc.to_dict().get(amount_field, 0), '+', change)
+			new_value = acc_calc(doc.to_dict().get(amount_field_str, 0), '+', change)
 		else:
-			new_value = acc_calc(doc.to_dict().get(amount_field, 0), '+', change, rounding)
+			new_value = acc_calc(doc.to_dict().get(amount_field_str, 0), '+', change, rounding)
 
 		if new_value < 0:
 			raise NotEnoughTokenException()
@@ -128,9 +128,9 @@ class FirebaseWallet:
 
 		if doc.exists:
 			if rounding is None:
-				new_value = acc_calc(doc.to_dict().get(amount_field, 0), '+', change)
+				new_value = acc_calc(doc.to_dict().get(amount_field_str, 0), '+', change)
 			else:
-				new_value = acc_calc(doc.to_dict().get(amount_field, 0), '+', change, rounding)
+				new_value = acc_calc(doc.to_dict().get(amount_field_str, 0), '+', change, rounding)
 
 			if new_value < 0:
 				raise NotEnoughTokenException()
