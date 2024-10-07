@@ -106,7 +106,7 @@ class RecalibrateBotView(APIView):
 				cur_token = livetrade.get('cur_token', None)
 				if cur_token is None:
 					continue
-				amount = livetrade.get('amount', 0)
+				amount = livetrade.get('amount_str', 0)
 				wallet[cur_token] = acc_calc(wallet.get(cur_token, 0), '+', amount)
 
 			firebase_wallet = FirebaseWallet(uid)
