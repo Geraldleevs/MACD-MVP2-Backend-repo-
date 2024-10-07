@@ -5,7 +5,7 @@ from rest_framework.request import Request
 from Krakenbot.models.firebase_token import FirebaseToken
 from Krakenbot.models.firebase_wallet import FirebaseWallet
 from Krakenbot.models.market import Market
-from Krakenbot.utils import authenticate_scheduler_oicd, log_warning, log
+from Krakenbot.utils import acc_calc, authenticate_scheduler_oicd, log_warning, log
 
 class AutoLiveTrade:
 	INTERVAL = {
@@ -28,29 +28,31 @@ class AutoLiveTrade:
 				from_token = decision['cur_token']
 				to_token = decision['fiat'] if decision['cur_token'] == decision['token_id'] else decision['token_id']
 				from_amount = decision['amount']
-				to_amount = from_amount * prices[decision['token_id']]
+				to_amount = acc_calc(from_amount, '*', prices[decision['token_id']])
 				bot_name = decision['name']
 				bot_id = decision['livetrade_id']
 				trade_result = FirebaseWallet(decision['uid']).trade_by_krakenbot(from_token, from_amount, to_token, to_amount, bot_name, bot_id)
 				firebase_livetrade.update(decision['livetrade_id'], { 'amount': trade_result['to_amount'], 'cur_token': trade_result['to_token'] })
 				trade_count += 1
 			except KeyError:
+				to_amount = acc_calc(decision.get('amount', 0), '*', prices.get(decision.get('token_id', ''), 0))
 				message = {
 					'message': 'Livetrade Trading Fails due to Invalid Fields',
 					'Livetrade': decision.get('livetrade_id'),
 					'UID': decision.get('uid', 'No User Found'),
 					'From': f'{decision.get('amount', 'No Amount')} {decision.get('cur_token', 'No Token Found')}',
-					'To': f'{decision.get('amount', 0) * prices.get(decision.get('token_id', ''), 0)} {decision['fiat'] if decision.get('cur_token', '1') == decision.get('token_id', '2') else decision.get('token_id', 'No Token Found')}',
+					'To': f'{to_amount} {decision['fiat'] if decision.get('cur_token', '1') == decision.get('token_id', '2') else decision.get('token_id', 'No Token Found')}',
 				}
 				log_warning(message)
 
 			except NotEnoughTokenException:
+				to_amount = acc_calc(decision.get('amount'), '*', prices.get(decision.get('token_id')))
 				message = {
 					'message': 'Livetrade Trading Fails due to Not Enough Token',
 					'Livetrade': decision.get('livetrade_id'),
 					'UID': decision.get('uid'),
 					'From': f'{decision.get('amount')} {decision.get('cur_token')}',
-					'To': f'{decision.get('amount') * prices.get(decision.get('token_id'))} {decision['fiat'] if decision.get('cur_token') == decision.get('token_id') else decision.get('token_id')}',
+					'To': f'{to_amount} {decision['fiat'] if decision.get('cur_token') == decision.get('token_id') else decision.get('token_id')}',
 				}
 				log_warning(message)
 

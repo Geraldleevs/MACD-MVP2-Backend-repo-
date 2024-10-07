@@ -2,7 +2,10 @@ import json
 import os
 import sys
 import requests
+from typing import Literal
+from decimal import ROUND_DOWN, Decimal, Context, setcontext
 from rest_framework.request import Request
+from Krakenbot.exceptions import InvalidCalculationException
 from rest_framework.authentication import get_authorization_header
 
 try:
@@ -94,9 +97,45 @@ async def usd_to_gbp() -> float:
 		return 0
 
 	try:
-		return 1 / float(result['result']['ZGBPZUSD']['c'][0])
+		return acc_calc(1, '/', result['result']['ZGBPZUSD']['c'][0])
 	except (KeyError, ValueError):
 		return 0
+
+
+def acc_calc(
+		num1: str | float | int | Decimal,
+		op: Literal['+', '-', '*', '/', '%'],
+		num2: str | float | int | Decimal,
+		decimal_count = 18
+	) -> float:
+	try:
+		setcontext(Context(prec=decimal_count, rounding=ROUND_DOWN))
+		num1 = Decimal(str(num1))
+		num2 = Decimal(str(num2))
+	except Exception:
+		raise InvalidCalculationException()
+
+	result = Decimal(0)
+	match(op):
+		case '+':
+			result = num1 + num2
+
+		case '-':
+			result = num1 - num2
+
+		case '*':
+			result = num1 * num2
+
+		case '/':
+			result = num1 / num2
+
+		case '%':
+			result = num1 % num2
+
+		case _:
+			raise InvalidCalculationException()
+
+	return float(result)
 
 
 def log_warning(message):

@@ -24,11 +24,12 @@ class BackTest:
 			'profit': value[2],
 			'profit_percent': value[3],
 			'risk': firebase_analysis.get_risk(value[0].split(' | ')[0].split(':')[1], self.TIMEFRAMES[value[0].split(' | ')[1]], 'high'),
-			'summary': firebase_analysis.get_description(value[0].split(' | ')[0].split(':')[1], self.TIMEFRAMES[value[0].split(' | ')[1]]),
 			'strategy_description': firebase_analysis.fetch_strategy_description(),
-			'updated_on': now
+			'updated_on': now,
+			**firebase_analysis.get_analysis(value[0].split(' | ')[0].split(':')[1], self.TIMEFRAMES[value[0].split(' | ')[1]])
 		} for value in results]
 
 		firebase = FirebaseRecommendation()
+		firebase.delete_all()
 		for result in results:
 			firebase.upsert(result)

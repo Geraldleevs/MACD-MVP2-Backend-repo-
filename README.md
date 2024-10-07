@@ -61,8 +61,8 @@ DEMO_ACCOUNT_AMOUNT="10000"
 MAX_TOKEN_HISTORY_IN_DAYS="7"
 TOKEN_HISTORY_INTERVAL_IN_MINUTES="120"
 FIAT="GBP"
-TIMEFRAME_MAP="very_short->1min;short->1h;medium->4h;long->1d"
-BACKTEST_TIMEFRAME="1->1min;60->1h;240->4h;1440->1d"
+TIMEFRAME_MAP="short->1h;medium->4h;long->1d"
+BACKTEST_TIMEFRAME="60->1h;240->4h;1440->1d" # Do not use 1min for whole year data, server can't handle
 BOT_NAME="KrakenBot"
 ```
 
@@ -89,6 +89,18 @@ docker stop KrakenBot
 docker rm KrakenBot # Remove container
 docker rmi KrakenBot # Remove image
 ```
+
+## <span style="color: #FF0000">**IMPORTANT FOR DEVELOPERS**</span>
+### **Inaccurate Calculations**
+- Use `utils.py > acc_calc(num1, op, num2, decimal_point)` for any calculations, especially money/token related
+  - `num1` and `num2` can be in any form, including `float`, `int`, `str`, `Decimal`
+  - `op` can be `+`, `-`, `*`, `/`, `%`
+  - `decimal_point` defaulted to 18, which is standard decimal points for cryptocurrencies
+- <span style="color: #FF0000">**DO NOT**</span> perform your own calculation, as python has serious floating-point issue, especially on cryptocurrencies with many decimal points
+  - Unless you perform necessary steps to prevent that
+
+
+<hr />
 
 ## REST API Endpoints
 
@@ -521,6 +533,25 @@ None
 
 <hr/>
 
+### Recalibrate Bot
+
+Recalibrate Bot Amount from Livetrades: `http://127.0.0.1:8000/api/recalibrate-bot [POST]`
+
+Only works on `PYTHON_ENV="development"`
+
+<details>
+<summary>
+Endpoint details
+</summary>
+
+```
+URL: http://127.0.0.1:8000/api/recalibrate-bot
+Response: None
+```
+</details>
+
+<hr/>
+
 ## Google Cloud Deployment
 ### Environment Variables
 ```bash
@@ -600,3 +631,21 @@ ADDRESS="0.0.0.0" # Must be set
    - Save the file with token_id as name, E.g. `BTC.docx`
 2. Run `upload_discover_content.py`
 3. Check and enter 'Y' to save
+
+<hr/>
+
+### Upload Analysis Data to Firebase
+1. Open up `analysis.csv` in `Krakenbot\LocalScripts\`
+2. Add all analysis data under the columns<br/>
+   **DO NOT** change/reorder the columns without updating `upload_analysis.py`
+   - `tokens`: Token ID ***(E.g. BTC)***
+   - `risk`: Risk of that Token + Goal ***(High / Medium / Low)***
+   - `goal_length`: Financial goal of that analysis ***(Long / Medium / Short)***
+   - `summary`: Short analysis/summary of that token + risk + goal
+   - `analysis`: Long/Full version of analysis
+   - `technical_analysis`: Technical version of analysis
+3. Run `upload_analysis.py`
+   - You will need `ENV` file with database credentials ready
+    ```bash
+    python Krakenbot/LocalScripts/upload_analysis.py
+    ```

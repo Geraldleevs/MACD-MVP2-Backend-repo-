@@ -17,6 +17,11 @@ class FirebaseRecommendation:
 	def __init__(self):
 		self.__collection = settings.firebase.collection(u'recommendation')
 
+	def delete_all(self):
+		docs = self.__collection.stream()
+		for doc in docs:
+			doc.reference.delete()
+
 	def create(self, data: RecommendationField):
 		doc_ref = self.__collection.document()
 		doc_ref.set(data)
