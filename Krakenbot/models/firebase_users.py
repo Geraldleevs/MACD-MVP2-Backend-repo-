@@ -29,7 +29,7 @@ class FirebaseUsers:
 		time = datetime(time.year, time.month, time.day, time.hour, tzinfo=time.tzinfo)
 		current_timestamp = time.timestamp()
 		portfolio = self.__user_doc.collection('portfolio').document(str(current_timestamp))
-		amount = float(acc_calc(value, '+', 0, '2'))
+		amount = float(acc_calc(value, '+', 0, 2))
 		portfolio.set({ 'time': time, 'value': amount })
 
 	def batch_update_portfolio(self, values: list[PortfolioValues]):
@@ -40,7 +40,7 @@ class FirebaseUsers:
 			time = datetime(time.year, time.month, time.day, time.hour, tzinfo=time.tzinfo)
 			current_timestamp = time.timestamp()
 			user_portfolio = self.__users.document(value['uid']).collection('portfolio').document(str(current_timestamp))
-			amount = float(acc_calc(value['value'], '+', 0, '2'))
+			amount = float(acc_calc(value['value'], '+', 0, 2))
 			batch.set(user_portfolio, { 'time': time, 'value': amount })
 
 		batch.commit()
