@@ -3,7 +3,7 @@ from decimal import Decimal
 from typing import TypedDict
 from Krakenbot import settings
 from google.cloud.firestore_v1.base_query import FieldFilter
-
+from Krakenbot.utils import acc_calc
 from Krakenbot.exceptions import NoUserSelectedException
 
 class PortfolioValues(TypedDict):
@@ -29,7 +29,8 @@ class FirebaseUsers:
 		time = datetime(time.year, time.month, time.day, time.hour, tzinfo=time.tzinfo)
 		current_timestamp = time.timestamp()
 		portfolio = self.__user_doc.collection('portfolio').document(str(current_timestamp))
-		portfolio.set({ 'time': time, 'value': float(value) })
+		amount = float(acc_calc(value, '+', 0, '2'))
+		portfolio.set({ 'time': time, 'value': amount })
 
 	def batch_update_portfolio(self, values: list[PortfolioValues]):
 		batch = settings.db_batch
@@ -39,7 +40,8 @@ class FirebaseUsers:
 			time = datetime(time.year, time.month, time.day, time.hour, tzinfo=time.tzinfo)
 			current_timestamp = time.timestamp()
 			user_portfolio = self.__users.document(value['uid']).collection('portfolio').document(str(current_timestamp))
-			batch.set(user_portfolio, { 'time': time, 'value': float(value['value']) })
+			amount = float(acc_calc(value['value'], '+', 0, '2'))
+			batch.set(user_portfolio, { 'time': time, 'value': amount })
 
 		batch.commit()
 
