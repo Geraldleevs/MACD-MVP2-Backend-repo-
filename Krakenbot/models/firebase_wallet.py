@@ -10,9 +10,9 @@ from Krakenbot.utils import acc_calc
 
 class FirebaseWallet:
 	USER_AMOUNT = 'amount'
-	USER_AMOUNT_STR = 'user_amount'
+	USER_AMOUNT_STR = 'amount_str'
 	BOT_AMOUNT = 'krakenbot_amount'
-	BOT_AMOUNT_STR = 'bot_amount'
+	BOT_AMOUNT_STR = 'krakenbot_amount_str'
 	USER_NAME = 'User'
 	BOT_NAME = 'Krakenbot'
 
