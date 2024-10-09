@@ -32,7 +32,8 @@ class FirebaseOrderBook:
 
 		doc_ref = self.__order_book.document()
 		doc_ref.set(new_order)
-		return { **doc_ref.get().to_dict(), 'id': doc_ref.id }
+		doc_ref.update({ 'order_id', doc_ref.id })
+		return { **doc_ref.get().to_dict() }
 
 	def cancel_order(self, id):
 		doc_ref = self.__order_book.document(id)
@@ -74,7 +75,7 @@ class FirebaseOrderBook:
 		return { **doc_ref.get().to_dict(), 'id': doc_ref.id }
 
 	def filter(self, since: datetime = None, before: datetime = None, status: Literal['OPEN', 'CANCELLED', 'CLOSED', 'ALL'] = 'ALL', uid: str = None):
-		query = self.__livetrade
+		query = self.__order_book
 
 		match (status):
 			case 'OPEN':
@@ -95,5 +96,11 @@ class FirebaseOrderBook:
 		if uid is not None:
 			query = query.where(filter=FieldFilter('uid', '==', uid))
 
+		query = query.order_by('created_time')
 		docs = query.stream()
 		return [{ **doc.to_dict(), 'id': doc.id } for doc in docs]
+
+	def get(self, id):
+		doc_ref = self.__order_book.document(id)
+		doc = doc_ref.get()
+		return { **doc.to_dict(), 'id': doc.id }
