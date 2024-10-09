@@ -7,7 +7,7 @@ from Krakenbot.exceptions import BadRequestException
 from Krakenbot.models.firebase_wallet import FirebaseWallet
 from Krakenbot.utils import acc_calc
 
-class FirebaseLiveTrade:
+class FirebaseOrderBook:
 	__OPEN_STATUS = 'OPEN'
 	__COMPLETED_STATUS = 'COMPLETED'
 	__CANCELLED_STATUS = 'CANCELLED'
