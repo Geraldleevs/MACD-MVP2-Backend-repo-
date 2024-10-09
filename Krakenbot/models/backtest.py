@@ -4,6 +4,7 @@ from Krakenbot.models.firebase_analysis import FirebaseAnalysis
 from Krakenbot.models.firebase_recommendation import FirebaseRecommendation
 from django.utils import timezone
 from rest_framework.request import Request
+from Krakenbot.models.firebase_token import FirebaseToken
 from Krakenbot.utils import authenticate_scheduler_oicd
 
 class BackTest:
@@ -15,6 +16,11 @@ class BackTest:
 		authenticate_scheduler_oicd(request)
 		firebase_analysis = FirebaseAnalysis()
 		results = backtest().reset_index().to_numpy()
+
+		firebase_token = FirebaseToken()
+		all_tokens = firebase_token.filter(is_active=True)
+		all_tokens = [price['token'] for price in all_tokens]
+
 		now = timezone.now()
 		results = [{
 			'fiat': value[0].split(' | ')[0].split(':')[0],
@@ -28,6 +34,8 @@ class BackTest:
 			'updated_on': now,
 			**firebase_analysis.get_analysis(value[0].split(' | ')[0].split(':')[1], self.TIMEFRAMES[value[0].split(' | ')[1]])
 		} for value in results]
+
+		results = [result for result in results if result['token_id'] in all_tokens]
 
 		firebase = FirebaseRecommendation()
 		firebase.delete_all()

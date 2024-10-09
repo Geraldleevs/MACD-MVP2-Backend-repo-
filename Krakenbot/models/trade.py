@@ -20,7 +20,7 @@ class Trade:
 		uid = request.data.get('uid', '')
 		from_token = request.data.get('from_token', '').upper()
 		to_token = request.data.get('to_token', '').upper()
-		from_amount = request.data.get('from_amount', '')
+		from_amount = str(request.data.get('from_amount', ''))
 		jwt_token = get_authorization_header(request).decode('utf-8').split(' ')
 		demo_init = request.data.get('demo_init', '')
 		livetrade = request.data.get('livetrade', '').upper()
@@ -49,7 +49,7 @@ class Trade:
 			'timeframe': timeframe
 		}
 
-	def livetrade(self, request: Request):
+	def livetrade(self, request):
 		uid = request['uid']
 		livetrade = request['livetrade']
 		from_amount = request['from_amount']
@@ -63,7 +63,6 @@ class Trade:
 
 		if livetrade == 'RESERVE':
 			try:
-				from_amount = float(from_amount)
 				livetrade_id = firebase_livetrade.create({
 					'uid': uid,
 					'start_time': timezone.now(),
@@ -72,8 +71,10 @@ class Trade:
 					'cur_token': from_token,
 					'fiat': from_token,
 					'token_id': to_token,
-					'initial_amount': from_amount,
-					'amount': from_amount,
+					'initial_amount': float(from_amount),
+					'initial_amount_str': from_amount,
+					'amount': float(from_amount),
+					'amount_str': from_amount,
 					'is_active': True
 				})
 				firebase_wallet.reserve_krakenbot_amount(from_token, from_amount)
@@ -92,7 +93,7 @@ class Trade:
 				raise BadRequestException()
 			livetrade_details = firebase_livetrade.get(livetrade_id)
 			cur_token = livetrade_details['cur_token']
-			amount = livetrade_details['amount']
+			amount = livetrade_details['amount_str']
 			firebase_livetrade.close(livetrade_id)
 			firebase_wallet.unreserve_krakenbot_amount(cur_token, amount)
 
@@ -104,8 +105,7 @@ class Trade:
 			return
 		try:
 			firebase = FirebaseWallet(uid)
-			price = Market().get_market(convert_from=from_token, convert_to=to_token)[0]['price']
-			from_amount = float(from_amount)
+			price = Market().get_market(convert_from=from_token, convert_to=to_token)[0]['price_str']
 			to_amount = acc_calc(from_amount, '*', price)
 			transaction = firebase.trade_by_user(from_token, from_amount, to_token, to_amount)
 			return transaction

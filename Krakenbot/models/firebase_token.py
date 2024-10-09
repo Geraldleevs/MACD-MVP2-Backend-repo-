@@ -1,4 +1,5 @@
 from datetime import datetime
+from decimal import Decimal
 from Krakenbot import settings
 from google.cloud.firestore_v1.base_query import FieldFilter
 
@@ -21,9 +22,10 @@ class FirebaseToken:
 		self.__batch.commit()
 		self.__batch_writing = False
 
-	def update_history_prices(self, token_id, times: list[datetime], close_prices: list[float]):
+	def update_history_prices(self, token_id, times: list[datetime], close_prices: list[Decimal]):
 		doc_ref = self.__collection.document(token_id)
 		doc = doc_ref.get()
+		close_prices = [float(close_price) for close_price in close_prices]
 		update_data = {'history_prices': { 'start_time': times[0], 'times': times, 'data': close_prices }}
 
 		if doc.exists:

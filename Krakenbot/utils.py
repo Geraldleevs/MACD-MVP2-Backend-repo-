@@ -71,7 +71,8 @@ def clean_kraken_pair(kraken_result) -> dict[str, any]:
 	Parse Kraken Pairs into standard token names, (e.g. `XXBT -> BTC` ; `ZGBP -> GBP`)
 
 	Returns:
-		The exact dict from `kraken_result['result']`, with cleaned token pairs' name
+		kraken_result:
+		`kraken_result['result']`, with cleaned token pairs' name
 		`{ 'BTCGBP': Any, 'ETHGBP': Any, 'BTCDOGE': Any, ... }`
 	'''
 	results = {}
@@ -107,15 +108,24 @@ def acc_calc(
 		op: Literal['+', '-', '*', '/', '%'],
 		num2: str | float | int | Decimal,
 		decimal_count = 18
-	) -> float:
+	) -> Decimal:
+	full_decimal = 18
+	full_decimal_places = '.' + '0' * (full_decimal - 1) + '1'
+	full_decimal_places = Decimal(full_decimal_places)
+
+	if decimal_count is None:
+		decimal_count = full_decimal
+	elif decimal_count < 0:
+		raise InvalidCalculationException()
+	decimal_places = '.' + '0' * (decimal_count - 1) + '1'
+	decimal_places = Decimal(decimal_places)
+
 	try:
-		setcontext(Context(prec=decimal_count, rounding=ROUND_DOWN))
 		num1 = Decimal(str(num1))
 		num2 = Decimal(str(num2))
 	except Exception:
 		raise InvalidCalculationException()
 
-	result = Decimal(0)
 	match(op):
 		case '+':
 			result = num1 + num2
@@ -135,7 +145,8 @@ def acc_calc(
 		case _:
 			raise InvalidCalculationException()
 
-	return float(result)
+	result = result.quantize(decimal_places, rounding=ROUND_DOWN)
+	return result
 
 
 def log_warning(message):

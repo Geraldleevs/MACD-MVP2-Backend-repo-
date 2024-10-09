@@ -1,13 +1,14 @@
 from datetime import datetime
+from decimal import Decimal
 from typing import TypedDict
 from Krakenbot import settings
 from google.cloud.firestore_v1.base_query import FieldFilter
-
+from Krakenbot.utils import acc_calc
 from Krakenbot.exceptions import NoUserSelectedException
 
 class PortfolioValues(TypedDict):
 	uid: str
-	value: float
+	value: Decimal
 	time: datetime
 
 class FirebaseUsers:
@@ -18,7 +19,7 @@ class FirebaseUsers:
 		else:
 			self.__user_doc = None
 
-	def update_portfolio_value(self, value: float, time: datetime):
+	def update_portfolio_value(self, value: Decimal, time: datetime):
 		'''
 		raise `NoUserSelectedException` if not initialised with uid
 		'''
@@ -28,7 +29,8 @@ class FirebaseUsers:
 		time = datetime(time.year, time.month, time.day, time.hour, tzinfo=time.tzinfo)
 		current_timestamp = time.timestamp()
 		portfolio = self.__user_doc.collection('portfolio').document(str(current_timestamp))
-		portfolio.set({ 'time': time, 'value': value })
+		amount = float(acc_calc(value, '+', 0, 2))
+		portfolio.set({ 'time': time, 'value': amount })
 
 	def batch_update_portfolio(self, values: list[PortfolioValues]):
 		batch = settings.db_batch
@@ -38,7 +40,8 @@ class FirebaseUsers:
 			time = datetime(time.year, time.month, time.day, time.hour, tzinfo=time.tzinfo)
 			current_timestamp = time.timestamp()
 			user_portfolio = self.__users.document(value['uid']).collection('portfolio').document(str(current_timestamp))
-			batch.set(user_portfolio, { 'time': time, 'value': value['value'] })
+			amount = float(acc_calc(value['value'], '+', 0, 2))
+			batch.set(user_portfolio, { 'time': time, 'value': amount })
 
 		batch.commit()
 
