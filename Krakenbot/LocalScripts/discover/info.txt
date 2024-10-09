@@ -1,2 +1,3 @@
 Save the file as docx format, with token_id as filename
+token_id must start with A-Z, a-z, or 0-9
 E.g. BTC.docx

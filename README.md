@@ -630,6 +630,7 @@ ADDRESS="0.0.0.0" # Must be set
 1. Create a `'.docx'` file in `/Krakenbot/LocalScripts/discover/`
    - Save the file with token_id as name, E.g. `BTC.docx`
 2. Run `upload_discover_content.py`
+3. Check and enter 'Y' to save
 
 <hr/>
 
