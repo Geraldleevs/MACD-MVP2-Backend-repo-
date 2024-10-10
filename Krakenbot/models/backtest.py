@@ -19,7 +19,7 @@ class BackTest:
 
 		firebase_token = FirebaseToken()
 		all_tokens = firebase_token.filter(is_active=True)
-		all_tokens = [price['token'] for price in all_tokens]
+		all_tokens = [price['token_id'] for price in all_tokens]
 
 		now = timezone.now()
 		results = [{
