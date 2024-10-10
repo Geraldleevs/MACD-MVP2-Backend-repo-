@@ -32,7 +32,7 @@ class FirebaseOrderBook:
 
 		doc_ref = self.__order_book.document()
 		doc_ref.set(new_order)
-		doc_ref.update({ 'order_id', doc_ref.id })
+		doc_ref.update({ 'order_id': doc_ref.id })
 		return { **doc_ref.get().to_dict() }
 
 	def cancel_order(self, id):

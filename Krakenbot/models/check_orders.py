@@ -42,8 +42,8 @@ class CheckOrders:
 		market = Market()
 		success_pair = []
 		for from_token in order_prices:
-			prices = market.get_market(convert_from=from_token, include_inactive='INCLUDE')
-			prices = { price['token']: price['price_str'] for price in prices }
+			prices = market.get_market(convert_to=from_token, include_inactive='INCLUDE') # Use convert to as other's buying price
+			prices = { price['token']: acc_calc(1, '/', price['price_str']) for price in prices }
 
 			for to_token in order_prices[from_token]:
 				market_price = prices.get(to_token, None)

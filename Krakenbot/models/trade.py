@@ -136,11 +136,11 @@ class Trade:
 			FirebaseWallet(uid).demo_init(from_token, self.demo_amount)
 		elif request['livetrade'] != '':
 			return self.livetrade(request)
-		elif request['order'] == 'order':
+		elif request['order'] == 'ORDER':
 			price = request['order_price']
-			FirebaseOrderBook().create_order(uid, from_token, to_token, price, from_amount)
-		elif request['order'] == 'cancel':
+			return FirebaseOrderBook().create_order(uid, from_token, to_token, price, from_amount)
+		elif request['order'] == 'CANCEL':
 			order_id = request['order_id']
-			FirebaseOrderBook().cancel_order(order_id)
+			return FirebaseOrderBook().cancel_order(order_id)
 		else:
 			return self.convert(uid, from_token, from_amount, to_token)
