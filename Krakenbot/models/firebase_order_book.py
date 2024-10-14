@@ -65,11 +65,12 @@ class FirebaseOrderBook:
 		from_amount = order_data['volume']
 		to_token = order_data['to_token']
 		to_amount = acc_calc(from_amount, '*', order_data['price_str'])
-		FirebaseWallet(uid).complete_order(from_token, from_amount, to_token, to_amount)
+		transaction = FirebaseWallet(uid).complete_order(from_token, from_amount, to_token, to_amount)
 
 		update_data = {
 			'closed_time': timezone.now(),
 			'status': self.__COMPLETED_STATUS,
+			'transaction_id': transaction['id'],
 		}
 		doc_ref.update(update_data)
 		return { **doc_ref.get().to_dict(), 'id': doc_ref.id }

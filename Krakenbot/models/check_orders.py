@@ -1,10 +1,33 @@
+import asyncio
+from datetime import timedelta
+import aiohttp
 from Krakenbot.exceptions import NotEnoughTokenException, TokenNotFoundException
 from rest_framework.request import Request
 from Krakenbot.models.firebase_order_book import FirebaseOrderBook
-from Krakenbot.models.market import Market
-from Krakenbot.utils import acc_calc, authenticate_scheduler_oicd, log_warning, log
+from Krakenbot.utils import acc_calc, authenticate_scheduler_oicd, clean_kraken_pair, log_error, log_warning, log
+from django.utils import timezone
 
 class CheckOrders:
+	KRAKEN_OHLC_API = 'https://api.kraken.com/0/public/OHLC'
+
+	async def __fetch_kraken_ohlc(self, session: aiohttp.ClientSession, pair: str, since: int):
+		async with session.get(self.KRAKEN_OHLC_API, params={'pair': pair, 'interval': 1, 'since': since}) as response:
+			if response.status == 200:
+				kraken_results = await response.json()
+				if len(kraken_results['error']) > 0:
+					return (pair, None, None)
+
+				results = clean_kraken_pair(kraken_results)[pair]
+				high = results[0][2]
+				low = results[0][3]
+
+				for result in results:
+					high = max(high, result[2])
+					low = min(low, result[3])
+
+				return (pair, high, low)
+			return (pair, None, None)
+
 	def __trade(self, success_pairs):
 		order_book = FirebaseOrderBook()
 		trade_count = 0
@@ -38,21 +61,28 @@ class CheckOrders:
 
 		log(f'Trade Success: {trade_count}')
 
-	def __check_orders_success(self, order_prices):
-		market = Market()
+	async def __check_orders_success(self, order_prices):
+		last_minute = timezone.now() - timedelta(minutes=2)
+		since = int(last_minute.timestamp())
+		prices = {}
+		async with aiohttp.ClientSession() as session:
+			tasks = [self.__fetch_kraken_ohlc(session, pair, since) for pair in order_prices]
+			reverse_tasks = [self.__fetch_kraken_ohlc(session, order_prices[pair]['reverse'], since) for pair in order_prices]
+			results = await asyncio.gather(*tasks)
+			reverse_results = await asyncio.gather(*reverse_tasks)
+			results = { pair: (high, low) for (pair, high, low) in results if high is not None and low is not None }
+			reverse_results = { pair: (acc_calc(1, '/', high), acc_calc(1, '/', low)) for (pair, high, low) in reverse_results if high is not None and low is not None }
+			prices = { **results, **reverse_results }
+
 		success_pair = []
-		for from_token in order_prices:
-			prices = market.get_market(convert_to=from_token, include_inactive='INCLUDE') # Use convert to as other's buying price
-			prices = { price['token']: acc_calc(1, '/', price['price_str']) for price in prices }
+		for pair in order_prices:
+			(high, low) = prices.get(pair)
+			if high is None or low is None:
+				log_error('Check Orders Failed due to token price not found!')
+				raise TokenNotFoundException()
 
-			for to_token in order_prices[from_token]:
-				market_price = prices.get(to_token, None)
-				if market_price is None:
-					raise TokenNotFoundException()
-
-				for (order_price, order_id) in order_prices[from_token][to_token]:
-					if acc_calc(order_price, '-', market_price) < 0:
-						continue
+			for (order_price, order_id) in order_prices[pair]['data']:
+				if acc_calc(order_price, '-', low) >= 0 and acc_calc(order_price, '-', high) <= 0:
 					success_pair.append(order_id)
 
 		return success_pair
@@ -67,16 +97,16 @@ class CheckOrders:
 			price = order['price']
 			from_token = order['from_token']
 			to_token = order['to_token']
-			if from_token not in token_pair_price:
-				token_pair_price[from_token] = {}
-			if to_token not in token_pair_price[from_token]:
-				token_pair_price[from_token][to_token] = []
-			token_pair_price[from_token][to_token].append((price, order_id))
+			pair = f'{from_token}{to_token}'
+			reverse_pair = f'{to_token}{from_token}'
+			if pair not in token_pair_price:
+				token_pair_price[pair] = { 'data': [], 'reverse': reverse_pair }
+			token_pair_price[pair]['data'].append((price, order_id))
 
 		return token_pair_price
 
 	def check(self, request: Request):
 		authenticate_scheduler_oicd(request)
 		order_prices = self.__get_orders()
-		success_pairs = self.__check_orders_success(order_prices)
+		success_pairs = asyncio.run(self.__check_orders_success(order_prices))
 		self.__trade(success_pairs)

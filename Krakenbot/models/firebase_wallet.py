@@ -204,10 +204,9 @@ class FirebaseWallet:
 		else:
 			hold_value = acc_calc(hold_value, '+', amount)
 
-		# TODO: REIMPLEMENT THE USER AMOUNT CHANGE
 		new_data = {
-		# 	self.USER_AMOUNT: float(new_value),
-		# 	self.USER_AMOUNT_STR: str(new_value),
+			self.USER_AMOUNT: float(new_value),
+			self.USER_AMOUNT_STR: str(new_value),
 			self.HOLD_AMOUNT: float(hold_value),
 			self.HOLD_AMOUNT_STR: str(hold_value),
 		}
@@ -237,10 +236,9 @@ class FirebaseWallet:
 		else:
 			new_value = acc_calc(new_value, '+', amount)
 
-		# TODO: REIMPLEMENT THE USER AMOUNT CHANGE
 		new_data = {
-		# 	self.USER_AMOUNT: float(new_value),
-		# 	self.USER_AMOUNT_STR: str(new_value),
+			self.USER_AMOUNT: float(new_value),
+			self.USER_AMOUNT_STR: str(new_value),
 			self.HOLD_AMOUNT: float(hold_value),
 			self.HOLD_AMOUNT_STR: str(hold_value),
 		}
@@ -250,8 +248,6 @@ class FirebaseWallet:
 	def complete_order(self, from_token, from_amount, to_token, to_amount):
 		from_doc_ref = self.__wallet_collection.document(from_token)
 		from_doc = from_doc_ref.get()
-		to_doc_ref = self.__wallet_collection.document(to_token)
-		to_doc = to_doc_ref.get()
 
 		if not from_doc.exists:
 			raise NotEnoughTokenException()
@@ -266,22 +262,6 @@ class FirebaseWallet:
 		if new_hold_value < 0:
 			raise NotEnoughTokenException()
 
-		is_to_fiat = FirebaseToken().get(to_token).get('is_fiat', False)
-		converted_value = to_doc.to_dict().get(self.USER_AMOUNT_STR, 0)
-		if is_to_fiat:
-			converted_value = acc_calc(converted_value, '+', to_amount, 2)
-		else:
-			converted_value = acc_calc(converted_value, '+', to_amount)
-
-		new_hold_data = {
-			self.HOLD_AMOUNT: float(new_hold_value),
-			self.HOLD_AMOUNT_STR: str(new_hold_value),
-		}
-		from_doc_ref.update(new_hold_data)
-
-		# TODO: REIMPLEMENT THE USER AMOUNT CHANGE
-		# new_converted_data = {
-		# 	self.USER_AMOUNT: float(converted_value),
-		# 	self.USER_AMOUNT_STR: str(converted_value),
-		# }
-		# to_doc_ref.update(new_converted_data)
+		self.release_token_hold(from_token, from_amount)
+		transaction = self.trade_by_user(from_token, from_amount, to_token, to_amount)
+		return transaction

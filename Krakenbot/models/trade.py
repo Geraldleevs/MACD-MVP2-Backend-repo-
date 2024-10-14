@@ -31,12 +31,13 @@ class Trade:
 		order = request.data.get('order', '').upper()
 		order_price = request.data.get('order_price', '0')
 		order_id = request.data.get('order_id', '')
+		order_price_reverse = request.data.get('order_price_reverse', 'false').lower() == 'true'
 
 		if uid == '' or len(jwt_token) < 2:
 			raise NotAuthorisedException()
 
 		try:
-			if order != '':
+			if order == 'ORDER':
 				float(order_price)
 		except ValueError:
 			raise BadRequestException()
@@ -60,6 +61,7 @@ class Trade:
 			'order': order,
 			'order_price': order_price,
 			'order_id': order_id,
+			'order_price_reverse': order_price_reverse,
 		}
 
 	def livetrade(self, request):
@@ -138,6 +140,8 @@ class Trade:
 			return self.livetrade(request)
 		elif request['order'] == 'ORDER':
 			price = request['order_price']
+			if request['order_price_reverse']:
+				price = acc_calc(1, '/', price)
 			return FirebaseOrderBook().create_order(uid, from_token, to_token, price, from_amount)
 		elif request['order'] == 'CANCEL':
 			order_id = request['order_id']
