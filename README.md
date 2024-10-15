@@ -249,6 +249,33 @@ None (Status: 200)
 
 <hr/>
 
+### Check Order Book
+
+Check and perform orders: `http://127.0.0.1:8000/api/check-orders [POST]`
+
+<details>
+<summary>
+Endpoint details
+</summary>
+
+```
+URL: http://127.0.0.1:8000/api/check-orders
+Authorization: Bearer {Google_OIDC_Token}
+Response:
+None (Status: 200)
+```
+
+#### Example
+```
+Request: http://127.0.0.1:8000/api/auto-livetrade
+Authorization: Bearer ANY_VALID_TOKEN
+Response:
+None (Status: 200)
+```
+</details>
+
+<hr/>
+
 ### News
 
 Fetch GNews and save in firebase database: `http://127.0.0.1:8000/api/news [POST]`
@@ -327,6 +354,135 @@ Response:
   "time": "2024-06-25T21:32:10.348844Z",
   "id": "4SbS6hjUdkWfh0jhvpR0",
   "operated_by": "User"
+}
+```
+</details>
+
+<hr/>
+
+### Place Order
+
+Trade tokens: `http://127.0.0.1:8000/api/trade [POST]`
+
+<details>
+<summary>
+Endpoint details
+</summary>
+
+```
+URL: http://127.0.0.1:8000/api/trade
+Authorization: Bearer {JWT_Token}
+Body:
+{
+  "uid": string,
+  "from_token": string,
+  "from_amount": number,
+  "to_token": number,
+  "order": "ORDER",
+  "order_price": number
+}
+Response:
+{
+  "volume": string,
+  "uid": string,
+  "price": number,
+  "price_str": string,
+  "from_token": string,
+  "to_token": string,
+  "created_time": datetime,
+  "status": "OPEN",
+  "order_id": string,
+  "closed_time": null
+}
+```
+
+#### Example
+```
+Request: http://127.0.0.1:8000/api/trade
+Authorization: Bearer ANY_VALID_TOKEN
+Body:
+{
+  "uid": "Gmcjdq33QxPSggpJx7CsTK42cQR2",
+  "from_token": "GBP",
+  "from_amount": 10,
+  "to_token": "ADA",
+  "order": "ORDER",
+  "order_price": 20.2,
+}
+Response:
+{
+  "volume": "10",
+  "uid": "Gmcjdq33QxPSggpJx7CsTK42cQR2",
+  "price": 20.2,
+  "price_str": "20.2",
+  "from_token": "GBP",
+  "to_token": "ADA",
+  "created_time": "2024-06-25T21:32:10.348844Z",
+  "status": "OPEN",
+  "order_id": "Ioe15H44RyJGkiTcbSfO",
+  "closed_time": null
+}
+```
+</details>
+
+<hr/>
+
+### Cancel Order
+
+Trade tokens: `http://127.0.0.1:8000/api/trade [POST]`
+
+<details>
+<summary>
+Endpoint details
+</summary>
+
+```
+URL: http://127.0.0.1:8000/api/trade
+Authorization: Bearer {JWT_Token}
+Body:
+{
+  "uid": string,
+  "order": "CANCEL",
+  "order_id": string
+}
+Response:
+{
+  "volume": string,
+  "uid": string,
+  "price": number,
+  "price_str": string,
+  "from_token": string,
+  "to_token": string,
+  "created_time": datetime,
+  "status": "CANCELLED",
+  "order_id": string,
+  "closed_time": null
+}
+```
+
+#### Example
+```
+Request: http://127.0.0.1:8000/api/trade
+Authorization: Bearer ANY_VALID_TOKEN
+Body:
+{
+  "uid": "Gmcjdq33QxPSggpJx7CsTK42cQR2",
+  "order": "CANCEL",
+  "order_id": "DEUs11x57jP75N82H41k"
+}
+Response:
+{
+  "volume": "10",
+  "uid": "Gmcjdq33QxPSggpJx7CsTK42cQR2",
+  "price": 20.2,
+  "from_token": "GBP",
+  "to_token": "ADA",
+  "created_time": "2024-10-14T20:20:27.678118Z",
+  "order_id": "DEUs11x57jP75N82H41k",
+  "status": "CANCELLED",
+  "closed_time": "2024-10-14T20:32:34.580638Z",
+  "price_str": "20.2",
+  "id": "DEUs11x57jP75N82H41k"
 }
 ```
 </details>

@@ -3,9 +3,10 @@ import os
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from Krakenbot.exceptions import ServerErrorException, SessionExpiredException
+from Krakenbot.exceptions import TokenNotFoundException, ServerErrorException, SessionExpiredException
 from Krakenbot.models.auto_livetrade import AutoLiveTrade
 from Krakenbot.models.backtest import BackTest
+from Krakenbot.models.check_orders import CheckOrders
 from Krakenbot.models.firebase_livetrade import FirebaseLiveTrade
 from Krakenbot.models.firebase_users import FirebaseUsers
 from Krakenbot.models.firebase_wallet import FirebaseWallet, NotEnoughTokenException
@@ -87,6 +88,16 @@ class UpdateCandlesView(APIView):
 			return Response(status=200)
 		except NotAuthorisedException:
 			return Response(status=401)
+
+class CheckOrdersView(APIView):
+	def post(self, request: Request):
+		try:
+			CheckOrders().check(request)
+			return Response(status=200)
+		except NotAuthorisedException:
+			return Response(status=401)
+		except TokenNotFoundException:
+			return Response(status=500)
 
 
 class RecalibrateBotView(APIView):

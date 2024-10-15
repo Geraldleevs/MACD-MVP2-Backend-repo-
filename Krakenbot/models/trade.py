@@ -1,6 +1,7 @@
 import os
 from Krakenbot.exceptions import BadRequestException, NotAuthorisedException
 from Krakenbot.models.firebase_livetrade import FirebaseLiveTrade
+from Krakenbot.models.firebase_order_book import FirebaseOrderBook
 from Krakenbot.models.firebase_wallet import FirebaseWallet
 from Krakenbot.utils import acc_calc
 from rest_framework.request import Request
@@ -27,9 +28,19 @@ class Trade:
 		livetrade_id = request.data.get('livetrade_id', '')
 		strategy = request.data.get('strategy', '')
 		timeframe = request.data.get('timeframe', '')
+		order = request.data.get('order', '').upper()
+		order_price = request.data.get('order_price', '0')
+		order_id = request.data.get('order_id', '')
+		order_price_reverse = request.data.get('order_price_reverse', 'false').lower() == 'true'
 
 		if uid == '' or len(jwt_token) < 2:
 			raise NotAuthorisedException()
+
+		try:
+			if order == 'ORDER':
+				float(order_price)
+		except ValueError:
+			raise BadRequestException()
 
 		try:
 			if uid != firebase_admin.auth.verify_id_token(jwt_token[1])['uid']:
@@ -46,7 +57,11 @@ class Trade:
 			'livetrade': livetrade,
 			'livetrade_id': livetrade_id,
 			'strategy': strategy,
-			'timeframe': timeframe
+			'timeframe': timeframe,
+			'order': order,
+			'order_price': order_price,
+			'order_id': order_id,
+			'order_price_reverse': order_price_reverse,
 		}
 
 	def livetrade(self, request):
@@ -115,9 +130,21 @@ class Trade:
 	def trade(self, request: Request):
 		request = self.parse_request(request)
 
+		uid = request['uid']
+		from_token = request['from_token']
+		from_amount = request['from_amount']
+		to_token = request['to_token']
 		if request['demo_init'] == 'demo_init':
-			FirebaseWallet(request['uid']).demo_init(request['from_token'], self.demo_amount)
+			FirebaseWallet(uid).demo_init(from_token, self.demo_amount)
 		elif request['livetrade'] != '':
 			return self.livetrade(request)
+		elif request['order'] == 'ORDER':
+			price = request['order_price']
+			if request['order_price_reverse']:
+				price = acc_calc(1, '/', price)
+			return FirebaseOrderBook().create_order(uid, from_token, to_token, price, from_amount)
+		elif request['order'] == 'CANCEL':
+			order_id = request['order_id']
+			return FirebaseOrderBook().cancel_order(order_id)
 		else:
-			return self.convert(request['uid'], request['from_token'], request['from_amount'], request['to_token'])
+			return self.convert(uid, from_token, from_amount, to_token)

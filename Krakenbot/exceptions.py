@@ -23,3 +23,7 @@ class NoUserSelectedException(Exception):
 
 class InvalidCalculationException(Exception):
 	pass
+
+
+class TokenNotFoundException(Exception):
+	pass

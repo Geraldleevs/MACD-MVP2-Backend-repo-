@@ -13,6 +13,8 @@ class FirebaseWallet:
 	USER_AMOUNT_STR = 'amount_str'
 	BOT_AMOUNT = 'krakenbot_amount'
 	BOT_AMOUNT_STR = 'krakenbot_amount_str'
+	HOLD_AMOUNT = 'hold_amount'
+	HOLD_AMOUNT_STR = 'hold_amount_str'
 	USER_NAME = 'User'
 	BOT_NAME = 'Krakenbot'
 
@@ -178,3 +180,88 @@ class FirebaseWallet:
 	def set_bot_amount(self, token, bot_amount):
 		doc_ref = self.__wallet_collection.document(token)
 		doc_ref.update({self.BOT_AMOUNT: float(bot_amount), self.BOT_AMOUNT_STR: str(bot_amount)})
+
+	def hold_token_for_order(self, token_id, amount):
+		doc_ref = self.__wallet_collection.document(token_id)
+		doc = doc_ref.get()
+
+		if not doc.exists:
+			raise NotEnoughTokenException()
+
+		is_fiat = FirebaseToken().get(token_id).get('is_fiat', False)
+		new_value = doc.to_dict().get(self.USER_AMOUNT_STR, 0)
+		if is_fiat:
+			new_value = acc_calc(new_value, '-', amount, 2)
+		else:
+			new_value = acc_calc(new_value, '-', amount)
+
+		if new_value < 0:
+			raise NotEnoughTokenException()
+
+		hold_value = doc.to_dict().get(self.HOLD_AMOUNT_STR, 0)
+		if is_fiat:
+			hold_value = acc_calc(hold_value, '+', amount, 2)
+		else:
+			hold_value = acc_calc(hold_value, '+', amount)
+
+		new_data = {
+			self.USER_AMOUNT: float(new_value),
+			self.USER_AMOUNT_STR: str(new_value),
+			self.HOLD_AMOUNT: float(hold_value),
+			self.HOLD_AMOUNT_STR: str(hold_value),
+		}
+
+		doc_ref.update(new_data)
+
+	def release_token_hold(self, token_id, amount):
+		doc_ref = self.__wallet_collection.document(token_id)
+		doc = doc_ref.get()
+
+		if not doc.exists:
+			raise NotEnoughTokenException()
+
+		is_fiat = FirebaseToken().get(token_id).get('is_fiat', False)
+		hold_value = doc.to_dict().get(self.HOLD_AMOUNT_STR, 0)
+		if is_fiat:
+			hold_value = acc_calc(hold_value, '-', amount, 2)
+		else:
+			hold_value = acc_calc(hold_value, '-', amount)
+
+		if hold_value < 0:
+			raise NotEnoughTokenException()
+
+		new_value = doc.to_dict().get(self.USER_AMOUNT_STR, 0)
+		if is_fiat:
+			new_value = acc_calc(new_value, '+', amount, 2)
+		else:
+			new_value = acc_calc(new_value, '+', amount)
+
+		new_data = {
+			self.USER_AMOUNT: float(new_value),
+			self.USER_AMOUNT_STR: str(new_value),
+			self.HOLD_AMOUNT: float(hold_value),
+			self.HOLD_AMOUNT_STR: str(hold_value),
+		}
+
+		doc_ref.update(new_data)
+
+	def complete_order(self, from_token, from_amount, to_token, to_amount):
+		from_doc_ref = self.__wallet_collection.document(from_token)
+		from_doc = from_doc_ref.get()
+
+		if not from_doc.exists:
+			raise NotEnoughTokenException()
+
+		is_from_fiat = FirebaseToken().get(from_token).get('is_fiat', False)
+		new_hold_value = from_doc.to_dict().get(self.HOLD_AMOUNT_STR, 0)
+		if is_from_fiat:
+			new_hold_value = acc_calc(new_hold_value, '-', from_amount, 2)
+		else:
+			new_hold_value = acc_calc(new_hold_value, '-', from_amount)
+
+		if new_hold_value < 0:
+			raise NotEnoughTokenException()
+
+		self.release_token_hold(from_token, from_amount)
+		transaction = self.trade_by_user(from_token, from_amount, to_token, to_amount)
+		return transaction
