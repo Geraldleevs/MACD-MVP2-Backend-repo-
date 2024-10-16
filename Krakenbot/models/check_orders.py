@@ -10,12 +10,12 @@ from django.utils import timezone
 class CheckOrders:
 	KRAKEN_OHLC_API = 'https://api.kraken.com/0/public/OHLC'
 
-	async def __fetch_kraken_ohlc(self, session: aiohttp.ClientSession, pair: str, since: int):
+	async def __fetch_kraken_ohlc(self, session: aiohttp.ClientSession, pair: str, since: int, reverse_pair_name: str = None):
 		async with session.get(self.KRAKEN_OHLC_API, params={'pair': pair, 'interval': 1, 'since': since}) as response:
 			if response.status == 200:
 				kraken_results = await response.json()
 				if len(kraken_results['error']) > 0:
-					return (pair, None, None)
+					return (pair, None, None) if reverse_pair_name is None else (reverse_pair_name, None, None)
 
 				results = clean_kraken_pair(kraken_results)[pair]
 				high = results[0][2]
@@ -25,8 +25,8 @@ class CheckOrders:
 					high = max(high, result[2])
 					low = min(low, result[3])
 
-				return (pair, high, low)
-			return (pair, None, None)
+				return (pair, high, low) if reverse_pair_name is None else (reverse_pair_name, high, low)
+			return (pair, None, None) if reverse_pair_name is None else (reverse_pair_name, None, None)
 
 	def __trade(self, success_pairs):
 		order_book = FirebaseOrderBook()
@@ -67,7 +67,7 @@ class CheckOrders:
 		prices = {}
 		async with aiohttp.ClientSession() as session:
 			tasks = [self.__fetch_kraken_ohlc(session, pair, since) for pair in order_prices]
-			reverse_tasks = [self.__fetch_kraken_ohlc(session, order_prices[pair]['reverse'], since) for pair in order_prices]
+			reverse_tasks = [self.__fetch_kraken_ohlc(session, order_prices[pair]['reverse'], since, pair) for pair in order_prices]
 			results = await asyncio.gather(*tasks)
 			reverse_results = await asyncio.gather(*reverse_tasks)
 			results = { pair: (high, low) for (pair, high, low) in results if high is not None and low is not None }
@@ -76,10 +76,12 @@ class CheckOrders:
 
 		success_pair = []
 		for pair in order_prices:
-			(high, low) = prices.get(pair)
-			if high is None or low is None:
-				log_error('Check Orders Failed due to token price not found!')
+			values = prices.get(pair)
+			if values is None or values[0] is None or values[1] is None:
+				log_error(f'Check Orders Failed due to token price not found! ({pair})')
 				raise TokenNotFoundException()
+
+			(high, low) = values
 
 			for (order_price, order_id) in order_prices[pair]['data']:
 				if acc_calc(order_price, '-', low) >= 0 and acc_calc(order_price, '-', high) <= 0:
