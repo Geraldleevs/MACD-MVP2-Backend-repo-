@@ -17,6 +17,8 @@ class LiveTradeField(TypedDict):
 	token_id: str
 	amount: float
 	is_active: bool
+	take_profit: float
+	stop_loss: float
 
 class FirebaseLiveTrade:
 	__count_doc_id = '_count'
@@ -55,6 +57,17 @@ class FirebaseLiveTrade:
 		self.__user_livetrade.update({ 'livetrades': existing_livetrades })
 
 	def create(self, data: LiveTradeField):
+		take_profit = data.get('take_profit')
+		stop_loss = data.get('stop_loss')
+		if take_profit is not None and float(take_profit) > 0:
+			data['take_profit'] = float(take_profit)
+		else:
+			data['take_profit'] = None
+		if stop_loss is not None and float(stop_loss) > 0:
+			data['stop_loss'] = float(stop_loss)
+		else:
+			data['stop_loss'] = None
+
 		doc_count = self.add_and_get_count()
 		doc_ref = self.__livetrade.document()
 		doc_ref.set({**data, 'name': f'{self.__bot_name}-{doc_count}'})
@@ -65,6 +78,34 @@ class FirebaseLiveTrade:
 	def update(self, id, data: LiveTradeField):
 		doc_ref = self.__livetrade.document(id)
 		doc_ref.update(data)
+
+	def update_take_profit_stop_loss(self, id, take_profit, stop_loss):
+		if take_profit is not None and float(take_profit) > 0:
+			take_profit = float(take_profit)
+		else:
+			take_profit = None
+		if stop_loss is not None and float(stop_loss) > 0:
+			stop_loss = float(stop_loss)
+		else:
+			stop_loss = None
+		doc_ref = self.__livetrade.document(id)
+		doc_ref.update({ 'take_profit': take_profit, 'stop_loss': stop_loss })
+
+	def update_take_profit(self, id, take_profit):
+		if take_profit is not None and float(take_profit) > 0:
+			take_profit = float(take_profit)
+		else:
+			take_profit = None
+		doc_ref = self.__livetrade.document(id)
+		doc_ref.update({ 'take_profit': take_profit })
+
+	def update_stop_loss(self, id, stop_loss):
+		if stop_loss is not None and float(stop_loss) > 0:
+			stop_loss = float(stop_loss)
+		else:
+			stop_loss = None
+		doc_ref = self.__livetrade.document(id)
+		doc_ref.update({ 'stop_loss': stop_loss })
 
 	def close(self, id):
 		doc_ref = self.__livetrade.document(id)
