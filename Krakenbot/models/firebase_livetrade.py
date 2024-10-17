@@ -1,6 +1,6 @@
 from datetime import datetime
 from Krakenbot import settings
-from typing import TypedDict
+from typing import Literal, TypedDict
 from google.cloud.firestore_v1.base_query import FieldFilter
 from django.utils import timezone
 from Krakenbot.exceptions import NoUserSelectedException
@@ -57,7 +57,7 @@ class FirebaseLiveTrade:
 	def create(self, data: LiveTradeField):
 		doc_count = self.add_and_get_count()
 		doc_ref = self.__livetrade.document()
-		doc_ref.set({**data, 'name': f'{self.__bot_name}-{doc_count}'})
+		doc_ref.set({**data, 'name': f'{self.__bot_name}-{doc_count}', 'status': 'READY_TO_TRADE'})
 		doc_ref.update({ 'livetrade_id': doc_ref.id })
 		self.add_user_livetrade(doc_ref)
 		return doc_ref.id
@@ -86,7 +86,21 @@ class FirebaseLiveTrade:
 		docs = self.__livetrade.stream()
 		return [doc.to_dict() for doc in docs]
 
-	def filter(self, strategy = None, timeframe = None, token_id = None, is_active = None, fiat = None, uid = None):
+	def update_status(self, id, status: Literal['ORDER_PLACED', 'READY_TO_TRADE'], order_id = None):
+		data = { 'status': status }
+
+		if status == 'ORDER_PLACED':
+			data['order_id'] = order_id
+		else:
+			data['order_id'] = None
+
+		doc_ref = self.__livetrade.document(id)
+		if doc_ref.get().exists:
+			doc_ref.update(data)
+
+		return doc_ref.get().to_dict()
+
+	def filter(self, strategy = None, timeframe = None, token_id = None, is_active = None, fiat = None, uid = None, status: Literal['ORDER_PLACED', 'READY_TO_TRADE'] = None):
 		query = self.__livetrade
 
 		if strategy is not None:
@@ -106,6 +120,9 @@ class FirebaseLiveTrade:
 
 		if uid is not None:
 			query = query.where(filter=FieldFilter('uid', '==', uid))
+
+		if status is not None:
+			query = query.where(filter=FieldFilter('status', '==', status))
 
 		docs = query.stream()
 		return [doc.to_dict() for doc in docs]

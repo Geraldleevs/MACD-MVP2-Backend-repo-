@@ -109,6 +109,12 @@ class Trade:
 			livetrade_details = firebase_livetrade.get(livetrade_id)
 			cur_token = livetrade_details['cur_token']
 			amount = livetrade_details['amount_str']
+			status = livetrade_details.get('status')
+			order_id = livetrade_details.get('order_id')
+
+			if status == 'ORDER_PLACED':
+				FirebaseOrderBook().cancel_order(order_id)
+
 			firebase_livetrade.close(livetrade_id)
 			firebase_wallet.unreserve_krakenbot_amount(cur_token, amount)
 
@@ -145,6 +151,9 @@ class Trade:
 			return FirebaseOrderBook().create_order(uid, from_token, to_token, price, from_amount)
 		elif request['order'] == 'CANCEL':
 			order_id = request['order_id']
-			return FirebaseOrderBook().cancel_order(order_id)
+			firebase_order_book = FirebaseOrderBook()
+			if firebase_order_book.get(order_id).get('created_by', 'USER') != 'USER':
+				raise NotAuthorisedException()
+			return firebase_order_book.cancel_order(order_id)
 		else:
 			return self.convert(uid, from_token, from_amount, to_token)

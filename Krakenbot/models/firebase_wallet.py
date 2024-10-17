@@ -245,23 +245,26 @@ class FirebaseWallet:
 
 		doc_ref.update(new_data)
 
-	def complete_order(self, from_token, from_amount, to_token, to_amount):
+	def complete_order(self, from_token, from_amount, to_token, to_amount, created_by, bot_id):
 		from_doc_ref = self.__wallet_collection.document(from_token)
 		from_doc = from_doc_ref.get()
 
 		if not from_doc.exists:
 			raise NotEnoughTokenException()
 
-		is_from_fiat = FirebaseToken().get(from_token).get('is_fiat', False)
-		new_hold_value = from_doc.to_dict().get(self.HOLD_AMOUNT_STR, 0)
-		if is_from_fiat:
-			new_hold_value = acc_calc(new_hold_value, '-', from_amount, 2)
+		if created_by == 'USER':
+			is_from_fiat = FirebaseToken().get(from_token).get('is_fiat', False)
+			new_hold_value = from_doc.to_dict().get(self.HOLD_AMOUNT_STR, 0)
+			if is_from_fiat:
+				new_hold_value = acc_calc(new_hold_value, '-', from_amount, 2)
+			else:
+				new_hold_value = acc_calc(new_hold_value, '-', from_amount)
+
+			if new_hold_value < 0:
+				raise NotEnoughTokenException()
+
+			self.release_token_hold(from_token, from_amount)
+			transaction = self.trade_by_user(from_token, from_amount, to_token, to_amount)
 		else:
-			new_hold_value = acc_calc(new_hold_value, '-', from_amount)
-
-		if new_hold_value < 0:
-			raise NotEnoughTokenException()
-
-		self.release_token_hold(from_token, from_amount)
-		transaction = self.trade_by_user(from_token, from_amount, to_token, to_amount)
+			transaction = self.trade_by_krakenbot(from_token, from_amount, to_token, to_amount, created_by, bot_id)
 		return transaction
