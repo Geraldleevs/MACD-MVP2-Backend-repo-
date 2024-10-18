@@ -79,7 +79,7 @@ class CheckOrders:
 			values = prices.get(pair)
 			if values is None or values[0] is None or values[1] is None:
 				log_error(f'Check Orders Failed due to token price not found! ({pair})')
-				raise TokenNotFoundException()
+				continue
 
 			(high, low) = values
 
