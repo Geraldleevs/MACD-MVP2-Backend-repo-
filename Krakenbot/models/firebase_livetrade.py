@@ -60,11 +60,11 @@ class FirebaseLiveTrade:
 		take_profit = data.get('take_profit')
 		stop_loss = data.get('stop_loss')
 		if take_profit is not None and float(take_profit) > 0:
-			data['take_profit'] = float(take_profit)
+			data['take_profit'] = round(float(take_profit), 2)
 		else:
 			data['take_profit'] = None
 		if stop_loss is not None and float(stop_loss) > 0:
-			data['stop_loss'] = float(stop_loss)
+			data['stop_loss'] = round(float(stop_loss), 2)
 		else:
 			data['stop_loss'] = None
 
@@ -81,11 +81,11 @@ class FirebaseLiveTrade:
 
 	def update_take_profit_stop_loss(self, id, take_profit, stop_loss):
 		if take_profit is not None and float(take_profit) > 0:
-			take_profit = float(take_profit)
+			take_profit = round(float(take_profit), 2)
 		else:
 			take_profit = None
 		if stop_loss is not None and float(stop_loss) > 0:
-			stop_loss = float(stop_loss)
+			stop_loss = round(float(stop_loss), 2)
 		else:
 			stop_loss = None
 		doc_ref = self.__livetrade.document(id)
@@ -93,7 +93,7 @@ class FirebaseLiveTrade:
 
 	def update_take_profit(self, id, take_profit):
 		if take_profit is not None and float(take_profit) > 0:
-			take_profit = float(take_profit)
+			take_profit = round(float(take_profit), 2)
 		else:
 			take_profit = None
 		doc_ref = self.__livetrade.document(id)
@@ -101,7 +101,7 @@ class FirebaseLiveTrade:
 
 	def update_stop_loss(self, id, stop_loss):
 		if stop_loss is not None and float(stop_loss) > 0:
-			stop_loss = float(stop_loss)
+			stop_loss = round(float(stop_loss), 2)
 		else:
 			stop_loss = None
 		doc_ref = self.__livetrade.document(id)
