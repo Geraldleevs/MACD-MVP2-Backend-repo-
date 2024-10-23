@@ -22,6 +22,8 @@ class LiveTradeField(TypedDict):
 
 class FirebaseLiveTrade:
 	__count_doc_id = '_count'
+	STOPPED_LOSS_STATUS ='STOP_LOSS'
+	TAKING_PROFIT_STATUS ='TAKING_PROFIT'
 
 	def __init__(self, uid = None):
 		self.uid = uid
@@ -127,7 +129,7 @@ class FirebaseLiveTrade:
 		docs = self.__livetrade.stream()
 		return [doc.to_dict() for doc in docs]
 
-	def update_status(self, id, status: Literal['ORDER_PLACED', 'READY_TO_TRADE'], order_id = None):
+	def update_status(self, id, status: Literal['ORDER_PLACED', 'READY_TO_TRADE', 'COMPLETED'], order_id = None):
 		data = { 'status': status }
 
 		if status == 'ORDER_PLACED':
@@ -135,13 +137,33 @@ class FirebaseLiveTrade:
 		else:
 			data['order_id'] = None
 
+		if status == 'COMPLETED':
+			data['is_active'] = False
+
 		doc_ref = self.__livetrade.document(id)
 		if doc_ref.get().exists:
 			doc_ref.update(data)
 
 		return doc_ref.get().to_dict()
 
-	def filter(self, strategy = None, timeframe = None, token_id = None, is_active = None, fiat = None, uid = None, status: Literal['ORDER_PLACED', 'READY_TO_TRADE'] = None):
+	def taking_profit(self, id):
+		doc_ref = self.__livetrade.document(id)
+		if doc_ref.get().exists:
+			doc_ref.update({ 'status': self.TAKING_PROFIT_STATUS })
+
+	def stop_loss_pause(self, id):
+		doc_ref = self.__livetrade.document(id)
+		if doc_ref.get().exists:
+			doc_ref.update({ 'status': self.STOPPED_LOSS_STATUS })
+
+	def stop_loss_unpause(self, id):
+		doc_ref = self.__livetrade.document(id)
+		if doc_ref.get().exists:
+			doc_ref.update({ 'status': 'READY_TO_TRADE' })
+
+	def filter(self, strategy = None, timeframe = None, token_id = None, is_active = None, fiat = None, uid = None,
+						status: Literal['ORDER_PLACED', 'READY_TO_TRADE'] = None, has_stop_loss: bool = None, has_take_profit: bool = None,
+						stopped_loss: bool = None, taken_profit: bool = None):
 		query = self.__livetrade
 
 		if strategy is not None:
@@ -164,6 +186,18 @@ class FirebaseLiveTrade:
 
 		if status is not None:
 			query = query.where(filter=FieldFilter('status', '==', status))
+
+		if has_stop_loss == True:
+			query = query.where(filter=FieldFilter('stop_loss', '>', 0))
+
+		if has_take_profit == True:
+			query = query.where(filter=FieldFilter('take_profit', '>', 0))
+
+		if stopped_loss is not None:
+			query = query.where(filter=FieldFilter('status', '==' if stopped_loss else '!=', self.STOPPED_LOSS_STATUS))
+
+		if taken_profit is not None:
+			query = query.where(filter=FieldFilter('status', '==' if taken_profit else '!=', self.TAKING_PROFIT_STATUS))
 
 		docs = query.stream()
 		return [doc.to_dict() for doc in docs]

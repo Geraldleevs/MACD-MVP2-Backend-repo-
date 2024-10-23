@@ -35,7 +35,10 @@ class Trade:
 		order_id = request.data.get('order_id', '')
 		order_price_reverse = request.data.get('order_price_reverse', 'false').lower() == 'true'
 
-		if uid == '' or len(jwt_token) < 2:
+		try:
+			if uid != firebase_admin.auth.verify_id_token(jwt_token[1])['uid']:
+				raise NotAuthorisedException()
+		except Exception:
 			raise NotAuthorisedException()
 
 		try:
@@ -53,11 +56,8 @@ class Trade:
 		except ValueError:
 			raise BadRequestException()
 
-		try:
-			if uid != firebase_admin.auth.verify_id_token(jwt_token[1])['uid']:
-				raise NotAuthorisedException()
-		except Exception:
-			raise NotAuthorisedException()
+		if stop_loss is not None and take_profit is not None and stop_loss >= take_profit:
+			raise BadRequestException()
 
 		return {
 			'uid': uid,

@@ -80,7 +80,13 @@ class FirebaseOrderBook:
 
 		if created_by != 'USER' and bot_id is not None:
 			firebase_livetrade = FirebaseLiveTrade(uid)
-			firebase_livetrade.update_status(bot_id, 'READY_TO_TRADE')
+			status = firebase_livetrade.get(bot_id)['status']
+			stopping_loss = status == firebase_livetrade.STOPPED_LOSS_STATUS
+			taking_profit = status == firebase_livetrade.TAKING_PROFIT_STATUS
+			if taking_profit or stopping_loss:
+				firebase_livetrade.update_status(bot_id, 'COMPLETED')
+			else:
+				firebase_livetrade.update_status(bot_id, 'READY_TO_TRADE')
 			firebase_livetrade.update(bot_id, {
 				'amount': float(transaction['to_amount']),
 				'amount_str': str(transaction['to_amount_str']),
