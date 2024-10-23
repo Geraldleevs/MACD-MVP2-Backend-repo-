@@ -4,6 +4,7 @@ from Krakenbot import settings
 from google.cloud.firestore_v1.base_query import FieldFilter
 from django.utils import timezone
 from Krakenbot.exceptions import BadRequestException
+from Krakenbot.models.firebase_livetrade import FirebaseLiveTrade
 from Krakenbot.models.firebase_wallet import FirebaseWallet
 from Krakenbot.utils import acc_calc
 
@@ -15,8 +16,9 @@ class FirebaseOrderBook:
 	def __init__(self):
 		self.__order_book = settings.firebase.collection(u'order_book')
 
-	def create_order(self, uid, from_token, to_token, price, volume):
-		FirebaseWallet(uid).hold_token_for_order(from_token, volume)
+	def create_order(self, uid, from_token, to_token, price, volume, created_by = 'USER', bot_id = None):
+		if created_by == 'USER':
+			FirebaseWallet(uid).hold_token_for_order(from_token, volume)
 
 		new_order = {
 			'uid': uid,
@@ -28,11 +30,17 @@ class FirebaseOrderBook:
 			'created_time': timezone.now(),
 			'closed_time': None,
 			'status': self.__OPEN_STATUS,
+			'created_by': created_by,
+			'bot_id': bot_id,
 		}
 
 		doc_ref = self.__order_book.document()
 		doc_ref.set(new_order)
 		doc_ref.update({ 'order_id': doc_ref.id })
+
+		if bot_id is not None:
+			FirebaseLiveTrade(uid).update_status(bot_id, 'ORDER_PLACED', doc_ref.id)
+
 		return { **doc_ref.get().to_dict() }
 
 	def cancel_order(self, id):
@@ -43,7 +51,8 @@ class FirebaseOrderBook:
 			raise BadRequestException()
 
 		order_data = doc.to_dict()
-		FirebaseWallet(order_data['uid']).release_token_hold(order_data['from_token'], order_data['volume'])
+		if doc.to_dict().get('created_by', 'USER') == 'USER':
+			FirebaseWallet(order_data['uid']).release_token_hold(order_data['from_token'], order_data['volume'])
 
 		update_data = {
 			'closed_time': timezone.now(),
@@ -65,7 +74,18 @@ class FirebaseOrderBook:
 		from_amount = order_data['volume']
 		to_token = order_data['to_token']
 		to_amount = acc_calc(from_amount, '*', order_data['price_str'])
-		transaction = FirebaseWallet(uid).complete_order(from_token, from_amount, to_token, to_amount)
+		created_by = order_data.get('created_by', 'USER')
+		bot_id = order_data.get('bot_id')
+		transaction = FirebaseWallet(uid).complete_order(from_token, from_amount, to_token, to_amount, created_by, bot_id)
+
+		if created_by != 'USER' and bot_id is not None:
+			firebase_livetrade = FirebaseLiveTrade(uid)
+			firebase_livetrade.update_status(bot_id, 'READY_TO_TRADE')
+			firebase_livetrade.update(bot_id, {
+				'amount': float(transaction['to_amount']),
+				'amount_str': str(transaction['to_amount_str']),
+				'cur_token': transaction['to_token']
+			})
 
 		update_data = {
 			'closed_time': timezone.now(),
