@@ -26,14 +26,17 @@ class Trade:
 		demo_init = request.data.get('demo_init', '')
 		livetrade = request.data.get('livetrade', '').upper()
 		livetrade_id = request.data.get('livetrade_id', '')
-		take_profit = request.data.get('take_profit', None)
-		stop_loss = request.data.get('stop_loss', None)
+		take_profit = request.data.get('take_profit')
+		stop_loss = request.data.get('stop_loss')
 		strategy = request.data.get('strategy', '')
 		timeframe = request.data.get('timeframe', '')
 		order = request.data.get('order', '').upper()
 		order_price = request.data.get('order_price', '0')
 		order_id = request.data.get('order_id', '')
 		order_price_reverse = request.data.get('order_price_reverse', 'false').lower() == 'true'
+
+		take_profit = None if take_profit.strip() == '' else take_profit.strip()
+		stop_loss = None if stop_loss.strip() == '' else stop_loss.strip()
 
 		try:
 			if uid != firebase_admin.auth.verify_id_token(jwt_token[1])['uid']:
@@ -56,7 +59,7 @@ class Trade:
 		except ValueError:
 			raise BadRequestException()
 
-		if stop_loss is not None and take_profit is not None and stop_loss >= take_profit:
+		if stop_loss is not None and take_profit is not None and stop_loss >= take_profit > 0:
 			raise BadRequestException()
 
 		return {
