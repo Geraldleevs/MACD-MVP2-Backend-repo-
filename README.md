@@ -267,7 +267,34 @@ None (Status: 200)
 
 #### Example
 ```
-Request: http://127.0.0.1:8000/api/auto-livetrade
+Request: http://127.0.0.1:8000/api/check-orders
+Authorization: Bearer ANY_VALID_TOKEN
+Response:
+None (Status: 200)
+```
+</details>
+
+<hr/>
+
+### Check Stop Loss & Take Profit
+
+Check and perform stop loss and take profit: `http://127.0.0.1:8000/api/check-lossprofit [POST]`
+
+<details>
+<summary>
+Endpoint details
+</summary>
+
+```
+URL: http://127.0.0.1:8000/api/check-lossprofit
+Authorization: Bearer {Google_OIDC_Token}
+Response:
+None (Status: 200)
+```
+
+#### Example
+```
+Request: http://127.0.0.1:8000/api/check-lossprofit
 Authorization: Bearer ANY_VALID_TOKEN
 Response:
 None (Status: 200)
@@ -533,7 +560,9 @@ Body:
   "to_token": number,
   "livetrade": "RESERVE",
   "strategy": string,
-  "timeframe": string
+  "timeframe": string,
+  "take_profit": string,
+  "stop_loss": string
 }
 Response:
 {
@@ -558,7 +587,9 @@ Body:
   "to_token": "DOGE",
   "livetrade": "reserve",
   "strategy": "RSI74",
-  "timeframe": "1d"
+  "timeframe": "1d",
+  "take_profit": "1200",
+  "stop_loss": "800"
 }
 Response:
 {
@@ -567,8 +598,52 @@ Response:
   "timeframe": "1d",
   "fiat": "GBP",
   "token_id": "DOGE",
-  "amount": 1000
+  "amount": 1000,
+  "take_profit": 1200,
+  "stop_loss": 800
 }
+```
+</details>
+
+<hr/>
+
+### Update Live Trade
+
+Update Live Trade: `http://127.0.0.1:8000/api/trade [POST]`
+
+<details>
+<summary>
+Endpoint details
+</summary>
+
+```
+URL: http://127.0.0.1:8000/api/trade
+Authorization: Bearer {JWT_Token}
+Body:
+{
+  "uid": string,
+  "livetrade": "UPDATE",
+  "livetrade_id": string,
+  "take_profit": string,
+  "stop_loss": string
+}
+Response:
+None
+```
+
+#### Example
+```
+Request: http://127.0.0.1:8000/api/trade
+Authorization: Bearer ANY_VALID_TOKEN
+Body:
+{
+  "uid": "Gmcjdq33QxPSggpJx7CsTK42cQR2",
+  "livetrade": "UPDATE",
+  "take_profit": "1200",
+  "stop_loss": "800"
+}
+Response:
+None
 ```
 </details>
 
