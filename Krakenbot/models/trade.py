@@ -48,11 +48,11 @@ class Trade:
 			if order == 'ORDER':
 				float(order_price)
 
-			if livetrade == 'UPDATE' and take_profit is not None:
+			if livetrade in ['UPDATE', 'RESERVE'] and take_profit is not None:
 				take_profit = float(take_profit)
 				if take_profit < 0:
 					raise ValueError()
-			if livetrade == 'UPDATE' and stop_loss is not None:
+			if livetrade in ['UPDATE', 'RESERVE'] and stop_loss is not None:
 				stop_loss = float(stop_loss)
 				if stop_loss < 0:
 					raise ValueError()
