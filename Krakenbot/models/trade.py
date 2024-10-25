@@ -81,16 +81,16 @@ class Trade:
 		}
 
 	def livetrade(self, request):
-		uid = request['uid']
-		livetrade = request['livetrade']
-		take_profit = request['take_profit']
-		stop_loss = request['stop_loss']
-		from_amount = request['from_amount']
-		strategy = request['strategy']
-		timeframe = request['timeframe']
-		from_token = request['from_token']
-		to_token = request['to_token']
-		livetrade_id = request['livetrade_id']
+		uid = request.get('uid')
+		livetrade = request.get('livetrade')
+		take_profit = request.get('take_profit')
+		stop_loss = request.get('stop_loss')
+		from_amount = request.get('from_amount')
+		strategy = request.get('strategy')
+		timeframe = request.get('timeframe')
+		from_token = request.get('from_token')
+		to_token = request.get('to_token')
+		livetrade_id = request.get('livetrade_id')
 		firebase_wallet = FirebaseWallet(uid)
 		firebase_livetrade = FirebaseLiveTrade(uid)
 

@@ -80,11 +80,15 @@ class FirebaseOrderBook:
 
 		if created_by != 'USER' and bot_id is not None:
 			firebase_livetrade = FirebaseLiveTrade(uid)
-			status = firebase_livetrade.get(bot_id)['status']
+			livetrade_details = firebase_livetrade.get(bot_id)
+			status = livetrade_details['status']
 			stopping_loss = status == firebase_livetrade.STOPPED_LOSS_STATUS
 			taking_profit = status == firebase_livetrade.TAKING_PROFIT_STATUS
 			if taking_profit or stopping_loss:
-				firebase_livetrade.update_status(bot_id, 'COMPLETED')
+				cur_token = livetrade_details['cur_token']
+				amount = livetrade_details['amount_str']
+				firebase_livetrade.close(bot_id)
+				FirebaseWallet(uid).unreserve_krakenbot_amount(cur_token, amount)
 			else:
 				firebase_livetrade.update_status(bot_id, 'READY_TO_TRADE')
 			firebase_livetrade.update(bot_id, {
