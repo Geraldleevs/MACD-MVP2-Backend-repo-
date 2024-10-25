@@ -4,6 +4,7 @@ from Krakenbot.models.firebase_livetrade import FirebaseLiveTrade
 from Krakenbot.models.firebase_order_book import FirebaseOrderBook
 from Krakenbot.models.firebase_token import FirebaseToken
 from Krakenbot.models.market import Market
+from Krakenbot.models.trade import Trade
 from Krakenbot.utils import acc_calc, authenticate_scheduler_oicd, log_error, log, log_warning
 
 class CheckLossProfit:
@@ -37,13 +38,17 @@ class CheckLossProfit:
 
 				livetrade_id = livetrade['livetrade_id']
 				bot_name = livetrade['name']
+				uid = livetrade['uid']
 				if cur_token == token_id:
-					uid = livetrade['uid']
 					amount = livetrade['amount_str']
 					self.firebase_order_book.create_order(uid, cur_token, fiat, price, amount, bot_name, livetrade_id)
 					order_created += 1
 
 				self.firebase_livetrade.taking_profit(livetrade_id)
+
+				if cur_token == fiat:
+					Trade().livetrade({ 'uid': uid, 'livetrade': 'UNRESERVE', 'livetrade_id': livetrade_id })
+
 				take_profit_set += 1
 
 			except KeyError:
@@ -93,13 +98,17 @@ class CheckLossProfit:
 
 				livetrade_id = livetrade['livetrade_id']
 				bot_name = livetrade['name']
+				uid = livetrade['uid']
 				if cur_token == token_id:
-					uid = livetrade['uid']
 					amount = livetrade['amount_str']
 					self.firebase_order_book.create_order(uid, cur_token, fiat, price, amount, bot_name, livetrade_id)
 					order_created += 1
 
 				self.firebase_livetrade.stop_loss_pause(livetrade_id)
+
+				if cur_token == fiat:
+					Trade().livetrade({ 'uid': uid, 'livetrade': 'UNRESERVE', 'livetrade_id': livetrade_id })
+
 				stop_loss_set += 1
 
 			except KeyError:
@@ -126,7 +135,8 @@ class CheckLossProfit:
 		take_profit_livetrades = self.firebase_livetrade.filter(is_active=True, has_take_profit=True, taken_profit=False)
 		stop_loss_livetrades = self.firebase_livetrade.filter(is_active=True, has_stop_loss=True, stopped_loss=False)
 
-		fiats = FirebaseToken().filter(is_fiat=True)
+		fiats = FirebaseToken().filter(is_fiat=True, is_active=None)
+		fiats = [fiat['token_id'] for fiat in fiats]
 		prices = {}
 		for fiat in fiats:
 			market_prices = Market().get_market(convert_to=fiat)
