@@ -26,6 +26,8 @@ class Trade:
 		demo_init = request.data.get('demo_init', '')
 		livetrade = request.data.get('livetrade', '').upper()
 		livetrade_id = request.data.get('livetrade_id', '')
+		take_profit = request.data.get('take_profit', '')
+		stop_loss = request.data.get('stop_loss', '')
 		strategy = request.data.get('strategy', '')
 		timeframe = request.data.get('timeframe', '')
 		order = request.data.get('order', '').upper()
@@ -33,20 +35,32 @@ class Trade:
 		order_id = request.data.get('order_id', '')
 		order_price_reverse = request.data.get('order_price_reverse', 'false').lower() == 'true'
 
-		if uid == '' or len(jwt_token) < 2:
-			raise NotAuthorisedException()
-
-		try:
-			if order == 'ORDER':
-				float(order_price)
-		except ValueError:
-			raise BadRequestException()
+		take_profit = None if take_profit.strip() == '' else take_profit.strip()
+		stop_loss = None if stop_loss.strip() == '' else stop_loss.strip()
 
 		try:
 			if uid != firebase_admin.auth.verify_id_token(jwt_token[1])['uid']:
 				raise NotAuthorisedException()
 		except Exception:
 			raise NotAuthorisedException()
+
+		try:
+			if order == 'ORDER':
+				float(order_price)
+
+			if livetrade in ['UPDATE', 'RESERVE'] and take_profit is not None:
+				take_profit = float(take_profit)
+				if take_profit < 0:
+					raise ValueError()
+			if livetrade in ['UPDATE', 'RESERVE'] and stop_loss is not None:
+				stop_loss = float(stop_loss)
+				if stop_loss < 0:
+					raise ValueError()
+		except ValueError:
+			raise BadRequestException()
+
+		if stop_loss is not None and take_profit is not None and stop_loss >= take_profit > 0:
+			raise BadRequestException()
 
 		return {
 			'uid': uid,
@@ -56,6 +70,8 @@ class Trade:
 			'demo_init': demo_init,
 			'livetrade': livetrade,
 			'livetrade_id': livetrade_id,
+			'take_profit': take_profit,
+			'stop_loss': stop_loss,
 			'strategy': strategy,
 			'timeframe': timeframe,
 			'order': order,
@@ -65,61 +81,79 @@ class Trade:
 		}
 
 	def livetrade(self, request):
-		uid = request['uid']
-		livetrade = request['livetrade']
-		from_amount = request['from_amount']
-		strategy = request['strategy']
-		timeframe = request['timeframe']
-		from_token = request['from_token']
-		to_token = request['to_token']
-		livetrade_id = request['livetrade_id']
+		uid = request.get('uid')
+		livetrade = request.get('livetrade')
+		take_profit = request.get('take_profit')
+		stop_loss = request.get('stop_loss')
+		from_amount = request.get('from_amount')
+		strategy = request.get('strategy')
+		timeframe = request.get('timeframe')
+		from_token = request.get('from_token')
+		to_token = request.get('to_token')
+		livetrade_id = request.get('livetrade_id')
 		firebase_wallet = FirebaseWallet(uid)
 		firebase_livetrade = FirebaseLiveTrade(uid)
 
-		if livetrade == 'RESERVE':
-			try:
-				livetrade_id = firebase_livetrade.create({
-					'uid': uid,
-					'start_time': timezone.now(),
-					'strategy': strategy,
-					'timeframe': timeframe,
-					'cur_token': from_token,
-					'fiat': from_token,
-					'token_id': to_token,
-					'initial_amount': float(from_amount),
-					'initial_amount_str': from_amount,
-					'amount': float(from_amount),
-					'amount_str': from_amount,
-					'is_active': True
-				})
-				firebase_wallet.reserve_krakenbot_amount(from_token, from_amount)
-				return {
-					'id': livetrade_id,
-					'strategy': strategy,
-					'timeframe': timeframe,
-					'fiat': from_token,
-					'token_id': to_token,
-					'amount': from_amount,
-				}
-			except ValueError:
-				raise BadRequestException()
-		elif livetrade in ['UNRESERVE', 'SELL']:
-			if not firebase_livetrade.has(livetrade_id):
-				raise BadRequestException()
-			livetrade_details = firebase_livetrade.get(livetrade_id)
-			cur_token = livetrade_details['cur_token']
-			amount = livetrade_details['amount_str']
-			status = livetrade_details.get('status')
-			order_id = livetrade_details.get('order_id')
+		match (livetrade):
+			case 'RESERVE':
+				try:
+					livetrade_id = firebase_livetrade.create({
+						'uid': uid,
+						'start_time': timezone.now(),
+						'strategy': strategy,
+						'timeframe': timeframe,
+						'cur_token': from_token,
+						'fiat': from_token,
+						'token_id': to_token,
+						'initial_amount': float(from_amount),
+						'initial_amount_str': from_amount,
+						'amount': float(from_amount),
+						'amount_str': from_amount,
+						'is_active': True,
+						'take_profit': take_profit,
+						'stop_loss': stop_loss,
+					})
+					firebase_wallet.reserve_krakenbot_amount(from_token, from_amount)
+					return {
+						'id': livetrade_id,
+						'strategy': strategy,
+						'timeframe': timeframe,
+						'fiat': from_token,
+						'token_id': to_token,
+						'amount': from_amount,
+						'take_profit': take_profit,
+						'stop_loss': stop_loss,
+					}
+				except ValueError:
+					raise BadRequestException()
 
-			if status == 'ORDER_PLACED':
-				FirebaseOrderBook().cancel_order(order_id)
+			case 'UPDATE':
+				if not firebase_livetrade.has(livetrade_id):
+					raise BadRequestException()
+				if take_profit is not None and stop_loss is not None:
+					firebase_livetrade.update_take_profit_stop_loss(livetrade_id, take_profit, stop_loss)
+				elif take_profit is not None:
+					firebase_livetrade.update_take_profit(livetrade_id, take_profit)
+				elif stop_loss is not None:
+					firebase_livetrade.update_stop_loss(livetrade_id, stop_loss)
 
-			firebase_livetrade.close(livetrade_id)
-			firebase_wallet.unreserve_krakenbot_amount(cur_token, amount)
+			case 'UNRESERVE' | 'SELL':
+				if not firebase_livetrade.has(livetrade_id):
+					raise BadRequestException()
+				livetrade_details = firebase_livetrade.get(livetrade_id)
+				cur_token = livetrade_details['cur_token']
+				amount = livetrade_details['amount_str']
+				status = livetrade_details.get('status')
+				order_id = livetrade_details.get('order_id')
 
-		if livetrade == 'SELL':
-			return self.convert(uid, cur_token, amount, to_token)
+				if status == 'ORDER_PLACED':
+					FirebaseOrderBook().cancel_order(order_id)
+
+				firebase_livetrade.close(livetrade_id)
+				firebase_wallet.unreserve_krakenbot_amount(cur_token, amount)
+
+				if livetrade == 'SELL':
+					return self.convert(uid, cur_token, amount, to_token)
 
 	def convert(self, uid, from_token, from_amount, to_token):
 		if from_token == to_token:

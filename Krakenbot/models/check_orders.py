@@ -1,7 +1,7 @@
 import asyncio
 from datetime import timedelta
 import aiohttp
-from Krakenbot.exceptions import NotEnoughTokenException, TokenNotFoundException
+from Krakenbot.exceptions import NotEnoughTokenException
 from rest_framework.request import Request
 from Krakenbot.models.firebase_order_book import FirebaseOrderBook
 from Krakenbot.utils import acc_calc, authenticate_scheduler_oicd, clean_kraken_pair, log_error, log_warning, log
