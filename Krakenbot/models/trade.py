@@ -97,7 +97,7 @@ class Trade:
 		match (livetrade):
 			case 'RESERVE':
 				try:
-					livetrade_id = firebase_livetrade.create({
+					livetrade = firebase_livetrade.create({
 						'uid': uid,
 						'start_time': timezone.now(),
 						'strategy': strategy,
@@ -113,7 +113,11 @@ class Trade:
 						'take_profit': take_profit,
 						'stop_loss': stop_loss,
 					})
+					livetrade_id = livetrade['id']
+					bot_name = livetrade['bot_name']
 					firebase_wallet.reserve_krakenbot_amount(from_token, from_amount)
+					price = Market().get_market(convert_from=from_token, convert_to=to_token)[0]
+					FirebaseOrderBook().create_order(uid, from_token, to_token, price['price_str'], from_amount, bot_name, livetrade_id)
 					return {
 						'id': livetrade_id,
 						'strategy': strategy,
@@ -142,6 +146,7 @@ class Trade:
 					raise BadRequestException()
 				livetrade_details = firebase_livetrade.get(livetrade_id)
 				cur_token = livetrade_details['cur_token']
+				fiat = livetrade_details['fiat']
 				amount = livetrade_details['amount_str']
 				status = livetrade_details.get('status')
 				order_id = livetrade_details.get('order_id')
@@ -152,20 +157,9 @@ class Trade:
 				firebase_livetrade.close(livetrade_id)
 				firebase_wallet.unreserve_krakenbot_amount(cur_token, amount)
 
-				if livetrade == 'SELL':
-					return self.convert(uid, cur_token, amount, to_token)
-
-	def convert(self, uid, from_token, from_amount, to_token):
-		if from_token == to_token:
-			return
-		try:
-			firebase = FirebaseWallet(uid)
-			price = Market().get_market(convert_from=from_token, convert_to=to_token)[0]['price_str']
-			to_amount = acc_calc(from_amount, '*', price)
-			transaction = firebase.trade_by_user(from_token, from_amount, to_token, to_amount)
-			return transaction
-		except (IndexError, ValueError, KeyError):
-			raise BadRequestException()
+				if livetrade == 'SELL' and cur_token != fiat:
+					price = Market().get_market(convert_from=cur_token, convert_to=fiat)[0]
+					return FirebaseOrderBook().create_order(uid, cur_token, fiat, price['price_str'], amount)
 
 	def trade(self, request: Request):
 		request = self.parse_request(request)
@@ -190,4 +184,4 @@ class Trade:
 				raise NotAuthorisedException()
 			return firebase_order_book.cancel_order(order_id)
 		else:
-			return self.convert(uid, from_token, from_amount, to_token)
+			raise BadRequestException()

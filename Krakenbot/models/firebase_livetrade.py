@@ -72,10 +72,11 @@ class FirebaseLiveTrade:
 
 		doc_count = self.add_and_get_count()
 		doc_ref = self.__livetrade.document()
-		doc_ref.set({**data, 'name': f'{self.__bot_name}-{doc_count}', 'status': 'READY_TO_TRADE'})
+		bot_name = f'{self.__bot_name}-{doc_count}'
+		doc_ref.set({**data, 'name': bot_name, 'status': 'READY_TO_TRADE'})
 		doc_ref.update({ 'livetrade_id': doc_ref.id })
 		self.add_user_livetrade(doc_ref)
-		return doc_ref.id
+		return { 'id': doc_ref.id, 'bot_name': bot_name }
 
 	def update(self, id, data: LiveTradeField):
 		doc_ref = self.__livetrade.document(id)
