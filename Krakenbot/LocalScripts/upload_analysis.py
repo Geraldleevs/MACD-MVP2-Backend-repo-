@@ -8,7 +8,7 @@ if __name__ == '__main__':
 	file = Path(__file__).resolve()
 	sys.path.append(str(file.parents[1]))
 
-from models.firebase_analysis import FirebaseAnalysis
+from models.firebase import FirebaseAnalysis
 
 def __main():
 	# Change The file if needed

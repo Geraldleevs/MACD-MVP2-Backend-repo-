@@ -27,3 +27,20 @@ firebase.batch()
 class settings:
 	firebase = firebase
 	db_batch = firebase.batch()
+
+FIAT = os.environ.get('FIAT', 'GBP')
+DEMO_AMOUNT = float(os.environ.get('DEMO_ACCOUNT_AMOUNT', '10000'))
+TIMEFRAMES = { timeframe.split('->')[1]: timeframe.split('->')[0] for timeframe in os.environ.get('TIMEFRAME_MAP', '').split(';') }
+INTERVAL_MAP = {
+    '1min': 1,
+    '5min': 5,
+    '15min': 15,
+    '30min': 30,
+    '1h': 60,
+    '4h': 240,
+    '1d': 1440,
+}
+
+KRAKEN_OHLC_API = 'https://api.kraken.com/0/public/OHLC'
+KRAKEN_PAIR_API = 'https://api.kraken.com/0/public/Ticker'
+COIN_GECKO_API = 'https://api.coingecko.com/api/v3/coins/markets'

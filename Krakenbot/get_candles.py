@@ -2,9 +2,9 @@ import asyncio
 import os
 
 try:
-    from Krakenbot.models.firebase_candle import FirebaseCandle
+    from Krakenbot.models.firebase import FirebaseCandle
 except ModuleNotFoundError:
-    from models.firebase_candle import FirebaseCandle
+    from models.firebase import FirebaseCandle
 
 async def __get_candle(pair: str, timeframe: str):
 		firebase = FirebaseCandle(pair, timeframe)

@@ -11,7 +11,7 @@ if __name__ == '__main__':
 	file = Path(__file__).resolve()
 	sys.path.append(str(file.parents[1]))
 
-from models.firebase_candle import FirebaseCandle
+from models.firebase import FirebaseCandle
 
 def __main():
 	# Change These Accordingly

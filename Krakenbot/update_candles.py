@@ -1,14 +1,14 @@
-import asyncio
 from datetime import datetime, timedelta
-import os
 import aiohttp
+import asyncio
+import os
 import pandas as pd
 
 try:
-    from Krakenbot.models.firebase_candle import FirebaseCandle
+    from Krakenbot.models.firebase import FirebaseCandle
     from Krakenbot.utils import clean_kraken_pair
 except ModuleNotFoundError:
-    from models.firebase_candle import FirebaseCandle
+    from models.firebase import FirebaseCandle
     from utils import clean_kraken_pair
 
 async def __fetch_and_save_candles(pair: str, timeframe: dict, session: aiohttp.ClientSession):

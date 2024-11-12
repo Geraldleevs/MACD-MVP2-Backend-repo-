@@ -11,3 +11,4 @@ aiohttp==3.9.5
 python-dotenv==1.0.1
 mammoth==1.8.0
 markdownify==0.13.1
+python-dotenv==1.0.1

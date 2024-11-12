@@ -1,42 +1,72 @@
-import json
-import os
-import sys
-import requests
 from typing import Literal
-from decimal import ROUND_DOWN, Decimal, Context, setcontext
-from rest_framework.request import Request
-from Krakenbot.exceptions import InvalidCalculationException
+from decimal import ROUND_DOWN, Decimal
+import json
+import requests
+import sys
+
+import firebase_admin.auth
 from rest_framework.authentication import get_authorization_header
+from rest_framework.request import Request
 
 try:
-	from Krakenbot.exceptions import NotAuthorisedException
+	from Krakenbot import settings
+	from Krakenbot.exceptions import InvalidCalculationException, NotAuthorisedException
 except ModuleNotFoundError:
-	from exceptions import NotAuthorisedException
+	from exceptions import InvalidCalculationException, NotAuthorisedException
+	from local_settings import settings
+
+
+def authenticate_user_jwt(request: Request, req_type: Literal['get', 'post'] = 'post') -> str:
+	'''
+	Will only work in production server
+
+	Returns:
+		uid: User ID from request
+
+	Raises:
+		NotAuthorisedException: UID or JWT is invalid
+	'''
+	if req_type == 'post':
+		uid = request.data.get('uid')
+	else:
+		uid = request.query_params.get('uid')
+
+	if settings.DEBUG:
+		return uid
+
+	jwt_token = get_authorization_header(request).decode('utf-8').split(' ')
+
+	try:
+		if uid != firebase_admin.auth.verify_id_token(jwt_token[1])['uid']:
+			raise NotAuthorisedException()
+	except Exception:
+		raise NotAuthorisedException()
+
+	return uid
+
 
 def authenticate_scheduler_oicd(request: Request) -> None:
 	'''
 	Will only work in production server
 
 	Raises:
-		`NotAuthorisedException`: If header is not a valid Google OICD key
+		NotAuthorisedException: If header is not a valid Google OICD key
 	'''
-	if os.environ.get('PYTHON_ENV') == 'development':
+	if settings.DEBUG:
 		return
 
-	token = get_authorization_header(request).decode('utf-8').split(' ')
-
-	if len(token) < 2:
-		raise NotAuthorisedException()
-
 	try:
-		auth = requests.get('https://oauth2.googleapis.com/tokeninfo', params={'id_token': token[1]}).json()
+		token = get_authorization_header(request).decode('utf-8').split(' ')
 
-		if 'error' in auth.keys():
+		if len(token) < 2:
 			raise NotAuthorisedException()
 
-		if auth['iss'] != 'https://accounts.google.com' or \
-				auth['email'] != os.environ.get('GCLOUD_EMAIL') or \
-				auth['aud'] != os.environ.get('API_URL'):
+		auth = requests.get('https://oauth2.googleapis.com/tokeninfo', params={'id_token': token[1]}).json()
+
+		if 'error' in auth.keys() or \
+				auth['iss'] != settings.GOOGLE_AUTH_EMAIL or \
+				auth['email'] != settings.GCLOUD_EMAIL or \
+				auth['aud'] != settings.SERVER_API_URL:
 			raise NotAuthorisedException()
 
 	except Exception:
@@ -88,11 +118,8 @@ def clean_kraken_pair(kraken_result) -> dict[str, any]:
 
 
 async def usd_to_gbp() -> float:
-	'''
-	Return USD to GBP Rate
-	'''
-	KRAKEN_API = 'https://api.kraken.com/0/public/Ticker'
-	result = requests.get(KRAKEN_API, { 'pair': 'GBPUSD' }).json()
+	''' Return USD to GBP Rate '''
+	result = requests.get(settings.KRAKEN_PAIR_API, { 'pair': 'GBPUSD' }).json()
 
 	if len(result['error']) > 0:
 		return 0
@@ -105,10 +132,19 @@ async def usd_to_gbp() -> float:
 
 def acc_calc(
 		num1: str | float | int | Decimal,
-		op: Literal['+', '-', '*', '/', '%'],
+		op: Literal['+', '-', '*', '/', '%', '//',
+								'==', '!=', '>', '>=', '<', '<='],
 		num2: str | float | int | Decimal,
 		decimal_count = 18
 	) -> Decimal:
+	'''
+	Performs calculations with Float128 type with higher precision.
+	Accepts `str`, `float`, `int`, `Decimal` types
+	Returns:
+		result:
+		Result of calculation in decimal type
+	'''
+
 	full_decimal = 18
 	full_decimal_places = '.' + '0' * (full_decimal - 1) + '1'
 	full_decimal_places = Decimal(full_decimal_places)
@@ -119,6 +155,11 @@ def acc_calc(
 		raise InvalidCalculationException()
 	decimal_places = '.' + '0' * (decimal_count - 1) + '1'
 	decimal_places = Decimal(decimal_places)
+
+	if num1 is None:
+		num1 = 0
+	if num2 is None:
+		num2 = 0
 
 	try:
 		num1 = Decimal(str(num1))
@@ -142,6 +183,27 @@ def acc_calc(
 		case '%':
 			result = num1 % num2
 
+		case '//':
+			result = num1 // num2
+
+		case '==':
+			return num1 == num2
+
+		case '!=':
+			return num1 != num2
+
+		case '>':
+			return num1 > num2
+
+		case '>=':
+			return num1 >= num2
+
+		case '<':
+			return num1 < num2
+
+		case '<=':
+			return num1 <= num2
+
 		case _:
 			raise InvalidCalculationException()
 
@@ -150,23 +212,17 @@ def acc_calc(
 
 
 def log_warning(message):
-	'''
-	Google Cloud Log Warning
-	'''
+	''' Google Cloud Log Warning '''
 	log(message, 'WARNING')
 
 
 def log_error(message):
-	'''
-	Google Cloud Log Error
-	'''
+	''' Google Cloud Log Error '''
 	log(message, 'ERROR')
 
 
 def log(message, severity = 'INFO'):
-	'''
-	Google Cloud Log
-	'''
+	''' Google Cloud Log '''
 	entry = {
 			'severity': severity,
 			'message': message,

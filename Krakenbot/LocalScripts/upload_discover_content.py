@@ -10,7 +10,7 @@ if __name__ == '__main__':
 	file = Path(__file__).resolve()
 	sys.path.append(str(file.parents[1]))
 
-from models.firebase_discover import FirebaseDiscover
+from models.firebase import FirebaseDiscover
 
 style_map = """
 p[style-name='Heading 1'] => h1:fresh
