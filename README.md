@@ -198,3 +198,7 @@ ADDRESS="0.0.0.0" # Must be set
     ```bash
     python Krakenbot/LocalScripts/upload_analysis.py
     ```
+
+## Test Cases
+
+Run `python manage.py test` to test the utils functions, trade and market endpoints
