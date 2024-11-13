@@ -735,14 +735,14 @@ class AutoLiveTradeView(APIView):
 
 		for fiat in all_fiat:
 			(buy_signals, sell_signals) = await self.__check_trade(timeframe, fiat['token_id'])
-			self.__trade(buy_signals, MarketView().get_market(convert_from=fiat), 'Buy')
-			self.__trade(sell_signals, MarketView().get_market(convert_to=fiat), 'Sell')
+			self.__trade(buy_signals, MarketView().get_market(convert_from=fiat['token_id']), 'Buy')
+			self.__trade(sell_signals, MarketView().get_market(convert_to=fiat['token_id']), 'Sell')
 
 	async def __check_trade(self, timeframe: str, fiat: str):
 		firebase_livetrade = FirebaseLiveTrade()
 		livetrades = firebase_livetrade.filter(timeframe=timeframe, is_active=True, fiat=fiat, status='READY_TO_TRADE')
 		if len(livetrades) == 0:
-			return
+			return ([], [])
 		all_livetrade_token = { livetrade['token_id'] for livetrade in livetrades }
 
 		all_tokens = FirebaseToken().filter(is_fiat=False)
