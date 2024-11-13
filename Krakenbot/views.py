@@ -223,6 +223,7 @@ class SimulationView(APIView):
 	def simulate_backtest(self, fiat: str, token_id: str, strategy: str, timeframe: str, starting_time: datetime):
 		interval = settings.INTERVAL_MAP[timeframe]
 		candles = FirebaseCandle(f'{token_id}{fiat}', timeframe).fetch_since(starting_time)[:int(5 * 24 * 60 / interval)]
+		starting_candle = candles[0]
 		candles = pd.DataFrame.from_dict(candles)
 
 		strategy_1, strategy_2 = strategy.split(' & ')
@@ -233,6 +234,9 @@ class SimulationView(APIView):
 		sell_signals = (result_1 == -1) & (result_2 == -1)
 
 		decisions = []
+		leading_empty_time = (starting_candle['Unix_Timestamp'] - int(starting_time.timestamp())) / 60 / 60
+		decisions.extend([0] * int(leading_empty_time))
+
 		empty_decision = [0] * int(interval / 60 - 1)
 		for buy, sell in zip(buy_signals, sell_signals):
 			if buy:
@@ -242,7 +246,7 @@ class SimulationView(APIView):
 			else:
 				decisions.extend([0, *empty_decision])
 
-		return decisions
+		return decisions[:(5 * 24)]
 
 
 class BackTestView(APIView):
