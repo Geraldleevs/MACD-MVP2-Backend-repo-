@@ -162,7 +162,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 FIAT = os.environ.get('FIAT', 'GBP')
 DEMO_AMOUNT = float(os.environ.get('DEMO_ACCOUNT_AMOUNT', '10000'))
 TIMEFRAMES = { timeframe.split('->')[1]: timeframe.split('->')[0] for timeframe in os.environ.get('TIMEFRAME_MAP', '').split(';') }
-HISTORY_INTERVAL = int(os.environ.get('TOKEN_HISTORY_INTERVAL_IN_MINUTES', '120'))
+HISTORY_INTERVAL = int(os.environ.get('TOKEN_HISTORY_INTERVAL_IN_MINUTES', '60'))
 HISTORY_COUNT = int(os.environ.get('MAX_TOKEN_HISTORY_IN_DAYS', '7')) * 24 * 60 // HISTORY_INTERVAL # Multiply into minutes
 INTERVAL_MAP = {
 	'1min': 1,

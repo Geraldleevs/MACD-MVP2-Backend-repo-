@@ -1,8 +1,11 @@
 from datetime import datetime, timedelta
+from itertools import combinations
 from typing import List, Literal
 import asyncio
 import aiohttp
 import requests
+import numpy as np
+import pandas as pd
 
 from django.utils import timezone
 from rest_framework.request import Request
@@ -11,8 +14,8 @@ from rest_framework.views import APIView
 
 from Krakenbot import settings
 from Krakenbot.exceptions import BadRequestException, DatabaseIncorrectDataException, NoUserSelectedException, NotAuthorisedException, ServerErrorException, NotEnoughTokenException
-from Krakenbot.models.firebase import FirebaseAnalysis, FirebaseLiveTrade, FirebaseNews, FirebaseOrderBook, FirebaseRecommendation, FirebaseToken, FirebaseUsers, FirebaseWallet, NewsField
-from Krakenbot.MVP_Backtest import main as backtest
+from Krakenbot.models.firebase import FirebaseAnalysis, FirebaseCandle, FirebaseLiveTrade, FirebaseNews, FirebaseOrderBook, FirebaseRecommendation, FirebaseToken, FirebaseUsers, FirebaseWallet, NewsField
+from Krakenbot.MVP_Backtest import main as backtest, indicator_names
 from Krakenbot.Realtime_Backtest import apply_backtest, get_livetrade_result
 from Krakenbot.update_candles import main as update_candles
 from Krakenbot.utils import acc_calc, authenticate_scheduler_oicd, authenticate_user_jwt, clean_kraken_pair, log, log_error, log_warning, usd_to_gbp
@@ -26,6 +29,10 @@ class MarketView(APIView):
 			exclude = request.query_params.get('exclude', '').strip().upper()
 			force_convert = request.query_params.get('force_convert', '').strip().upper()
 			include_inactive = request.query_params.get('include_inactive', '').strip().upper()
+			get_simulation = request.query_params.get('get_simulation', '').strip().upper()
+
+			if get_simulation == 'GET SIMULATION':
+				return SimulationView().get(request)
 
 			result = self.get_market(convert_from, convert_to, exclude, force_convert, include_inactive)
 			return Response(result, status=200)
@@ -152,6 +159,90 @@ class MarketView(APIView):
 				results[result_token] = (price, last_close)
 
 		return [{ 'token': token, 'price': price, 'last_close': last_close } for (token, (price, last_close)) in results.items()]
+
+
+class SimulationView(APIView):
+	ALL_STRATEGIES = [f'{name_1} & {name_2}' for name_1, name_2 in combinations(indicator_names.values(), 2)]
+
+	def get(self, request: Request):
+		try:
+			get_strategies = request.query_params.get('get_strategies', '').strip().upper()
+			fiat = request.query_params.get('convert_from', settings.FIAT).strip().upper()
+			token_id = request.query_params.get('convert_to', '').strip().upper()
+			strategy = request.query_params.get('strategy', '')
+			timeframe = request.query_params.get('timeframe', '')
+
+			if get_strategies == 'GET STRATEGIES':
+				return Response(self.ALL_STRATEGIES)
+
+			if strategy != '' and strategy not in self.ALL_STRATEGIES:
+				raise BadRequestException()
+			if timeframe != '' and timeframe not in settings.TIMEFRAMES.keys():
+				raise BadRequestException()
+
+			firebase_token = FirebaseToken()
+			fiat_token = firebase_token.filter(fiat, is_fiat=True)
+			if len(fiat_token) < 1:
+				raise BadRequestException()
+
+			token = firebase_token.filter(token_id)
+			if len(token) < 1:
+				raise BadRequestException()
+
+			token = token[0]
+			history_prices = token.get('history_prices', {})
+			history_dates = history_prices.get('times', [])
+			history_prices = history_prices.get('data', [])
+
+			if len(history_prices) < (5 * 24):
+				raise BadRequestException()
+
+			simulation_data = history_prices[-(6 * 24):-24] # -6d to -1d, not fetching previous 24 hours
+			starting_time = history_dates[-(6 * 24)]
+			starting_data = simulation_data[0]
+			max_data = np.max(simulation_data)
+			min_data = np.min(simulation_data)
+
+			graph_max = max_data if max_data - starting_data > starting_data - min_data else starting_data + (starting_data - min_data)
+			graph_min = min_data if max_data - starting_data < starting_data - min_data else starting_data - (max_data - starting_data)
+
+			response = {
+				'simulation_data': simulation_data,
+				'graph_min': graph_min,
+				'graph_max': graph_max
+			}
+
+			if strategy != '' and timeframe != '':
+				response['backtest_decision'] = self.simulate_backtest(fiat, token_id, strategy, timeframe, starting_time)
+
+			return Response(response, status=200)
+
+		except BadRequestException:
+			return Response(status=400)
+
+	def simulate_backtest(self, fiat: str, token_id: str, strategy: str, timeframe: str, starting_time: datetime):
+		interval = settings.INTERVAL_MAP[timeframe]
+		candles = FirebaseCandle(f'{token_id}{fiat}', timeframe).fetch_since(starting_time)[:int(5 * 24 * 60 / interval)]
+		candles = pd.DataFrame.from_dict(candles)
+
+		strategy_1, strategy_2 = strategy.split(' & ')
+		backtest_func = {strategy: func for (func, strategy) in indicator_names.items()}
+		result_1 = backtest_func[strategy_1](candles)
+		result_2 = backtest_func[strategy_2](candles)
+		buy_signals = (result_1 == 1) & (result_2 == 1)
+		sell_signals = (result_1 == -1) & (result_2 == -1)
+
+		decisions = []
+		empty_decision = [0] * int(interval / 60 - 1)
+		for buy, sell in zip(buy_signals, sell_signals):
+			if buy:
+				decisions.extend([1, *empty_decision])
+			elif sell:
+				decisions.extend([-1, *empty_decision])
+			else:
+				decisions.extend([0, *empty_decision])
+
+		return decisions
 
 
 class BackTestView(APIView):

@@ -1,5 +1,6 @@
 # Endpoints
 - [Market](#market)
+- [Simulation](#simulation)
 - [Backtest](#backtest)
 - [Update Last Close](#update-last-close)
 - [Auto Livetrade](#auto-livetrade)
@@ -20,6 +21,8 @@
 
 Fetch current market price for tokens from Kraken
 
+Redirects to `/api/simulation` with `get_simulation=GET SIMULATION`
+
 ### Query Parameters:
 - `convert_from`: `string` (Optional)
 	- Specify which token to convert from
@@ -35,6 +38,8 @@ Fetch current market price for tokens from Kraken
 	- Can only be used when convert from/to GBP
 - `include_inactive`: `"INCLUDE"`
 	- If `"INCLUDE"` is given, inactive tokens will also be fetched
+- `get_simulation`: `"GET SIMULATION"`
+  - IF `"GET SIMULATION"` is given, redirects to `/api/simulation`
 
 ### Response:
 - `token`: `string`
@@ -76,6 +81,79 @@ Example 2: `/market?convert_from=gbp&force_convert=force&include_inactive=includ
 		"price": ..., # Price converted from USD->1INCH
 		"last_close": ...
 	}
+]
+```
+
+---
+
+# Simulation
+
+`/api/simulation [GET]`
+
+Get simulation data or backtest strategies
+
+### Query Parameters:
+- `get_strategies`: `"GET STRATEGIES"` (Optional)
+	- If `"GET STRATEGIES"` provided, return all backtest strategy combinations
+- `convert_from`: `string`
+	- Specify which token is used for the simulation, usually fiat
+- `convert_to`: `string`
+	- Specify which token to simulate the trades, usually cryptocurrency
+- `strategy`: `string` (Optional)
+	- Strategy that must be in the list fetched using `get_strategies`
+	- If both strategy and timeframe are not provided, the simulation will be without backtest decisions
+- `timeframe`: `string` (Optional)
+	- Timeframe for the backtest, E.g. 1h, 4h, 1d
+	- If both strategy and timeframe are not provided, the simulation will be without backtest decision
+
+### Response:
+- `simulation_data`: `list[number]`
+	- List of simulation data, can be used for graph display
+	- 120 simulation data
+- `graph_min`: `number`
+	- Min of the data, with the starting data as centre
+	- Can be used as min of graph for starting data to be at centre
+- `graph_max`: `number`
+	- Max of the data, with the starting data as centre
+	- Can be used as max of graph for starting data to be at centre
+- `backtest_decision`: `list[number]`
+	- Buy/Sell decision of the backtest strategy
+	- `-1`: Sell: `0`: No action, `1`: Buy
+	- 120 decision data
+
+### Examples
+
+Example 1: `/api/simulation?convert_from=gbp&convert_to=btc`
+
+#### Response
+```bash
+{
+	"simulation_data": [1, 2, 1, 2, 1, ...],
+	"graph_min": -1,
+	"graph_max": 2
+}
+```
+
+Example 2: `/api/simulation?convert_from=gbp&convert_to=btc&strategy=MACD & Aroon&timeframe=1d`
+
+#### Response
+```bash
+{
+	"simulation_data": [1, 2, 1, 2, 1, ...],
+	"graph_min": -1,
+	"graph_max": 2,
+	"backtest_decision": [0, 1, -1, 0, ...]
+}
+```
+
+Example 3: `/api/simulation?get_strategies=GET STRATEGIES`
+
+#### Response
+```bash
+[
+	"Strategy 1",
+	"Strategy 2",
+	...
 ]
 ```
 

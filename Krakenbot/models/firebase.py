@@ -245,10 +245,23 @@ class FirebaseCandle:
 		if self.__candle_token is None or self.__candle_data is None:
 			return []
 
-		query = self.__candle_data.order_by('date').limit_to_last(count).get()
+		query = self.__candle_data.order_by('date').limit_to_last(count).stream()
 		data = [record.to_dict() for record in query]
 		return_data = [candle for day in data for candle in day['candles']]
 		return return_data[-count:]
+
+	def fetch_since(self, date: datetime):
+		''' Return `[ ]` if no candle is chosen '''
+		if self.__candle_token is None or self.__candle_data is None:
+			return []
+
+		yesterday = date - timedelta(days=1)
+		timestamp = int(date.timestamp())
+
+		query = self.__candle_data.where(filter=FieldFilter('date', '>=', yesterday)).stream()
+		data = [record.to_dict() for record in query]
+		return_data = [candle for day in data for candle in day['candles'] if candle['Unix_Timestamp'] >= timestamp]
+		return return_data
 
 	def fetch_cur_token(self):
 		return self.__candle_token.get().to_dict().get('token_id', None)

@@ -7,7 +7,7 @@ from rest_framework.renderers import JSONRenderer
 
 from Krakenbot.models.firebase import FirebaseLiveTrade, FirebaseOrderBook, FirebaseToken, FirebaseWallet
 from Krakenbot.utils import acc_calc
-from Krakenbot.views import LiveTradeView, ManualTradeView, MarketView, TradeView
+from Krakenbot.views import LiveTradeView, ManualTradeView, MarketView, SimulationView, TradeView
 
 
 TEST_UID = '7AnP4NG225Sy7a7OAwLbBOK5Qmg2'
@@ -160,6 +160,117 @@ class TestMarket(TestCase):
 		self.assertIn('USD', result)
 		self.assertIn('1INCH', result)
 		self.assertIn('ARB', result)
+
+	def test_get_simulation_with_backtest(self):
+		request = GET(get_simulation = 'GET SIMULATION', convert_from = 'GBP', convert_to = 'BTC', strategy = 'MACD & Aroon', timeframe = '1d')
+		response = MarketView().get(request)
+		result, status_code = load_response(response)
+
+		self.assertEqual(status_code, 200)
+		self.assertIn('simulation_data', result)
+		self.assertIn('graph_min', result)
+		self.assertIn('graph_max', result)
+		self.assertIn('backtest_decision', result)
+		self.assertLess(result['graph_min'], result['simulation_data'][0])
+		self.assertGreater(result['graph_max'], result['simulation_data'][0])
+		self.assertEqual(result['simulation_data'][0] - result['graph_min'], result['graph_max'] - result['simulation_data'][0])
+		self.assertEqual(len(result['simulation_data']), 120)
+		self.assertEqual(len(result['backtest_decision']), 120)
+
+	def test_get_simulation(self):
+		request = GET(get_simulation = 'GET SIMULATION', convert_from = 'GBP', convert_to = 'BTC')
+		response = MarketView().get(request)
+		result, status_code = load_response(response)
+
+		self.assertEqual(status_code, 200)
+		self.assertIn('simulation_data', result)
+		self.assertIn('graph_min', result)
+		self.assertIn('graph_max', result)
+		self.assertNotIn('backtest_decision', result)
+		self.assertLess(result['graph_min'], result['simulation_data'][0])
+		self.assertGreater(result['graph_max'], result['simulation_data'][0])
+		self.assertEqual(result['simulation_data'][0] - result['graph_min'], result['graph_max'] - result['simulation_data'][0])
+		self.assertEqual(len(result['simulation_data']), 120)
+
+	def test_get_strategies(self):
+		request = GET(get_simulation = 'GET SIMULATION', get_strategies = 'GET STRATEGIES')
+		response = MarketView().get(request)
+		result, status_code = load_response(response)
+
+		self.assertEqual(status_code, 200)
+		self.assertGreater(len(result), 0)
+		self.assertIsInstance(result, list)
+		self.assertIsInstance(result[0], str)
+
+
+class TestSimulation(TestCase):
+	def test_get_strategies(self):
+		request = GET(get_strategies = 'GET STRATEGIES')
+		response = SimulationView().get(request)
+		result, status_code = load_response(response)
+
+		self.assertEqual(status_code, 200)
+		self.assertGreater(len(result), 0)
+		self.assertIsInstance(result, list)
+		self.assertIsInstance(result[0], str)
+
+	def test_get_simulation_with_backtest(self):
+		request = GET(convert_from = 'GBP', convert_to = 'BTC', strategy = 'MACD & Aroon', timeframe = '1d')
+		response = SimulationView().get(request)
+		result, status_code = load_response(response)
+
+		self.assertEqual(status_code, 200)
+		self.assertIn('simulation_data', result)
+		self.assertIn('graph_min', result)
+		self.assertIn('graph_max', result)
+		self.assertIn('backtest_decision', result)
+		self.assertLess(result['graph_min'], result['simulation_data'][0])
+		self.assertGreater(result['graph_max'], result['simulation_data'][0])
+		self.assertEqual(result['simulation_data'][0] - result['graph_min'], result['graph_max'] - result['simulation_data'][0])
+		self.assertEqual(len(result['simulation_data']), 120)
+		self.assertEqual(len(result['backtest_decision']), 120)
+
+	def test_get_simulation(self):
+		request = GET(convert_from = 'GBP', convert_to = 'BTC')
+		response = SimulationView().get(request)
+		result, status_code = load_response(response)
+
+		self.assertEqual(status_code, 200)
+		self.assertIn('simulation_data', result)
+		self.assertIn('graph_min', result)
+		self.assertIn('graph_max', result)
+		self.assertNotIn('backtest_decision', result)
+		self.assertLess(result['graph_min'], result['simulation_data'][0])
+		self.assertGreater(result['graph_max'], result['simulation_data'][0])
+		self.assertEqual(result['simulation_data'][0] - result['graph_min'], result['graph_max'] - result['simulation_data'][0])
+		self.assertEqual(len(result['simulation_data']), 120)
+
+	def test_get_simulation_invalid_token(self):
+		request = GET(convert_from = '1INCH', convert_to = 'BTC')
+		response = SimulationView().get(request)
+		result, status_code = load_response(response)
+		self.assertEqual(status_code, 400)
+		self.assertIsNone(result)
+
+		request = GET(convert_from = 'USD', convert_to = 'INVALID')
+		response = SimulationView().get(request)
+		result, status_code = load_response(response)
+		self.assertEqual(status_code, 400)
+		self.assertIsNone(result)
+
+	def test_get_simulation_invalid_strategy(self):
+		request = GET(convert_from = 'GBP', convert_to = 'BTC', strategy = 'INVALID STRATEGY', timeframe = '1d')
+		response = SimulationView().get(request)
+		result, status_code = load_response(response)
+		self.assertEqual(status_code, 400)
+		self.assertIsNone(result)
+
+	def test_get_simulation_invalid_timeframe(self):
+		request = GET(convert_from = 'GBP', convert_to = 'BTC', strategy = 'MACD & Aroon', timeframe = '000')
+		response = SimulationView().get(request)
+		result, status_code = load_response(response)
+		self.assertEqual(status_code, 400)
+		self.assertIsNone(result)
 
 
 class TestLiveTrade(TestCase):
