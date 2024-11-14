@@ -245,7 +245,7 @@ class FirebaseCandle:
 		if self.__candle_token is None or self.__candle_data is None:
 			return []
 
-		query = self.__candle_data.order_by('date').limit_to_last(count).stream()
+		query = self.__candle_data.order_by('date').limit_to_last(count).get()
 		data = [record.to_dict() for record in query]
 		return_data = [candle for day in data for candle in day['candles']]
 		return return_data[-count:]
