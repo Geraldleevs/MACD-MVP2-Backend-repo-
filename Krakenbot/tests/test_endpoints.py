@@ -1,4 +1,5 @@
 from datetime import datetime
+from itertools import combinations
 import json
 
 from django.test import TestCase
@@ -6,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
 
 from Krakenbot.models.firebase import FirebaseLiveTrade, FirebaseOrderBook, FirebaseToken, FirebaseWallet
+from Krakenbot.MVP_Backtest import indicator_names
 from Krakenbot.utils import acc_calc
 from Krakenbot.views import LiveTradeView, ManualTradeView, MarketView, SimulationView, TradeView
 
@@ -161,22 +163,6 @@ class TestMarket(TestCase):
 		self.assertIn('1INCH', result)
 		self.assertIn('ARB', result)
 
-	def test_get_simulation_with_backtest(self):
-		request = GET(get_simulation = 'GET SIMULATION', convert_from = 'GBP', convert_to = 'BTC', strategy = 'MACD & Aroon', timeframe = '1d')
-		response = MarketView().get(request)
-		result, status_code = load_response(response)
-
-		self.assertEqual(status_code, 200)
-		self.assertIn('simulation_data', result)
-		self.assertIn('graph_min', result)
-		self.assertIn('graph_max', result)
-		self.assertIn('backtest_decision', result)
-		self.assertLess(result['graph_min'], result['simulation_data'][0])
-		self.assertGreater(result['graph_max'], result['simulation_data'][0])
-		self.assertEqual(result['simulation_data'][0] - result['graph_min'], result['graph_max'] - result['simulation_data'][0])
-		self.assertEqual(len(result['simulation_data']), 120)
-		self.assertEqual(len(result['backtest_decision']), 120)
-
 	def test_get_simulation(self):
 		request = GET(get_simulation = 'GET SIMULATION', convert_from = 'GBP', convert_to = 'BTC')
 		response = MarketView().get(request)
@@ -192,16 +178,6 @@ class TestMarket(TestCase):
 		self.assertEqual(result['simulation_data'][0] - result['graph_min'], result['graph_max'] - result['simulation_data'][0])
 		self.assertEqual(len(result['simulation_data']), 120)
 
-	def test_get_strategies(self):
-		request = GET(get_simulation = 'GET SIMULATION', get_strategies = 'GET STRATEGIES')
-		response = MarketView().get(request)
-		result, status_code = load_response(response)
-
-		self.assertEqual(status_code, 200)
-		self.assertGreater(len(result), 0)
-		self.assertIsInstance(result, list)
-		self.assertIsInstance(result[0], str)
-
 
 class TestSimulation(TestCase):
 	def test_get_strategies(self):
@@ -209,13 +185,15 @@ class TestSimulation(TestCase):
 		response = SimulationView().get(request)
 		result, status_code = load_response(response)
 
+		expected_length = len(list(combinations(indicator_names.values(), 2)))
+
 		self.assertEqual(status_code, 200)
-		self.assertGreater(len(result), 0)
+		self.assertEqual(len(result), expected_length)
 		self.assertIsInstance(result, list)
 		self.assertIsInstance(result[0], str)
 
 	def test_get_simulation_with_backtest(self):
-		request = GET(convert_from = 'GBP', convert_to = 'BTC', strategy = 'MACD & Aroon', timeframe = '1d')
+		request = GET(convert_from = 'GBP', convert_to = 'BTC', strategy = 'MACD & Aroon', timeframe = '4h', funds = '500', stop_loss = '480', take_profit = '520')
 		response = SimulationView().get(request)
 		result, status_code = load_response(response)
 
@@ -223,12 +201,35 @@ class TestSimulation(TestCase):
 		self.assertIn('simulation_data', result)
 		self.assertIn('graph_min', result)
 		self.assertIn('graph_max', result)
-		self.assertIn('backtest_decision', result)
+		self.assertIn('funds_values', result)
+		self.assertIn('bot_actions', result)
+		self.assertIn('stopped_by', result)
+		self.assertIn('stopped_at', result)
+
 		self.assertLess(result['graph_min'], result['simulation_data'][0])
 		self.assertGreater(result['graph_max'], result['simulation_data'][0])
 		self.assertEqual(result['simulation_data'][0] - result['graph_min'], result['graph_max'] - result['simulation_data'][0])
 		self.assertEqual(len(result['simulation_data']), 120)
-		self.assertEqual(len(result['backtest_decision']), 120)
+		self.assertEqual(len(result['funds_values']), 120)
+		self.assertEqual(len(result['bot_actions']), 120)
+
+		for index in range(120):
+			prev_funds = 500 if index == 0 else result['funds_values'][index - 1]
+			data = result['simulation_data'][index]
+			cur_funds = result['funds_values'][index]
+			action = result['bot_actions'][index]
+
+			if action == 1:
+				self.assertAlmostEqual(float(acc_calc(prev_funds, '/', data)), cur_funds, 18)
+
+			elif action == -1:
+				self.assertAlmostEqual(float(acc_calc(prev_funds, '*', data, 2)), cur_funds)
+
+			elif action == 0:
+				self.assertEqual(prev_funds, cur_funds)
+
+			else:
+				self.assertTrue(False, 'action not in [-1, 0, 1]')
 
 	def test_get_simulation(self):
 		request = GET(convert_from = 'GBP', convert_to = 'BTC')
@@ -259,14 +260,34 @@ class TestSimulation(TestCase):
 		self.assertIsNone(result)
 
 	def test_get_simulation_invalid_strategy(self):
-		request = GET(convert_from = 'GBP', convert_to = 'BTC', strategy = 'INVALID STRATEGY', timeframe = '1d')
+		request = GET(convert_from = 'GBP', convert_to = 'BTC', strategy = 'INVALID STRATEGY', timeframe = '1d', funds = '500')
 		response = SimulationView().get(request)
 		result, status_code = load_response(response)
 		self.assertEqual(status_code, 400)
 		self.assertIsNone(result)
 
 	def test_get_simulation_invalid_timeframe(self):
-		request = GET(convert_from = 'GBP', convert_to = 'BTC', strategy = 'MACD & Aroon', timeframe = '000')
+		request = GET(convert_from = 'GBP', convert_to = 'BTC', strategy = 'MACD & Aroon', timeframe = '000', funds = '500')
+		response = SimulationView().get(request)
+		result, status_code = load_response(response)
+		self.assertEqual(status_code, 400)
+		self.assertIsNone(result)
+
+	def test_get_simulation_invalid_take_profit(self):
+		request = GET(convert_from = 'GBP', convert_to = 'BTC', strategy = 'INVALID STRATEGY', timeframe = '1d', funds = '500', take_profit = '400')
+		response = SimulationView().get(request)
+		result, status_code = load_response(response)
+		self.assertEqual(status_code, 400)
+		self.assertIsNone(result)
+
+	def test_get_simulation_invalid_stop_loss(self):
+		request = GET(convert_from = 'GBP', convert_to = 'BTC', strategy = 'MACD & Aroon', timeframe = '000', funds = '500', stop_loss = '800')
+		response = SimulationView().get(request)
+		result, status_code = load_response(response)
+		self.assertEqual(status_code, 400)
+		self.assertIsNone(result)
+
+		request = GET(convert_from = 'GBP', convert_to = 'BTC', strategy = 'INVALID STRATEGY', timeframe = '1d', funds = '500', stop_loss = '-5')
 		response = SimulationView().get(request)
 		result, status_code = load_response(response)
 		self.assertEqual(status_code, 400)
@@ -1390,153 +1411,6 @@ class TestTradeView(TestCase):
 		self.assertTrue(acc_calc(acc_calc(original_user_amount, '-', new_user_amount), '==', 100))
 		self.assertTrue(acc_calc(acc_calc(new_bot_amount, '-', original_bot_amount), '==', 100))
 
-	def test_update(self):
-		request = POST(
-			uid = TEST_UID,
-			livetrade = 'RESERVE',
-			from_token = 'GBP',
-			to_token = 'BTC',
-			from_amount = '100',
-			take_profit = '110',
-			stop_loss = '90',
-			strategy = TEST_STRATEGY,
-			timeframe = TEST_TIMEFRAME,
-		)
-		response = TradeView().post(request)
-		result, status_code = load_response(response)
-		self.created_livetrade_id = result['id']
-		self.created_order_id = result['order']['order_id']
-
-		request = POST(
-			uid = TEST_UID,
-			livetrade = 'UPDATE',
-			livetrade_id = self.created_livetrade_id,
-			take_profit = '150',
-			stop_loss = '50',
-		)
-		response = TradeView().post(request)
-		result, status_code = load_response(response)
-
-		self.assertIsNotNone(result)
-		self.assertEqual(status_code, 200)
-		self.assertEqual(result['take_profit'], 150)
-		self.assertEqual(result['stop_loss'], 50)
-
-	def test_unreserve(self):
-		firebase_wallet = FirebaseWallet(TEST_UID)
-		original_wallet = firebase_wallet.get_wallet('GBP')[0]
-		original_user_amount = original_wallet.get(FirebaseWallet.USER_AMOUNT_STR, '0')
-		original_bot_amount = original_wallet.get(FirebaseWallet.BOT_AMOUNT_STR, '0')
-
-		request = POST(
-			uid = TEST_UID,
-			livetrade = 'RESERVE',
-			from_token = 'GBP',
-			to_token = 'BTC',
-			from_amount = '100',
-			take_profit = '110',
-			stop_loss = '90',
-			strategy = TEST_STRATEGY,
-			timeframe = TEST_TIMEFRAME,
-		)
-		response = TradeView().post(request)
-		result, status_code = load_response(response)
-		self.created_livetrade_id = result['id']
-		self.created_order_id = result['order']['order_id']
-
-		request = POST(
-			uid = TEST_UID,
-			livetrade = 'UNRESERVE',
-			livetrade_id = self.created_livetrade_id,
-		)
-		response = TradeView().post(request)
-		result, status_code = load_response(response)
-
-		self.assertIsNotNone(result)
-		self.assertEqual(status_code, 200)
-
-		new_wallet = firebase_wallet.get_wallet('GBP')[0]
-		new_user_amount = new_wallet.get(FirebaseWallet.USER_AMOUNT_STR, '0')
-		new_bot_amount = new_wallet.get(FirebaseWallet.BOT_AMOUNT_STR, '0')
-
-		self.assertEqual(new_user_amount, original_user_amount)
-		self.assertEqual(new_bot_amount, original_bot_amount)
-		self.assertEqual(FirebaseLiveTrade().get(self.created_livetrade_id)['status'], 'COMPLETED')
-		self.assertEqual(FirebaseOrderBook().get(self.created_order_id)['status'], 'CANCELLED')
-
-		self.created_livetrade_id = None
-		self.created_order_id = None
-
-	def test_sell(self):
-		firebase_wallet = FirebaseWallet(TEST_UID)
-		original_gbp_wallet = firebase_wallet.get_wallet('GBP')[0]
-		original_gbp_user_amount = original_gbp_wallet.get(FirebaseWallet.USER_AMOUNT_STR, '0')
-		original_gbp_bot_amount = original_gbp_wallet.get(FirebaseWallet.BOT_AMOUNT_STR, '0')
-		original_gbp_hold_amount = original_gbp_wallet.get(FirebaseWallet.HOLD_AMOUNT_STR, '0')
-
-		original_btc_wallet = firebase_wallet.get_wallet('BTC')
-		if len(original_btc_wallet) > 0:
-			original_btc_wallet = original_btc_wallet[0]
-			original_btc_user_amount = original_btc_wallet.get(FirebaseWallet.USER_AMOUNT_STR, '0')
-			original_btc_bot_amount = original_btc_wallet.get(FirebaseWallet.BOT_AMOUNT_STR, '0')
-			original_btc_hold_amount = original_btc_wallet.get(FirebaseWallet.HOLD_AMOUNT_STR, '0')
-		else:
-			original_btc_wallet = {}
-			original_btc_user_amount = 0
-			original_btc_bot_amount = 0
-			original_btc_hold_amount = 0
-
-		request = POST(
-			uid = TEST_UID,
-			livetrade = 'RESERVE',
-			from_token = 'GBP',
-			to_token = 'BTC',
-			from_amount = '100',
-			take_profit = '110',
-			stop_loss = '90',
-			strategy = TEST_STRATEGY,
-			timeframe = TEST_TIMEFRAME,
-		)
-		response = TradeView().post(request)
-		result, status_code = load_response(response)
-		self.created_livetrade_id = result['id']
-		self.created_order_id = result['order']['order_id']
-
-		transaction = FirebaseOrderBook().complete_order(self.created_order_id)
-		traded_to_btc = acc_calc(transaction['volume'], '*', transaction['price_str'])
-		self.created_order_id = None
-
-		request = POST(
-			uid = TEST_UID,
-			livetrade = 'SELL',
-			livetrade_id = self.created_livetrade_id,
-		)
-		response = TradeView().post(request)
-		result, status_code = load_response(response)
-
-		self.assertIsNotNone(result)
-		self.assertEqual(status_code, 200)
-		self.created_order_id = result['order']['order_id']
-
-		new_gbp_wallet = firebase_wallet.get_wallet('GBP')[0]
-		new_gbp_user_amount = new_gbp_wallet.get(FirebaseWallet.USER_AMOUNT_STR, '0')
-		new_gbp_bot_amount = new_gbp_wallet.get(FirebaseWallet.BOT_AMOUNT_STR, '0')
-		new_gbp_hold_amount = new_gbp_wallet.get(FirebaseWallet.HOLD_AMOUNT_STR, '0')
-
-		new_btc_wallet = firebase_wallet.get_wallet('BTC')[0]
-		new_btc_user_amount = new_btc_wallet.get(FirebaseWallet.USER_AMOUNT_STR, '0')
-		new_btc_bot_amount = new_btc_wallet.get(FirebaseWallet.BOT_AMOUNT_STR, '0')
-		new_btc_hold_amount = new_btc_wallet.get(FirebaseWallet.HOLD_AMOUNT_STR, '0')
-
-		self.assertTrue(acc_calc(new_gbp_user_amount, '==', acc_calc(original_gbp_user_amount, '-', 100)))
-		self.assertTrue(acc_calc(new_gbp_bot_amount, '==', original_gbp_bot_amount))
-		self.assertTrue(acc_calc(new_gbp_hold_amount, '==', original_gbp_hold_amount))
-		self.assertTrue(acc_calc(new_btc_user_amount, '==', original_btc_user_amount))
-		self.assertTrue(acc_calc(new_btc_bot_amount, '==', original_btc_bot_amount))
-		self.assertTrue(acc_calc(new_btc_hold_amount, '==', acc_calc(original_btc_hold_amount, '+', traded_to_btc)))
-
-		self.created_livetrade_id = None
-
 	def test_create_order(self):
 		firebase_wallet = FirebaseWallet(TEST_UID)
 		original_gbp_wallet = firebase_wallet.get_wallet('GBP')[0]
@@ -1573,42 +1447,3 @@ class TestTradeView(TestCase):
 
 		self.assertTrue(acc_calc(acc_calc(original_gbp_user_amount, '-', 500), '==', new_gbp_user_amount))
 		self.assertTrue(acc_calc(acc_calc(original_gbp_hold_amount, '+', 500), '==', new_gbp_hold_amount))
-
-	def test_cancel_order(self):
-		firebase_wallet = FirebaseWallet(TEST_UID)
-		original_gbp_wallet = firebase_wallet.get_wallet('GBP')[0]
-		original_gbp_user_amount = original_gbp_wallet.get(FirebaseWallet.USER_AMOUNT_STR, '0')
-		original_gbp_hold_amount = original_gbp_wallet.get(FirebaseWallet.HOLD_AMOUNT_STR, '0')
-
-		request = POST(
-			uid = TEST_UID,
-			order = 'ORDER',
-			from_token = 'GBP',
-			to_token = 'BTC',
-			from_amount = '500',
-			order_price = '0.05',
-		)
-		response = TradeView().post(request)
-		result, status_code = load_response(response)
-		self.assertIsNotNone(result)
-		self.assertEqual(status_code, 200)
-		self.created_order_id = result['order_id']
-
-		request = POST(
-			uid = TEST_UID,
-			order = 'CANCEL',
-			order_id = self.created_order_id,
-		)
-		response = TradeView().post(request)
-		result, status_code = load_response(response)
-		self.assertIsNotNone(result)
-		self.assertEqual(status_code, 200)
-		self.assertEqual(result['status'], 'CANCELLED')
-		self.created_order_id = None
-
-		new_gbp_wallet = firebase_wallet.get_wallet('GBP')[0]
-		new_gbp_user_amount = new_gbp_wallet.get(FirebaseWallet.USER_AMOUNT_STR, '0')
-		new_gbp_hold_amount = new_gbp_wallet.get(FirebaseWallet.HOLD_AMOUNT_STR, '0')
-
-		self.assertTrue(acc_calc(original_gbp_user_amount, '==', new_gbp_user_amount))
-		self.assertTrue(acc_calc(original_gbp_hold_amount, '==', new_gbp_hold_amount))

@@ -116,10 +116,17 @@ Get simulation data or backtest strategies
 - `graph_max`: `number`
 	- Max of the data, with the starting data as centre
 	- Can be used as max of graph for starting data to be at centre
-- `backtest_decision`: `list[number]`
-	- Buy/Sell decision of the backtest strategy
+- `funds_values`: `list[number]`
+	- Funds of each data point
+	- 120 data
+- `bot_actions`: `list[number]`
+	- Buy/Sell actions made by the bot
 	- `-1`: Sell: `0`: No action, `1`: Buy
 	- 120 decision data
+- `stopped_by`: `None | "stop loss limit" | "target limit"`
+	- Indicate if the simulation is stopped by stop loss limit or target limit
+- `stopped_at`: `number`
+	- When was it stopped
 
 ### Examples
 
@@ -134,7 +141,7 @@ Example 1: `/api/simulation?convert_from=gbp&convert_to=btc`
 }
 ```
 
-Example 2: `/api/simulation?convert_from=gbp&convert_to=btc&strategy=MACD & Aroon&timeframe=1d`
+Example 2: `/api/simulation?convert_from=gbp&convert_to=btc&strategy=MACD %26 Aroon&timeframe=1d&funds=500&stop_loss=400&take_profit=600`
 
 #### Response
 ```bash
@@ -142,7 +149,10 @@ Example 2: `/api/simulation?convert_from=gbp&convert_to=btc&strategy=MACD & Aroo
 	"simulation_data": [1, 2, 1, 2, 1, ...],
 	"graph_min": -1,
 	"graph_max": 2,
-	"backtest_decision": [0, 1, -1, 0, ...]
+	"funds_values": [500, 490, 510, ...]
+	"bot_actions": [0, 1, -1, 0, ...]
+	"stopped_by": 'stop loss limit'
+	"stopped_at": 79
 }
 ```
 

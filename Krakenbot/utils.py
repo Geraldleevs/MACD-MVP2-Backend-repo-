@@ -210,6 +210,23 @@ def acc_calc(
 	result = result.quantize(decimal_places, rounding=ROUND_DOWN)
 	return result
 
+def check_take_profit_stop_loss(stop_loss: float, take_profit: float, amount: float, none_allowed = True):
+	try:
+		if stop_loss < 0 or stop_loss >= amount:
+			return False
+		if stop_loss >= take_profit:
+			return False
+	except TypeError:
+		if not none_allowed:
+			return False
+
+	try:
+		if take_profit < 0 or take_profit <= amount:
+			return False
+	except TypeError:
+		if not none_allowed:
+			return False
+
 
 def log_warning(message):
 	''' Google Cloud Log Warning '''

@@ -18,7 +18,7 @@ from Krakenbot.models.firebase import FirebaseAnalysis, FirebaseCandle, Firebase
 from Krakenbot.MVP_Backtest import main as backtest, indicator_names
 from Krakenbot.Realtime_Backtest import apply_backtest, get_livetrade_result
 from Krakenbot.update_candles import main as update_candles
-from Krakenbot.utils import acc_calc, authenticate_scheduler_oicd, authenticate_user_jwt, clean_kraken_pair, log, log_error, log_warning, usd_to_gbp
+from Krakenbot.utils import acc_calc, authenticate_scheduler_oicd, authenticate_user_jwt, check_take_profit_stop_loss, clean_kraken_pair, log, log_error, log_warning, usd_to_gbp
 
 
 class MarketView(APIView):
@@ -164,21 +164,48 @@ class MarketView(APIView):
 class SimulationView(APIView):
 	ALL_STRATEGIES = [f'{name_1} & {name_2}' for name_1, name_2 in combinations(indicator_names.values(), 2)]
 
+	def __check_request(self, request: Request):
+		strategy = request.query_params.get('strategy', '')
+		timeframe = request.query_params.get('timeframe', '')
+		funds = request.query_params.get('funds', '').strip()
+		stop_loss = request.query_params.get('stop_loss', '').strip()
+		take_profit = request.query_params.get('take_profit', '').strip()
+
+		if strategy != '' and strategy not in self.ALL_STRATEGIES:
+			raise BadRequestException()
+
+		if timeframe != '' and timeframe not in settings.TIMEFRAMES.keys():
+			raise BadRequestException()
+
+		try:
+			stop_loss = None if stop_loss == '' else float(stop_loss)
+			take_profit = None if take_profit == '' else float(take_profit)
+			if strategy != '' and float(funds) <= 0:
+					raise BadRequestException()
+		except ValueError:
+			raise BadRequestException()
+
+		if check_take_profit_stop_loss(stop_loss, take_profit, funds) is False:
+			raise BadRequestException()
+
+
 	def get(self, request: Request):
 		try:
 			get_strategies = request.query_params.get('get_strategies', '').strip().upper()
+			if get_strategies == 'GET STRATEGIES':
+				return Response(self.ALL_STRATEGIES)
+
 			fiat = request.query_params.get('convert_from', settings.FIAT).strip().upper()
 			token_id = request.query_params.get('convert_to', '').strip().upper()
 			strategy = request.query_params.get('strategy', '')
 			timeframe = request.query_params.get('timeframe', '')
+			funds = request.query_params.get('funds', '').strip()
+			stop_loss = request.query_params.get('stop_loss', '').strip()
+			take_profit = request.query_params.get('take_profit', '').strip()
 
-			if get_strategies == 'GET STRATEGIES':
-				return Response(self.ALL_STRATEGIES)
-
-			if strategy != '' and strategy not in self.ALL_STRATEGIES:
-				raise BadRequestException()
-			if timeframe != '' and timeframe not in settings.TIMEFRAMES.keys():
-				raise BadRequestException()
+			self.__check_request(request)
+			stop_loss = None if stop_loss == '' else stop_loss
+			take_profit = None if take_profit == '' else take_profit
 
 			firebase_token = FirebaseToken()
 			fiat_token = firebase_token.filter(fiat, is_fiat=True)
@@ -213,7 +240,13 @@ class SimulationView(APIView):
 			}
 
 			if strategy != '' and timeframe != '':
-				response['backtest_decision'] = self.simulate_backtest(fiat, token_id, strategy, timeframe, starting_time)
+				decisions = self.simulate_backtest(fiat, token_id, strategy, timeframe, starting_time)
+				values, actions, stopped_by, stopped_at = self.simulate_result(simulation_data, decisions, funds, stop_loss, take_profit)
+
+				response['funds_values'] = values
+				response['bot_actions'] = actions
+				response['stopped_by'] = stopped_by
+				response['stopped_at'] = stopped_at
 
 			return Response(response, status=200)
 
@@ -230,30 +263,95 @@ class SimulationView(APIView):
 		backtest_func = {strategy: func for (func, strategy) in indicator_names.items()}
 		result_1 = backtest_func[strategy_1](candles)
 		result_2 = backtest_func[strategy_2](candles)
-		buy_signals = (result_1 == 1) & (result_2 == 1)
-		sell_signals = (result_1 == -1) & (result_2 == -1)
+		signals = (result_1 == result_2) * result_1
 
 		decisions = []
 		leading_empty_time = (starting_candle['Unix_Timestamp'] - int(starting_time.timestamp())) / 60 / 60
 		decisions.extend([0] * int(leading_empty_time))
 
 		empty_decision = [0] * int(interval / 60 - 1)
-		for buy, sell in zip(buy_signals, sell_signals):
-			if buy:
-				decisions.extend([1, *empty_decision])
-			elif sell:
-				decisions.extend([-1, *empty_decision])
-			else:
-				decisions.extend([0, *empty_decision])
+		for signal in signals:
+			decisions.extend([signal, *empty_decision])
 
 		return decisions[:(5 * 24)]
+
+	def check_stop_loss(self, cur_price, cur_funds, bought, stop_loss):
+		if stop_loss is None:
+			return False
+		if bought:
+			cur_funds = acc_calc(cur_funds, '*', cur_price)
+		if acc_calc(cur_funds, '<=', stop_loss):
+			return True
+		return False
+
+	def check_take_profit(self, cur_price, cur_funds, bought, take_profit):
+		if take_profit is None:
+			return False
+		if bought:
+			cur_funds = acc_calc(cur_funds, '*', cur_price)
+		if acc_calc(cur_funds, '>=', take_profit):
+			return True
+		return False
+
+	def simulate_result(self, simulation_data: list[float], decisions: list[float], funds: str, stop_loss: str, take_profit: str):
+		values = [acc_calc(funds, '/', simulation_data[0])]
+		bought = True
+		actions = [1]
+		stop_by = None
+		stopped_at = None
+
+		for (data, decision) in zip(simulation_data[1:], decisions[1:]):
+
+			if self.check_stop_loss(data, values[-1], bought, stop_loss):
+				stopped_at = len(actions)
+				if bought:
+					values.append(acc_calc(values[-1], '*', data, 2))
+					actions.append(-1)
+					bought = False
+				stop_by = 'stop loss limit'
+				break
+
+			if self.check_take_profit(data, values[-1], bought, take_profit):
+				stopped_at = len(actions)
+				if bought:
+					values.append(acc_calc(values[-1], '*', data, 2))
+					actions.append(-1)
+					bought = False
+				stop_by = 'target limit'
+				break
+
+			elif decision == 1 and not bought:
+				values.append(acc_calc(values[-1], '/', data))
+				actions.append(1)
+				bought = True
+
+			elif decision == -1 and bought:
+				values.append(acc_calc(values[-1], '*', data, 2))
+				actions.append(-1)
+				bought = False
+
+			else:
+				values.append(values[-1])
+				actions.append(0)
+
+		actions.extend([0] * (len(decisions) - len(actions)))
+		values.extend([values[-1]] * (len(decisions) - len(values)))
+
+		if bought:
+			actions[-1] = -1
+			values[-1] = acc_calc(values[-1], '*', simulation_data[-1], 2)
+
+		stopped_at = stopped_at if stopped_at is not None else len(decisions) - 1
+
+		return values, actions, stop_by, stopped_at
 
 
 class BackTestView(APIView):
 	def post(self, request: Request):
 		try:
 			authenticate_scheduler_oicd(request)
-			self.backtest()
+			results = self.backtest()
+			self.save_database(results)
 			return Response(status=200)
 		except NotAuthorisedException:
 			return Response(status=401)
@@ -281,7 +379,9 @@ class BackTestView(APIView):
 		} for value in results]
 
 		results = [result for result in results if result['token_id'] in all_tokens]
+		return results
 
+	def save_database(self, results):
 		firebase = FirebaseRecommendation()
 		firebase.delete_all()
 		for result in results:
@@ -449,21 +549,6 @@ class LiveTradeView(APIView):
 		except NotEnoughTokenException:
 			return Response(status=400)
 
-	def __check_take_profit_stop_loss(self, stop_loss: float, take_profit: float, amount: float):
-		try:
-			if stop_loss < 0 or stop_loss >= amount:
-				raise BadRequestException
-			if stop_loss >= take_profit:
-				raise BadRequestException
-		except TypeError:
-			pass
-
-		try:
-			if take_profit < 0 or take_profit <= amount:
-				raise BadRequestException
-		except TypeError:
-			pass
-
 	def livetrade(self, uid: str, request: Request):
 		trade_type = request.data.get('livetrade', '').upper()
 		livetrade_id = request.data.get('livetrade_id', '')
@@ -524,7 +609,8 @@ class LiveTradeView(APIView):
 		if strategy.strip() == '':
 			raise BadRequestException()
 
-		self.__check_take_profit_stop_loss(stop_loss, take_profit, float(from_amount))
+		if check_take_profit_stop_loss(stop_loss, take_profit, float(from_amount)) is False:
+			raise BadRequestException()
 
 		try:
 			livetrade = FirebaseLiveTrade(uid).create({
@@ -561,7 +647,8 @@ class LiveTradeView(APIView):
 		livetrade = firebase_livetrade.get(livetrade_id)
 		amount = livetrade['initial_amount']
 
-		self.__check_take_profit_stop_loss(stop_loss, take_profit, amount)
+		if check_take_profit_stop_loss(stop_loss, take_profit, amount) is False:
+			raise BadRequestException()
 
 		if take_profit is not None and stop_loss is not None:
 			firebase_livetrade.update_take_profit_stop_loss(livetrade_id, take_profit, stop_loss)
