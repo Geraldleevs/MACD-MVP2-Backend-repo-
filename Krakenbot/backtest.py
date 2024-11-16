@@ -548,9 +548,7 @@ def main(no_print=True, update_candle=False):
 		token_id = candle['token_id']
 		fiat = candle['fiat']
 		timeframe = candle['timeframe']
-		print('Backtesting', token_id, time.time() - start_time, 's')
 		best_strategies.append(backtest(candle['candles'], token_id, timeframe, performance_logger))
-		print('Backtest Complete', token_id, time.time() - start_time, 's')
 		backtest_id = f'{fiat}:{token_id} | {timeframe}'
 		dev_print(f"Time to process {backtest_id}: {time.time() - start_time} seconds", no_print)
 		df_ids.append(backtest_id)
