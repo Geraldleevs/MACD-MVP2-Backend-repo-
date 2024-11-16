@@ -15,7 +15,7 @@ from rest_framework.views import APIView
 from Krakenbot import settings
 from Krakenbot.exceptions import BadRequestException, DatabaseIncorrectDataException, NoUserSelectedException, NotAuthorisedException, ServerErrorException, NotEnoughTokenException
 from Krakenbot.models.firebase import FirebaseAnalysis, FirebaseCandle, FirebaseLiveTrade, FirebaseNews, FirebaseOrderBook, FirebaseRecommendation, FirebaseToken, FirebaseUsers, FirebaseWallet, NewsField
-from Krakenbot.MVP_Backtest import main as backtest, indicator_names
+from Krakenbot.backtest import main as backtest, indicator_names
 from Krakenbot.Realtime_Backtest import apply_backtest, get_livetrade_result
 from Krakenbot.update_candles import main as update_candles
 from Krakenbot.utils import acc_calc, authenticate_scheduler_oicd, authenticate_user_jwt, check_take_profit_stop_loss, clean_kraken_pair, log, log_error, log_warning, usd_to_gbp

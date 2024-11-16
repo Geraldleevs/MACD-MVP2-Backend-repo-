@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
 
 from Krakenbot.models.firebase import FirebaseLiveTrade, FirebaseOrderBook, FirebaseToken, FirebaseWallet
-from Krakenbot.MVP_Backtest import indicator_names
+from Krakenbot.backtest import indicator_names
 from Krakenbot.utils import acc_calc
 from Krakenbot.views import LiveTradeView, ManualTradeView, MarketView, SimulationView, TradeView
 

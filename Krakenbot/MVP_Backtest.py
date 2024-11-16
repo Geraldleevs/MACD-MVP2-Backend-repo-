@@ -517,6 +517,8 @@ def backtest(df: pd.DataFrame, token_id: str, data_timeframe: str, performance_l
     }
 
 def main(no_print=True, update_candle=False):
+    logging.warning('MVP_Backtest.py is deprecated due to slow performance! Use backtest.py instead!')
+
     start_time = time.time()
     if update_candle:
         update_candles()
