@@ -185,7 +185,7 @@ class SimulationView(APIView):
 		except ValueError:
 			raise BadRequestException()
 
-		if check_take_profit_stop_loss(stop_loss, take_profit, funds) is False:
+		if check_take_profit_stop_loss(funds, stop_loss, take_profit) is False:
 			raise BadRequestException()
 
 
@@ -609,7 +609,7 @@ class LiveTradeView(APIView):
 		if strategy.strip() == '':
 			raise BadRequestException()
 
-		if check_take_profit_stop_loss(stop_loss, take_profit, float(from_amount)) is False:
+		if check_take_profit_stop_loss(float(from_amount), stop_loss, take_profit) is False:
 			raise BadRequestException()
 
 		try:
@@ -647,7 +647,7 @@ class LiveTradeView(APIView):
 		livetrade = firebase_livetrade.get(livetrade_id)
 		amount = livetrade['initial_amount']
 
-		if check_take_profit_stop_loss(stop_loss, take_profit, amount) is False:
+		if check_take_profit_stop_loss(amount, stop_loss, take_profit) is False:
 			raise BadRequestException()
 
 		if take_profit is not None and stop_loss is not None:

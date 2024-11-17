@@ -5,10 +5,10 @@ import requests
 from django.test import TestCase
 
 from Krakenbot import settings
-from Krakenbot.utils import acc_calc, clean_kraken_pair, usd_to_gbp
+from Krakenbot.utils import acc_calc, check_take_profit_stop_loss, clean_kraken_pair, usd_to_gbp
 
 
-class CalculationTest(TestCase):
+class TestCalculation(TestCase):
 	def test_addition(self):
 		self.assertIsInstance(acc_calc(50, '+', 800), Decimal)
 		self.assertEqual(acc_calc(50, '+', 800), 850)
@@ -123,7 +123,7 @@ class CalculationTest(TestCase):
 		self.assertEqual(acc_calc('80', '<=', '800'), True)
 
 
-class UtilityTest(TestCase):
+class TestKraken(TestCase):
 	def test_usd_to_gbp(self):
 		rate = asyncio.run(usd_to_gbp())
 		self.assertAlmostEqual(rate, Decimal(0.75), delta=0.07)
@@ -143,3 +143,34 @@ class UtilityTest(TestCase):
 		self.assertNotIn('GBPZUSD', result)
 		self.assertNotIn('ZGBPUSD', result)
 		self.assertNotIn('ZGBPZUSD', result)
+
+
+class TestValidators(TestCase):
+	def test_stop_loss_valid(self):
+		self.assertTrue(check_take_profit_stop_loss(100, stop_loss=50))
+
+	def test_stop_loss_invalid(self):
+		self.assertFalse(check_take_profit_stop_loss(100, stop_loss=100))
+		self.assertFalse(check_take_profit_stop_loss(100, stop_loss=101))
+		self.assertFalse(check_take_profit_stop_loss(100, stop_loss=-5))
+
+	def test_take_profit_valid(self):
+		self.assertTrue(check_take_profit_stop_loss(100, take_profit=150))
+
+	def test_take_profit_invalid(self):
+		self.assertFalse(check_take_profit_stop_loss(100, take_profit=100))
+		self.assertFalse(check_take_profit_stop_loss(100, take_profit=99))
+		self.assertFalse(check_take_profit_stop_loss(100, take_profit=-5))
+
+	def test_stop_loss_take_profit_valid(self):
+		self.assertTrue(check_take_profit_stop_loss(100, stop_loss=90, take_profit=110))
+
+	def test_stop_loss_take_profit_invalid(self):
+		self.assertFalse(check_take_profit_stop_loss(100, stop_loss=100, take_profit=100))
+		self.assertFalse(check_take_profit_stop_loss(100, stop_loss=90, take_profit=80))
+		self.assertFalse(check_take_profit_stop_loss(100, stop_loss=120, take_profit=110))
+		self.assertFalse(check_take_profit_stop_loss(100, stop_loss=-10, take_profit=-5))
+
+	def test_stop_loss_take_profit_invalid_none(self):
+		self.assertFalse(check_take_profit_stop_loss(100, stop_loss=90, none_allowed=False))
+		self.assertFalse(check_take_profit_stop_loss(100, take_profit=110, none_allowed=False))

@@ -210,7 +210,8 @@ def acc_calc(
 	result = result.quantize(decimal_places, rounding=ROUND_DOWN)
 	return result
 
-def check_take_profit_stop_loss(stop_loss: float, take_profit: float, amount: float, none_allowed = True):
+
+def check_take_profit_stop_loss(amount: float, stop_loss: float = None, take_profit: float = None, none_allowed = True):
 	try:
 		if stop_loss < 0 or stop_loss >= amount:
 			return False
@@ -226,6 +227,8 @@ def check_take_profit_stop_loss(stop_loss: float, take_profit: float, amount: fl
 	except TypeError:
 		if not none_allowed:
 			return False
+
+	return True
 
 
 def log_warning(message):
