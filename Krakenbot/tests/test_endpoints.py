@@ -6,10 +6,11 @@ from django.test import TestCase
 from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
 
+from Krakenbot import settings
 from Krakenbot.models.firebase import FirebaseLiveTrade, FirebaseOrderBook, FirebaseToken, FirebaseWallet
 from Krakenbot.backtest import indicator_names
 from Krakenbot.utils import acc_calc
-from Krakenbot.views import LiveTradeView, ManualTradeView, MarketView, SimulationView, TradeView
+from Krakenbot.views import LiveTradeView, ManualTradeView, MarketView, RecalibrateBotView, SimulationView, TradeView
 
 
 TEST_UID = '7AnP4NG225Sy7a7OAwLbBOK5Qmg2'
@@ -1447,3 +1448,14 @@ class TestTradeView(TestCase):
 
 		self.assertTrue(acc_calc(acc_calc(original_gbp_user_amount, '-', 500), '==', new_gbp_user_amount))
 		self.assertTrue(acc_calc(acc_calc(original_gbp_hold_amount, '+', 500), '==', new_gbp_hold_amount))
+
+
+class TestRecalibrate(TestCase):
+	def tearDown(self):
+		settings.DEBUG = True
+
+	def test_calibrate_not_allowed(self):
+		settings.DEBUG = False
+		response = RecalibrateBotView().post()
+		_, status_code = load_response(response)
+		self.assertEqual(status_code, 404)
