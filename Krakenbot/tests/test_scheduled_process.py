@@ -1,5 +1,3 @@
-import time
-
 from django.test import TestCase, tag
 
 from Krakenbot import settings
@@ -39,7 +37,6 @@ class TestBacktest(TestCase):
 
 	@tag('slow')
 	def test_backtest_result_same(self):
-		start_time = time.time()
 		candles = get_candles()
 		df_ids_old = {}
 		df_ids_new = {}
@@ -56,9 +53,7 @@ class TestBacktest(TestCase):
 			token_id = candle['token_id']
 			fiat = candle['fiat']
 			timeframe = candle['timeframe']
-			print('Backtesting', token_id, time.time() - start_time, 's')
 			best_strategy = backtest_new(candle['candles'], token_id, timeframe)
-			print('Backtest Complete', token_id, time.time() - start_time, 's')
 			backtest_id = f'{fiat}:{token_id} | {timeframe}'
 			df_ids_new[backtest_id] = best_strategy
 
