@@ -220,17 +220,16 @@ class TestSimulation(TestCase):
 			cur_funds = result['funds_values'][index]
 			action = result['bot_actions'][index]
 
+			self.assertIn(action, [-1, 0, 1])
+
 			if action == 1:
 				self.assertAlmostEqual(float(acc_calc(prev_funds, '/', data)), cur_funds, 18)
 
 			elif action == -1:
-				self.assertAlmostEqual(float(acc_calc(prev_funds, '*', data, 2)), cur_funds)
+				self.assertEqual(float(acc_calc(prev_funds, '*', data, 2)), cur_funds)
 
 			elif action == 0:
 				self.assertEqual(prev_funds, cur_funds)
-
-			else:
-				self.assertTrue(False, 'action not in [-1, 0, 1]')
 
 	def test_get_simulation(self):
 		request = GET(convert_from = 'GBP', convert_to = 'BTC')
