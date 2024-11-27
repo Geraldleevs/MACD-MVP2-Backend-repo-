@@ -181,6 +181,35 @@ class TestMarket(TestCase):
 
 
 class TestSimulation(TestCase):
+	@classmethod
+	def setUpTestData(cls):
+		cls.test_data = [
+			{ 'Open': 0.3588, 'Close': 0.3589, 'High': 0.3597, 'Low': 0.3564 },
+			{ 'Open': 0.3587, 'Close': 0.3593, 'High': 0.3621, 'Low': 0.3586 },
+			{ 'Open': 0.3592, 'Close': 0.3614, 'High': 0.3620, 'Low': 0.3582 },
+			{ 'Open': 0.3614, 'Close': 0.3597, 'High': 0.3625, 'Low': 0.3596 },
+			{ 'Open': 0.3598, 'Close': 0.3598, 'High': 0.3604, 'Low': 0.3581 },
+			{ 'Open': 0.3598, 'Close': 0.3574, 'High': 0.3598, 'Low': 0.3558 },
+			{ 'Open': 0.3576, 'Close': 0.3559, 'High': 0.3576, 'Low': 0.3551 },
+			{ 'Open': 0.3557, 'Close': 0.3590, 'High': 0.3593, 'Low': 0.3547 },
+			{ 'Open': 0.3589, 'Close': 0.3593, 'High': 0.3604, 'Low': 0.3583 },
+			{ 'Open': 0.3593, 'Close': 0.3620, 'High': 0.3645, 'Low': 0.3586 },
+			{ 'Open': 0.3625, 'Close': 0.3599, 'High': 0.3645, 'Low': 0.3596 },
+			{ 'Open': 0.3600, 'Close': 0.3629, 'High': 0.3659, 'Low': 0.3597 },
+			{ 'Open': 0.3628, 'Close': 0.3612, 'High': 0.3638, 'Low': 0.3612 },
+			{ 'Open': 0.3612, 'Close': 0.3622, 'High': 0.3630, 'Low': 0.3591 },
+			{ 'Open': 0.3622, 'Close': 0.3626, 'High': 0.3628, 'Low': 0.3607 },
+			{ 'Open': 0.3626, 'Close': 0.3638, 'High': 0.3658, 'Low': 0.3625 },
+			{ 'Open': 0.3638, 'Close': 0.3587, 'High': 0.3649, 'Low': 0.3572 },
+			{ 'Open': 0.3586, 'Close': 0.3602, 'High': 0.3613, 'Low': 0.3582 },
+			{ 'Open': 0.3603, 'Close': 0.3606, 'High': 0.3609, 'Low': 0.3583 },
+			{ 'Open': 0.3606, 'Close': 0.3588, 'High': 0.3610, 'Low': 0.3575 },
+			{ 'Open': 0.3586, 'Close': 0.3589, 'High': 0.3594, 'Low': 0.3566 },
+			{ 'Open': 0.3587, 'Close': 0.3589, 'High': 0.3611, 'Low': 0.3586 },
+			{ 'Open': 0.3588, 'Close': 0.3568, 'High': 0.3588, 'Low': 0.3552 },
+			{ 'Open': 0.3566, 'Close': 0.3585, 'High': 0.3585, 'Low': 0.3552 },
+		]
+
 	def test_get_strategies(self):
 		request = GET(get_strategies = 'GET STRATEGIES')
 		response = SimulationView().get(request)
@@ -192,6 +221,73 @@ class TestSimulation(TestCase):
 		self.assertEqual(len(result), expected_length)
 		self.assertIsInstance(result, list)
 		self.assertIsInstance(result[0], str)
+
+	def test_generate_data(self):
+		simulation = SimulationView()
+		starting_price = 52500
+		fluctuations = {
+			'close_mean': 1,
+			'close_std_dev': 0.001,
+			'high_mean': 1.005,
+			'high_std_dev': 0.001,
+			'low_mean': 0.995,
+			'low_std_dev': 0.001,
+		}
+		simulated_data = simulation.generate_simulated_prices(starting_price, fluctuations, 120)
+		simulated_ohlc = simulation.generate_simulated_ohlc(simulated_data, fluctuations)
+
+		for i in range(len(simulated_ohlc)):
+			self.assertAlmostEqual(simulated_ohlc[i]['Close'] / simulated_ohlc[i]['Open'], 1, delta=0.005)
+			self.assertAlmostEqual(simulated_ohlc[i]['High'] / simulated_ohlc[i]['Open'], 1.005, delta=0.005)
+			self.assertAlmostEqual(simulated_ohlc[i]['Low'] / simulated_ohlc[i]['Open'], 0.995, delta=0.005)
+			self.assertGreaterEqual(simulated_ohlc[i]['High'], simulated_ohlc[i]['Open'])
+			self.assertGreaterEqual(simulated_ohlc[i]['High'], simulated_ohlc[i]['Close'])
+			self.assertLessEqual(simulated_ohlc[i]['Low'], simulated_ohlc[i]['Open'])
+			self.assertLessEqual(simulated_ohlc[i]['Low'], simulated_ohlc[i]['Close'])
+			if i != 0:
+				self.assertAlmostEqual(simulated_data[i] / simulated_data[i - 1], 1, delta=0.005)
+				self.assertEqual(simulated_ohlc[i]['Open'], simulated_ohlc[i - 1]['Close'])
+
+	def test_combine_ohlc(self):
+		ohlc = SimulationView().combine_ohlc(self.test_data, 1)
+		ohlc_opens = [ohlc['Open'] for ohlc in ohlc]
+		ohlc_closes = [ohlc['Close'] for ohlc in ohlc]
+		ohlc_highs = [ohlc['High'] for ohlc in ohlc]
+		ohlc_lows = [ohlc['Low'] for ohlc in ohlc]
+		self.assertListEqual(ohlc_opens, [ohlc['Open'] for ohlc in self.test_data])
+		self.assertListEqual(ohlc_closes, [ohlc['Close'] for ohlc in self.test_data])
+		self.assertListEqual(ohlc_highs, [ohlc['High'] for ohlc in self.test_data])
+		self.assertListEqual(ohlc_lows, [ohlc['Low'] for ohlc in self.test_data])
+
+		ohlc_4 = SimulationView().combine_ohlc(self.test_data, 4)
+		ohlc_4_opens = [ohlc['Open'] for ohlc in ohlc_4]
+		ohlc_4_closes = [ohlc['Close'] for ohlc in ohlc_4]
+		ohlc_4_highs = [ohlc['High'] for ohlc in ohlc_4]
+		ohlc_4_lows = [ohlc['Low'] for ohlc in ohlc_4]
+		self.assertListEqual(ohlc_4_opens, [0.3588, 0.3598, 0.3589, 0.3628, 0.3638, 0.3586])
+		self.assertListEqual(ohlc_4_closes, [0.3597, 0.359, 0.3629, 0.3638, 0.3588, 0.3585])
+		self.assertListEqual(ohlc_4_highs, [0.3625, 0.3604, 0.3659, 0.3658, 0.3649, 0.3611])
+		self.assertListEqual(ohlc_4_lows, [0.3564, 0.3547, 0.3583, 0.3591, 0.3572, 0.3552])
+
+		ohlc_24 = SimulationView().combine_ohlc(self.test_data, 24)
+		ohlc_24_opens = [ohlc['Open'] for ohlc in ohlc_24]
+		ohlc_24_closes = [ohlc['Close'] for ohlc in ohlc_24]
+		ohlc_24_highs = [ohlc['High'] for ohlc in ohlc_24]
+		ohlc_24_lows = [ohlc['Low'] for ohlc in ohlc_24]
+		self.assertListEqual(ohlc_24_opens, [0.3588])
+		self.assertListEqual(ohlc_24_closes, [0.3585])
+		self.assertListEqual(ohlc_24_highs, [0.3659])
+		self.assertListEqual(ohlc_24_lows, [0.3547])
+
+	def test_simulate_backtest_result(self):
+		decisions = SimulationView().simulate_backtest(self.test_data, 'MACD & Aroon', '1h')
+		self.assertListEqual(decisions, [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0])
+
+		decisions = SimulationView().simulate_backtest(self.test_data, 'MACD & Aroon', '4h')
+		self.assertListEqual(decisions, [-1, 0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0])
+
+		decisions = SimulationView().simulate_backtest(self.test_data, 'MACD & Aroon', '1d')
+		self.assertListEqual(decisions, [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
 
 	def test_get_simulation_with_backtest(self):
 		request = GET(convert_from = 'GBP', convert_to = 'BTC', strategy = 'MACD & Aroon', timeframe = '4h', funds = '500', stop_loss = '480', take_profit = '520')
@@ -245,6 +341,12 @@ class TestSimulation(TestCase):
 		self.assertGreater(result['graph_max'], result['simulation_data'][0])
 		self.assertEqual(result['simulation_data'][0] - result['graph_min'], result['graph_max'] - result['simulation_data'][0])
 		self.assertEqual(len(result['simulation_data']), 120)
+
+		request = GET(convert_from = 'GBP', convert_to = 'BTC')
+		response = SimulationView().get(request)
+		result_2 = load_response(response)[0]
+		self.assertEqual(result_2['simulation_data'][0], result['simulation_data'][0])
+		self.assertNotEqual(result_2['simulation_data'], result['simulation_data'])
 
 	def test_get_simulation_invalid_token(self):
 		request = GET(convert_from = '1INCH', convert_to = 'BTC')

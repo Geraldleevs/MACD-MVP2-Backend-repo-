@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from itertools import combinations
+from random import normalvariate
 from typing import List, Literal
 import asyncio
 import aiohttp
@@ -217,16 +218,13 @@ class SimulationView(APIView):
 				raise BadRequestException()
 
 			token = token[0]
-			history_prices = token.get('history_prices', {})
-			history_dates = history_prices.get('times', [])
-			history_prices = history_prices.get('data', [])
+			history_prices = token.get('history_prices', {}).get('data', [1])
+			pair = FirebaseCandle().fetch_pair(token_id)
+			fluctuations = FirebaseCandle(pair, '1h').get_fluctuations()
 
-			if len(history_prices) < (5 * 24):
-				raise BadRequestException()
+			starting_data = history_prices[-1]
+			simulation_data = self.generate_simulated_prices(starting_data, fluctuations, 120)
 
-			simulation_data = history_prices[-(6 * 24):-24] # -6d to -1d, not fetching previous 24 hours
-			starting_time = history_dates[-(6 * 24)]
-			starting_data = simulation_data[0]
 			max_data = np.max(simulation_data)
 			min_data = np.min(simulation_data)
 
@@ -240,7 +238,8 @@ class SimulationView(APIView):
 			}
 
 			if strategy != '' and timeframe != '':
-				decisions = self.simulate_backtest(fiat, token_id, strategy, timeframe, starting_time)
+				simulated_ohlc = self.generate_simulated_ohlc(simulation_data, fluctuations)
+				decisions = self.simulate_backtest(simulated_ohlc, strategy, timeframe)
 				values, actions, stopped_by, stopped_at = self.simulate_result(simulation_data, decisions, funds, stop_loss, take_profit)
 
 				response['funds_values'] = values
@@ -253,27 +252,69 @@ class SimulationView(APIView):
 		except BadRequestException:
 			return Response(status=400)
 
-	def simulate_backtest(self, fiat: str, token_id: str, strategy: str, timeframe: str, starting_time: datetime):
-		interval = settings.INTERVAL_MAP[timeframe]
-		candles = FirebaseCandle(f'{token_id}{fiat}', timeframe).fetch_since(starting_time)[:int(5 * 24 * 60 / interval)]
-		starting_candle = candles[0]
-		candles = pd.DataFrame.from_dict(candles)
+	def generate_simulated_prices(self, starting_data: float, fluctuations: dict[str, float], length: int = 120):
+		simulated_data = [starting_data]
+		for _ in range(length - 1):
+			new_data = simulated_data[-1] * normalvariate(fluctuations.get('close_mean', 1), fluctuations.get('close_std_dev', 0.001))
+			simulated_data.append(new_data)
+		return simulated_data
+
+	def generate_simulated_ohlc(self, data: list[float], fluctuations: dict[str, float]):
+		simulated_ohlc = []
+		for i in range(len(data)):
+			if i == 0:
+				_open = data[i] / normalvariate(fluctuations.get('close_mean', 1), fluctuations.get('close_std_dev', 0.001))
+			else:
+				_open = data[i - 1]
+
+			high = _open * normalvariate(fluctuations.get('high_mean', 1.005), fluctuations.get('high_std_dev', 0.001))
+			high = max(_open, data[i], high)
+
+			low = _open * normalvariate(fluctuations.get('low_mean', 0.995), fluctuations.get('low_std_dev', 0.001))
+			low = min(_open, data[i], low)
+
+			simulated_ohlc.append({ 'Open': _open, 'High': high, 'Low': low, 'Close': data[i] })
+		return simulated_ohlc
+
+	def combine_ohlc(self, simulated_ohlc: list[dict[str, float]], interval: int):
+		if interval == 1:
+			return simulated_ohlc
+
+		i = 0
+		ohlc = []
+
+		while i < len(simulated_ohlc):
+			highs = [data['High'] for data in simulated_ohlc[i:i + interval]]
+			lows = [data['Low'] for data in simulated_ohlc[i:i + interval]]
+			ohlc.append({
+				'Open': simulated_ohlc[i]['Open'],
+				'Close': simulated_ohlc[i + interval - 1]['Close'],
+				'High': max(highs),
+				'Low': min(lows),
+			})
+			i += interval
+
+		return ohlc
+
+
+	def simulate_backtest(self, simulated_ohlc: list[dict[str, float]], strategy: str, timeframe: str):
+		interval = settings.INTERVAL_MAP[timeframe] // 60
+		simulated_ohlc = self.combine_ohlc(simulated_ohlc, interval)
+		simulated_ohlc = pd.DataFrame(simulated_ohlc)
 
 		strategy_1, strategy_2 = strategy.split(' & ')
-		backtest_func = {strategy: func for (func, strategy) in indicator_names.items()}
-		result_1 = backtest_func[strategy_1](candles)
-		result_2 = backtest_func[strategy_2](candles)
+		backtest_func = {strategy: func for (func, strategy) in indicator_names.items() if strategy in [strategy_1, strategy_2]}
+		result_1 = backtest_func[strategy_1](simulated_ohlc)
+		result_2 = backtest_func[strategy_2](simulated_ohlc)
 		signals = (result_1 == result_2) * result_1
 
 		decisions = []
-		leading_empty_time = (starting_candle['Unix_Timestamp'] - int(starting_time.timestamp())) / 60 / 60
-		decisions.extend([0] * int(leading_empty_time))
 
-		empty_decision = [0] * int(interval / 60 - 1)
+		empty_decision = [0] * (interval - 1)
 		for signal in signals:
 			decisions.extend([signal, *empty_decision])
 
-		return decisions[:(5 * 24)]
+		return decisions
 
 	def check_stop_loss(self, cur_price, cur_funds, bought, stop_loss):
 		if stop_loss is None:
@@ -404,10 +445,15 @@ class UpdateHistoryPricesView(APIView):
 		pairs.append('GBPUSD')
 
 		firebase.start_batch_write()
-		coin_gecko_ids = { token.get('coingecko_id'): token.get('token_id') for token in firebase_tokens }
-		metrics = await self.__fetch_gecko_metrics(coin_gecko_ids)
-		for metric in metrics:
-			firebase.update(metric, metrics[metric])
+
+		try:
+			coin_gecko_ids = { token.get('coingecko_id'): token.get('token_id') for token in firebase_tokens }
+			metrics = await self.__fetch_gecko_metrics(coin_gecko_ids)
+			for metric in metrics:
+				firebase.update(metric, metrics[metric])
+		except Exception:
+			# Continue even if gecko fails
+			pass
 
 		firebase.update_history_prices(settings.FIAT, [timezone.now() - timedelta(days=7), timezone.now()], [1, 1])
 
@@ -470,23 +516,26 @@ class UpdateHistoryPricesView(APIView):
 		if results.status_code != 200:
 			return {}
 
-		results = results.json()
-		metrics = {}
-		for result in results:
-			metrics[tokens[result['id']]] = {
-				'market_cap': result['market_cap'],
-				'fully_diluted_valuation': result['fully_diluted_valuation'],
-				'total_volume': result['total_volume'],
-				'circulating_supply': result['circulating_supply'],
-				'total_supply': result['total_supply'],
-				'max_supply': result['max_supply'] if result['max_supply'] is not None else -1,
-				'all_time_high': result['ath'],
-				'all_time_low': result['atl'],
-				'all_time_high_time': datetime.fromisoformat(result['ath_date']),
-				'all_time_low_time': datetime.fromisoformat(result['atl_date'])
-			}
+		try:
+			results = results.json()
+			metrics = {}
+			for result in results:
+				metrics[tokens[result['id']]] = {
+					'market_cap': result['market_cap'],
+					'fully_diluted_valuation': result['fully_diluted_valuation'],
+					'total_volume': result['total_volume'],
+					'circulating_supply': result['circulating_supply'],
+					'total_supply': result['total_supply'],
+					'max_supply': result['max_supply'] if result['max_supply'] is not None else -1,
+					'all_time_high': result['ath'],
+					'all_time_low': result['atl'],
+					'all_time_high_time': datetime.fromisoformat(result['ath_date']),
+					'all_time_low_time': datetime.fromisoformat(result['atl_date'])
+				}
 
-		return metrics
+			return metrics
+		except Exception:
+			return {}
 
 	def __update_user_history(self, prices: dict[str, float]):
 		all_user_id = FirebaseUsers().get_all_user_id()
@@ -1171,6 +1220,63 @@ class CheckLossProfitView(APIView):
 				log_warning(message)
 
 		log(f'Stop Loss Set: {stop_loss_set}; Order Created: {order_created}')
+
+
+class CalculateFluctuationsView(APIView):
+	def post(self, request):
+		authenticate_scheduler_oicd(request)
+		candles = self.get_candles()
+		fluctuations = self.calculate_fluctuations(candles)
+		self.save_fluctuations(fluctuations)
+		return Response(status=200)
+
+	def get_candles(self):
+		firebase = FirebaseCandle()
+		all_pairs = firebase.fetch_pairs()
+		results = {}
+
+		for pair in all_pairs:
+			firebase.change_pair(pair, '1h')
+			candles = firebase.fetch_all()
+			if candles is not None:
+				results[pair] = candles
+
+		return results
+
+	def calculate_fluctuations(self, candles: dict[str, pd.DataFrame]):
+		results = {}
+		for pair in candles:
+			high = candles[pair]['High'].to_numpy()
+			low = candles[pair]['Low'].to_numpy()
+			close = candles[pair]['Close'].to_numpy()
+			_open = candles[pair]['Open'].to_numpy()
+
+			high_diff = high / _open
+			high_mean = high_diff.mean()
+			high_std_dev = high_diff.std()
+
+			low_diff = low / _open
+			low_mean = low_diff.mean()
+			low_std_dev = low_diff.std()
+
+			close_diff = close / _open
+			close_mean = close_diff.mean()
+			close_std_dev = close_diff.std()
+
+			results[pair] = {
+				'high_mean': high_mean,
+				'high_std_dev': high_std_dev,
+				'low_mean': low_mean,
+				'low_std_dev': low_std_dev,
+				'close_mean': close_mean,
+				'close_std_dev': close_std_dev,
+			}
+		return results
+
+	def save_fluctuations(self, fluctuations: dict[str, float]):
+		for pair in fluctuations:
+			firebase = FirebaseCandle(pair, '1h')
+			firebase.save_fluctuations(**fluctuations[pair])
 
 
 class RecalibrateBotView(APIView):

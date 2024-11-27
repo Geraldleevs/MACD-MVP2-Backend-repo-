@@ -270,6 +270,22 @@ class FirebaseCandle:
 		docs = self.__candle.stream()
 		return [doc.id for doc in docs]
 
+	def fetch_pair(self, token_id: str):
+		doc = self.__candle.where(filter=FieldFilter('token_id', '==', token_id)).limit(1).get()[0]
+		return doc.id
+
+	def save_fluctuations(self, close_mean: float, close_std_dev: float, high_mean: float, high_std_dev: float, low_mean: float, low_std_dev: float):
+		self.__candle_token.update({
+			'close_mean': close_mean,
+			'close_std_dev': close_std_dev,
+			'high_mean': high_mean,
+			'high_std_dev': high_std_dev,
+			'low_mean': low_mean,
+			'low_std_dev': low_std_dev,
+		})
+
+	def get_fluctuations(self):
+		return self.__candle_token.get().to_dict()
 
 class FirebaseDiscover:
 	def __init__(self):

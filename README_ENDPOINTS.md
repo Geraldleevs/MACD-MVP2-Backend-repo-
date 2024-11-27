@@ -806,6 +806,34 @@ STATUS 200
 
 ---
 
+### Calculate Fluctuations
+
+`/api/calculate-fluctuations [POST]`
+
+Calculate fluctuations of tokens and save in firebase
+
+### Authorisation:
+- `Bearer {Google_OIDC_Token}`
+
+### Response:
+- `STATUS 200`
+
+### Examples
+
+Example 1: `/api/calculate-fluctuations`
+
+#### Data:
+```bash
+Authorization: Bearer {Google_OIDC_Token}
+```
+
+#### Response
+```bash
+STATUS 200
+```
+
+---
+
 ### Recalibrate Bot
 
 `/api/recalibrate-bot [POST]`
