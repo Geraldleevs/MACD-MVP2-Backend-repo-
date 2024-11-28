@@ -45,17 +45,18 @@ firebase_admin_settings = {
 	'universe_domain': 'googleapis.com',
 }
 
-try:
-	firebase_admin.initialize_app(Certificate(firebase_admin_settings))
-except ValueError:
-	# To catch error raised if private key failed to read when running tests
-	from dotenv import load_dotenv, dotenv_values
-	load_dotenv()
-	firebase_admin_settings['private_key'] = '\n'.join(dotenv_values('.env').get('FIREBASE_PRIVATE_KEY', os.environ.get('FIREBASE_PRIVATE_KEY', '')).split(r'\n'))
-	firebase_admin.initialize_app(Certificate(firebase_admin_settings))
-
-firebase = firestore.client()
-db_batch = firebase.batch()
+if os.environ.get('IMAGE_BUILDING') != 'BUILDING':
+	try:
+		firebase_admin.initialize_app(Certificate(firebase_admin_settings))
+	except ValueError:
+		# To catch error raised if private key failed to read when running tests
+		from dotenv import load_dotenv, dotenv_values
+		load_dotenv()
+		firebase_admin_settings['private_key'] = '\n'.join(dotenv_values('.env').get('FIREBASE_PRIVATE_KEY', os.environ.get('FIREBASE_PRIVATE_KEY', '')).split(r'\n'))
+		firebase_admin.initialize_app(Certificate(firebase_admin_settings))
+	finally:
+		firebase = firestore.client()
+		db_batch = firebase.batch()
 
 INSTALLED_APPS = [
 	'django.contrib.admin',
@@ -79,7 +80,7 @@ MIDDLEWARE = [
 	'corsheaders.middleware.CorsMiddleware',
 ]
 
-CORS_ALLOWED_ORIGINS = os.environ.get('CORS', '').split(';')
+CORS_ALLOWED_ORIGINS = os.environ.get('CORS', 'https://mach-d-rlqsy3.flutterflow.app').split(';')
 
 ROOT_URLCONF = 'Krakenbot.urls'
 
@@ -161,7 +162,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Constants
 FIAT = os.environ.get('FIAT', 'GBP')
 DEMO_AMOUNT = float(os.environ.get('DEMO_ACCOUNT_AMOUNT', '10000'))
-TIMEFRAMES = { timeframe.split('->')[1]: timeframe.split('->')[0] for timeframe in os.environ.get('TIMEFRAME_MAP', '').split(';') }
+TIMEFRAMES = { timeframe.split('->')[1]: timeframe.split('->')[0] for timeframe in os.environ.get('TIMEFRAME_MAP', 'short->1h;medium->4h;long->1d').split(';') }
 HISTORY_INTERVAL = int(os.environ.get('TOKEN_HISTORY_INTERVAL_IN_MINUTES', '60'))
 HISTORY_COUNT = int(os.environ.get('MAX_TOKEN_HISTORY_IN_DAYS', '7')) * 24 * 60 // HISTORY_INTERVAL # Multiply into minutes
 INTERVAL_MAP = {
