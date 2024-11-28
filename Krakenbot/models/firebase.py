@@ -666,6 +666,9 @@ class FirebaseOrderBook:
 		doc_ref.update(update_data)
 		return { **doc_ref.get().to_dict(), 'id': doc_ref.id }
 
+	def delete_by_id(self, id):
+		self.__order_book.document(id).delete()
+
 	def filter(self, since: datetime = None, before: datetime = None, status: Literal['OPEN', 'CANCELLED', 'CLOSED', 'ALL'] = 'ALL', uid: str = None):
 		query = self.__order_book
 

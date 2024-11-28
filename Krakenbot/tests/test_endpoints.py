@@ -430,23 +430,27 @@ class TestLiveTrade(TestCase):
 		}
 
 	def tearDown(self):
-		if self.created_livetrade_id is not None:
-			FirebaseLiveTrade(TEST_UID).close(self.created_livetrade_id)
-			self.created_order_id = None
-		if self.created_order_id is not None:
-			FirebaseOrderBook().cancel_order(self.created_order_id)
-		if self.original_wallet is not None:
-			for token in self.original_wallet:
-				(user, user_str, bot, bot_str, hold, hold_str) = self.original_wallet[token]
-				data = {
-					FirebaseWallet.USER_AMOUNT: user,
-					FirebaseWallet.USER_AMOUNT_STR: user_str,
-					FirebaseWallet.BOT_AMOUNT: bot,
-					FirebaseWallet.BOT_AMOUNT_STR: bot_str,
-					FirebaseWallet.HOLD_AMOUNT: hold,
-					FirebaseWallet.HOLD_AMOUNT_STR: hold_str
-				}
-				FirebaseWallet(TEST_UID)._edit(token, data)
+		firebase = FirebaseLiveTrade(TEST_UID)
+		livetrades = firebase.filter(uid=TEST_UID)
+		[firebase.delete_by_id(livetrade['livetrade_id']) for livetrade in livetrades]
+
+		firebase = FirebaseOrderBook()
+		orders = firebase.filter(uid=TEST_UID)
+		[firebase.delete_by_id(order['order_id']) for order in orders]
+
+		for token in self.original_wallet:
+			(user, user_str, bot, bot_str, hold, hold_str) = self.original_wallet[token]
+			data = {
+				FirebaseWallet.USER_AMOUNT: user,
+				FirebaseWallet.USER_AMOUNT_STR: user_str,
+				FirebaseWallet.BOT_AMOUNT: bot,
+				FirebaseWallet.BOT_AMOUNT_STR: bot_str,
+				FirebaseWallet.HOLD_AMOUNT: hold,
+				FirebaseWallet.HOLD_AMOUNT_STR: hold_str
+			}
+			FirebaseWallet(TEST_UID)._edit(token, data)
+
+		settings.firebase.collection(u'users').document(TEST_UID).update({ 'livetrades': [] })
 
 	def test_reserve(self):
 		firebase_wallet = FirebaseWallet(TEST_UID)
@@ -1118,23 +1122,27 @@ class TestManualTrade(TestCase):
 		}
 
 	def tearDown(self):
-		if self.created_livetrade_id is not None:
-			FirebaseLiveTrade(TEST_UID).close(self.created_livetrade_id)
-			self.created_order_id = None
-		if self.created_order_id is not None:
-			FirebaseOrderBook().cancel_order(self.created_order_id)
-		if self.original_wallet is not None:
-			for token in self.original_wallet:
-				(user, user_str, bot, bot_str, hold, hold_str) = self.original_wallet[token]
-				data = {
-					FirebaseWallet.USER_AMOUNT: user,
-					FirebaseWallet.USER_AMOUNT_STR: user_str,
-					FirebaseWallet.BOT_AMOUNT: bot,
-					FirebaseWallet.BOT_AMOUNT_STR: bot_str,
-					FirebaseWallet.HOLD_AMOUNT: hold,
-					FirebaseWallet.HOLD_AMOUNT_STR: hold_str
-				}
-				FirebaseWallet(TEST_UID)._edit(token, data)
+		firebase = FirebaseLiveTrade(TEST_UID)
+		livetrades = firebase.filter(uid=TEST_UID)
+		[firebase.delete_by_id(livetrade['livetrade_id']) for livetrade in livetrades]
+
+		firebase = FirebaseOrderBook()
+		orders = firebase.filter(uid=TEST_UID)
+		[firebase.delete_by_id(order['order_id']) for order in orders]
+
+		for token in self.original_wallet:
+			(user, user_str, bot, bot_str, hold, hold_str) = self.original_wallet[token]
+			data = {
+				FirebaseWallet.USER_AMOUNT: user,
+				FirebaseWallet.USER_AMOUNT_STR: user_str,
+				FirebaseWallet.BOT_AMOUNT: bot,
+				FirebaseWallet.BOT_AMOUNT_STR: bot_str,
+				FirebaseWallet.HOLD_AMOUNT: hold,
+				FirebaseWallet.HOLD_AMOUNT_STR: hold_str
+			}
+			FirebaseWallet(TEST_UID)._edit(token, data)
+
+		settings.firebase.collection(u'users').document(TEST_UID).update({ 'livetrades': [] })
 
 	def test_invalid_type(self):
 		request = POST(
@@ -1445,23 +1453,27 @@ class TestTradeView(TestCase):
 		}
 
 	def tearDown(self):
-		if self.created_livetrade_id is not None:
-			FirebaseLiveTrade(TEST_UID).close(self.created_livetrade_id)
-			self.created_order_id = None
-		if self.created_order_id is not None:
-			FirebaseOrderBook().cancel_order(self.created_order_id)
-		if self.original_wallet is not None:
-			for token in self.original_wallet:
-				(user, user_str, bot, bot_str, hold, hold_str) = self.original_wallet[token]
-				data = {
-					FirebaseWallet.USER_AMOUNT: user,
-					FirebaseWallet.USER_AMOUNT_STR: user_str,
-					FirebaseWallet.BOT_AMOUNT: bot,
-					FirebaseWallet.BOT_AMOUNT_STR: bot_str,
-					FirebaseWallet.HOLD_AMOUNT: hold,
-					FirebaseWallet.HOLD_AMOUNT_STR: hold_str
-				}
-				FirebaseWallet(TEST_UID)._edit(token, data)
+		firebase = FirebaseLiveTrade(TEST_UID)
+		livetrades = firebase.filter(uid=TEST_UID)
+		[firebase.delete_by_id(livetrade['livetrade_id']) for livetrade in livetrades]
+
+		firebase = FirebaseOrderBook()
+		orders = firebase.filter(uid=TEST_UID)
+		[firebase.delete_by_id(order['order_id']) for order in orders]
+
+		for token in self.original_wallet:
+			(user, user_str, bot, bot_str, hold, hold_str) = self.original_wallet[token]
+			data = {
+				FirebaseWallet.USER_AMOUNT: user,
+				FirebaseWallet.USER_AMOUNT_STR: user_str,
+				FirebaseWallet.BOT_AMOUNT: bot,
+				FirebaseWallet.BOT_AMOUNT_STR: bot_str,
+				FirebaseWallet.HOLD_AMOUNT: hold,
+				FirebaseWallet.HOLD_AMOUNT_STR: hold_str
+			}
+			FirebaseWallet(TEST_UID)._edit(token, data)
+
+		settings.firebase.collection(u'users').document(TEST_UID).update({ 'livetrades': [] })
 
 	def test_reserve(self):
 		firebase_wallet = FirebaseWallet(TEST_UID)
