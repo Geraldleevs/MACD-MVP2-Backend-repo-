@@ -800,6 +800,7 @@ class InitialiseDemoView(APIView):
 		try:
 			uid = authenticate_user_jwt(request)
 			FirebaseWallet(uid).demo_init(settings.FIAT, settings.DEMO_AMOUNT)
+			return Response(status=200)
 		except NotAuthorisedException:
 			return Response(status=401)
 
