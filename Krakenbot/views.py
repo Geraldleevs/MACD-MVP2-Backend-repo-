@@ -334,6 +334,43 @@ class SimulationView(APIView):
 			return True
 		return False
 
+	def carry_trade(self, data, decision, take_profit, stop_loss, bought, prev_value):
+		stop_by = None
+
+		if self.check_stop_loss(data, prev_value, bought, stop_loss):
+			if bought:
+				value = acc_calc(prev_value, '*', data, 2)
+				action = -1
+			else:
+				value = prev_value
+				action = 0
+			stop_by = 'stop loss limit'
+
+		elif self.check_take_profit(data, prev_value, bought, take_profit):
+			if bought:
+				value = acc_calc(prev_value, '*', data, 2)
+				action = -1
+			else:
+				value = prev_value
+				action = 0
+			stop_by = 'take profit limit'
+
+		elif decision == 1 and not bought:
+			value = acc_calc(prev_value, '/', data)
+			action = 1
+			bought = True
+
+		elif decision == -1 and bought:
+			value = acc_calc(prev_value, '*', data, 2)
+			action = -1
+			bought = False
+
+		else:
+			value = prev_value
+			action = 0
+
+		return (bought, value, action, stop_by)
+
 	def simulate_result(self, simulation_data: list[float], decisions: list[float], funds: str, stop_loss: str, take_profit: str):
 		values = [acc_calc(funds, '/', simulation_data[0])]
 		bought = True
@@ -342,38 +379,14 @@ class SimulationView(APIView):
 		stopped_at = None
 
 		for (data, decision) in zip(simulation_data[1:], decisions[1:]):
+			(bought, value, action, stop_by) = self.carry_trade(data, decision, take_profit, stop_loss, bought, values[-1])
 
-			if self.check_stop_loss(data, values[-1], bought, stop_loss):
-				stopped_at = len(actions)
-				if bought:
-					values.append(acc_calc(values[-1], '*', data, 2))
-					actions.append(-1)
-					bought = False
-				stop_by = 'stop loss limit'
+			values.append(value)
+			actions.append(action)
+
+			if stop_by is not None:
+				stopped_at = len(action)
 				break
-
-			if self.check_take_profit(data, values[-1], bought, take_profit):
-				stopped_at = len(actions)
-				if bought:
-					values.append(acc_calc(values[-1], '*', data, 2))
-					actions.append(-1)
-					bought = False
-				stop_by = 'target limit'
-				break
-
-			elif decision == 1 and not bought:
-				values.append(acc_calc(values[-1], '/', data))
-				actions.append(1)
-				bought = True
-
-			elif decision == -1 and bought:
-				values.append(acc_calc(values[-1], '*', data, 2))
-				actions.append(-1)
-				bought = False
-
-			else:
-				values.append(values[-1])
-				actions.append(0)
 
 		actions.extend([0] * (len(decisions) - len(actions)))
 		values.extend([values[-1]] * (len(decisions) - len(values)))
@@ -916,6 +929,24 @@ class AutoLiveTradeView(APIView):
 
 		return (trade_decisions['buy'], trade_decisions['sell'])
 
+	def __cancel_order(self, order_id: str, timeframe: str, price: str):
+		firebase_order_book = FirebaseOrderBook()
+
+		try:
+			order = firebase_order_book.get(order_id)
+			if (timezone.now() - order['created_time']).seconds < min(5 * settings.INTERVAL_MAP[timeframe] * 60, 24 * 60 * 60):
+				# If last order created within 5 unit (5min / 5h / 20h) or 1 day, dont change it
+				return False
+			if acc_calc(order['price_str'], '==', price):
+				# If same price, skip
+				return False
+			firebase_order_book.cancel_order(order_id)
+		except BadRequestException:
+			# If BadRequest, the order is already cancelled
+			pass
+
+		return True
+
 	def __trade(self, trade_decisions: list[dict], market_prices: list[dict[str, str | float]], trade_type: str, timeframe: str):
 		firebase_order_book = FirebaseOrderBook()
 		prices = { price['token']: price['price_str'] for price in market_prices }
@@ -930,29 +961,21 @@ class AutoLiveTradeView(APIView):
 				bot_name = decision['name']
 				bot_id = decision['livetrade_id']
 				status = decision['status']
+				order_id = decision.get('order_id')
+				price = prices[decision['token_id']]
 
 				if status == 'ORDER_PLACED':
-					try:
-						order_id = decision['order_id']
-						order = firebase_order_book.get(order_id)
-						if (timezone.now() - order['created_time']).seconds < (5 * settings.INTERVAL_MAP[timeframe] * 60):
-							# If last order created within 5 unit (5min / 5h / 20h / 5d), dont change it
-							continue
-						if acc_calc(order['price_str'], '==', prices[decision['token_id']]):
-							# If same price, skip
-							continue
-						firebase_order_book.cancel_order(order_id)
-					except BadRequestException:
-						# If BadRequest, the order is cancelled
-						pass
+					order_cancelled = self.__cancel_order(order_id, timeframe, price)
+					if order_cancelled is False:
+						continue
 
-				firebase_order_book.create_order(uid, from_token, to_token, prices[decision['token_id']], from_amount, bot_name, bot_id)
+				firebase_order_book.create_order(uid, from_token, to_token, price, from_amount, bot_name, bot_id)
 				trade_count += 1
 			except KeyError:
 				message = {
 					'message': 'Livetrade Trading Fails due to Invalid Fields',
 					'Livetrade': decision.get('livetrade_id'),
-					'UID': decision.get('uid', 'No User Found'),
+					'UID': decision.get('uid'),
 					'From': f'{decision.get('amount', 'No Amount')} {decision.get('cur_token', 'No Token Found')}',
 					'Price': f'{prices.get(decision.get('token_id', ''), 'Price Not Found!')}',
 				}
@@ -1186,7 +1209,7 @@ class CheckLossProfitView(APIView):
 				message = {
 					'message': 'Take Profit Fails due to Invalid Fields',
 					'Livetrade': livetrade.get('livetrade_id'),
-					'UID': livetrade.get('uid', 'No User Found'),
+					'UID': livetrade.get('uid'),
 					'Take Profit': livetrade.get('take_profit'),
 				}
 				log_warning(message)
@@ -1223,7 +1246,7 @@ class CheckLossProfitView(APIView):
 				message = {
 					'message': 'Stop Loss Fails due to Invalid Fields',
 					'Livetrade': livetrade.get('livetrade_id'),
-					'UID': livetrade.get('uid', 'No User Found'),
+					'UID': livetrade.get('uid'),
 					'Stop Loss': livetrade.get('stop_loss'),
 				}
 				log_warning(message)
