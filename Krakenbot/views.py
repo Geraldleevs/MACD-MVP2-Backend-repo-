@@ -938,6 +938,9 @@ class AutoLiveTradeView(APIView):
 						if (timezone.now() - order['created_time']).seconds < (5 * settings.INTERVAL_MAP[timeframe] * 60):
 							# If last order created within 5 unit (5min / 5h / 20h / 5d), dont change it
 							continue
+						if acc_calc(order['price_str'], '==', prices[decision['token_id']]):
+							# If same price, skip
+							continue
 						firebase_order_book.cancel_order(order_id)
 					except BadRequestException:
 						# If BadRequest, the order is cancelled

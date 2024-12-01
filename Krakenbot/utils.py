@@ -136,7 +136,7 @@ def acc_calc(
 								'==', '!=', '>', '>=', '<', '<='],
 		num2: str | float | int | Decimal,
 		decimal_count = 18
-	) -> Decimal:
+	) -> Decimal | bool:
 	'''
 	Performs calculations with Float128 type with higher precision.
 	Accepts `str`, `float`, `int`, `Decimal` types
