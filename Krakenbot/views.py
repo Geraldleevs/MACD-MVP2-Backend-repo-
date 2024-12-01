@@ -935,7 +935,7 @@ class AutoLiveTradeView(APIView):
 					try:
 						order_id = decision['order_id']
 						order = firebase_order_book.get(order_id)
-						if (order['created_time'] - timezone.now()).seconds < (5 * settings.INTERVAL_MAP[timeframe] * 60):
+						if (timezone.now() - order['created_time']).seconds < (5 * settings.INTERVAL_MAP[timeframe] * 60):
 							# If last order created within 5 unit (5min / 5h / 20h / 5d), dont change it
 							continue
 						firebase_order_book.cancel_order(order_id)
