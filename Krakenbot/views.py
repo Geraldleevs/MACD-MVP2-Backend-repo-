@@ -881,7 +881,7 @@ class AutoLiveTradeView(APIView):
 
 	async def __check_trade(self, timeframe: str, fiat: str):
 		firebase_livetrade = FirebaseLiveTrade()
-		livetrades = firebase_livetrade.filter(timeframe=timeframe, is_active=True, fiat=fiat, status='READY_TO_TRADE')
+		livetrades = firebase_livetrade.filter(timeframe=timeframe, is_active=True, fiat=fiat)
 		if len(livetrades) == 0:
 			return ([], [])
 		all_livetrade_token = { livetrade['token_id'] for livetrade in livetrades }
@@ -929,6 +929,16 @@ class AutoLiveTradeView(APIView):
 				from_amount = decision['amount_str']
 				bot_name = decision['name']
 				bot_id = decision['livetrade_id']
+				status = decision['status']
+
+				if status == 'ORDER_PLACED':
+					try:
+						order_id = decision['order_id']
+						firebase_order_book.cancel_order(order_id)
+					except BadRequestException:
+						# If BadRequest, the order is cancelled
+						pass
+
 				firebase_order_book.create_order(uid, from_token, to_token, prices[decision['token_id']], from_amount, bot_name, bot_id)
 				trade_count += 1
 			except KeyError:
