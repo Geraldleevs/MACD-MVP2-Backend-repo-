@@ -876,8 +876,8 @@ class AutoLiveTradeView(APIView):
 
 		for fiat in all_fiat:
 			(buy_signals, sell_signals) = await self.__check_trade(timeframe, fiat['token_id'])
-			self.__trade(buy_signals, MarketView().get_market(convert_from=fiat['token_id']), 'Buy')
-			self.__trade(sell_signals, MarketView().get_market(convert_to=fiat['token_id']), 'Sell')
+			self.__trade(buy_signals, MarketView().get_market(convert_from=fiat['token_id']), 'Buy', timeframe)
+			self.__trade(sell_signals, MarketView().get_market(convert_to=fiat['token_id']), 'Sell', timeframe)
 
 	async def __check_trade(self, timeframe: str, fiat: str):
 		firebase_livetrade = FirebaseLiveTrade()
@@ -916,7 +916,7 @@ class AutoLiveTradeView(APIView):
 
 		return (trade_decisions['buy'], trade_decisions['sell'])
 
-	def __trade(self, trade_decisions: list[dict], market_prices: list[dict[str, str | float]], trade_type: str):
+	def __trade(self, trade_decisions: list[dict], market_prices: list[dict[str, str | float]], trade_type: str, timeframe: str):
 		firebase_order_book = FirebaseOrderBook()
 		prices = { price['token']: price['price_str'] for price in market_prices }
 		trade_count = 0
@@ -934,6 +934,10 @@ class AutoLiveTradeView(APIView):
 				if status == 'ORDER_PLACED':
 					try:
 						order_id = decision['order_id']
+						order = firebase_order_book.get(order_id)
+						if (order['created_time'] - timezone.now()).seconds < (5 * settings.INTERVAL_MAP[timeframe] * 60):
+							# If last order created within 5 unit (5min / 5h / 20h / 5d), dont change it
+							continue
 						firebase_order_book.cancel_order(order_id)
 					except BadRequestException:
 						# If BadRequest, the order is cancelled
