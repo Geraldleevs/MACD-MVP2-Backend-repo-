@@ -1431,7 +1431,7 @@ class ScheduledView(APIView):
 																									completed_task,
 																									error)
 
-		log({'Completed Task:': completed_task})
+		log(f'Completed Task: [{", ".join(completed_task)}]')
 
 		if len(error) > 0:
 			log_error(error)
