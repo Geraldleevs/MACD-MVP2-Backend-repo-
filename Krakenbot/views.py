@@ -1265,11 +1265,14 @@ class CheckLossProfitView(APIView):
 
 class CalculateFluctuationsView(APIView):
 	def post(self, request):
-		authenticate_scheduler_oicd(request)
-		candles = self.get_candles()
-		fluctuations = self.calculate_fluctuations(candles)
-		self.save_fluctuations(fluctuations)
-		return Response(status=200)
+		try:
+			authenticate_scheduler_oicd(request)
+			candles = self.get_candles()
+			fluctuations = self.calculate_fluctuations(candles)
+			self.save_fluctuations(fluctuations)
+			return Response(status=200)
+		except NotAuthorisedException:
+			return Response(status=401)
 
 	def get_candles(self):
 		firebase = FirebaseCandle()
@@ -1345,4 +1348,102 @@ class RecalibrateBotView(APIView):
 			for token in all_tokens:
 				amount = wallet.get(token, 0)
 				firebase_wallet.set_bot_amount(token, amount)
+		return Response(status=200)
+
+
+## Scheduled Processes to be called in different interval
+## Grouped to make them call in sequence, avoid race condition
+
+## Check Stop Loss > AutoLiveTrade > Check Orders
+## > Update Price > News
+## > Update Candles > Backtest
+
+## Update Price and News called before backtest to reduce wait time
+
+class ScheduledView(APIView):
+	def post(self, request):
+		try:
+			authenticate_scheduler_oicd(request)
+		except NotAuthorisedException:
+			return Response(status=401)
+
+		now       = timezone.now()
+		hourly    = now.minute == 0
+		quarterly = now.hour % 4 == 0 and hourly
+		daily     = now.hour == 0 and hourly
+
+		error = []
+		completed_task = []
+
+		try:
+			CheckLossProfitView().post(request)
+			completed_task.append('Check Loss Profit')
+		except Exception as e:
+			error.append(e)
+
+		try:
+			asyncio.run(AutoLiveTradeView().livetrade('1min'))
+			completed_task.append('Auto Livetrade (1min)')
+		except Exception as e:
+			error.append(e)
+
+		if hourly:
+			try:
+				asyncio.run(AutoLiveTradeView().livetrade('1h'))
+				completed_task.append('Auto Livetrade (1h)')
+			except Exception as e:
+				error.append(e)
+
+		if quarterly:
+			try:
+				asyncio.run(AutoLiveTradeView().livetrade('4h'))
+				completed_task.append('Auto Livetrade (4h)')
+			except Exception as e:
+				error.append(e)
+
+		if daily:
+			try:
+				asyncio.run(AutoLiveTradeView().livetrade('1d'))
+				completed_task.append('Auto Livetrade (1d)')
+			except Exception as e:
+				error.append(e)
+
+		try:
+			CheckOrdersView().post(request)
+			completed_task.append('Check Orders')
+		except Exception as e:
+			error.append(e)
+
+		if hourly:
+			try:
+				UpdateHistoryPricesView().post(request)
+				completed_task.append('Update History Prices')
+			except Exception as e:
+				error.append(e)
+
+			try:
+				NewsView().post(request)
+				completed_task.append('Fetch News')
+			except Exception as e:
+				error.append(e)
+
+		if daily:
+			try:
+				UpdateCandlesView().post(request)
+				completed_task.append('Update Candles')
+			except Exception as e:
+				error.append(e)
+
+			try:
+				BackTestView().post(request)
+				completed_task.append('Backtest')
+			except Exception as e:
+				error.append(e)
+
+		if len(error) > 0:
+			log_error(error)
+			return Response(status=500)
+
+		log({'Completed Task:': completed_task})
+
 		return Response(status=200)

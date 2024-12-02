@@ -19,4 +19,5 @@ urlpatterns = [
     path('api/check-lossprofit', views.CheckLossProfitView.as_view(), name='check stop loss and take profit'),
     path('api/calculate-fluctuations', views.CalculateFluctuationsView.as_view(), name='calculate tokens fluctuations'),
     path('api/recalibrate-bot', views.RecalibrateBotView.as_view(), name='recalibrate bot amount'),
+    path('api/scheduled-processes', views.ScheduledView.as_view(), name='scheduled processes'),
 ]
