@@ -1375,75 +1375,78 @@ class ScheduledView(APIView):
 		error = []
 		completed_task = []
 
-		try:
-			CheckLossProfitView().post(request)
-			completed_task.append('Check Loss Profit')
-		except Exception as e:
-			error.append(e)
+		(completed_task, error) = self.schedule_run(lambda: CheckLossProfitView().post(request),
+																								'Check Loss Profit',
+																								completed_task,
+																								error)
 
-		try:
-			asyncio.run(AutoLiveTradeView().livetrade('1min'))
-			completed_task.append('Auto Livetrade (1min)')
-		except Exception as e:
-			error.append(e)
+		(completed_task, error) = self.schedule_run(lambda: asyncio.run(AutoLiveTradeView().livetrade('1min')),
+																								'Auto Livetrade (1min)',
+																								completed_task,
+																								error)
 
 		if hourly:
-			try:
-				asyncio.run(AutoLiveTradeView().livetrade('1h'))
-				completed_task.append('Auto Livetrade (1h)')
-			except Exception as e:
-				error.append(e)
+			(completed_task, error) = self.schedule_run(lambda: asyncio.run(AutoLiveTradeView().livetrade('1h')),
+																									'Auto Livetrade (1h)',
+																									completed_task,
+																									error)
 
 		if quarterly:
-			try:
-				asyncio.run(AutoLiveTradeView().livetrade('4h'))
-				completed_task.append('Auto Livetrade (4h)')
-			except Exception as e:
-				error.append(e)
+			(completed_task, error) = self.schedule_run(lambda: asyncio.run(AutoLiveTradeView().livetrade('4h')),
+																									'Auto Livetrade (4h)',
+																									completed_task,
+																									error)
 
 		if daily:
-			try:
-				asyncio.run(AutoLiveTradeView().livetrade('1d'))
-				completed_task.append('Auto Livetrade (1d)')
-			except Exception as e:
-				error.append(e)
+			(completed_task, error) = self.schedule_run(lambda: asyncio.run(AutoLiveTradeView().livetrade('1d')),
+																									'Auto Livetrade (1d)',
+																									completed_task,
+																									error)
 
-		try:
-			CheckOrdersView().post(request)
-			completed_task.append('Check Orders')
-		except Exception as e:
-			error.append(e)
+		(completed_task, error) = self.schedule_run(lambda: CheckOrdersView().post(request),
+																								'Check Orders',
+																								completed_task,
+																								error)
 
 		if hourly:
-			try:
-				UpdateHistoryPricesView().post(request)
-				completed_task.append('Update History Prices')
-			except Exception as e:
-				error.append(e)
+			(completed_task, error) = self.schedule_run(lambda: UpdateHistoryPricesView().post(request),
+																									'Update History Prices',
+																									completed_task,
+																									error,
+																									True)
 
-			try:
-				NewsView().post(request)
-				completed_task.append('Fetch News')
-			except Exception as e:
-				error.append(e)
+			(completed_task, error) = self.schedule_run(lambda: NewsView().post(request),
+																									'Fetch News',
+																									completed_task,
+																									error)
 
 		if daily:
-			try:
-				UpdateCandlesView().post(request)
-				completed_task.append('Update Candles')
-			except Exception as e:
-				error.append(e)
+			(completed_task, error) = self.schedule_run(lambda: UpdateCandlesView().post(request),
+																									'Update Candles',
+																									completed_task,
+																									error)
 
-			try:
-				BackTestView().post(request)
-				completed_task.append('Backtest')
-			except Exception as e:
-				error.append(e)
+			(completed_task, error) = self.schedule_run(lambda: BackTestView().post(request),
+																									'Backtest',
+																									completed_task,
+																									error)
+
+		log({'Completed Task:': completed_task})
 
 		if len(error) > 0:
 			log_error(error)
 			return Response(status=500)
 
-		log({'Completed Task:': completed_task})
-
 		return Response(status=200)
+
+
+	def schedule_run(self, function, title, completed_task, error, retry = False):
+		try:
+			function()
+			completed_task.append(title)
+		except Exception as e:
+			error.append(e)
+			if retry:
+				(completed_task, error) = self.schedule_run(function, title, completed_task, error)
+
+		return (completed_task, error)
