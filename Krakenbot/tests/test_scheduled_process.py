@@ -1,16 +1,19 @@
+from time import perf_counter_ns
 from pandas import DataFrame
+import asyncio
 
 from django.test import TestCase, tag
 
 from Krakenbot import settings
 from Krakenbot.models.firebase import FirebaseToken
 from Krakenbot.MVP_Backtest import backtest as backtest_old
-from Krakenbot.backtest import backtest as backtest_new
+from Krakenbot.Realtime_Backtest import apply_backtest as apply_backtest_old, get_livetrade_result
+from Krakenbot.backtest import AnalyseBacktest, ApplyBacktest
 from Krakenbot.get_candles import main as get_candles
 from Krakenbot.views import BackTestView, CalculateFluctuationsView
 
 
-class TestBacktest(TestCase):
+class TestAnalyseBacktest(TestCase):
 	def test_backtest_analysis(self):
 		firebase_token = FirebaseToken()
 		tokens = firebase_token.filter(is_fiat=False, is_active=True)
@@ -33,7 +36,7 @@ class TestBacktest(TestCase):
 		self.assertIn('summary', result)
 		self.assertIn('technical_analysis', result)
 
-		results = {result['token_id'] for result in results}
+		results = { result['token_id'] for result in results }
 		for token in tokens:
 			self.assertIn(token, results)
 
@@ -43,6 +46,7 @@ class TestBacktest(TestCase):
 		df_ids_old = {}
 		df_ids_new = {}
 
+		start_time = perf_counter_ns()
 		for candle in candles:
 			token_id = candle['token_id']
 			fiat = candle['fiat']
@@ -50,16 +54,83 @@ class TestBacktest(TestCase):
 			best_strategy = backtest_old(candle['candles'], token_id, timeframe)
 			backtest_id = f'{fiat}:{token_id} | {timeframe}'
 			df_ids_old[backtest_id] = best_strategy
+		old_duration = (perf_counter_ns() - start_time) / 1e9
 
+		start_time = perf_counter_ns()
 		for candle in candles:
 			token_id = candle['token_id']
 			fiat = candle['fiat']
 			timeframe = candle['timeframe']
-			best_strategy = backtest_new(candle['candles'], token_id, timeframe)
+			best_strategy = AnalyseBacktest().analyse_backtest(candle['candles'], token_id, timeframe)
 			backtest_id = f'{fiat}:{token_id} | {timeframe}'
 			df_ids_new[backtest_id] = best_strategy
+		new_duration = (perf_counter_ns() - start_time) / 1e9
 
 		self.assertDictEqual(df_ids_old, df_ids_new)
+
+		print(f'Old Performance: {old_duration:.3f}s')
+		print(f'New Performance: {new_duration:.3f}s')
+
+
+class TestApplyBacktest(TestCase):
+	@classmethod
+	def setUp(cls):
+		cls.all_livetrade_tokens = ['BTC', 'ETH', 'SAND']
+		cls.timeframe = '1d'
+		cls.test_strategies = [
+			'Aroon & CDL3INSIDE (General trend and momentum analysis, 1H)',
+			'Stochastic10_3_80_20 & TRIMA (General trend and momentum analysis, 1H)',
+			'Aroon & PLUS_DI (General trend and momentum analysis, 1H)',
+			'WilliamsR & ATR (Volatility assessment with overbought/oversold conditions, 1D)',
+			'RSI74 & Stochastic14_3_80_20 (Unknown Use Case, Unknown Timeframe)',
+		]
+
+		all_tokens = FirebaseToken().filter(is_fiat=False)
+		cls.all_tokens = { token['id'] + settings.FIAT: token['id'] for token in all_tokens if token['id'] in cls.all_livetrade_tokens }
+
+	def test_apply_backtest(self):
+		results =  ApplyBacktest().run(list(self.all_tokens.keys()), settings.INTERVAL_MAP[self.timeframe])
+		results = { self.all_tokens[pair]: value for (pair, value) in results.items() } # To replace pair with just token id, e.g. BTCGBP -> BTC
+
+		for strategies in self.test_strategies:
+			strategies = strategies.split(' (')[0] # Remove extra information
+			[strategy_1, strategy_2] = strategies.split(' & ')
+
+			for token in self.all_livetrade_tokens:
+				decision_1 = ApplyBacktest.get_livetrade_result(results[token], strategy_1)
+				decision_2 = ApplyBacktest.get_livetrade_result(results[token], strategy_2)
+
+				self.assertIn(decision_1, [-1, 0, 1])
+				self.assertIn(decision_2, [-1, 0, 1])
+
+	def test_apply_backtest_result_same(self):
+		start_time = perf_counter_ns()
+		results_old =  asyncio.run(apply_backtest_old(list(self.all_tokens.keys()), [settings.INTERVAL_MAP[self.timeframe]]))
+		old_duration = (perf_counter_ns() - start_time) / 1e9
+
+		start_time = perf_counter_ns()
+		results_new =  ApplyBacktest().run(list(self.all_tokens.keys()), settings.INTERVAL_MAP[self.timeframe])
+		new_duration = (perf_counter_ns() - start_time) / 1e9
+
+		results_old = { self.all_tokens[pair]: value for (pair, value) in results_old.items() } # To replace pair with just token id, e.g. BTCGBP -> BTC
+		results_new = { self.all_tokens[pair]: value for (pair, value) in results_new.items() } # To replace pair with just token id, e.g. BTCGBP -> BTC
+
+		for strategies in self.test_strategies[1:]: # Old backtest do not support CDL3INSIDE
+			strategies = strategies.split(' (')[0] # Remove extra information
+			[strategy_1, strategy_2] = strategies.split(' & ')
+
+			for token in self.all_livetrade_tokens:
+				decision_1_new = ApplyBacktest.get_livetrade_result(results_new[token], strategy_1)
+				decision_2_new = ApplyBacktest.get_livetrade_result(results_new[token], strategy_2)
+
+				decision_1_old = get_livetrade_result(results_old[token][str(settings.INTERVAL_MAP[self.timeframe])], strategy_1)
+				decision_2_old = get_livetrade_result(results_old[token][str(settings.INTERVAL_MAP[self.timeframe])], strategy_2)
+
+				self.assertEqual(decision_1_new, decision_1_old)
+				self.assertEqual(decision_2_new, decision_2_old)
+
+		print(f'Old Performance: {old_duration:.3f}s')
+		print(f'New Performance: {new_duration:.3f}s')
 
 
 class TestFluctuations(TestCase):

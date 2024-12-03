@@ -16,8 +16,7 @@ from rest_framework.views import APIView
 from Krakenbot import settings
 from Krakenbot.exceptions import BadRequestException, DatabaseIncorrectDataException, NoUserSelectedException, NotAuthorisedException, ServerErrorException, NotEnoughTokenException
 from Krakenbot.models.firebase import FirebaseAnalysis, FirebaseCandle, FirebaseLiveTrade, FirebaseNews, FirebaseOrderBook, FirebaseRecommendation, FirebaseToken, FirebaseUsers, FirebaseWallet, NewsField
-from Krakenbot.backtest import main as backtest, indicator_names
-from Krakenbot.Realtime_Backtest import apply_backtest, get_livetrade_result
+from Krakenbot.backtest import AnalyseBacktest, ApplyBacktest, indicator_names
 from Krakenbot.update_candles import main as update_candles
 from Krakenbot.utils import acc_calc, authenticate_scheduler_oicd, authenticate_user_jwt, check_take_profit_stop_loss, clean_kraken_pair, log, log_error, log_warning, usd_to_gbp
 
@@ -303,7 +302,7 @@ class SimulationView(APIView):
 		simulated_ohlc = pd.DataFrame(simulated_ohlc)
 
 		strategy_1, strategy_2 = strategy.split(' & ')
-		backtest_func = {strategy: func for (func, strategy) in indicator_names.items() if strategy in [strategy_1, strategy_2]}
+		backtest_func = { strategy: func for (func, strategy) in indicator_names.items() if strategy in [strategy_1, strategy_2] }
 		result_1 = backtest_func[strategy_1](simulated_ohlc)
 		result_2 = backtest_func[strategy_2](simulated_ohlc)
 		signals = (result_1 == result_2) * result_1
@@ -412,7 +411,7 @@ class BackTestView(APIView):
 
 	def backtest(self):
 		firebase_analysis = FirebaseAnalysis()
-		results = backtest().reset_index().to_numpy()
+		results = AnalyseBacktest().run().reset_index().to_numpy()
 
 		firebase_token = FirebaseToken()
 		all_tokens = firebase_token.filter(is_active=True)
@@ -475,7 +474,7 @@ class UpdateHistoryPricesView(APIView):
 			results = await asyncio.gather(*tasks)
 			results = [(pair.replace(settings.FIAT, ''), times, close_prices) for (pair, times, close_prices) in results if close_prices != [0, 0]]
 			all_tokens = [token for (token, _, close_prices) in results if close_prices != [0, 0]]
-			all_prices = {settings.FIAT: 1}
+			all_prices = { settings.FIAT: 1 }
 
 			usd_pairs = [
 				token.get('token_id') + 'USD' for token in firebase.filter(is_active=None)
@@ -878,21 +877,21 @@ class AutoLiveTradeView(APIView):
 		try:
 			authenticate_scheduler_oicd(request)
 			timeframe = request.data.get('timeframe', None)
-			asyncio.run(self.livetrade(timeframe))
+			self.livetrade(timeframe)
 			return Response(status=200)
 		except NotAuthorisedException:
 			return Response(status=401)
 
-	async def livetrade(self, timeframe: str):
+	def livetrade(self, timeframe: str):
 		firebase_token = FirebaseToken()
 		all_fiat = firebase_token.filter(is_fiat=True)
 
 		for fiat in all_fiat:
-			(buy_signals, sell_signals) = await self.__check_trade(timeframe, fiat['token_id'])
+			(buy_signals, sell_signals) = self.__check_trade(timeframe, fiat['token_id'])
 			self.__trade(buy_signals, MarketView().get_market(convert_from=fiat['token_id']), 'Buy', timeframe)
 			self.__trade(sell_signals, MarketView().get_market(convert_to=fiat['token_id']), 'Sell', timeframe)
 
-	async def __check_trade(self, timeframe: str, fiat: str):
+	def __check_trade(self, timeframe: str, fiat: str):
 		firebase_livetrade = FirebaseLiveTrade()
 		livetrades = firebase_livetrade.filter(timeframe=timeframe, is_active=True, fiat=fiat)
 		if len(livetrades) == 0:
@@ -902,7 +901,7 @@ class AutoLiveTradeView(APIView):
 		all_tokens = FirebaseToken().filter(is_fiat=False)
 		all_tokens = { token['id'] + fiat: token['id'] for token in all_tokens if token['id'] in all_livetrade_token }
 
-		results = await apply_backtest(all_tokens.keys(), [settings.INTERVAL_MAP[timeframe]])
+		results =  ApplyBacktest().run(list(all_tokens.keys()), settings.INTERVAL_MAP[timeframe])
 		results = { all_tokens[pair]: value for (pair, value) in results.items() } # To replace pair with just token id, e.g. BTCGBP -> BTC
 
 		trade_decisions = { 'buy': [], 'sell': [] }
@@ -911,8 +910,8 @@ class AutoLiveTradeView(APIView):
 			try:
 				strategies = livetrade['strategy'].split(' (')[0] # Remove extra information
 				[strategy_1, strategy_2] = strategies.split(' & ')
-				decision_1 = get_livetrade_result(results[livetrade['token_id']][str(settings.INTERVAL_MAP[timeframe])], strategy_1)
-				decision_2 = get_livetrade_result(results[livetrade['token_id']][str(settings.INTERVAL_MAP[timeframe])], strategy_2)
+				decision_1 = ApplyBacktest.get_livetrade_result(results[livetrade['token_id']], strategy_1)
+				decision_2 = ApplyBacktest.get_livetrade_result(results[livetrade['token_id']], strategy_2)
 
 				if decision_1 == decision_2 == -1 and livetrade['cur_token'] == livetrade['token_id']:
 					trade_decisions['sell'].append(livetrade)
@@ -1380,25 +1379,25 @@ class ScheduledView(APIView):
 																								completed_task,
 																								error)
 
-		(completed_task, error) = self.schedule_run(lambda: asyncio.run(AutoLiveTradeView().livetrade('1min')),
+		(completed_task, error) = self.schedule_run(lambda: AutoLiveTradeView().livetrade('1min'),
 																								'Auto Livetrade (1min)',
 																								completed_task,
 																								error)
 
 		if hourly:
-			(completed_task, error) = self.schedule_run(lambda: asyncio.run(AutoLiveTradeView().livetrade('1h')),
+			(completed_task, error) = self.schedule_run(lambda: AutoLiveTradeView().livetrade('1h'),
 																									'Auto Livetrade (1h)',
 																									completed_task,
 																									error)
 
 		if quarterly:
-			(completed_task, error) = self.schedule_run(lambda: asyncio.run(AutoLiveTradeView().livetrade('4h')),
+			(completed_task, error) = self.schedule_run(lambda: AutoLiveTradeView().livetrade('4h'),
 																									'Auto Livetrade (4h)',
 																									completed_task,
 																									error)
 
 		if daily:
-			(completed_task, error) = self.schedule_run(lambda: asyncio.run(AutoLiveTradeView().livetrade('1d')),
+			(completed_task, error) = self.schedule_run(lambda: AutoLiveTradeView().livetrade('1d'),
 																									'Auto Livetrade (1d)',
 																									completed_task,
 																									error)
@@ -1445,7 +1444,7 @@ class ScheduledView(APIView):
 			function()
 			completed_task.append(title)
 		except Exception as e:
-			error.append(e)
+			error.append(str(e))
 			if retry:
 				(completed_task, error) = self.schedule_run(function, title, completed_task, error)
 

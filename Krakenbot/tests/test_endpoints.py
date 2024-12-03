@@ -53,7 +53,7 @@ class TestMarket(TestCase):
 		self.assertEqual(status_code, 200)
 		self.assertIsInstance(result, list)
 
-		result = {res['token']: res for res in result}
+		result = { res['token']: res for res in result }
 		self.assertIn('GBP', result)
 
 		all_tokens = FirebaseToken().filter(is_active=True)
@@ -72,7 +72,7 @@ class TestMarket(TestCase):
 		self.assertEqual(status_code, 200)
 		self.assertIsInstance(result, list)
 
-		result = {res['token']: res for res in result}
+		result = { res['token']: res for res in result }
 		self.assertIn('GBP', result)
 
 		all_tokens = FirebaseToken().filter(is_active=True)
@@ -91,7 +91,7 @@ class TestMarket(TestCase):
 		self.assertEqual(status_code, 200)
 		self.assertIsInstance(result, list)
 
-		result = {res['token']: res for res in result}
+		result = { res['token']: res for res in result }
 		self.assertNotIn('GBP', result)
 
 		request = GET(convert_to = 'GBP', exclude = 'GBP')
@@ -101,7 +101,7 @@ class TestMarket(TestCase):
 		self.assertEqual(status_code, 200)
 		self.assertIsInstance(result, list)
 
-		result = {res['token']: res for res in result}
+		result = { res['token']: res for res in result }
 		self.assertNotIn('GBP', result)
 
 	def test_convert_specific(self):
@@ -136,7 +136,7 @@ class TestMarket(TestCase):
 		self.assertIsInstance(result, list)
 		self.assertGreater(len(result), 0)
 
-		result = {res['token']: res for res in result}
+		result = { res['token']: res for res in result }
 		self.assertIn('USD', result)
 		self.assertNotIn('GBP', result)
 
@@ -148,7 +148,7 @@ class TestMarket(TestCase):
 		self.assertEqual(status_code, 200)
 		self.assertIsInstance(result, list)
 
-		result = {res['token']: res for res in result}
+		result = { res['token']: res for res in result }
 		self.assertNotIn('1INCH', result)
 		self.assertNotIn('ARB', result)
 
@@ -159,7 +159,7 @@ class TestMarket(TestCase):
 		self.assertEqual(status_code, 200)
 		self.assertIsInstance(result, list)
 
-		result = {res['token']: res for res in result}
+		result = { res['token']: res for res in result }
 		self.assertIn('USD', result)
 		self.assertIn('1INCH', result)
 		self.assertIn('ARB', result)
