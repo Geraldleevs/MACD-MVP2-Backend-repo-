@@ -893,7 +893,10 @@ class AutoLiveTradeView(APIView):
 
 	def __check_trade(self, timeframe: str, fiat: str):
 		firebase_livetrade = FirebaseLiveTrade()
-		livetrades = firebase_livetrade.filter(timeframe=timeframe, is_active=True, fiat=fiat)
+		livetrades = [
+			*firebase_livetrade.filter(timeframe=timeframe, is_active=True, fiat=fiat, status='READY_TO_TRADE'),
+			*firebase_livetrade.filter(timeframe=timeframe, is_active=True, fiat=fiat, status='ORDER_PLACED'),
+		]
 		if len(livetrades) == 0:
 			return ([], [])
 		all_livetrade_token = { livetrade['token_id'] for livetrade in livetrades }
@@ -918,13 +921,11 @@ class AutoLiveTradeView(APIView):
 				elif decision_1 == decision_2 == 1 and livetrade['cur_token'] != livetrade['token_id']:
 					trade_decisions['buy'].append(livetrade)
 			except (KeyError, ValueError, IndexError):
-				message = {
-					'message': 'Livetrade Fails due to Unknown Strategy',
-					'Livetrade': livetrade.get('livetrade_id', 'ID Not Found'),
-					'Timeframe': timeframe,
-					'Strategy': livetrade.get('strategy', 'Strategy Not Found'),
-				}
-				log_warning(message)
+				log_warning(
+					f"Livetrade Fails due to Unknown Strategy " \
+					f"Bot: {livetrade.get('livetrade_id', 'ID Not Found')} {timeframe} " \
+					f"Strategy: {livetrade.get('strategy', 'Strategy Not Found')}"
+				)
 
 		return (trade_decisions['buy'], trade_decisions['sell'])
 
@@ -971,24 +972,22 @@ class AutoLiveTradeView(APIView):
 				firebase_order_book.create_order(uid, from_token, to_token, price, from_amount, bot_name, bot_id)
 				trade_count += 1
 			except KeyError:
-				message = {
-					'message': 'Livetrade Trading Fails due to Invalid Fields',
-					'Livetrade': decision.get('livetrade_id'),
-					'UID': decision.get('uid'),
-					'From': f'{decision.get('amount', 'No Amount')} {decision.get('cur_token', 'No Token Found')}',
-					'Price': f'{prices.get(decision.get('token_id', ''), 'Price Not Found!')}',
-				}
-				log_warning(message)
+				log_warning(
+					f"Livetrade Trading Fails due to Invalid Fields " \
+					f"[Bot {decision.get('livetrade_id')}] " \
+					f"[UID {decision.get('uid')}] " \
+					f"From: {decision.get('amount', 'No Amount')} {decision.get('cur_token', 'No Token Found')}, " \
+					f"Price: {prices.get(decision.get('token_id', ''), 'Price Not Found!')}"
+				)
 
 			except NotEnoughTokenException:
-				message = {
-					'message': 'Livetrade Trading Fails due to Not Enough Token',
-					'Livetrade': decision.get('livetrade_id'),
-					'UID': decision.get('uid'),
-					'From': f'{decision.get('amount')} {decision.get('cur_token')}',
-					'Price': prices[decision['token_id']],
-				}
-				log_warning(message)
+				log_warning(
+					f"Livetrade Trading Fails due to Not Enough Token " \
+					f"[Bot {decision.get('livetrade_id')}] " \
+					f"[UID {decision.get('uid')}] " \
+					f"From: {decision.get('amount')} {decision.get('cur_token')}, " \
+					f"Price: {prices[decision['token_id']]}"
+				)
 
 		log(f'Order Placed ({trade_type}): {trade_count}')
 
@@ -1091,25 +1090,23 @@ class CheckOrdersView(APIView):
 			except KeyError:
 				order_details = order_book.get(success_pair)
 				to_amount = acc_calc(order_details.get('volume', '0'), '*', order_details.get('price_str', '0'))
-				message = {
-					'message': 'Order Fails due to Invalid Fields',
-					'Order ID': order_details.get('id'),
-					'UID': order_details.get('uid'),
-					'From': f'{order_details.get('volume')} {order_details.get('from_token')}',
-					'To': f'{str(to_amount)} {order_details.get('to_token')}',
-				}
-				log_warning(message)
+				log_warning(
+					f"Order Fails due to Invalid Fields " \
+					f"[Order {order_details.get('id')}] " \
+					f"[UID {order_details.get('uid')}] " \
+					f"From: {order_details.get('volume')} {order_details.get('from_token')}, " \
+					f"To: {str(to_amount)} {order_details.get('to_token')}"
+				)
 			except NotEnoughTokenException:
 				order_details = order_book.get(success_pair)
 				to_amount = acc_calc(order_details.get('volume', '0'), '*', order_details.get('price_str', '0'))
-				message = {
-					'message': 'Order Fails due to Not Enough Token',
-					'Order ID': order_details.get('id'),
-					'UID': order_details.get('uid'),
-					'From': f'{order_details.get('volume')} {order_details.get('from_token')}',
-					'To': f'{str(to_amount)} {order_details.get('to_token')}',
-				}
-				log_warning(message)
+				log_warning(
+					f"Order Fails due to Not Enough Token " \
+					f"[Order {order_details.get('id')}] " \
+					f"[UID {order_details.get('uid')}] " \
+					f"From: {order_details.get('volume')} {order_details.get('from_token')}, " \
+					f"To: {str(to_amount)} {order_details.get('to_token')}"
+				)
 
 		log(f'Trade Success: {trade_count}')
 
@@ -1205,22 +1202,20 @@ class CheckLossProfitView(APIView):
 				take_profit_set += 1 if created else 0
 
 			except KeyError:
-				message = {
-					'message': 'Take Profit Fails due to Invalid Fields',
-					'Livetrade': livetrade.get('livetrade_id'),
-					'UID': livetrade.get('uid'),
-					'Take Profit': livetrade.get('take_profit'),
-				}
-				log_warning(message)
+				log_warning(
+					f"Take Profit Fails due to Invalid Fields " \
+					f"[Bot {livetrade.get('livetrade_id')}] " \
+					f"[UID {livetrade.get('uid')}] " \
+					f"Take Profit: {livetrade.get('take_profit')}"
+				)
 
 			except NotEnoughTokenException:
-				message = {
-					'message': 'Take Profit Fails due to Not Enough Token',
-					'Livetrade': livetrade.get('livetrade_id'),
-					'UID': livetrade.get('uid'),
-					'Take Profit': livetrade.get('take_profit'),
-				}
-				log_warning(message)
+				log_warning(
+					f"Take Profit Fails due to Not Enough Token " \
+					f"[Bot {livetrade.get('livetrade_id')}] " \
+					f"[UID {livetrade.get('uid')}] " \
+					f"Take Profit: {livetrade.get('take_profit')}"
+				)
 
 		log(f'Take Profit Set: {take_profit_set}; Order Created: {order_created}')
 
@@ -1242,22 +1237,20 @@ class CheckLossProfitView(APIView):
 				stop_loss_set += 1 if created else 0
 
 			except KeyError:
-				message = {
-					'message': 'Stop Loss Fails due to Invalid Fields',
-					'Livetrade': livetrade.get('livetrade_id'),
-					'UID': livetrade.get('uid'),
-					'Stop Loss': livetrade.get('stop_loss'),
-				}
-				log_warning(message)
+				log_warning(
+					f"Stop Loss Fails due to Invalid Fields " \
+					f"[Bot {livetrade.get('livetrade_id')}] " \
+					f"[UID {livetrade.get('uid')}] " \
+					f"Stop Loss: {livetrade.get('stop_loss')}"
+				)
 
 			except NotEnoughTokenException:
-				message = {
-					'message': 'Stop Loss Fails due to Not Enough Token',
-					'Livetrade': livetrade.get('livetrade_id'),
-					'UID': livetrade.get('uid'),
-					'Stop Loss': livetrade.get('stop_loss'),
-				}
-				log_warning(message)
+				log_warning(
+					f"Stop Loss Fails due to Not Enough Token " \
+					f"[Bot {livetrade.get('livetrade_id')}] " \
+					f"[UID {livetrade.get('uid')}] " \
+					f"Stop Loss: {livetrade.get('stop_loss')}"
+				)
 
 		log(f'Stop Loss Set: {stop_loss_set}; Order Created: {order_created}')
 
