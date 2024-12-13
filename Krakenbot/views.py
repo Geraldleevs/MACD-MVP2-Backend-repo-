@@ -768,7 +768,8 @@ class ManualTradeView(APIView):
 			order_id = request.data.get('order_id', '')
 
 			try:
-				float(price)
+				if price != '':
+					float(price)
 			except ValueError:
 				raise BadRequestException()
 
