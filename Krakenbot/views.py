@@ -1057,7 +1057,7 @@ class CheckOrdersView(APIView):
 			(high, low) = values
 
 			for (order_price, order_id) in order_prices[pair]['data']:
-				if acc_calc(order_price, '-', low) >= 0 and acc_calc(order_price, '-', high) <= 0:
+				if acc_calc(order_price, '>=', low) and acc_calc(order_price, '<=', high):
 					success_pair.append(order_id)
 
 		return success_pair
@@ -1196,7 +1196,7 @@ class CheckLossProfitView(APIView):
 				if value is False:
 					continue
 
-				if acc_calc(value, '-', livetrade['take_profit']) < 0:
+				if acc_calc(value, '<', livetrade['take_profit']):
 					continue
 
 				created = self.__apply_stop(livetrade, price, 'take_profit')
@@ -1231,7 +1231,7 @@ class CheckLossProfitView(APIView):
 				if value is False:
 					continue
 
-				if acc_calc(value, '-', livetrade['stop_loss']) > 0:
+				if acc_calc(value, '>', livetrade['stop_loss']):
 					continue
 
 				created = self.__apply_stop(livetrade, price, 'stop_loss')
@@ -1427,7 +1427,7 @@ class ScheduledView(APIView):
 		log(f'Completed Task: [{", ".join(completed_task)}]')
 
 		if len(error) > 0:
-			log_error(error)
+			log_error('\n'.join(error))
 			return Response(status=500)
 
 		return Response(status=200)
@@ -1438,7 +1438,7 @@ class ScheduledView(APIView):
 			function()
 			completed_task.append(title)
 		except Exception as e:
-			error.append(str(e))
+			error.append(f'Error {title}: {str(e)}')
 			if retry:
 				(completed_task, error) = self.schedule_run(function, title, completed_task, error)
 
