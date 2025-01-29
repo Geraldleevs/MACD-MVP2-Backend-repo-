@@ -103,7 +103,7 @@ def plot_price_graph(file_data, title="Cryptocurrency Price Data"):
 # Main Execution
 if __name__ == "__main__":
     # Replace with your actual directory containing CSV files
-    directory_path = "backtest_results"
+    directory_path = "MachD/backtest_results"
 
     # Load selected CSV file
     file_data = load_files_from_directory(directory_path)
