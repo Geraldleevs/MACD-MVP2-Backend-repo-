@@ -40,4 +40,4 @@ Krakenbot/LocalScripts/binance_data/**/*.csv
 Krakenbot/LocalScripts/discover/[a-zA-Z0-9]*.docx
 Krakenbot/LocalScripts/discover/~*
 Krakenbot/LocalScripts/discover/*.md
-MachD/backtest_results
+backtest_results/

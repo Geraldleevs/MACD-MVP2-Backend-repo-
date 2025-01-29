@@ -468,7 +468,7 @@ async def main():
     results = await apply_backtest(pairs, intervals, no_print=False)
 
     # Create output directory if it doesn't exist
-    output_dir = 'output'
+    output_dir = 'MachD/backtest_results'
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
