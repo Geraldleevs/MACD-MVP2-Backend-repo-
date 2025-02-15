@@ -14,10 +14,8 @@ def dev_print(message, no_print):
 
 async def fetch_ohlc_data(session, pair, interval, since=None):
     url = 'https://api.kraken.com/0/public/OHLC'
-    params = {
-        'pair': pair,
-        'interval': interval
-    }
+    params = {'pair': pair, 'interval': interval}
+    
     if since:
         params['since'] = since
 
@@ -43,7 +41,7 @@ async def fetch_ohlc_data(session, pair, interval, since=None):
                                 'Low': float(entry[3]),
                                 'Close': float(entry[4]),
                                 'Volume': float(entry[5]),
-                                'Count': float(entry[6])  # Treating 'Count' as float to avoid conversion error
+                                'Count': float(entry[6])  
                             })
                 return ohlc_data, last_timestamp
         else:
@@ -352,25 +350,21 @@ def apply_ta_indicators(df, no_print = True):
     dev_print(f"TA indicators applied in {end_time - start_time:.2f} seconds", no_print)
     return df
 
-async def process_interval(session, pair, interval, since = None, no_print = True):
+async def process_interval(session, pair, interval, since=None, no_print=True):
     ohlc_data, last_timestamp = await fetch_ohlc_data(session, pair, interval, since)
 
     if ohlc_data:
         df = pd.DataFrame(ohlc_data)
-
-        # Apply technical analysis indicators
         df = apply_ta_indicators(df, no_print)
-
         return df
     return None
 
-async def apply_backtest(pairs: List[str], intervals: List[int], since: datetime = None, no_print = True) -> Dict[str, Dict[str, pd.DataFrame]]:
-    since_timestamp = since.timestamp() if since is not None else None
+async def apply_backtest(pairs: List[str], intervals: List[int], since: datetime = None, no_print=True) -> Dict[str, Dict[str, pd.DataFrame]]:
+    since_timestamp = since.timestamp() if since else None
     results = {}
 
     async with aiohttp.ClientSession() as session:
         tasks = [process_interval(session, pair, interval, since_timestamp, no_print) for pair in pairs for interval in intervals]
-
         raw_data = await asyncio.gather(*tasks)
 
         for i, pair in enumerate(pairs):
@@ -383,105 +377,45 @@ async def apply_backtest(pairs: List[str], intervals: List[int], since: datetime
 
     return results
 
-def get_livetrade_result(df: pd.DataFrame, strategy: str) -> int:
-    strategy = strategy.lower()
-    strategy_mapping = {
-        'macd': 'indicator_macd',
-        'sma': 'indicator_sma',
-        'ema': 'indicator_ema',
-        'adx': 'indicator_adx',
-        'aroon': 'indicator_aroon',
-        'rsi65': 'indicator_rsi65_25',
-        'rsi66': 'indicator_rsi66_26',
-        'rsi67': 'indicator_rsi67_27',
-        'rsi68': 'indicator_rsi68_28',
-        'rsi69': 'indicator_rsi69_29',
-        'rsi70': 'indicator_rsi70_30',
-        'rsi71': 'indicator_rsi71_31',
-        'rsi72': 'indicator_rsi72_32',
-        'rsi73': 'indicator_rsi73_33',
-        'rsi74': 'indicator_rsi74_34',
-        'rsi75': 'indicator_rsi75_35',
-        'stochastic14_3_80_20': 'indicator_stochastic_14_3_80_20',
-        'stochastic14_3_85_15': 'indicator_stochastic_14_3_85_15',
-        'stochastic10_3_80_20': 'indicator_stochastic_10_3_80_20',
-        'stochastic10_3_85_15': 'indicator_stochastic_10_3_85_15',
-        'stochastic21_5_80_20': 'indicator_stochastic_21_5_80_20',
-        'stochastic21_5_85_15': 'indicator_stochastic_21_5_85_15',
-        'cci': 'indicator_cci',
-        'williamsr': 'indicator_williamsr',
-        'momentum': 'indicator_momentum',
-        'bbands': 'indicator_bbands',
-        'atr': 'indicator_atr',
-        'donchian': 'indicator_donchian_channel',
-        'obv': 'indicator_obv',
-        'mfi': 'indicator_mfi',
-        'ad': 'indicator_ad',
-        'ichimoku': 'indicator_ichimoku',
-        'aroonosc': 'indicator_aroonosc',
-        'dema': 'indicator_dema',
-        'tema': 'indicator_tema',
-        'adxr': 'indicator_adxr',
-        'apo': 'indicator_apo',
-        'bop': 'indicator_bop',
-        'cmo': 'indicator_cmo',
-        'dx': 'indicator_dx',
-        'macdext': 'indicator_macdext',
-        'macdfix': 'indicator_macdfix',
-        'minus_di': 'indicator_minus_di',
-        'minus_dm': 'indicator_minus_dm',
-        'plus_di': 'indicator_plus_di',
-        'plus_dm': 'indicator_plus_dm',
-        'ppo': 'indicator_ppo',
-        'roc': 'indicator_roc',
-        'rocp': 'indicator_rocp',
-        'rocr': 'indicator_rocr',
-        'rocr100': 'indicator_rocr100',
-        'stochf': 'indicator_stochf',
-        'stochrsi': 'indicator_stochrsi',
-        'trix': 'indicator_trix',
-        'ultosc': 'indicator_ultosc',
-        'ht_trendline': 'indicator_ht_trendline',
-        'kama': 'indicator_kama',
-        'ma': 'indicator_ma',
-        'mama': 'indicator_mama',
-        'mavp': 'indicator_mavp',
-        'midpoint': 'indicator_midpoint',
-        'midprice': 'indicator_midprice',
-        'sar': 'indicator_sar',
-        'sarext': 'indicator_sarext',
-        't3': 'indicator_t3',
-        'trima': 'indicator_trima',
-        'wma': 'indicator_wma',
-    }
+async def generate_event_csv(pairs, intervals, start_date, end_date, output_name):
+    start_timestamp = int(datetime.strptime(start_date, "%Y-%m-%d").timestamp())
+    end_timestamp = int(datetime.strptime(end_date, "%Y-%m-%d").timestamp())
 
-    if strategy in strategy_mapping:
-        last_signal = df[strategy_mapping[strategy]].iloc[-1]
-    else:
-        raise ValueError("Unknown strategy")
+    results = await apply_backtest(pairs, intervals, since=datetime.utcfromtimestamp(start_timestamp), no_print=False)
 
-    return last_signal
-
-async def main():
-    pairs = ['XBTGBP', 'ETHGBP', 'DOGEUSDT']
-    intervals = [1, 60, 240, 1440]
-    results = await apply_backtest(pairs, intervals, no_print=False)
-
-    # Create output directory if it doesn't exist
-    output_dir = 'output'
+    output_dir = 'MachD/backtest_results'
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
     for pair in results:
         for interval in results[pair]:
             df = results[pair][interval]
-            df.to_csv(f'{output_dir}/{pair}_{interval}.csv', index=False)
+            df = df[(df['Unix_Timestamp'] >= start_timestamp) & (df['Unix_Timestamp'] <= end_timestamp)]
+            if not df.empty:
+                df.to_csv(f'{output_dir}/{output_name}_{pair}_{interval}.csv', index=False)
 
 if __name__ == '__main__':
-    start_time = time.time()
-    try:
-        asyncio.run(main())
-    except Exception as e:
-        print(f"Error: {e}")
-    end_time = time.time()
-    print(f"Total execution time: {end_time - start_time} seconds")
+    pairs = ['XBTGBP', 'ETHGBP', 'DOGEUSDT']
+    intervals = [1, 60, 240, 1440]
+
+    # Generate full OHLC data
+    results = asyncio.run(apply_backtest(pairs, intervals, no_print=False))
+    
+    output_dir = 'MachD/backtest_results'
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    
+    for pair in results:
+        for interval in results[pair]:
+            df = results[pair][interval]
+            df.to_csv(f'{output_dir}/{pair}_{interval}.csv', index=False)
+
+    # Generate event-specific datasets
+    event_datasets = [
+        ("2024-04-01", "2024-05-01", "halving_event1440"),
+        ("2023-12-15", "2024-01-15", "christmas_rush2023-24_1440"),
+        ("2024-12-15", "2025-01-15", "christmas_rush2024-25_1440"),
+    ]
+    
+    for start_date, end_date, output_name in event_datasets:
+        asyncio.run(generate_event_csv(pairs, [1440], start_date, end_date, output_name))
