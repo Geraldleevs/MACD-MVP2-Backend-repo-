@@ -51,7 +51,9 @@ COPY --from=server /venv /venv
 COPY . .
 
 ENV IMAGE_BUILDING="BUILDING"
-RUN python manage.py migrate
+RUN python -m compileall ./Krakenbot/ && \
+	python -c "from numpy import array as a, int8 as i, float64 as f;from Krakenbot.backtest import AnalyseBacktest as b;d=a([1,1,1],dtype=f);s1=a([1,1,1],dtype=i);s2=a([1,1,1],dtype=i);b.analysis(d,s1,s2);" && \
+	python manage.py migrate
 ENV IMAGE_BUILDING="FINISHED"
 
 CMD gunicorn --bind 0.0.0.0:${PORT} --workers 1 --threads 8 --timeout 0 --preload Krakenbot.asgi:application -k Krakenbot.uvicorn_workers.UvicornWorker

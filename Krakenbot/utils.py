@@ -16,7 +16,7 @@ except ModuleNotFoundError:
 	from local_settings import settings
 
 
-def authenticate_user_jwt(request: Request, req_type: Literal['get', 'post'] = 'post') -> str:
+def authenticate_user_jwt(request: Request) -> str:
 	'''
 	Will only work in production server
 
@@ -26,7 +26,7 @@ def authenticate_user_jwt(request: Request, req_type: Literal['get', 'post'] = '
 	Raises:
 		NotAuthorisedException: UID or JWT is invalid
 	'''
-	if req_type == 'post':
+	if request.method == 'POST':
 		uid = request.data.get('uid')
 	else:
 		uid = request.query_params.get('uid')

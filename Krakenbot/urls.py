@@ -1,6 +1,7 @@
 # from django.contrib import admin
 from django.urls import path
 import Krakenbot.views as views
+import Krakenbot.views_v2 as views_v2
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
@@ -20,4 +21,14 @@ urlpatterns = [
     path('api/calculate-fluctuations', views.CalculateFluctuationsView.as_view(), name='calculate tokens fluctuations'),
     path('api/recalibrate-bot', views.RecalibrateBotView.as_view(), name='recalibrate bot amount'),
     path('api/scheduled-processes', views.ScheduledView.as_view(), name='scheduled processes'),
+
+    path('api/v2/favourite-tokens', views_v2.FavouriteTokens.as_view(), name='favourite tokens'),
+    path('api/v2/market-list',      views_v2.MarketList.as_view(), name='market list'),
+    path('api/v2/market-pairs',     views_v2.MarketPairs.as_view(), name='market pairs'),
+    path('api/v2/user-activities',  views_v2.UserActivities.as_view(), name='user activities'),
+    path('api/v2/user-assets',      views_v2.UserAssets.as_view(), name='user assets'),
+    path('api/v2/user-dashboard',   views_v2.UserDashboard.as_view(), name='user dashboard'),
+    path('api/v2/user-portfolio',   views_v2.UserPortfolio.as_view(), name='user portfolio'),
+    path('api/v2/user-profile',     views_v2.UserProfile.as_view(), name='user profile'),
+    path('api/v2/user-wallet-value',views_v2.UserWalletValue.as_view(), name='user wallet value'),
 ]

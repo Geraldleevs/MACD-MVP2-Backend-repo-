@@ -411,6 +411,7 @@ class BackTestView(APIView):
 
 	def backtest(self):
 		firebase_analysis = FirebaseAnalysis()
+		description = firebase_analysis.fetch_strategy_description()
 		results = AnalyseBacktest().run().reset_index().to_numpy()
 
 		firebase_token = FirebaseToken()
@@ -426,7 +427,7 @@ class BackTestView(APIView):
 			'profit': value[2],
 			'profit_percent': value[3],
 			'risk': firebase_analysis.get_risk(value[0].split(' | ')[0].split(':')[1], settings.TIMEFRAMES[value[0].split(' | ')[1]], 'high'),
-			'strategy_description': firebase_analysis.fetch_strategy_description(),
+			'strategy_description': description,
 			'updated_on': now,
 			**firebase_analysis.get_analysis(value[0].split(' | ')[0].split(':')[1], settings.TIMEFRAMES[value[0].split(' | ')[1]])
 		} for value in results]

@@ -35,15 +35,12 @@ class AnalyseBacktest:
 		bought = False
 
 		signals = (trading_signals_1 == trading_signals_2) * trading_signals_1
-		for i in range(len(signals)):
-			if signals[i] == 0:
-				continue
-
-			if signals[i] == 1 and not bought:
+		for i in range(signals.shape[0]):
+			if not bought and signals[i] == 1:
 				coin_holdings = fiat_amount / close_data[i]
 				fiat_amount = 0
 				bought = True
-			elif signals[i] == -1 and bought:
+			elif bought and signals[i] == -1:
 				fiat_amount = coin_holdings * close_data[i]
 				coin_holdings = 0
 				bought = False

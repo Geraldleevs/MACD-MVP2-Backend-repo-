@@ -81,6 +81,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = os.environ.get('CORS', 'https://mach-d-rlqsy3.flutterflow.app').split(';')
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'Krakenbot.urls'
 
