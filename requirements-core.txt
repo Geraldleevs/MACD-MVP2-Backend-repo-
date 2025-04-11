@@ -1,0 +1,9 @@
+Django==5.2
+djangorestframework==3.16.0
+django-environ
+drf-spectacular
+firebase-admin
+numpy
+pandas
+requests
+ta-lib==0.6.3

@@ -1,0 +1,14 @@
+Django==5.1.7
+djangorestframework==3.16.0
+django-environ
+firebase-admin
+aiohttp
+numpy
+pandas
+numba
+python-dotenv
+
+streamlit
+plotly
+mammoth
+markdownify

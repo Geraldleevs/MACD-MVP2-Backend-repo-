@@ -1,18 +1,32 @@
-Dockerfile
+# Docker Files
+docker-compose.yml
 .dockerignore
+Dockerfile
+
+# Development Files
 .vscode
+*.md
+**/__pycache__
+requirements-core.txt
+
+# Environments
 .git
 .gitattributes
 .gitignore
 .env
-venv
-*.csv
-*.sqlite3
-*.log
-*.md
-requirements.txt
+.env*
+.venv*
+venv*
 *firebase-adminsdk*.json
-**/__pycache__
+
+# Data Files
+*.csv
+*.log
 data
 output
-Krakenbot/LocalScripts
+binance_public_data/data
+
+# v1 Files
+Krakenbot
+*_v1*
+Visualise_individual_strategy

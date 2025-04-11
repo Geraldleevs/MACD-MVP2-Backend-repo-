@@ -1,11 +1,11 @@
-version: "3.9"
 services:
-  krakenbot:
+  machd:
     build:
       args:
         PORT: ${PORT}
     env_file:
       - .env
-    container_name: krakenbot
+    container_name: machd
     ports:
-      - "8000:${PORT}"
+      - '8000:${PORT}'
+    stop_grace_period: 0s
