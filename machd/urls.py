@@ -21,5 +21,5 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 urlpatterns = [
 	path('api/v2/', include('api_v2.urls')),
 	path('schema/', SpectacularAPIView.as_view(), name='schema'),  # OpenAPI schema
-	path('swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),  # Swagger UI
+	path('documentations/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),  # Swagger UI
 ]

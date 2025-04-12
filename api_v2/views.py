@@ -22,30 +22,33 @@ TA: TechnicalAnalysis = settings.TA
 TA_TEMPLATES: TechnicalAnalysisTemplate = settings.TA_TEMPLATES
 
 
-def authenticate_jwt(view_func):
-	def wrapper(self, request: Request, *args, **kwargs):
-		if settings.DEBUG is True or settings.SKIP_AUTH is True:
-			return view_func(self, request, *args, **kwargs)
+def authenticate_jwt(force_auth=False):
+	def decorator(view_func):
+		def wrapper(self, request: Request, *args, **kwargs):
+			if force_auth is False and (settings.DEBUG is True or settings.SKIP_AUTH is True):
+				return view_func(self, request, *args, **kwargs)
 
-		uid = None
-		if request.method == 'POST':
-			uid = request.data.get('uid')
-		else:
-			uid = request.query_params.get('uid')
+			uid = None
+			if request.method == 'POST':
+				uid = request.data.get('uid')
+			else:
+				uid = request.query_params.get('uid')
 
-		try:
-			if uid is None:
-				raise ValueError
+			try:
+				if uid is None:
+					raise ValueError
 
-			jwt_token = get_authorization_header(request).decode('utf-8').split(' ')[1]
-			if uid != firebase_admin.auth.verify_id_token(jwt_token)['uid']:
-				raise ValueError
+				jwt_token = get_authorization_header(request).decode('utf-8').split(' ')[1]
+				if uid != firebase_admin.auth.verify_id_token(jwt_token)['uid']:
+					raise ValueError
 
-			return view_func(self, request, *args, **kwargs)
-		except (InvalidIdTokenError, IndexError, ValueError):
-			return Response({'error': 'Unauthorised'}, status=403)
+				return view_func(self, request, *args, **kwargs)
+			except (InvalidIdTokenError, IndexError, ValueError):
+				return Response({'error': 'Unauthorised'}, status=403)
 
-	return wrapper
+		return wrapper
+
+	return decorator
 
 
 try:
@@ -128,6 +131,17 @@ def fetch_kline(
 	]
 
 	return data
+
+
+# Check Login Status
+class CheckLoginStatus(APIView):
+	@authenticate_jwt(force_auth=True)
+	def get(self, request: Request):
+		return Response({'login_status': 'You are logged in!'})
+
+	@authenticate_jwt(force_auth=True)
+	def post(self, request: Request):
+		return Response({'login_status': 'You are logged in!'})
 
 
 # Get Options, Templates, Symbols and Timeframes

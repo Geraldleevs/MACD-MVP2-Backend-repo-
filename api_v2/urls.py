@@ -11,4 +11,5 @@ urlpatterns = [
 	path('ohlc-data', views.OhlcData.as_view(), name='get-ohlc-data'),
 	path('indicators', views.RunIndicators.as_view(), name='analyse-indicators'),
 	path('backtest', views.RunBacktest.as_view(), name='run-backtest'),
+	path('check-login', views.CheckLoginStatus.as_view(), name='check-login'),
 ]
