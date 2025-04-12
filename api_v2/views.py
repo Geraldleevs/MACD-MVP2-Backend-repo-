@@ -204,7 +204,7 @@ class OhlcData(APIView):
 			)
 		],
 	)
-	@authenticate_jwt
+	@authenticate_jwt()
 	def get(self, request: Request):
 		symbol = request.query_params.get('symbol', '').strip().upper()
 		timeframe = request.query_params.get('timeframe', '').strip().lower()
@@ -419,7 +419,7 @@ class RunIndicators(APIView):
 			},
 		),
 	)
-	@authenticate_jwt
+	@authenticate_jwt()
 	def post(self, request: Request):
 		symbol = request.data.get('symbol', '').strip().upper()
 		timeframe = request.data.get('timeframe', '').strip().lower()
@@ -607,7 +607,7 @@ class RunBacktest(APIView):
 			},
 		),
 	)
-	@authenticate_jwt
+	@authenticate_jwt()
 	def post(self, request: Request):
 		symbol = request.data.get('symbol', '').strip().upper()
 		timeframe = request.data.get('timeframe', '').strip().lower()
