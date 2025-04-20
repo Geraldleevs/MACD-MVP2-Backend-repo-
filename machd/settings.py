@@ -142,8 +142,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # KLine Downloads
-KLINE_YEARS = env.str('KLINE_YEARS', default='2023').split(';')
-KLINE_SYMBOLS = env.str('KLINE_SYMBOLS', default='BTCGBP').split(';')
+KLINE_YEARS = env.str('KLINE_YEARS', default='').split(';')
+KLINE_TOKENS = env.str('KLINE_TOKENS', default='BTC;GBP').split(';')
 KLINE_INTERVALS = env.str('KLINE_INTERVALS', default='1h').split(';')
 
 # Constants
@@ -193,8 +193,8 @@ if env.bool('EXCLUDE_FIRESTORE', default=False) is False:
 		'universe_domain': 'googleapis.com',
 	}
 	firebase_admin.initialize_app(Certificate(firebase_admin_settings))
-	firebase = firestore.client()
-	db_batch = firebase.batch()
+	FIREBASE = firestore.client()
+	DB_BATCH = FIREBASE.batch()
 
 
 TA = TechnicalAnalysis()

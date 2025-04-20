@@ -1,18 +1,24 @@
 import json
+from datetime import datetime
 from functools import lru_cache
 
 import firebase_admin.auth
 import numpy as np
 import pandas as pd
+import pytz
 from django.conf import settings
+from django.db import connection
 from django.db.utils import OperationalError
+from django.utils import timezone
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiExample, OpenApiParameter, extend_schema, inline_serializer
 from firebase_admin.auth import InvalidIdTokenError
+from google.cloud.firestore_v1.collection import CollectionReference
+from google.cloud.firestore_v1.document import DocumentReference
 from rest_framework.authentication import get_authorization_header
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import BooleanField, CharField, IntegerField, ListField
+from rest_framework.serializers import BooleanField, CharField, FloatField, IntegerField, ListField
 from rest_framework.views import APIView
 
 from api_v2.models import KLine
@@ -52,66 +58,69 @@ def authenticate_jwt(force_auth=False):
 
 
 try:
-	START_TIME = KLine.objects.order_by('open_time').first().open_time
-	END_TIME = KLine.objects.order_by('open_time').last().open_time
-	SYMBOLS = [kline['symbol'] for kline in KLine.objects.values('symbol').distinct()]
-	TIMEFRAMES = [kline['timeframe'] for kline in KLine.objects.values('timeframe').distinct()]
-	YEARS = [kline['year'] for kline in KLine.objects.values('year').distinct()]
-	MONTHS = [kline['month'] for kline in KLine.objects.values('month').distinct()]
+	PAIRS: dict[str, dict[str, int]] = {}
+	cursor = connection.cursor()
+	cursor.execute("""
+		SELECT
+			MIN(symbol),
+			MIN(timeframe),
+			MIN(from_token),
+			MIN(to_token),
+			MIN(open_time),
+			MAX(open_time)
+		FROM api_v2_kline
+		GROUP BY symbol, timeframe;
+	""")
+	for symbol, timeframe, from_token, to_token, start_time, end_time in cursor.fetchall():
+		if symbol not in PAIRS:
+			PAIRS[symbol] = {'FROM_TOKEN': from_token, 'TO_TOKEN': to_token}
+		PAIRS[symbol][timeframe] = {'START_TIME': start_time, 'END_TIME': end_time}
 except OperationalError:
 	print('KLine Table not Found! Have you run `python manage.py migrate`?')
+finally:
+	cursor.close()
 
 BACKTEST_PARAMS = ['Open', 'High', 'Low', 'Close', 'Volume']
 OPERATORS = ['>', '>=', '<', '<=', '==', '!=']
 
 
-def validate_symbol_timeframe(symbol: str, timeframe: str):
+def validate_symbol_timeframe(symbol: str, timeframe: str, start_time: int = None, end_time: int = None):
 	if symbol is None or symbol == '':
 		return 'Missing "symbol"!'
 
 	if timeframe is None or timeframe == '':
 		return 'Missing "timeframe"!'
 
-	if symbol not in SYMBOLS:
+	if symbol not in PAIRS:
 		return f'Invalid symbol "{symbol}"!'
 
-	if timeframe not in TIMEFRAMES:
+	if timeframe not in PAIRS[symbol]:
 		return f'Invalid timeframe "{timeframe}"!'
+
+	try:
+		if start_time is not None and int(start_time) < PAIRS[symbol][timeframe]['START_TIME']:
+			return f'Invalid start time "{start_time}"! (Expected >= {PAIRS[symbol][timeframe]["START_TIME"]})'
+	except ValueError:
+		return f'Invalid start time "{start_time}"!'
+
+	try:
+		if end_time is not None and int(end_time) > PAIRS[symbol][timeframe]['END_TIME']:
+			return f'Invalid end time "{end_time}"! (Expected <= {PAIRS[symbol][timeframe]["END_TIME"]})'
+	except ValueError:
+		return f'Invalid end time "{end_time}"!'
 
 	return None
 
 
 @lru_cache(maxsize=8)
-def fetch_kline(
-	symbol: str,
-	timeframe: str,
-	year: int = None,
-	month: int = None,
-	start_time: int = None,
-	end_time: int = None,
-):
+def fetch_kline(symbol: str, timeframe: str, start_time: int = None, end_time: int = None):
 	data = KLine.objects.filter(symbol=symbol, timeframe=timeframe)
-
-	if year is not None:
-		try:
-			data = data.filter(year=int(year))
-		except ValueError:
-			return f'Invalid year "{year}"'
-
-	if month is not None:
-		try:
-			if isinstance(month, tuple):
-				data = data.filter(month__in=[int(mon) for mon in month])
-			else:
-				data = data.filter(month=int(month))
-		except ValueError:
-			return f'Invalid month "{month}"'
 
 	if start_time is not None:
 		try:
 			data = data.filter(open_time__gte=int(start_time))
 		except ValueError:
-			return f'Invalid year "{year}"'
+			return f'Invalid start time "{start_time}"'
 
 	if end_time is not None:
 		try:
@@ -144,7 +153,7 @@ class CheckLoginStatus(APIView):
 		return Response({'login_status': 'You are logged in!'})
 
 
-# Get Options, Templates, Symbols and Timeframes
+# Get Options, Templates, Symbols and OHLC Data
 class TechnicalIndicators(APIView):
 	def get(self, request: Request):
 		return Response({'technical_indicators': settings.TA_OPTIONS})
@@ -157,17 +166,7 @@ class BacktestTemplates(APIView):
 
 class BacktestSymbols(APIView):
 	def get(self, request: Request):
-		return Response({'symbols': SYMBOLS})
-
-
-class BacktestTimeframes(APIView):
-	def get(self, request: Request):
-		return Response({'timeframes': TIMEFRAMES})
-
-
-class OhlcDataTime(APIView):
-	def get(self, request: Request):
-		return Response({'start_time': START_TIME, 'end_time': END_TIME, 'years': YEARS})
+		return Response({'trading_pairs': PAIRS})
 
 
 class OhlcData(APIView):
@@ -211,21 +210,9 @@ class OhlcData(APIView):
 		start_time = request.query_params.get('start_time')
 		end_time = request.query_params.get('end_time')
 
-		invalid_symbol = validate_symbol_timeframe(symbol, timeframe)
+		invalid_symbol = validate_symbol_timeframe(symbol, timeframe, start_time, end_time)
 		if invalid_symbol is not None:
 			return Response({'error': invalid_symbol}, 400)
-
-		try:
-			if start_time is not None:
-				start_time = int(start_time)
-		except ValueError:
-			return Response({'error': 'Invalid start time'}, 400)
-
-		try:
-			if end_time is not None:
-				end_time = int(end_time)
-		except ValueError:
-			return Response({'error': 'Invalid end time'}, 400)
 
 		data = fetch_kline(symbol=symbol, timeframe=timeframe, start_time=start_time, end_time=end_time)
 		return Response({'ohlc_data': data})
@@ -371,19 +358,118 @@ def get_indicator_full_name(settings: str | dict):
 		return settings
 
 
+def calculate_amount(
+	capital: float,
+	open_times: np.ndarray[np.int64],
+	close_data: np.ndarray[np.float64],
+	buy_signals: list[np.int8],
+	sell_signals: list[np.int8],
+	unit_types: tuple[str, str],
+) -> list[float]:
+	base_amount = capital
+	sec_amount = 0
+
+	holdings = [0] * min(len(buy_signals), len(sell_signals))
+	units = [unit_types[0]] * len(holdings)
+	trade_types = ['hold'] * len(holdings)
+	results = [''] * len(holdings)
+	trades = []
+
+	bought = False
+	last_price = None
+
+	for i in range(len(holdings)):
+		if np.isnan(close_data[i]) or close_data[i] is None:
+			holdings[i] = holdings[i - 1] if i > 0 else capital
+			units[i] = units[i - 1] if i > 0 else unit_types[0]
+
+		elif not bought and buy_signals[i] != 0:
+			old_amount = base_amount
+			sec_amount = base_amount / close_data[i]
+			base_amount = 0
+			holdings[i] = sec_amount
+			units[i] = unit_types[1]
+
+			trade_types[i] = 'buy'
+			bought = True
+
+			trade_time = datetime.fromtimestamp(open_times[i] / 1000).astimezone(pytz.UTC)
+			trades.append(
+				{
+					'timestamp': int(open_times[i]),
+					'datetime': trade_time,
+					'from_amount': old_amount,
+					'from_token': unit_types[0],
+					'to_amount': sec_amount,
+					'to_token': unit_types[1],
+				}
+			)
+		elif bought and sell_signals[i] != 0:
+			old_amount = sec_amount
+			base_amount = sec_amount * close_data[i]
+			sec_amount = 0
+			holdings[i] = base_amount
+
+			trade_types[i] = 'sell'
+			bought = False
+
+			trade_time = datetime.fromtimestamp(open_times[i] / 1000).astimezone(pytz.UTC)
+			trades.append(
+				{
+					'timestamp': int(open_times[i]),
+					'datetime': trade_time,
+					'from_amount': old_amount,
+					'from_token': unit_types[1],
+					'to_amount': base_amount,
+					'to_token': unit_types[0],
+				}
+			)
+		else:
+			holdings[i] = holdings[i - 1] if i > 0 else capital
+			units[i] = units[i - 1] if i > 0 else unit_types[0]
+
+		results[i] = f'{holdings[i]} {units[i]}'
+
+		if not (np.isnan(close_data[i]) or close_data[i] is None):
+			last_price = close_data[i]
+
+	# Final value if still holding coins
+	base_amount += sec_amount * last_price
+	holdings[-1] = base_amount
+
+	if units[-1] != unit_types[0]:
+		units[-1] = unit_types[0]
+		results[-1] = f'{holdings[-1]} {units[-1]}'
+
+		trade_types[-1] = 'sell'
+
+		trade_time = datetime.fromtimestamp(open_times[-1] / 1000).astimezone(pytz.UTC)
+		trades.append(
+			{
+				'timestamp': int(open_times[-1]),
+				'datetime': trade_time,
+				'from_amount': sec_amount,
+				'from_token': unit_types[1],
+				'to_amount': base_amount,
+				'to_token': unit_types[0],
+			}
+		)
+
+	return results, trades, holdings, units, trade_types
+
+
 class RunIndicators(APIView):
 	@extend_schema(description='Get details of the endpoint')
 	def get(self, request: Request):
 		return Response(
 			{
 				'example_request': {
+					'uid': '',
 					'return_ohlc': 'false # Setting false will return empty array for "ohlc_data"',
 					'symbol': 'BTCGBP',
 					'timeframe': '1d',
-					'year': 2024,
-					'month': 1,
 					'start_time': 1672531200000,
-					'end_time': 1722531200000,
+					'end_time': 1704063600000,
 					'indicator_settings': [{'indicator_name': 'macd', 'params': {'fastperiod': 2}}],
 				},
 				'example_response': {
@@ -413,8 +499,6 @@ class RunIndicators(APIView):
 				'return_ohlc': BooleanField(default=False),
 				'start_time': IntegerField(default=1672531200000),
 				'end_time': IntegerField(default=1704063600000),
-				'year': IntegerField(default=2023),
-				'month': ListField(default=[1, 2, 3]),
 				'indicator_settings': ListField(default=[{'indicator_name': 'macd', 'params': {'fastperiod': 2}}]),
 			},
 		),
@@ -427,13 +511,8 @@ class RunIndicators(APIView):
 		return_ohlc = request.data.get('return_ohlc', 'true') != 'false'
 		start_time = request.data.get('start_time')
 		end_time = request.data.get('end_time')
-		year = request.data.get('year')
-		month = request.data.get('month')
 
-		if isinstance(month, list):
-			month = tuple(sorted(month))
-
-		invalid_symbol = validate_symbol_timeframe(symbol, timeframe)
+		invalid_symbol = validate_symbol_timeframe(symbol, timeframe, start_time, end_time)
 		if invalid_symbol is not None:
 			return Response({'error': invalid_symbol}, 400)
 
@@ -445,14 +524,7 @@ class RunIndicators(APIView):
 		if invalid_indicator_settings is not None:
 			return Response({'error': invalid_indicator_settings}, 400)
 
-		data = fetch_kline(
-			symbol=symbol,
-			timeframe=timeframe,
-			start_time=start_time,
-			end_time=end_time,
-			year=year,
-			month=month,
-		)
+		data = fetch_kline(symbol=symbol, timeframe=timeframe, start_time=start_time, end_time=end_time)
 		if len(data) == 0:
 			return Response({'error': 'There is no OHLC data in the specified period'}, 400)
 
@@ -474,13 +546,13 @@ class RunBacktest(APIView):
 		return Response(
 			{
 				'example_request': {
+					'uid': '',
 					'return_ohlc': 'false # Setting false will return empty array for "ohlc_data"',
 					'symbol': 'BTCGBP',
 					'timeframe': '1h',
-					'year': 2024,
-					'month': [1, 2],
 					'start_time': 1672531200000,
-					'end_time': 1722531200000,
+					'end_time': 1704063600000,
+					'capital_amount': 10000,
 					'buy_strategy': [
 						{'template': 'macd'},
 						'or',
@@ -513,8 +585,29 @@ class RunBacktest(APIView):
 							'Close': 13669.49,
 						}
 					],
-					'buy_results': [0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1],
-					'sell_results': [-1, -1, -1, 0, 0, -1, -1, -1, 0, -1, -1, -1, -1],
+					'backtest_id': '8Wk8CjDbatrKmjlHM9nd',
+					'trade_events': [
+						{
+							'timestamp': 1592679600000,
+							'datetime': '2020-06-20T19:00:00Z',
+							'from_amount': 10000,
+							'from_token': 'GBP',
+							'to_amount': 1.3287871097020063,
+							'to_token': 'BTC',
+						},
+						{
+							'timestamp': 1704063600000,
+							'datetime': '2023-12-31T23:00:00Z',
+							'from_amount': 1.3287871097020063,
+							'from_token': 'BTC',
+							'to_amount': 47818.72952006868,
+							'to_token': 'GBP',
+						},
+					],
+					'final_amount': '47818.72952006868 GBP',
+					'profit': 37818.72952006868,
+					'buy_count': 1,
+					'sell_count': 1,
 				},
 			}
 		)
@@ -578,8 +671,7 @@ class RunBacktest(APIView):
 				'return_ohlc': BooleanField(default=False),
 				'start_time': IntegerField(default=1672531200000),
 				'end_time': IntegerField(default=1704063600000),
-				'year': IntegerField(default=2023),
-				'month': ListField(default=[1, 2, 3]),
+				'capital_amount': FloatField(default=10000),
 				'buy_strategy': ListField(
 					default=[
 						{'template': 'macd'},
@@ -609,6 +701,7 @@ class RunBacktest(APIView):
 	)
 	@authenticate_jwt()
 	def post(self, request: Request):
+		uid = request.data.get('uid')
 		symbol = request.data.get('symbol', '').strip().upper()
 		timeframe = request.data.get('timeframe', '').strip().lower()
 		buy_strategy = request.data.get('buy_strategy')
@@ -616,11 +709,22 @@ class RunBacktest(APIView):
 		return_ohlc = request.data.get('return_ohlc', 'true') != 'false'
 		start_time = request.data.get('start_time')
 		end_time = request.data.get('end_time')
-		year = request.data.get('year')
-		month = request.data.get('month')
+		capital_amount = request.data.get('capital_amount')
+		backtest_date = timezone.now()
 
-		if isinstance(month, list):
-			month = tuple(sorted(month))
+		collection: CollectionReference = settings.FIREBASE.collection('User')
+		user_doc: DocumentReference = collection.document(uid)
+
+		if not user_doc.get().exists:
+			return Response({'error': 'User not found!'}, 400)
+
+		if capital_amount is None:
+			return Response({'error': 'Capital amount is missing!'}, 400)
+
+		try:
+			capital_amount = float(capital_amount)
+		except ValueError:
+			return Response({'error': f'Invalid capital amount "{capital_amount}"!'}, 400)
 
 		invalid_symbol = validate_symbol_timeframe(symbol, timeframe)
 		if invalid_symbol is not None:
@@ -642,14 +746,7 @@ class RunBacktest(APIView):
 		if invalid_strategy is not None:
 			return Response({'error': invalid_strategy}, 400)
 
-		data = fetch_kline(
-			symbol=symbol,
-			timeframe=timeframe,
-			start_time=start_time,
-			end_time=end_time,
-			year=year,
-			month=month,
-		)
+		data = fetch_kline(symbol=symbol, timeframe=timeframe, start_time=start_time, end_time=end_time)
 		if len(data) == 0:
 			return Response({'error': 'There is no OHLC data in the specified period'}, 400)
 
@@ -676,11 +773,45 @@ class RunBacktest(APIView):
 
 		buy_results = self.apply_backtest(df, indicators_results, buy_strategy, is_buy=True).tolist()
 		sell_results = self.apply_backtest(df, indicators_results, sell_strategy, is_buy=False).tolist()
+		trade_results, trade_events, holdings, units, trade_types = calculate_amount(
+			capital_amount,
+			df['Open Time'].to_numpy(),
+			df['Close'].to_numpy(),
+			buy_results,
+			sell_results,
+			[PAIRS[symbol]['TO_TOKEN'], PAIRS[symbol]['FROM_TOKEN']],
+		)
+
+		trade_counts = np.array(trade_types)
+		buy_count = int((trade_counts == 'buy').sum())
+		sell_count = int((trade_counts == 'sell').sum())
+
+		subcollection: CollectionReference = user_doc.collection('backtest_history')
+		doc_ref: DocumentReference = subcollection.document()
+		doc_ref.set(
+			{
+				'date': backtest_date,
+				'symbol': symbol,
+				'timeframe': timeframe,
+				'start_time': start_time,
+				'end_time': end_time,
+				'capital': capital_amount,
+				'final_amount': trade_results[-1],
+				'profit': holdings[-1] - capital_amount,
+				'trade_events': trade_events,
+				'buy_count': buy_count,
+				'sell_count': sell_count,
+			}
+		)
 
 		return Response(
 			{
 				'ohlc_data': data if return_ohlc is True else [],
-				'buy_results': buy_results,
-				'sell_results': sell_results,
+				'backtest_id': doc_ref.id,
+				'trade_events': trade_events,
+				'final_amount': trade_results[-1],
+				'profit': holdings[-1] - capital_amount,
+				'buy_count': buy_count,
+				'sell_count': sell_count,
 			}
 		)

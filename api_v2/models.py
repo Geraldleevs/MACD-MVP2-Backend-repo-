@@ -23,12 +23,12 @@ class KLine(models.Model):
 	open_time = models.PositiveBigIntegerField(verbose_name='Open unix timestamp')
 	timeframe = models.TextField(max_length=20, choices=TimeframeChoice, verbose_name='Timeframe')
 
-	open = models.FloatField(verbose_name='Open price')
-	high = models.FloatField(verbose_name='High price')
-	low = models.FloatField(verbose_name='Low price')
-	close = models.FloatField(verbose_name='Close price')
+	open = models.FloatField(null=True, verbose_name='Open price')
+	high = models.FloatField(null=True, verbose_name='High price')
+	low = models.FloatField(null=True, verbose_name='Low price')
+	close = models.FloatField(null=True, verbose_name='Close price')
 
-	volume = models.FloatField(verbose_name='Volume')
+	volume = models.FloatField(null=True, verbose_name='Volume')
 
 	class Meta:
 		indexes = [

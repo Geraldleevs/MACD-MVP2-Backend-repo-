@@ -42,7 +42,7 @@ def download_file(base_path, file_name, date_range=None, folder=None):
 
 	if os.path.exists(save_path):
 		print('\nfile already exists! {}'.format(save_path))
-		return
+		return True
 
 	# make the directory
 	if not os.path.exists(base_path):
@@ -69,9 +69,11 @@ def download_file(base_path, file_name, date_range=None, folder=None):
 				sys.stdout.write('\r[%s%s]' % ('#' * done, '.' * (50 - done)))
 				sys.stdout.flush()
 
+		return True
+
 	except urllib.error.HTTPError:
 		print('\nFile not found: {}'.format(download_url))
-		pass
+		return False
 
 
 def convert_to_date_object(d):
