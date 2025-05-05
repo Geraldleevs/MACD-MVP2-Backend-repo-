@@ -153,8 +153,8 @@ FIAT = env.str('FIAT', default='GBP')
 DEMO_AMOUNT = env.float('DEMO_ACCOUNT_AMOUNT', default=10000)
 BOT_NAME = env.str('BOT_NAME', default='MachD')
 
-BACKTEST_TIMRFRAME = env.str('BACKTEST_TIMRFRAME', default='60->1h;240->4h;1440->1d').split(';')
-BACKTEST_TIMRFRAME = {tf.split('->')[1]: int(tf.split('->')[0]) for tf in BACKTEST_TIMRFRAME}
+BACKTEST_TIMEFRAME = env.str('BACKTEST_TIMEFRAME', default='60->1h;240->4h;1440->1d').split(';')
+BACKTEST_TIMEFRAME = {tf.split('->')[1]: int(tf.split('->')[0]) for tf in BACKTEST_TIMEFRAME}
 TIMEFRAMES = env.str('TIMEFRAME_MAP', default='short->1h;medium->4h;long->1d').split(';')
 TIMEFRAMES = {tf.split('->')[1]: tf.split('->')[0] for tf in TIMEFRAMES}
 
