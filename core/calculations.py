@@ -11,10 +11,6 @@ TA = TechnicalAnalysis()
 TA_TEMPLATES = TechnicalAnalysisTemplate()
 
 INTERVAL_MAP = {
-	'1min': 1,
-	'5min': 5,
-	'15min': 15,
-	'30min': 30,
 	'1h': 60,
 	'2h': 120,
 	'4h': 240,

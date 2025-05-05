@@ -30,6 +30,7 @@ from core.technical_analysis import TechnicalAnalysis, TechnicalAnalysisTemplate
 
 TA: TechnicalAnalysis = settings.TA
 TA_TEMPLATES: TechnicalAnalysisTemplate = settings.TA_TEMPLATES
+DEFAULT_TIMEFRAME = '1h'
 
 
 def authenticate_jwt(force_auth=False):
@@ -84,10 +85,14 @@ except OperationalError:
 finally:
 	cursor.close()
 
-TIMEFRAMES = ['1h']
 
-
-def validate_symbol_timeframe(symbol: str, timeframe: str, start_time: int = None, end_time: int = None):
+def validate_symbol_timeframe(
+	symbol: str,
+	timeframe: str,
+	start_time: int = None,
+	end_time: int = None,
+	fetch_only=False,
+):
 	if symbol is None or symbol == '':
 		raise ValueError('Missing "symbol"!')
 
@@ -97,7 +102,10 @@ def validate_symbol_timeframe(symbol: str, timeframe: str, start_time: int = Non
 	if symbol not in PAIRS:
 		raise ValueError(f'Invalid symbol "{symbol}"!')
 
-	if timeframe not in settings.BACKTEST_TIMEFRAME:
+	if fetch_only:
+		if timeframe not in PAIRS[symbol]:
+			raise ValueError(f'Invalid timeframe "{timeframe}"!')
+	elif timeframe not in settings.INTERVAL_MAP:
 		raise ValueError(f'Invalid timeframe "{timeframe}"!')
 
 	try:
@@ -106,8 +114,10 @@ def validate_symbol_timeframe(symbol: str, timeframe: str, start_time: int = Non
 	except ValueError:
 		raise ValueError(f'Invalid start time "{start_time}"!')
 
-	if start_time is not None and start_time < PAIRS[symbol][timeframe]['START_TIME']:
-		raise ValueError(f'Invalid start time "{start_time}"! (Expected >= {PAIRS[symbol][timeframe]["START_TIME"]})')
+	if start_time is not None and start_time < PAIRS[symbol][DEFAULT_TIMEFRAME]['START_TIME']:
+		raise ValueError(
+			f'Invalid start time "{start_time}"! (Expected >= {PAIRS[symbol][DEFAULT_TIMEFRAME]["START_TIME"]})'
+		)
 
 	try:
 		if end_time is not None:
@@ -115,8 +125,8 @@ def validate_symbol_timeframe(symbol: str, timeframe: str, start_time: int = Non
 	except ValueError:
 		raise ValueError(f'Invalid end time "{end_time}"!')
 
-	if end_time is not None and end_time > PAIRS[symbol][timeframe]['END_TIME']:
-		raise ValueError(f'Invalid end time "{end_time}"! (Expected <= {PAIRS[symbol][timeframe]["END_TIME"]})')
+	if end_time is not None and end_time > PAIRS[symbol][DEFAULT_TIMEFRAME]['END_TIME']:
+		raise ValueError(f'Invalid end time "{end_time}"! (Expected <= {PAIRS[symbol][DEFAULT_TIMEFRAME]["END_TIME"]})')
 
 
 @lru_cache(maxsize=8)
@@ -219,7 +229,7 @@ class OhlcData(APIView):
 		end_time = request.query_params.get('end_time')
 
 		try:
-			validate_symbol_timeframe(symbol, timeframe, start_time, end_time)
+			validate_symbol_timeframe(symbol, timeframe, start_time, end_time, True)
 			data = fetch_kline(symbol=symbol, timeframe=timeframe, start_time=start_time, end_time=end_time)
 			return Response({'ohlc_data': data})
 		except ValueError as e:
@@ -287,7 +297,7 @@ class RunIndicators(APIView):
 			validate_indicators(indicator_settings)
 			data = fetch_kline(
 				symbol=symbol,
-				timeframe=TIMEFRAMES[0],
+				timeframe=DEFAULT_TIMEFRAME,
 				start_time=start_time,
 				end_time=end_time,
 			)
@@ -303,7 +313,7 @@ class RunIndicators(APIView):
 		]
 
 		df = pd.DataFrame(data)
-		values = evaluate_values({TIMEFRAMES[0]: df}, expressions, True, TIMEFRAMES[0])
+		values = evaluate_values({DEFAULT_TIMEFRAME: df}, expressions, True, DEFAULT_TIMEFRAME)
 		results = {value['name']: value['value'] for value in values}
 
 		return Response({'ohlc_data': data if return_ohlc is True else [], 'indicators': results})
@@ -607,12 +617,12 @@ class RunBacktest(APIView):
 			return Response({'error': f'Invalid capital amount "{capital_amount}"!'}, 400)
 
 		try:
-			validate_symbol_timeframe(symbol, TIMEFRAMES[0])
+			validate_symbol_timeframe(symbol, DEFAULT_TIMEFRAME)
 			validate_strategy(buy_strategy)
 			validate_strategy(sell_strategy)
 			data = fetch_kline(
 				symbol=symbol,
-				timeframe=TIMEFRAMES[0],
+				timeframe=DEFAULT_TIMEFRAME,
 				start_time=start_time,
 				end_time=end_time,
 			)
@@ -623,9 +633,9 @@ class RunBacktest(APIView):
 			return Response({'error': 'There is no OHLC data in the specified period'}, 400)
 
 		df = pd.DataFrame(data)
-		expressions = evaluate_values({TIMEFRAMES[0]: df}, buy_strategy, True, TIMEFRAMES[0])
+		expressions = evaluate_values({DEFAULT_TIMEFRAME: df}, buy_strategy, True, DEFAULT_TIMEFRAME)
 		buy_results = evaluate_expressions(expressions)
-		expressions = evaluate_values({TIMEFRAMES[0]: df}, sell_strategy, False, TIMEFRAMES[0])
+		expressions = evaluate_values({DEFAULT_TIMEFRAME: df}, sell_strategy, False, DEFAULT_TIMEFRAME)
 		sell_results = evaluate_expressions(expressions)
 
 		trade_results, trade_events, holdings, units, trade_types = calculate_amount(

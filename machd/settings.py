@@ -147,7 +147,14 @@ KLINE_TOKENS = env.str('KLINE_TOKENS', default='BTC;GBP').split(';')
 KLINE_INTERVALS = env.str('KLINE_INTERVALS', default='1h').split(';')
 
 # Constants
-INTERVAL_MAP = {'1min': 1, '5min': 5, '15min': 15, '30min': 30, '1h': 60, '4h': 240, '1d': 1440}
+INTERVAL_MAP = {
+	'1h': 60,
+	'2h': 120,
+	'4h': 240,
+	'6h': 360,
+	'12h': 720,
+	'1d': 1440,
+}
 
 FIAT = env.str('FIAT', default='GBP')
 DEMO_AMOUNT = env.float('DEMO_ACCOUNT_AMOUNT', default=10000)
