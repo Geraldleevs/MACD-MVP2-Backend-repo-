@@ -21,6 +21,7 @@ from rest_framework.views import APIView
 from api_v2.models import KLine
 from core.calculations import (
 	calculate_amount,
+	combine_ohlc,
 	evaluate_expressions,
 	evaluate_values,
 	validate_indicators,
@@ -125,7 +126,7 @@ def validate_symbol_timeframe(
 	except ValueError:
 		raise ValueError(f'Invalid end time "{end_time}"!')
 
-	if end_time is not None and end_time > PAIRS[symbol][DEFAULT_TIMEFRAME]['END_TIME']:
+	if end_time is not None and end_time > PAIRS[symbol][DEFAULT_TIMEFRAME]['END_TIME'] + 1000 * 60 * 60 * 12:
 		raise ValueError(f'Invalid end time "{end_time}"! (Expected <= {PAIRS[symbol][DEFAULT_TIMEFRAME]["END_TIME"]})')
 
 
@@ -184,7 +185,19 @@ class BacktestTemplates(APIView):
 
 class BacktestSymbols(APIView):
 	def get(self, request: Request):
-		return Response({'trading_pairs': PAIRS})
+		return Response(
+			{
+				'trading_pairs': {
+					pair: {
+						'FROM_TOKEN': PAIRS[pair]['FROM_TOKEN'],
+						'TO_TOKEN': PAIRS[pair]['TO_TOKEN'],
+						DEFAULT_TIMEFRAME: PAIRS[pair][DEFAULT_TIMEFRAME],
+					}
+					for pair in PAIRS
+				},
+				'timeframes': settings.INTERVAL_MAP.keys(),
+			}
+		)
 
 
 class OhlcData(APIView):
@@ -229,8 +242,15 @@ class OhlcData(APIView):
 		end_time = request.query_params.get('end_time')
 
 		try:
-			validate_symbol_timeframe(symbol, timeframe, start_time, end_time, True)
-			data = fetch_kline(symbol=symbol, timeframe=timeframe, start_time=start_time, end_time=end_time)
+			validate_symbol_timeframe(symbol, timeframe, start_time, end_time)
+			data = fetch_kline(symbol=symbol, timeframe=DEFAULT_TIMEFRAME, start_time=start_time, end_time=end_time)
+			if timeframe == DEFAULT_TIMEFRAME:
+				return Response({'ohlc_data': data})
+
+			df = pd.DataFrame(data)
+			df = combine_ohlc(df, int(settings.INTERVAL_MAP[timeframe] / settings.INTERVAL_MAP[DEFAULT_TIMEFRAME]))
+			df = df.replace(np.nan, None)
+			data = df.to_dict('records')
 			return Response({'ohlc_data': data})
 		except ValueError as e:
 			return Response({'error': str(e)}, 400)

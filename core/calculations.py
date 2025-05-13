@@ -25,24 +25,39 @@ TIMEFRAMES = [60, 120, 240, 360, 720, 1440]
 
 
 def combine_ohlc(df: pd.DataFrame, merge_interval: int):
+	open_time = df['Open Time'].to_numpy()
 	open = df['Open'].to_numpy()
 	high = df['High'].to_numpy()
 	low = df['Low'].to_numpy()
 	close = df['Close'].to_numpy()
+	volume = df['Volume'].to_numpy()
 
 	diff = merge_interval - len(open) % merge_interval
 	if diff != merge_interval:
+		open_time = np.insert(open_time, len(open_time), [open_time[-1]] * diff)
 		open = np.insert(open, len(open), [open[-1]] * diff)
 		high = np.insert(high, len(high), [high[-1]] * diff)
 		low = np.insert(low, len(low), [low[-1]] * diff)
 		close = np.insert(close, len(close), [close[-1]] * diff)
+		volume = np.insert(volume, len(volume), [0] * diff)
 
+	open_time = open_time[::merge_interval]
 	open = open[::merge_interval]
 	high = high.reshape([-1, merge_interval]).max(axis=1)
 	low = low.reshape([-1, merge_interval]).min(axis=1)
 	close = close[merge_interval - 1 :: merge_interval]
+	volume = volume.reshape([-1, merge_interval]).sum(axis=1)
 
-	return pd.DataFrame({'Open': open, 'High': high, 'Low': low, 'Close': close})
+	return pd.DataFrame(
+		{
+			'Open Time': open_time,
+			'Open': open,
+			'High': high,
+			'Low': low,
+			'Close': close,
+			'Volume': volume,
+		}
+	)
 
 
 def validate_indicator(indicator: dict):
