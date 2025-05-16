@@ -269,7 +269,7 @@ class RunIndicators(APIView):
 					'return_ohlc': False,
 					'start_time': 1672531200000,
 					'end_time': 1703980800000,
-					'indicator_settings': [{'indicator_name': 'macd', 'params': {'fastperiod': 2}}],
+					'indicator_settings': [{'indicator_name': 'macd', 'params': {'fastperiod': 2, 'source': 'Open'}}],
 				},
 				'example_response': {
 					'ohlc_data': [
@@ -366,7 +366,7 @@ class RunBacktest(APIView):
 						{
 							'type': 'indicator',
 							'timeframe': '1h',
-							'value': {'indicator_name': 'macd', 'params': {'fastperiod': 2}},
+							'value': {'indicator_name': 'macd', 'params': {'fastperiod': 2, 'source': 'Open'}},
 						},
 						{'type': 'operator', 'value': '*'},
 						{
@@ -471,7 +471,7 @@ class RunBacktest(APIView):
 						{
 							'type': 'indicator',
 							'timeframe': '1h',
-							'value': {'indicator_name': 'macd', 'params': {'fastperiod': 2}},
+							'value': {'indicator_name': 'macd', 'params': {'fastperiod': 2, 'source': 'Open'}},
 						},
 						{'type': 'operator', 'value': '*'},
 						{
@@ -552,7 +552,7 @@ class RunBacktest(APIView):
 						{
 							'type': 'indicator',
 							'timeframe': '1h',
-							'value': {'indicator_name': 'macd', 'params': {'fastperiod': 2}},
+							'value': {'indicator_name': 'macd', 'params': {'fastperiod': 2, 'source': 'Open'}},
 						},
 						{'type': 'operator', 'value': '*'},
 						{

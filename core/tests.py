@@ -32,8 +32,8 @@ class TestTechnicalAnalysis(SimpleTestCase):
 	@classmethod
 	def setUpClass(cls):
 		df = pd.read_csv(ORACLE_DIR / 'BTCUSDT.csv')
-		df = df.iloc[:, 1:6]
-		df.columns = ['Open', 'High', 'Low', 'Close', 'Volume']
+		df = df.iloc[:, 0:6]
+		df.columns = ['Open Time', 'Open', 'High', 'Low', 'Close', 'Volume']
 		cls.ohlc_data = df
 		cls.TA = TechnicalAnalysis()
 		cls.TA_templates = TechnicalAnalysisTemplate(cls.TA)
@@ -203,11 +203,13 @@ class TestTechnicalAnalysis(SimpleTestCase):
 			base_params = {**options[ta]['params']}
 			limits = options[ta]['limits']
 
-			minus_5 = {param: base_params[param] - 5 for param in base_params}
+			minus_5 = {
+				param: base_params[param] - 5 for param in base_params if not isinstance(base_params[param], str)
+			}
 			minus_5 = correct_value(minus_5, limits)
 			df[f'{ta}-5'] = getattr(self.TA, ta)(self.ohlc_data, **minus_5)
 
-			plus_5 = {param: base_params[param] + 5 for param in base_params}
+			plus_5 = {param: base_params[param] + 5 for param in base_params if not isinstance(base_params[param], str)}
 			plus_5 = correct_value(plus_5, limits)
 			df[f'{ta}+5'] = getattr(self.TA, ta)(self.ohlc_data, **plus_5)
 		df = pd.DataFrame(df)
@@ -221,8 +223,8 @@ class TestCalculation(SimpleTestCase):
 	@classmethod
 	def setUpClass(cls):
 		df = pd.read_csv(ORACLE_DIR / 'BTCUSDT.csv')
-		df = df.iloc[:, 1:5]
-		df.columns = ['Open', 'High', 'Low', 'Close']
+		df = df.iloc[:, 0:6]
+		df.columns = ['Open Time', 'Open', 'High', 'Low', 'Close', 'Volume']
 		cls.ohlc_data = df
 		cls.TA = TechnicalAnalysis()
 		cls.TA_templates = TechnicalAnalysisTemplate(cls.TA)
@@ -616,6 +618,7 @@ class TestValidation(SimpleTestCase):
 		indicators = [
 			{'indicator_name': 'macd', 'params': {'fastperiod': 2}},
 			{'indicator_name': 'willr', 'params': {'timeperiod': 2}},
+			{'indicator_name': 'ema', 'params': {'source': 'Open'}},
 			{'indicator_name': 'wma'},
 		]
 		validate_indicators(indicators)
@@ -662,6 +665,15 @@ class TestValidation(SimpleTestCase):
 			self.assertTrue(False)
 		except ValueError as e:
 			self.assertEqual(str(e), 'Invalid parameter value "timeperiod: 1.0"! (Expected >= 2.0)')
+
+		try:
+			indicator = {'indicator_name': 'ema', 'params': {'source': 'Invalid'}}
+			validate_indicator(indicator)
+			self.assertTrue(False)
+		except ValueError as e:
+			self.assertEqual(
+				str(e), "Invalid parameter value \"source: Invalid\"! (Expected IN ['Open', 'High', 'Low', 'Close'])"
+			)
 
 	def test_validate_strategy_valid(self):
 		strategy = [
@@ -965,14 +977,14 @@ class TestEvaluation(SimpleTestCase):
 	def setUpClass(cls):
 		df = pd.read_csv(ORACLE_DIR / 'BTCUSDT.csv')
 		df = df.iloc[:, 0:6]
-		df.columns = ['open_time', 'Open', 'High', 'Low', 'Close', 'Volume']
+		df.columns = ['Open Time', 'Open', 'High', 'Low', 'Close', 'Volume']
 		cls.ohlc_data = df
 		cls.TA = TechnicalAnalysis()
 		cls.TA_templates = TechnicalAnalysisTemplate(cls.TA)
 		cls.MAX_LENGTH = len(df['Open'])
 
 	def test_evaluate_values(self):
-		"""60 + Close - Open * High / Low > Macd or (Macd Template * Max(Close))"""
+		"""60 + Close - Open * High / Low > Macd or (Macd Template * Max(Close) + Macd (High) )"""
 		strategy = [
 			{'type': 'value', 'value': 60},
 			{'type': 'operator', 'value': '+'},
@@ -990,6 +1002,8 @@ class TestEvaluation(SimpleTestCase):
 			{'type': 'template', 'timeframe': '4h', 'value': 'macd'},
 			{'type': 'operator', 'value': '*'},
 			{'type': 'math_func', 'value': {'type': 'max', 'value': [{'type': 'ohlc', 'value': 'close'}]}},
+			{'type': 'operator', 'value': '+'},
+			{'type': 'indicator', 'timeframe': '1h', 'value': {'indicator_name': 'macd', 'params': {'source': 'High'}}},
 			{'type': 'operator', 'value': ')'},
 		]
 		values = evaluate_values({'1h': self.ohlc_data}, strategy, True)
@@ -1021,7 +1035,14 @@ class TestEvaluation(SimpleTestCase):
 		)
 		self.assertEqual(values[14]['value'], '*')
 		self.assertTrue(np.array_equal(values[15]['value']['value'][0]['value'], self.ohlc_data['Close']))
-		self.assertEqual(values[16]['value'], ')')
+		self.assertEqual(values[16]['value'], '+')
+		self.assertTrue(
+			np.array_equal(
+				values[17]['value'],
+				np.nan_to_num(self.TA.macd(self.ohlc_data, source='High')),
+			)
+		)
+		self.assertEqual(values[18]['value'], ')')
 
 		values = evaluate_values({'1h': self.ohlc_data}, strategy, False)
 		self.assertEqual(values[0]['value'], 60)
@@ -1052,7 +1073,14 @@ class TestEvaluation(SimpleTestCase):
 		)
 		self.assertEqual(values[14]['value'], '*')
 		self.assertTrue(np.array_equal(values[15]['value']['value'][0]['value'], self.ohlc_data['Close']))
-		self.assertEqual(values[16]['value'], ')')
+		self.assertEqual(values[16]['value'], '+')
+		self.assertTrue(
+			np.array_equal(
+				values[17]['value'],
+				np.nan_to_num(self.TA.macd(self.ohlc_data, source='High')),
+			)
+		)
+		self.assertEqual(values[18]['value'], ')')
 
 	def test_arrange_expressions(self):
 		def merge_function(exps: list):
@@ -1564,7 +1592,7 @@ class TestEvaluation(SimpleTestCase):
 
 	def test_calculate_amount(self):
 		capital = 10000
-		open_times = self.ohlc_data['open_time'].to_numpy()
+		open_times = self.ohlc_data['Open Time'].to_numpy()
 		close_data = self.ohlc_data['Close'].to_numpy()
 		buy_signals = np.array(([1] * 3) + ([0] * (self.MAX_LENGTH - 6)) + ([1] * 3))
 		sell_signals = np.array(([0] * 10) + ([1] * 10) + ([0] * (self.MAX_LENGTH - 20)))

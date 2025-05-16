@@ -30,46 +30,71 @@ class TechnicalAnalysis:
 			limits = docs.split(';LIMIT:')
 			if len(limits) > 1:
 				for typing in limits[1].split(';')[0].split(','):
-					validation = re.split(' (<|>|>=|<=|==|!=) ', typing)
-					var = validation[0].strip()
-					op = validation[1]
-					value = float(validation[2])
-					param_limits.append({'variable': var, 'operation': op, 'value': value})
+					if ' IN ' not in typing:
+						validation = re.split(' (<|>|>=|<=|==|!=) ', typing)
+						var = validation[0].strip()
+						op = validation[1]
+						value = float(validation[2])
+						param_limits.append({'variable': var, 'operation': op, 'value': value})
+					else:
+						validation = typing.split(' IN ')
+						var = validation[0].strip()
+						value = validation[1]
+						value = value.removeprefix('[').removesuffix(']')
+						value = value.replace("'", '').replace('"', '')
+						value = value.split('|')
+						param_limits.append({'variable': var, 'operation': 'IN', 'value': value})
 
 			name = docs.split(';')[0]
 			param_list = [p for p in inspect.signature(fn).parameters.values() if p.name != 'df']
 			params = {p.name: p.default if p.default is not inspect._empty else None for p in param_list}
+
+			if 'source' in params:
+				param_limits.append(
+					{
+						'variable': 'source',
+						'operation': 'IN',
+						'value': ['Open', 'High', 'Low', 'Close'],
+					}
+				)
+
 			options[ta] = {'name': name, 'params': params, 'limits': param_limits}
 
 		self.options = options
 
-	def _macd(self, df: pd.DataFrame, fastperiod=12, slowperiod=26, signalperiod=9):
+	def _macd(self, df: pd.DataFrame, source='Close', fastperiod=12, slowperiod=26, signalperiod=9):
 		macd, macdsignal, _ = talib.MACD(
-			df['Close'],
+			df[source],
 			fastperiod=fastperiod,
 			slowperiod=slowperiod,
 			signalperiod=signalperiod,
 		)
 		return macd, macdsignal
 
-	def macd(self, df: pd.DataFrame, fastperiod=12, slowperiod=26, signalperiod=9):
+	def macd(self, df: pd.DataFrame, source='Close', fastperiod=12, slowperiod=26, signalperiod=9):
 		"""MACD - Moving Average Convergence/Divergence;LIMIT:fastperiod >= 2,slowperiod >= 2,signalperiod >= 1"""
-		macd = self._macd(df, fastperiod=fastperiod, slowperiod=slowperiod, signalperiod=signalperiod)[0]
+		macd = self._macd(df, source=source, fastperiod=fastperiod, slowperiod=slowperiod, signalperiod=signalperiod)[0]
 		return macd
 
-	def macdsignal(self, df: pd.DataFrame, fastperiod=12, slowperiod=26, signalperiod=9):
+	def macdsignal(self, df: pd.DataFrame, source='Close', fastperiod=12, slowperiod=26, signalperiod=9):
 		"""MACD (Signal) - Moving Average Convergence/Divergence (Signal);LIMIT:fastperiod >= 2,slowperiod >= 2,signalperiod >= 1"""
-		macdsignal = self._macd(df, fastperiod=fastperiod, slowperiod=slowperiod, signalperiod=signalperiod)[1]
+		macdsignal = self._macd(
+			df,
+			source=source,
+			fastperiod=fastperiod,
+			slowperiod=slowperiod,
+			signalperiod=signalperiod,
+		)[1]
 		return macdsignal
 
-	def sma(self, df: pd.DataFrame, timeperiod=30):
+	def sma(self, df: pd.DataFrame, source='Close', timeperiod=30):
 		"""SMA - Simple Moving Average;LIMIT:timeperiod >= 2"""
-		sma = talib.SMA(df['Close'], timeperiod=timeperiod)
+		sma = talib.SMA(df[source], timeperiod=timeperiod)
 		return sma
 
-	def ema(self, df: pd.DataFrame, timeperiod=30):
+	def ema(self, df: pd.DataFrame, source='Close', timeperiod=30):
 		"""EMA - Exponential Moving Average;LIMIT:timeperiod >= 2"""
-		ema = talib.EMA(df['Close'], timeperiod=timeperiod)
+		ema = talib.EMA(df[source], timeperiod=timeperiod)
 		return ema
 
 	def adx(self, df: pd.DataFrame, timeperiod=14):
@@ -91,9 +116,9 @@ class TechnicalAnalysis:
 		aroon_down = self._aroon(df, timeperiod=timeperiod)[1]
 		return aroon_down
 
-	def rsi(self, df: pd.DataFrame, timeperiod=14):
+	def rsi(self, df: pd.DataFrame, source='Close', timeperiod=14):
 		"""RSI - Relative Strength Index;LIMIT:timeperiod >= 2"""
-		rsi = talib.RSI(df['Close'], timeperiod=timeperiod)
+		rsi = talib.RSI(df[source], timeperiod=timeperiod)
 		return rsi
 
 	def _stoch(self, df: pd.DataFrame, fastk_period=5, slowk_period=3, slowd_period=3):
@@ -132,18 +157,18 @@ class TechnicalAnalysis:
 		atr = talib.ATR(df['High'], df['Low'], df['Close'], timeperiod=timeperiod)
 		return atr.shift(shift)
 
-	def _bbands(self, df: pd.DataFrame, timeperiod=20, nbdevup=2, nbdevdn=2):
-		upperband, _, lowerband = talib.BBANDS(df['Close'], timeperiod=timeperiod, nbdevup=nbdevup, nbdevdn=nbdevdn)
+	def _bbands(self, df: pd.DataFrame, source='Close', timeperiod=20, nbdevup=2, nbdevdn=2):
+		upperband, _, lowerband = talib.BBANDS(df[source], timeperiod=timeperiod, nbdevup=nbdevup, nbdevdn=nbdevdn)
 		return upperband, lowerband
 
-	def bbands_upper(self, df: pd.DataFrame, timeperiod=20, nbdevup=2, nbdevdn=2):
+	def bbands_upper(self, df: pd.DataFrame, source='Close', timeperiod=20, nbdevup=2, nbdevdn=2):
 		"""Bollinger Bands (Upper Band);LIMIT:timeperiod >= 2"""
-		upperband = self._bbands(df, timeperiod=timeperiod, nbdevup=nbdevup, nbdevdn=nbdevdn)[0]
+		upperband = self._bbands(df, source=source, timeperiod=timeperiod, nbdevup=nbdevup, nbdevdn=nbdevdn)[0]
 		return upperband
 
-	def bbands_lower(self, df: pd.DataFrame, timeperiod=20, nbdevup=2, nbdevdn=2):
+	def bbands_lower(self, df: pd.DataFrame, source='Close', timeperiod=20, nbdevup=2, nbdevdn=2):
 		"""Bollinger Bands (Lower Band);LIMIT:timeperiod >= 2"""
-		lowerband = self._bbands(df, timeperiod=timeperiod, nbdevup=nbdevup, nbdevdn=nbdevdn)[1]
+		lowerband = self._bbands(df, source=source, timeperiod=timeperiod, nbdevup=nbdevup, nbdevdn=nbdevdn)[1]
 		return lowerband
 
 	def ad(self, df: pd.DataFrame, shift=0):
@@ -183,19 +208,19 @@ class TechnicalAnalysis:
 		aroonosc = talib.AROONOSC(df['High'], df['Low'], timeperiod=timeperiod)
 		return aroonosc
 
-	def dema(self, df: pd.DataFrame, timeperiod=30):
+	def dema(self, df: pd.DataFrame, source='Close', timeperiod=30):
 		"""DEMA - Double Exponential Moving Average;LIMIT:timeperiod >= 2"""
-		dema = talib.DEMA(df['Close'], timeperiod=timeperiod)
+		dema = talib.DEMA(df[source], timeperiod=timeperiod)
 		return dema
 
-	def tema(self, df: pd.DataFrame, timeperiod=30):
+	def tema(self, df: pd.DataFrame, source='Close', timeperiod=30):
 		"""TEMA - Triple Exponential Moving Average;LIMIT:timeperiod >= 2"""
-		tema = talib.TEMA(df['Close'], timeperiod=timeperiod)
+		tema = talib.TEMA(df[source], timeperiod=timeperiod)
 		return tema
 
-	def mom(self, df: pd.DataFrame, timeperiod=10):
+	def mom(self, df: pd.DataFrame, source='Close', timeperiod=10):
 		"""Momentum;LIMIT:timeperiod >= 1"""
-		mom = talib.MOM(df['Close'], timeperiod=timeperiod)
+		mom = talib.MOM(df[source], timeperiod=timeperiod)
 		return mom
 
 	def donchian_upper(self, df: pd.DataFrame):
@@ -238,9 +263,9 @@ class TechnicalAnalysis:
 		adxr = talib.ADXR(df['High'], df['Low'], df['Close'], timeperiod=timeperiod)
 		return adxr
 
-	def apo(self, df: pd.DataFrame, fastperiod=12, timeperiod=26):
+	def apo(self, df: pd.DataFrame, source='Close', fastperiod=12, timeperiod=26):
 		"""APO - Absolute Price Oscillator;LIMIT:fastperiod >= 2,timeperiod >= 2"""
-		apo = talib.APO(df['Close'], fastperiod=fastperiod, slowperiod=timeperiod)
+		apo = talib.APO(df[source], fastperiod=fastperiod, slowperiod=timeperiod)
 		return apo
 
 	def bop(self, df: pd.DataFrame):
@@ -248,9 +273,9 @@ class TechnicalAnalysis:
 		bop = talib.BOP(df['Open'], df['High'], df['Low'], df['Close'])
 		return bop
 
-	def cmo(self, df: pd.DataFrame, timeperiod=14):
+	def cmo(self, df: pd.DataFrame, source='Close', timeperiod=14):
 		"""CMO - Chande Momentum Oscillator;LIMIT:timeperiod >= 2"""
-		cmo = talib.CMO(df['Close'], timeperiod=timeperiod)
+		cmo = talib.CMO(df[source], timeperiod=timeperiod)
 		return cmo
 
 	def dx(self, df: pd.DataFrame, timeperiod=14):
@@ -258,37 +283,49 @@ class TechnicalAnalysis:
 		dx = talib.DX(df['High'], df['Low'], df['Close'], timeperiod=timeperiod)
 		return dx
 
-	def _macdext(self, df: pd.DataFrame, fastperiod=12, slowperiod=26, signalperiod=9):
+	def _macdext(self, df: pd.DataFrame, source='Close', fastperiod=12, slowperiod=26, signalperiod=9):
 		macd, macdsignal, _ = talib.MACDEXT(
-			df['Close'],
+			df[source],
 			fastperiod=fastperiod,
 			slowperiod=slowperiod,
 			signalperiod=signalperiod,
 		)
 		return macd, macdsignal
 
-	def macdext(self, df: pd.DataFrame, fastperiod=12, slowperiod=26, signalperiod=9):
+	def macdext(self, df: pd.DataFrame, source='Close', fastperiod=12, slowperiod=26, signalperiod=9):
 		"""MACDext - MACD with controllable MA type;LIMIT:fastperiod >= 2,slowperiod >= 2,signalperiod >= 1"""
-		macd = self._macdext(df, fastperiod=fastperiod, slowperiod=slowperiod, signalperiod=signalperiod)[0]
+		macd = self._macdext(
+			df,
+			source=source,
+			fastperiod=fastperiod,
+			slowperiod=slowperiod,
+			signalperiod=signalperiod,
+		)[0]
 		return macd
 
-	def macdext_signal(self, df: pd.DataFrame, fastperiod=12, slowperiod=26, signalperiod=9):
+	def macdext_signal(self, df: pd.DataFrame, source='Close', fastperiod=12, slowperiod=26, signalperiod=9):
 		"""MACDext (Signal) - MACD with controllable MA type (Signal);LIMIT:fastperiod >= 2,slowperiod >= 2,signalperiod >= 1"""
-		macdsignal = self._macdext(df, fastperiod=fastperiod, slowperiod=slowperiod, signalperiod=signalperiod)[1]
+		macdsignal = self._macdext(
+			df,
+			source=source,
+			fastperiod=fastperiod,
+			slowperiod=slowperiod,
+			signalperiod=signalperiod,
+		)[1]
 		return macdsignal
 
-	def _macdfix(self, df: pd.DataFrame, signalperiod=9):
-		macd, macdsignal, _ = talib.MACDFIX(df['Close'], signalperiod=signalperiod)
+	def _macdfix(self, df: pd.DataFrame, source='Close', signalperiod=9):
+		macd, macdsignal, _ = talib.MACDFIX(df[source], signalperiod=signalperiod)
 		return macd, macdsignal
 
-	def macdfix(self, df: pd.DataFrame, signalperiod=9):
+	def macdfix(self, df: pd.DataFrame, source='Close', signalperiod=9):
 		"""MACD-Fixed - Moving Average Convergence/Divergence Fix 12/26;LIMIT:signalperiod >= 1"""
-		macd = self._macdfix(df, signalperiod=signalperiod)[0]
+		macd = self._macdfix(df, source=source, signalperiod=signalperiod)[0]
 		return macd
 
-	def macdfix_signal(self, df: pd.DataFrame, signalperiod=9):
+	def macdfix_signal(self, df: pd.DataFrame, source='Close', signalperiod=9):
 		"""MACD-Fixed (signal) - Moving Average Convergence/Divergence Fix 12/26 (Signal);LIMIT:signalperiod >= 1"""
-		macdsignal = self._macdfix(df, signalperiod=signalperiod)[1]
+		macdsignal = self._macdfix(df, source=source, signalperiod=signalperiod)[1]
 		return macdsignal
 
 	def minus_di(self, df: pd.DataFrame, timeperiod=14):
@@ -311,29 +348,29 @@ class TechnicalAnalysis:
 		plus_dm = talib.PLUS_DM(df['High'], df['Low'], timeperiod=timeperiod)
 		return plus_dm
 
-	def ppo(self, df: pd.DataFrame, fastperiod=12, slowperiod=26):
+	def ppo(self, df: pd.DataFrame, source='Close', fastperiod=12, slowperiod=26):
 		"""PPO - Percentage Price Oscillator;LIMIT:fastperiod >= 2,slowperiod >= 2"""
-		ppo = talib.PPO(df['Close'], fastperiod=fastperiod, slowperiod=slowperiod)
+		ppo = talib.PPO(df[source], fastperiod=fastperiod, slowperiod=slowperiod)
 		return ppo
 
-	def roc(self, df: pd.DataFrame, timeperiod=10):
+	def roc(self, df: pd.DataFrame, source='Close', timeperiod=10):
 		"""ROC - Rate of Change;LIMIT:timeperiod >= 1"""
-		roc = talib.ROC(df['Close'], timeperiod=timeperiod)
+		roc = talib.ROC(df[source], timeperiod=timeperiod)
 		return roc
 
-	def rocp(self, df: pd.DataFrame, timeperiod=10):
+	def rocp(self, df: pd.DataFrame, source='Close', timeperiod=10):
 		"""ROCP - Rate of Change Percentage;LIMIT:timeperiod >= 1"""
-		rocp = talib.ROCP(df['Close'], timeperiod=timeperiod)
+		rocp = talib.ROCP(df[source], timeperiod=timeperiod)
 		return rocp
 
-	def rocr(self, df: pd.DataFrame, timeperiod=10):
+	def rocr(self, df: pd.DataFrame, source='Close', timeperiod=10):
 		"""ROCR - Rate of Change Ratio;LIMIT:timeperiod >= 1"""
-		rocr = talib.ROCR(df['Close'], timeperiod=timeperiod)
+		rocr = talib.ROCR(df[source], timeperiod=timeperiod)
 		return rocr
 
-	def rocr100(self, df: pd.DataFrame, timeperiod=10):
+	def rocr100(self, df: pd.DataFrame, source='Close', timeperiod=10):
 		"""ROCR100 - Rate of Change Ratio (100 Scale);LIMIT:timeperiod >= 1"""
-		rocr100 = talib.ROCR100(df['Close'], timeperiod=timeperiod)
+		rocr100 = talib.ROCR100(df[source], timeperiod=timeperiod)
 		return rocr100
 
 	def _stochf(self, df: pd.DataFrame, fastk_period=14, fastd_period=3):
@@ -356,28 +393,40 @@ class TechnicalAnalysis:
 		fastd = self._stochf(df, fastk_period=fastk_period, fastd_period=fastd_period)[1]
 		return fastd
 
-	def _stochrsi(self, df: pd.DataFrame, timeperiod=14, fastk_period=14, fastd_period=3):
+	def _stochrsi(self, df: pd.DataFrame, source='Close', timeperiod=14, fastk_period=14, fastd_period=3):
 		fastk, fastd = talib.STOCHRSI(
-			df['Close'],
+			df[source],
 			timeperiod=timeperiod,
 			fastk_period=fastk_period,
 			fastd_period=fastd_period,
 		)
 		return fastk, fastd
 
-	def stochrsi_fastk(self, df: pd.DataFrame, timeperiod=14, fastk_period=14, fastd_period=3):
+	def stochrsi_fastk(self, df: pd.DataFrame, source='Close', timeperiod=14, fastk_period=14, fastd_period=3):
 		"""Stochastic Relative Strength Index (Fast K);LIMIT:timeperiod >= 2,fastk_period >= 1,fastd_period >= 1"""
-		fastk = self._stochrsi(df, timeperiod=timeperiod, fastk_period=fastk_period, fastd_period=fastd_period)[0]
+		fastk = self._stochrsi(
+			df,
+			source=source,
+			timeperiod=timeperiod,
+			fastk_period=fastk_period,
+			fastd_period=fastd_period,
+		)[0]
 		return fastk
 
-	def stochrsi_fastd(self, df: pd.DataFrame, timeperiod=14, fastk_period=14, fastd_period=3):
+	def stochrsi_fastd(self, df: pd.DataFrame, source='Close', timeperiod=14, fastk_period=14, fastd_period=3):
 		"""Stochastic Relative Strength Index (Fast D);LIMIT:timeperiod >= 2,fastk_period >= 1,fastd_period >= 1"""
-		fastd = self._stochrsi(df, timeperiod=timeperiod, fastk_period=fastk_period, fastd_period=fastd_period)[1]
+		fastd = self._stochrsi(
+			df,
+			source=source,
+			timeperiod=timeperiod,
+			fastk_period=fastk_period,
+			fastd_period=fastd_period,
+		)[1]
 		return fastd
 
-	def trix(self, df: pd.DataFrame, timeperiod=30):
+	def trix(self, df: pd.DataFrame, source='Close', timeperiod=30):
 		"""TRIX - Triple Smoothed Exponential Moving Average;LIMIT:timeperiod >= 1"""
-		trix = talib.TRIX(df['Close'], timeperiod=timeperiod)
+		trix = talib.TRIX(df[source], timeperiod=timeperiod)
 		return trix
 
 	def ultosc(self, df: pd.DataFrame, timeperiod1=7, timeperiod2=14, timeperiod3=28):
@@ -392,43 +441,43 @@ class TechnicalAnalysis:
 		)
 		return ultosc
 
-	def ht_trendline(self, df: pd.DataFrame):
+	def ht_trendline(self, df: pd.DataFrame, source='Close'):
 		"""HT Trendline - Hilbert Transform - Instantaneous Trendline"""
-		ht_trendline = talib.HT_TRENDLINE(df['Close'])
+		ht_trendline = talib.HT_TRENDLINE(df[source])
 		return ht_trendline
 
-	def kama(self, df: pd.DataFrame, timeperiod=30):
+	def kama(self, df: pd.DataFrame, source='Close', timeperiod=30):
 		"""KAMA - Kaufman Adaptive Moving Average;LIMIT:timeperiod >= 2"""
-		kama = talib.KAMA(df['Close'], timeperiod=timeperiod)
+		kama = talib.KAMA(df[source], timeperiod=timeperiod)
 		return kama
 
-	def ma(self, df: pd.DataFrame, timeperiod=30):
+	def ma(self, df: pd.DataFrame, source='Close', timeperiod=30):
 		"""MA - All Moving Average;LIMIT:timeperiod >= 1"""
-		ma = talib.MA(df['Close'], timeperiod=timeperiod)
+		ma = talib.MA(df[source], timeperiod=timeperiod)
 		return ma
 
-	def _mama(self, df: pd.DataFrame, fastlimit=0.5, slowlimit=0.05):
-		mama, fama = talib.MAMA(df['Close'], fastlimit=fastlimit, slowlimit=slowlimit)
+	def _mama(self, df: pd.DataFrame, source='Close', fastlimit=0.5, slowlimit=0.05):
+		mama, fama = talib.MAMA(df[source], fastlimit=fastlimit, slowlimit=slowlimit)
 		return mama, fama
 
-	def mama_fast(self, df: pd.DataFrame, fastlimit=0.5, slowlimit=0.05):
+	def mama_fast(self, df: pd.DataFrame, source='Close', fastlimit=0.5, slowlimit=0.05):
 		"""MAMA - MESA Adaptive Moving Average (MAMA);LIMIT:fastlimit > 0,fastlimit < 1,slowlimit > 0,slowlimit < 1"""
-		mama = self._mama(df, fastlimit=fastlimit, slowlimit=slowlimit)[0]
+		mama = self._mama(df, source=source, fastlimit=fastlimit, slowlimit=slowlimit)[0]
 		return mama
 
-	def mama_slow(self, df: pd.DataFrame, fastlimit=0.5, slowlimit=0.05):
+	def mama_slow(self, df: pd.DataFrame, source='Close', fastlimit=0.5, slowlimit=0.05):
 		"""MAMA - MESA Adaptive Moving Average (FAMA);LIMIT:fastlimit > 0,fastlimit < 1,slowlimit > 0,slowlimit < 1"""
-		fama = self._mama(df, fastlimit=fastlimit, slowlimit=slowlimit)[1]
+		fama = self._mama(df, source=source, fastlimit=fastlimit, slowlimit=slowlimit)[1]
 		return fama
 
-	def mavp(self, df: pd.DataFrame, minperiod=2, maxperiod=30):
-		"""MAVP - Moving Average with Variable Period;LIMIT:minperiod > 2,maxperiod > 2"""
-		mavp = talib.MAVP(df['Close'], df['High'], minperiod=minperiod, maxperiod=maxperiod)
+	def mavp(self, df: pd.DataFrame, source='Close', periods='High', minperiod=2, maxperiod=30):
+		"""MAVP - Moving Average with Variable Period;LIMIT:minperiod > 2,maxperiod > 2,periods IN ['Open'|'High'|'Low'|'Close']"""
+		mavp = talib.MAVP(df[source], df[periods], minperiod=minperiod, maxperiod=maxperiod)
 		return mavp
 
-	def midpoint(self, df: pd.DataFrame, timeperiod=14):
+	def midpoint(self, df: pd.DataFrame, source='Close', timeperiod=14):
 		"""MidPoint over period;LIMIT:timeperiod >= 2"""
-		midpoint = talib.MIDPOINT(df['Close'], timeperiod=timeperiod)
+		midpoint = talib.MIDPOINT(df[source], timeperiod=timeperiod)
 		return midpoint
 
 	def midprice(self, df: pd.DataFrame, timeperiod=14):
@@ -475,19 +524,19 @@ class TechnicalAnalysis:
 		)
 		return sarext
 
-	def t3(self, df: pd.DataFrame, timeperiod=30, vfactor=0.7):
+	def t3(self, df: pd.DataFrame, source='Close', timeperiod=30, vfactor=0.7):
 		"""T3 - Triple Exponential Moving Average;LIMIT:timeperiod >= 2,vfactor >= 0,vfactor <= 1"""
-		t3 = talib.T3(df['Close'], timeperiod=timeperiod, vfactor=vfactor)
+		t3 = talib.T3(df[source], timeperiod=timeperiod, vfactor=vfactor)
 		return t3
 
-	def trima(self, df: pd.DataFrame, timeperiod=30):
+	def trima(self, df: pd.DataFrame, source='Close', timeperiod=30):
 		"""TRIMA - Triangular Moving Average;LIMIT:timeperiod >= 2"""
-		trima = talib.TRIMA(df['Close'], timeperiod=timeperiod)
+		trima = talib.TRIMA(df[source], timeperiod=timeperiod)
 		return trima
 
-	def wma(self, df: pd.DataFrame, timeperiod=30):
+	def wma(self, df: pd.DataFrame, source='Close', timeperiod=30):
 		"""WMA - Weighted Moving Average;LIMIT:timeperiod >= 2"""
-		wma = talib.WMA(df['Close'], timeperiod=timeperiod)
+		wma = talib.WMA(df[source], timeperiod=timeperiod)
 		return wma
 
 

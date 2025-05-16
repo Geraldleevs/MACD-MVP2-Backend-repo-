@@ -80,7 +80,7 @@ def validate_indicator(indicator: dict):
 		try:
 			value = float(value)
 		except ValueError:
-			raise ValueError(f'Invalid parameter values "{param_name}: {value}" for "{indicator_name}"!')
+			pass
 
 		if len(TA.options[indicator_name]['limits']) == 0:
 			continue
@@ -88,6 +88,10 @@ def validate_indicator(indicator: dict):
 		for limit in TA.options[indicator_name]['limits']:
 			if param_name != limit['variable']:
 				continue
+
+			if limit['operation'] != 'IN':
+				if isinstance(value, str):
+					raise ValueError(f'Invalid parameter values "{param_name}: {value}" for "{indicator_name}"!')
 
 			limit_value = limit['value']
 			is_invalid = False
@@ -114,6 +118,10 @@ def validate_indicator(indicator: dict):
 
 				case '!=':
 					if value == limit_value:
+						is_invalid = True
+
+				case 'IN':
+					if value not in limit_value:
 						is_invalid = True
 
 			if is_invalid:
