@@ -20,6 +20,7 @@ from rest_framework.views import APIView
 
 from api_v2.models import KLine
 from core.calculations import (
+	analyse_strategy,
 	calculate_amount,
 	combine_ohlc,
 	evaluate_expressions,
@@ -351,6 +352,8 @@ class RunBacktest(APIView):
 					'start_time': 1672531200000,
 					'end_time': 1704063600000,
 					'capital_amount': 10000,
+					'stop_loss': 9900,
+					'take_profit': 10100,
 					'buy_strategy': [
 						{'type': 'value', 'value': 60},
 						{'type': 'operator', 'value': '+'},
@@ -522,6 +525,27 @@ class RunBacktest(APIView):
 						{'type': 'operator', 'value': 'and'},
 						{'type': 'template', 'timeframe': '4h', 'value': 'macd'},
 					],
+					'stopped_by': None,
+					'performance_report': {
+						'open_profit': 0,
+						'total_profit': -186.85826,
+						'max_equity_run_up': 302.059996,
+						'max_drawdown': -0.002595,
+						'total_trades': 6,
+						'winning_count': 1,
+						'losing_count': 2,
+						'profit_percent': -0.006192,
+						'percent_profitable': 0.3333,
+						'average_profit': -62.28608,
+						'average_winning_trade': 109.7832,
+						'average_losing_trade': -148.32075,
+						'ratio_average_win_loss': -0.7401745,
+						'largest_winning_trade': 109.7832,
+						'largest_losing_trade': -170.9276,
+						'largest_winning_trade_percent': 0.010978,
+						'largest_losing_trade_percent': -0.01712003,
+						'total_bars': 20,
+					},
 				},
 			}
 		)
@@ -536,6 +560,8 @@ class RunBacktest(APIView):
 				'start_time': IntegerField(default=1672531200000),
 				'end_time': IntegerField(default=1704063600000),
 				'capital_amount': FloatField(default=10000),
+				'take_profit': FloatField(default=10100),
+				'stop_loss': FloatField(default=9900),
 				'buy_strategy': ListField(
 					default=[
 						{'type': 'value', 'value': 60},
@@ -620,6 +646,8 @@ class RunBacktest(APIView):
 		start_time = request.data.get('start_time')
 		end_time = request.data.get('end_time')
 		capital_amount = request.data.get('capital_amount')
+		take_profit = request.data.get('take_profit')
+		stop_loss = request.data.get('stop_loss')
 		backtest_date = timezone.now()
 
 		if uid is None or uid == '':
@@ -631,10 +659,32 @@ class RunBacktest(APIView):
 
 		try:
 			if capital_amount is None:
-				return Response({'error': 'Capital amount is missing!'}, 400)
-			capital_amount = float(capital_amount)
+				capital_amount = 10000
+			else:
+				capital_amount = float(capital_amount)
 		except ValueError:
 			return Response({'error': f'Invalid capital amount "{capital_amount}"!'}, 400)
+
+		if capital_amount <= 0:
+			return Response({'error': f'Invalid capital amount {capital_amount}! (Expected > 0)'}, 400)
+
+		if take_profit is not None:
+			try:
+				take_profit = float(take_profit)
+			except ValueError:
+				return Response({'error': f'Invalid take profit amount {take_profit}!'}, 400)
+			if take_profit <= capital_amount:
+				return Response(
+					{'error': f'Invalid take profit amount {take_profit}! (Expected > {capital_amount})'}, 400
+				)
+
+		if stop_loss is not None:
+			try:
+				stop_loss = float(stop_loss)
+			except ValueError:
+				return Response({'error': f'Invalid stop loss amount {stop_loss}!'}, 400)
+			if stop_loss >= capital_amount:
+				return Response({'error': f'Invalid stop loss amount {stop_loss}! (Expected < {capital_amount})'}, 400)
 
 		try:
 			validate_symbol_timeframe(symbol, DEFAULT_TIMEFRAME)
@@ -658,53 +708,50 @@ class RunBacktest(APIView):
 		expressions = evaluate_values({DEFAULT_TIMEFRAME: df}, sell_strategy, False, DEFAULT_TIMEFRAME)
 		sell_results = evaluate_expressions(expressions)
 
-		trade_results, trade_events, holdings, units, trade_types = calculate_amount(
-			capital_amount,
-			df['Open Time'].to_numpy(),
-			df['Close'].to_numpy(),
-			buy_results,
-			sell_results,
-			[PAIRS[symbol]['TO_TOKEN'], PAIRS[symbol]['FROM_TOKEN']],
+		results = calculate_amount(
+			capital=capital_amount,
+			open_times=df['Open Time'].to_numpy(),
+			close_data=df['Close'].to_numpy(),
+			buy_signals=buy_results,
+			sell_signals=sell_results,
+			unit_types=[PAIRS[symbol]['TO_TOKEN'], PAIRS[symbol]['FROM_TOKEN']],
+			stop_loss=stop_loss,
+			take_profit=take_profit,
 		)
+
+		trade_results = results['results']
+		trade_events = results['trades']
+		holdings = results['holdings']
+		trade_types = results['trade_types']
+		stopped_by = results['stopped_by']
+
 		trade_counts = np.array(trade_types)
 		buy_count = int((trade_counts == 'buy').sum())
 		sell_count = int((trade_counts == 'sell').sum())
 
+		data = {
+			'date': backtest_date,
+			'symbol': symbol,
+			'start_time': start_time,
+			'end_time': end_time,
+			'capital': capital_amount,
+			'final_amount': trade_results[-1],
+			'profit': holdings[-1] - capital_amount,
+			'trade_events': trade_events,
+			'buy_count': buy_count,
+			'sell_count': sell_count,
+			'buy_strategy': buy_strategy,
+			'sell_strategy': sell_strategy,
+			'stopped_by': stopped_by,
+			'performance_report': analyse_strategy(capital_amount, df['Close'].to_numpy(), holdings, trade_types),
+		}
+
 		if user_exists:
 			subcollection: CollectionReference = user_doc.collection('backtest_history')
 			doc_ref: DocumentReference = subcollection.document()
-			doc_ref.set(
-				{
-					'date': backtest_date,
-					'symbol': symbol,
-					'start_time': start_time,
-					'end_time': end_time,
-					'capital': capital_amount,
-					'final_amount': trade_results[-1],
-					'profit': holdings[-1] - capital_amount,
-					'trade_events': trade_events,
-					'buy_count': buy_count,
-					'sell_count': sell_count,
-					'buy_strategy': buy_strategy,
-					'sell_strategy': sell_strategy,
-				}
-			)
+			doc_ref.set(data)
 
-		return Response(
-			{
-				'ohlc_data': data if return_ohlc is True else [],
-				'backtest_id': doc_ref.id if user_exists else None,
-				'date': backtest_date,
-				'symbol': symbol,
-				'start_time': start_time,
-				'end_time': end_time,
-				'capital': capital_amount,
-				'final_amount': trade_results[-1],
-				'profit': holdings[-1] - capital_amount,
-				'trade_events': trade_events,
-				'buy_count': buy_count,
-				'sell_count': sell_count,
-				'buy_strategy': buy_strategy,
-				'sell_strategy': sell_strategy,
-			}
-		)
+		data['ohlc_data'] = data if return_ohlc is True else []
+		data['backtest_id'] = doc_ref.id if user_exists else None
+
+		return Response(data)

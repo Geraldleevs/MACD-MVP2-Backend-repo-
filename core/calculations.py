@@ -1,3 +1,4 @@
+import math
 from copy import deepcopy
 from datetime import datetime
 
@@ -506,6 +507,8 @@ def calculate_amount(
 	buy_signals: list[np.int8],
 	sell_signals: list[np.int8],
 	unit_types: tuple[str, str],
+	stop_loss: float = None,
+	take_profit: float = None,
 ) -> list[float]:
 	base_amount = capital
 	sec_amount = 0
@@ -518,12 +521,60 @@ def calculate_amount(
 
 	bought = False
 	last_price = None
+	stopped = False
+	stopped_by = None
 
 	for i in range(len(holdings)):
-		if np.isnan(close_data[i]) or close_data[i] is None:
+		if stopped:
 			holdings[i] = holdings[i - 1] if i > 0 else capital
 			units[i] = units[i - 1] if i > 0 else unit_types[0]
+		elif np.isnan(close_data[i]) or close_data[i] is None:
+			holdings[i] = holdings[i - 1] if i > 0 else capital
+			units[i] = units[i - 1] if i > 0 else unit_types[0]
+		elif bought and stop_loss is not None and sec_amount * close_data[i] <= stop_loss:
+			old_amount = sec_amount
+			base_amount = sec_amount * close_data[i]
+			sec_amount = 0
+			holdings[i] = base_amount
 
+			trade_types[i] = 'sell'
+			bought = False
+			stopped = True
+			stopped_by = 'loss'
+
+			trade_time = datetime.fromtimestamp(open_times[i] / 1000).astimezone(pytz.UTC)
+			trades.append(
+				{
+					'timestamp': int(open_times[i]),
+					'datetime': trade_time,
+					'from_amount': old_amount,
+					'from_token': unit_types[1],
+					'to_amount': base_amount,
+					'to_token': unit_types[0],
+				}
+			)
+		elif bought and take_profit is not None and sec_amount * close_data[i] >= take_profit:
+			old_amount = sec_amount
+			base_amount = sec_amount * close_data[i]
+			sec_amount = 0
+			holdings[i] = base_amount
+
+			trade_types[i] = 'sell'
+			bought = False
+			stopped = True
+			stopped_by = 'profit'
+
+			trade_time = datetime.fromtimestamp(open_times[i] / 1000).astimezone(pytz.UTC)
+			trades.append(
+				{
+					'timestamp': int(open_times[i]),
+					'datetime': trade_time,
+					'from_amount': old_amount,
+					'from_token': unit_types[1],
+					'to_amount': base_amount,
+					'to_token': unit_types[0],
+				}
+			)
 		elif not bought and buy_signals[i] != 0:
 			old_amount = base_amount
 			sec_amount = base_amount / close_data[i]
@@ -596,4 +647,122 @@ def calculate_amount(
 			}
 		)
 
-	return results, trades, holdings, units, trade_types
+	return {
+		'results': results,
+		'trades': trades,
+		'holdings': holdings,
+		'units': units,
+		'trade_types': trade_types,
+		'stopped_by': stopped_by,
+	}
+
+
+def analyse_strategy(
+	capital: float,
+	close_prices: np.ndarray[np.float64],
+	holdings: list[float],
+	trade_types: list[str],
+):
+	max_run_up = None  # Max Equity Run-Up: Maximum potential profit within trades
+	max_drawdowns = []  # Max Equity Drawdowns: Largest peak-to-trough decline within trades
+	buy_amounts = []
+
+	profits = []
+	buy_amount = None
+	highest = None
+	lowest = None
+	total_bars = 0
+
+	for i in range(len(trade_types)):
+		if trade_types[i] == 'buy':
+			buy_amount = holdings[i - 1] if i > 0 else capital
+			highest = close_prices[i]
+			lowest = close_prices[i]
+		elif trade_types[i] == 'sell':
+			total_bars += 1
+			buy_amounts.append(buy_amount)
+			this_profit = holdings[i] - buy_amount
+			profits.append(this_profit)
+			buy_amount = None
+		elif buy_amount is not None:
+			total_bars += 1
+			amount_if_traded = holdings[i] * close_prices[i]
+			profit_if_traded = amount_if_traded - buy_amount
+			max_run_up = float(max(max_run_up if max_run_up is not None else -math.inf, profit_if_traded))
+			if max_run_up < 0:
+				max_run_up = None
+
+			if close_prices[i] >= highest:
+				if highest != lowest:
+					max_drawdowns.append((lowest - highest) / highest)
+				highest = close_prices[i]
+				lowest = close_prices[i]
+			else:
+				lowest = min(lowest, close_prices[i])
+
+	# Open P&L: Profit/Loss of remaining open trades
+	open_profit = buy_amount * close_prices[-1] if buy_amount is not None else 0
+	max_drawdown = float(np.average(max_drawdowns)) if len(max_drawdowns) > 0 else None
+
+	total_trades = len(profits) * 2
+	total_trades += 1 if buy_amount is not None else 0
+
+	winning_trades = [profit for profit in profits if profit >= 0]
+	losing_trades = [profit for profit in profits if profit < 0]
+	winning_count = len(winning_trades)
+	losing_count = len(losing_trades)
+	total_closed_trades = len(profits)
+
+	if total_closed_trades == 0:
+		total_profit = 0
+		profit_percent = None
+		percent_profitable = None
+		average_profit = None
+		average_winning_trade = None
+		average_losing_trade = None
+		ratio_average_win_loss = None
+		largest_winning_trade = None
+		largest_losing_trade = None
+		largest_winning_trade_percent = None
+		largest_losing_trade_percent = None
+	else:
+		total_profit = float(np.sum(np.array(profits)))
+		profit_percent = np.array(profits) / np.array(buy_amounts)
+		percent_profitable = winning_count / total_closed_trades
+		average_profit = float(np.average(profits))
+		average_winning_trade = float(np.average(winning_trades)) if len(winning_trades) > 0 else None
+		average_losing_trade = float(np.average(losing_trades)) if len(losing_trades) > 0 else None
+		if average_winning_trade is None:
+			ratio_average_win_loss = 0
+		elif average_losing_trade is None:
+			ratio_average_win_loss = None
+		else:
+			ratio_average_win_loss = average_winning_trade / average_losing_trade
+		largest_winning_trade = float(max(winning_trades)) if len(winning_trades) > 0 else None
+		largest_losing_trade = float(min(losing_trades)) if len(losing_trades) > 0 else None
+		largest_winning_trade_percent = float(max(profit_percent)) if len(winning_trades) > 0 else None
+		largest_losing_trade_percent = float(min(profit_percent)) if len(losing_trades) > 0 else None
+		profit_percent = float(np.average(profit_percent))
+
+	return {
+		# Performance
+		'open_profit': open_profit,
+		'total_profit': total_profit,
+		'max_equity_run_up': max_run_up,
+		'max_drawdown': max_drawdown,
+		# Trade analysis
+		'total_trades': total_trades,
+		'winning_count': winning_count,
+		'losing_count': losing_count,
+		'profit_percent': profit_percent,
+		'percent_profitable': percent_profitable,
+		'average_profit': average_profit,
+		'average_winning_trade': average_winning_trade,
+		'average_losing_trade': average_losing_trade,
+		'ratio_average_win_loss': ratio_average_win_loss,
+		'largest_winning_trade': largest_winning_trade,
+		'largest_losing_trade': largest_losing_trade,
+		'largest_winning_trade_percent': largest_winning_trade_percent,
+		'largest_losing_trade_percent': largest_losing_trade_percent,
+		'total_bars': total_bars,
+	}
