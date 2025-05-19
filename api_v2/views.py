@@ -668,6 +668,9 @@ class RunBacktest(APIView):
 		if capital_amount <= 0:
 			return Response({'error': f'Invalid capital amount {capital_amount}! (Expected > 0)'}, 400)
 
+		if capital_amount > 1e7:
+			return Response({'error': 'Capital amount too big! (Expected < 1,000,000)'}, 400)
+
 		if take_profit is not None:
 			try:
 				take_profit = float(take_profit)
