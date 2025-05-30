@@ -206,6 +206,9 @@ if env.bool('EXCLUDE_FIRESTORE', default=False) is False:
 	firebase_admin.initialize_app(Certificate(firebase_admin_settings))
 	FIREBASE = firestore.client()
 	DB_BATCH = FIREBASE.batch()
+else:
+	FIREBASE = None
+	DB_BATCH = None
 
 
 TA = TechnicalAnalysis()
