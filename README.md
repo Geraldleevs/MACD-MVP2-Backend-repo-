@@ -118,11 +118,6 @@ gcloud auth configure-docker
 ```bash
 docker compose down --rmi local  # Remove all existing container and images to avoid reusign cached images
 docker compose build
-```
-
-### 5. Push to Google Cloud
-
-```bash
 docker rmi gcr.io/mach-d-rlqsy3/machd:v0
 gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin gcr.io
 docker tag machd-machd gcr.io/mach-d-rlqsy3/machd:v0

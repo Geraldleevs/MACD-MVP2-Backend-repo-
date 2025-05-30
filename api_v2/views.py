@@ -1,3 +1,4 @@
+import traceback
 from functools import lru_cache
 
 import firebase_admin.auth
@@ -29,6 +30,7 @@ from core.calculations import (
 	validate_strategy,
 )
 from core.technical_analysis import TechnicalAnalysis, TechnicalAnalysisTemplate
+from machd.utils import log_error
 
 TA: TechnicalAnalysis = settings.TA
 TA_TEMPLATES: TechnicalAnalysisTemplate = settings.TA_TEMPLATES
@@ -58,6 +60,20 @@ def authenticate_jwt(force_auth=False):
 				return view_func(self, request, *args, **kwargs)
 			except (InvalidIdTokenError, IndexError, ValueError):
 				return Response({'error': 'Unauthorised'}, status=403)
+
+		return wrapper
+
+	return decorator
+
+
+def error_logger():
+	def decorator(view_func):
+		def wrapper(self, request: Request, *args, **kwargs):
+			try:
+				return view_func(self, request, *args, **kwargs)
+			except Exception:
+				log_error({'query': request.query_params, 'data': request.data, 'error': traceback.format_exc()})
+				return Response(status=500)
 
 		return wrapper
 
@@ -165,26 +181,31 @@ def fetch_kline(symbol: str, timeframe: str, start_time: int = None, end_time: i
 # Check Login Status
 class CheckLoginStatus(APIView):
 	@authenticate_jwt(force_auth=True)
+	@error_logger()
 	def get(self, request: Request):
 		return Response({'login_status': 'You are logged in!'})
 
 	@authenticate_jwt(force_auth=True)
+	@error_logger()
 	def post(self, request: Request):
 		return Response({'login_status': 'You are logged in!'})
 
 
 # Get Options, Templates, Symbols and OHLC Data
 class TechnicalIndicators(APIView):
+	@error_logger()
 	def get(self, request: Request):
 		return Response({'technical_indicators': settings.TA_OPTIONS})
 
 
 class BacktestTemplates(APIView):
+	@error_logger()
 	def get(self, request: Request):
 		return Response({'backtest_templates': settings.TA_TEMPLATE_OPTIONS})
 
 
 class BacktestSymbols(APIView):
+	@error_logger()
 	def get(self, request: Request):
 		return Response(
 			{
@@ -236,6 +257,7 @@ class OhlcData(APIView):
 		],
 	)
 	@authenticate_jwt()
+	@error_logger()
 	def get(self, request: Request):
 		symbol = request.query_params.get('symbol', '').strip().upper()
 		timeframe = request.query_params.get('timeframe', '').strip().lower()
@@ -260,6 +282,7 @@ class OhlcData(APIView):
 # Technical Analysis
 class RunIndicators(APIView):
 	@extend_schema(description='Get details of the endpoint')
+	@error_logger()
 	def get(self, request: Request):
 		return Response(
 			{
@@ -304,6 +327,7 @@ class RunIndicators(APIView):
 		),
 	)
 	@authenticate_jwt()
+	@error_logger()
 	def post(self, request: Request):
 		symbol = request.data.get('symbol', '').strip().upper()
 		timeframe = request.data.get('timeframe', '').strip().lower()
@@ -342,6 +366,7 @@ class RunIndicators(APIView):
 
 class RunBacktest(APIView):
 	@extend_schema(description='Get details of the endpoint')
+	@error_logger()
 	def get(self, request: Request):
 		return Response(
 			{
@@ -636,6 +661,7 @@ class RunBacktest(APIView):
 		),
 	)
 	@authenticate_jwt()
+	@error_logger()
 	def post(self, request: Request):
 		uid = request.data.get('uid')
 		symbol = request.data.get('symbol', '').strip().upper()

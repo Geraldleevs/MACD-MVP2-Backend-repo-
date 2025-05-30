@@ -504,14 +504,32 @@ def calculate_amount(
 	capital: float,
 	open_times: np.ndarray[np.int64],
 	close_data: np.ndarray[np.float64],
-	buy_signals: list[np.int8],
-	sell_signals: list[np.int8],
+	buy_signals: np.ndarray[np.int8],
+	sell_signals: np.ndarray[np.int8],
 	unit_types: tuple[str, str],
 	stop_loss: float = None,
 	take_profit: float = None,
 ) -> list[float]:
 	base_amount = capital
 	sec_amount = 0
+
+	try:
+		len(buy_signals)
+	except TypeError:
+		buy_signals = np.array([buy_signals])
+
+	try:
+		len(sell_signals)
+	except TypeError:
+		sell_signals = np.array([sell_signals])
+
+	if len(buy_signals) == 1 and len(sell_signals) == 1:
+		buy_signals = buy_signals.repeat(len(close_data))
+		sell_signals = sell_signals.repeat(len(close_data))
+	elif len(buy_signals) == 1:
+		buy_signals = buy_signals.repeat(len(close_data))
+	elif len(sell_signals) == 1:
+		sell_signals = sell_signals.repeat(len(close_data))
 
 	holdings = [0] * min(len(buy_signals), len(sell_signals))
 	units = [unit_types[0]] * len(holdings)
