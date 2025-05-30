@@ -766,7 +766,7 @@ class RunBacktest(APIView):
 			unit_types=[PAIRS[symbol]['TO_TOKEN'], PAIRS[symbol]['FROM_TOKEN']],
 			stop_loss=stop_loss,
 			take_profit=take_profit,
-			trade_limit=trade_limit if trade_limit is not None else 300,  # Max 300 trades
+			trade_limit=trade_limit if trade_limit is not None else 100,  # Default 100 trades
 		)
 
 		trade_results = results['results']
