@@ -11,6 +11,8 @@ from django.utils import timezone
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiExample, OpenApiParameter, extend_schema, inline_serializer
 from firebase_admin.auth import InvalidIdTokenError
+from google.cloud.firestore_v1.batch import WriteBatch
+from google.cloud.firestore_v1.client import Client
 from google.cloud.firestore_v1.collection import CollectionReference
 from google.cloud.firestore_v1.document import DocumentReference
 from rest_framework.authentication import get_authorization_header
@@ -35,6 +37,8 @@ from machd.utils import log_error
 TA: TechnicalAnalysis = settings.TA
 TA_TEMPLATES: TechnicalAnalysisTemplate = settings.TA_TEMPLATES
 DEFAULT_TIMEFRAME = '1h'
+DB_BATCH: WriteBatch = settings.DB_BATCH
+FIREBASE: Client = settings.FIREBASE
 
 
 def authenticate_jwt(force_auth=False):
@@ -379,6 +383,7 @@ class RunBacktest(APIView):
 					'capital_amount': 10000,
 					'stop_loss': 9900,
 					'take_profit': 10100,
+					'trade_limit': 100,
 					'buy_strategy': [
 						{'type': 'value', 'value': 60},
 						{'type': 'operator', 'value': '+'},
@@ -461,6 +466,9 @@ class RunBacktest(APIView):
 					'symbol': 'BTCGBP',
 					'start_time': 1672531200000,
 					'end_time': 1704063600000,
+					'take_profit': 10100,
+					'stop_loss': 9900,
+					'trade_limit': 100,
 					'capital': 10000,
 					'final_amount': '47818.72952006868 GBP',
 					'profit': 37818.72952006868,
@@ -587,6 +595,7 @@ class RunBacktest(APIView):
 				'capital_amount': FloatField(default=10000),
 				'take_profit': FloatField(default=10100),
 				'stop_loss': FloatField(default=9900),
+				'trade_limit': IntegerField(default=100),
 				'buy_strategy': ListField(
 					default=[
 						{'type': 'value', 'value': 60},
@@ -674,12 +683,13 @@ class RunBacktest(APIView):
 		capital_amount = request.data.get('capital_amount')
 		take_profit = request.data.get('take_profit')
 		stop_loss = request.data.get('stop_loss')
+		trade_limit = request.data.get('trade_limit')
 		backtest_date = timezone.now()
 
 		if uid is None or uid == '':
 			user_exists = False
 		else:
-			collection: CollectionReference = settings.FIREBASE.collection('User')
+			collection = FIREBASE.collection('User')
 			user_doc: DocumentReference = collection.document(uid)
 			user_exists = user_doc.get().exists
 
@@ -715,6 +725,16 @@ class RunBacktest(APIView):
 			if stop_loss >= capital_amount:
 				return Response({'error': f'Invalid stop loss amount {stop_loss}! (Expected < {capital_amount})'}, 400)
 
+		if trade_limit is not None:
+			try:
+				trade_limit = int(trade_limit)
+			except ValueError:
+				return Response({'error': f'Invalid trade limit {trade_limit}!'}, 400)
+			if trade_limit <= 0:
+				return Response({'error': f'Invalid trade limit {trade_limit}! (Expected > 0)'}, 400)
+			elif trade_limit > 300:
+				return Response({'error': f'Invalid trade limit {trade_limit}! (Expected <= 300)'}, 400)
+
 		try:
 			validate_symbol_timeframe(symbol, DEFAULT_TIMEFRAME)
 			validate_strategy(buy_strategy)
@@ -746,6 +766,7 @@ class RunBacktest(APIView):
 			unit_types=[PAIRS[symbol]['TO_TOKEN'], PAIRS[symbol]['FROM_TOKEN']],
 			stop_loss=stop_loss,
 			take_profit=take_profit,
+			trade_limit=trade_limit if trade_limit is not None else 300,  # Max 300 trades
 		)
 
 		trade_results = results['results']
@@ -763,6 +784,9 @@ class RunBacktest(APIView):
 			'symbol': symbol,
 			'start_time': start_time,
 			'end_time': end_time,
+			'take_profit': take_profit,
+			'stop_loss': stop_loss,
+			'trade_limit': trade_limit,
 			'capital': capital_amount,
 			'final_amount': trade_results[-1],
 			'profit': holdings[-1] - capital_amount,

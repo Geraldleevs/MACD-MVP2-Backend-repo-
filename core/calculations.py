@@ -509,6 +509,7 @@ def calculate_amount(
 	unit_types: tuple[str, str],
 	stop_loss: float = None,
 	take_profit: float = None,
+	trade_limit: int = 300,
 ) -> list[float]:
 	base_amount = capital
 	sec_amount = 0
@@ -642,6 +643,10 @@ def calculate_amount(
 
 		if not (np.isnan(close_data[i]) or close_data[i] is None):
 			last_price = close_data[i]
+
+		if trade_limit is not None and not stopped and len(trades) >= trade_limit:
+			stopped = True
+			stopped_by = 'trade limit hit'
 
 	# Final value if still holding coins
 	base_amount += sec_amount * last_price
