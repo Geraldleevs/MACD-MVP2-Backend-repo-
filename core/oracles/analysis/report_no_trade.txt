@@ -1,0 +1,22 @@
+{
+  "open_profit": 0,
+  "total_profit": 0,
+  "max_equity_run_up": null,
+  "max_drawdown": null,
+  "max_drawdown_percentage": null,
+  "total_trades": 0,
+  "winning_count": 0,
+  "losing_count": 0,
+  "profit_percent": null,
+  "percent_profitable": null,
+  "average_profit": null,
+  "average_winning_trade": null,
+  "average_losing_trade": null,
+  "ratio_average_win_loss": null,
+  "largest_winning_trade": null,
+  "largest_losing_trade": null,
+  "largest_winning_trade_percent": null,
+  "largest_losing_trade_percent": null,
+  "total_bars": 0,
+  "trade_reports": []
+}

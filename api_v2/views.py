@@ -77,7 +77,7 @@ def error_logger():
 				return view_func(self, request, *args, **kwargs)
 			except Exception:
 				log_error({'query': request.query_params, 'data': request.data, 'error': traceback.format_exc()})
-				return Response(status=500)
+				raise
 
 		return wrapper
 
@@ -462,7 +462,7 @@ class RunBacktest(APIView):
 						}
 					],
 					'backtest_id': '8Wk8CjDbatrKmjlHM9nd',
-					'date': '2025-04-20T19:00:00Z',
+					'date': '2025-04-20T19:00:00.000000Z',
 					'symbol': 'BTCGBP',
 					'from_token': 'BTC',
 					'to_token': 'GBP',
@@ -473,24 +473,26 @@ class RunBacktest(APIView):
 					'stop_loss': 9900,
 					'trade_limit': 100,
 					'capital': 10000,
-					'final_amount': '47818.72952006868 GBP',
-					'profit': 37818.72952006868,
+					'final_amount': '10148.289777869611 GBP',
+					'profit': 148.2897778696115,
 					'trade_events': [
 						{
-							'timestamp': 1592679600000,
-							'datetime': '2020-06-20T19:00:00Z',
+							'timestamp': 1673301600000,
+							'datetime': '2023-01-09T22:00:00Z',
 							'from_amount': 10000,
 							'from_token': 'GBP',
-							'to_amount': 1.3287871097020063,
+							'to_amount': 0.7076244410651445,
 							'to_token': 'BTC',
+							'price': 14131.79,
 						},
 						{
-							'timestamp': 1704063600000,
-							'datetime': '2023-12-31T23:00:00Z',
-							'from_amount': 1.3287871097020063,
+							'timestamp': 1673373600000,
+							'datetime': '2023-01-10T18:00:00Z',
+							'from_amount': 0.7076244410651445,
 							'from_token': 'BTC',
-							'to_amount': 47818.72952006868,
+							'to_amount': 10148.289777869611,
 							'to_token': 'GBP',
+							'price': 14341.35,
 						},
 					],
 					'buy_count': 1,
@@ -561,26 +563,46 @@ class RunBacktest(APIView):
 						{'type': 'operator', 'value': 'and'},
 						{'type': 'template', 'timeframe': '4h', 'value': 'macd'},
 					],
-					'stopped_by': None,
+					'stopped_by': 'profit',
 					'performance_report': {
 						'open_profit': 0,
-						'total_profit': -186.85826,
-						'max_equity_run_up': 302.059996,
-						'max_drawdown': -0.002595,
-						'total_trades': 6,
+						'total_profit': 148.2897778696115,
+						'max_equity_run_up': 94.5598540595347,
+						'max_drawdown': -28.420000000000073,
+						'max_drawdown_percentage': -0.0020064755078670555,
+						'total_trades': 1,
 						'winning_count': 1,
-						'losing_count': 2,
-						'profit_percent': -0.006192,
-						'percent_profitable': 0.3333,
-						'average_profit': -62.28608,
-						'average_winning_trade': 109.7832,
-						'average_losing_trade': -148.32075,
-						'ratio_average_win_loss': -0.7401745,
-						'largest_winning_trade': 109.7832,
-						'largest_losing_trade': -170.9276,
-						'largest_winning_trade_percent': 0.010978,
-						'largest_losing_trade_percent': -0.01712003,
+						'losing_count': 0,
+						'profit_percent': 0.01482897778696115,
+						'percent_profitable': 1,
+						'average_profit': 148.2897778696115,
+						'average_winning_trade': 148.2897778696115,
+						'average_losing_trade': None,
+						'ratio_average_win_loss': None,
+						'largest_winning_trade': 148.2897778696115,
+						'largest_losing_trade': None,
+						'largest_winning_trade_percent': 0.01482897778696115,
+						'largest_losing_trade_percent': None,
 						'total_bars': 20,
+						'trade_reports': [
+							{
+								'buy_time': '2023-01-09T22:00:00Z',
+								'buy_timestamp': 1673301600000,
+								'sell_time': '2023-01-10T18:00:00Z',
+								'sell_timestamp': 1673373600000,
+								'profit': 148.2897778696115,
+								'profit_percent': 0.01482897778696115,
+								'cumulative_profit': 148.2897778696115,
+								'cumulative_profit_percentage': 0.01482897778696115,
+								'run_up': 94.5598540595347,
+								'drawdown': -28.420000000000073,
+								'drawdown_percentage': -0.0020064755078670555,
+								'starting_amount': 10000,
+								'starting_price': 14131.79,
+								'final_amount': 10148.289777869611,
+								'final_price': 14341.35,
+							}
+						],
 					},
 				},
 			}
@@ -802,7 +824,13 @@ class RunBacktest(APIView):
 			'buy_strategy': buy_strategy,
 			'sell_strategy': sell_strategy,
 			'stopped_by': stopped_by,
-			'performance_report': analyse_strategy(capital_amount, df['Close'].to_numpy(), holdings, trade_types),
+			'performance_report': analyse_strategy(
+				capital_amount,
+				df['Close'].to_numpy(),
+				holdings,
+				trade_types,
+				trade_events,
+			),
 		}
 
 		if user_exists:

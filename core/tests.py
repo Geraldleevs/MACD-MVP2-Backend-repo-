@@ -1,11 +1,9 @@
 import inspect
 import json
-from datetime import datetime
 from functools import partial
 
 import numpy as np
 import pandas as pd
-import pytz
 from django.conf import settings
 from django.test import SimpleTestCase
 
@@ -1607,67 +1605,9 @@ class TestEvaluation(SimpleTestCase):
 			unit_types,
 		)
 
-		results = trade_results['results']
-		trades = trade_results['trades']
-		holdings = trade_results['holdings']
-		units = trade_results['units']
-		trade_types = trade_results['trade_types']
-		stopped_by = trade_results['stopped_by']
-
-		self.assertEqual(results[-1], '9936.70337099946 GBP')
-
-		self.assertListEqual(
-			trades,
-			[
-				{
-					'timestamp': 1690848000000,
-					'datetime': datetime(2023, 8, 1, 0, 0, tzinfo=pytz.UTC),
-					'from_amount': 10000,
-					'from_token': 'GBP',
-					'to_amount': np.float64(0.3468007629616785),
-					'to_token': 'BTC',
-				},
-				{
-					'timestamp': 1690992000000,
-					'datetime': datetime(2023, 8, 2, 16, 0, tzinfo=pytz.UTC),
-					'from_amount': np.float64(0.3468007629616785),
-					'from_token': 'BTC',
-					'to_amount': np.float64(10109.783249523149),
-					'to_token': 'GBP',
-				},
-				{
-					'timestamp': 1723032000000,
-					'datetime': datetime(2024, 8, 7, 12, 0, tzinfo=pytz.UTC),
-					'from_amount': np.float64(10109.783249523149),
-					'from_token': 'GBP',
-					'to_amount': np.float64(0.18022770948173436),
-					'to_token': 'BTC',
-				},
-				{
-					'timestamp': 1723060800000,
-					'datetime': datetime(2024, 8, 7, 20, 0, tzinfo=pytz.UTC),
-					'from_amount': np.float64(0.18022770948173436),
-					'from_token': 'BTC',
-					'to_amount': np.float64(9936.70337099946),
-					'to_token': 'GBP',
-				},
-			],
-		)
-
-		self.assertEqual(holdings[-2], 0.18022770948173436)
-		self.assertEqual(holdings[-1], 9936.70337099946)
-		self.assertEqual(units[-2], 'BTC')
-		self.assertEqual(units[-1], 'GBP')
-
-		self.assertEqual(trade_types[0], 'buy')
-		self.assertEqual(trade_types[10], 'sell')
-		self.assertEqual(trade_types[-3], 'buy')
-		self.assertEqual(trade_types[-1], 'sell')
-		for i in range(self.MAX_LENGTH):
-			if i in [0, 10, self.MAX_LENGTH - 3, self.MAX_LENGTH - 1]:
-				continue
-			self.assertEqual(trade_types[i], 'hold')
-		self.assertIsNone(stopped_by)
+		with open(ORACLE_DIR / 'evaluations' / 'evaluation_full.txt') as file:
+			text = file.read()
+		self.assertEqual(text, json.dumps(trade_results, indent=2, default=str))
 
 	def test_calculate_amount_loss(self):
 		capital = 10000
@@ -1686,65 +1626,9 @@ class TestEvaluation(SimpleTestCase):
 			9900,
 		)
 
-		results = trade_results['results']
-		trades = trade_results['trades']
-		holdings = trade_results['holdings']
-		units = trade_results['units']
-		trade_types = trade_results['trade_types']
-		stopped_by = trade_results['stopped_by']
-
-		self.assertEqual(results[-1], '9869.128793606378 GBP')
-
-		self.assertListEqual(
-			trades,
-			[
-				{
-					'timestamp': 1690848000000,
-					'datetime': datetime(2023, 8, 1, 0, 0, tzinfo=pytz.UTC),
-					'from_amount': 10000,
-					'from_token': 'GBP',
-					'to_amount': np.float64(0.3468007629616785),
-					'to_token': 'BTC',
-				},
-				{
-					'timestamp': 1690992000000,
-					'datetime': datetime(2023, 8, 2, 16, 0, tzinfo=pytz.UTC),
-					'from_amount': np.float64(0.3468007629616785),
-					'from_token': 'BTC',
-					'to_amount': np.float64(10109.783249523149),
-					'to_token': 'GBP',
-				},
-				{
-					'timestamp': 1723032000000,
-					'datetime': datetime(2024, 8, 7, 12, 0, tzinfo=pytz.UTC),
-					'from_amount': np.float64(10109.783249523149),
-					'from_token': 'GBP',
-					'to_amount': np.float64(0.18022770948173436),
-					'to_token': 'BTC',
-				},
-				{
-					'timestamp': 1723046400000,
-					'datetime': datetime(2024, 8, 7, 16, 0, tzinfo=pytz.UTC),
-					'from_amount': np.float64(0.18022770948173436),
-					'from_token': 'BTC',
-					'to_amount': np.float64(9869.128793606378),
-					'to_token': 'GBP',
-				},
-			],
-		)
-
-		self.assertEqual(holdings[-1], 9869.128793606378)
-		self.assertEqual(units[-1], 'GBP')
-
-		self.assertEqual(trade_types[0], 'buy')
-		self.assertEqual(trade_types[10], 'sell')
-		self.assertEqual(trade_types[-3], 'buy')
-		self.assertEqual(trade_types[-2], 'sell')
-		for i in range(self.MAX_LENGTH):
-			if i in [0, 10, self.MAX_LENGTH - 3, self.MAX_LENGTH - 2]:
-				continue
-			self.assertEqual(trade_types[i], 'hold')
-		self.assertEqual(stopped_by, 'loss')
+		with open(ORACLE_DIR / 'evaluations' / 'evaluation_loss.txt') as file:
+			text = file.read()
+		self.assertEqual(text, json.dumps(trade_results, indent=2, default=str))
 
 	def test_calculate_amount_profit(self):
 		capital = 10000
@@ -1763,47 +1647,9 @@ class TestEvaluation(SimpleTestCase):
 			take_profit=10100,
 		)
 
-		results = trade_results['results']
-		trades = trade_results['trades']
-		holdings = trade_results['holdings']
-		units = trade_results['units']
-		trade_types = trade_results['trade_types']
-		stopped_by = trade_results['stopped_by']
-
-		self.assertEqual(results[-1], '10152.38772325299 GBP')
-
-		self.assertListEqual(
-			trades,
-			[
-				{
-					'timestamp': 1690848000000,
-					'datetime': datetime(2023, 8, 1, 0, 0, tzinfo=pytz.UTC),
-					'from_amount': 10000,
-					'from_token': 'GBP',
-					'to_amount': np.float64(0.3468007629616785),
-					'to_token': 'BTC',
-				},
-				{
-					'timestamp': 1690905600000,
-					'datetime': datetime(2023, 8, 1, 16, 0, tzinfo=pytz.UTC),
-					'from_amount': np.float64(0.3468007629616785),
-					'from_token': 'BTC',
-					'to_amount': np.float64(10152.38772325299),
-					'to_token': 'GBP',
-				},
-			],
-		)
-
-		self.assertEqual(holdings[-1], 10152.38772325299)
-		self.assertEqual(units[-1], 'GBP')
-
-		self.assertEqual(trade_types[0], 'buy')
-		self.assertEqual(trade_types[4], 'sell')
-		for i in range(self.MAX_LENGTH):
-			if i in [0, 4]:
-				continue
-			self.assertEqual(trade_types[i], 'hold')
-		self.assertEqual(stopped_by, 'profit')
+		with open(ORACLE_DIR / 'evaluations' / 'evaluation_profit.txt') as file:
+			text = file.read()
+		self.assertEqual(text, json.dumps(trade_results, indent=2, default=str))
 
 
 class TestAnalysis(SimpleTestCase):
@@ -1837,27 +1683,13 @@ class TestAnalysis(SimpleTestCase):
 		trade_results = calculate_amount(capital, open_times, close_data, buy_signals, sell_signals, unit_types)
 		holdings = trade_results['holdings']
 		trade_types = trade_results['trade_types']
+		trades = trade_results['trades']
 
-		report = analyse_strategy(capital, self.ohlc_data['Close'].to_numpy(), holdings, trade_types)
+		report = analyse_strategy(capital, self.ohlc_data['Close'].to_numpy(), holdings, trade_types, trades)
 
-		self.assertEqual(report['open_profit'], 0)
-		self.assertEqual(report['total_profit'], -186.8582653966605)
-		self.assertEqual(report['max_equity_run_up'], 302.0599965319925)
-		self.assertEqual(report['max_drawdown'], -0.0025956118919180635)
-		self.assertEqual(report['total_trades'], 6)
-		self.assertEqual(report['winning_count'], 1)
-		self.assertEqual(report['losing_count'], 2)
-		self.assertEqual(report['profit_percent'], -0.006192195247635431)
-		self.assertEqual(report['percent_profitable'], 0.3333333333333333)
-		self.assertEqual(report['average_profit'], -62.2860884655535)
-		self.assertEqual(report['average_winning_trade'], 109.7832495231487)
-		self.assertEqual(report['average_losing_trade'], -148.3207574599046)
-		self.assertEqual(report['ratio_average_win_loss'], -0.7401745474016089)
-		self.assertEqual(report['largest_winning_trade'], 109.7832495231487)
-		self.assertEqual(report['largest_losing_trade'], -170.92765235579827)
-		self.assertEqual(report['largest_winning_trade_percent'], 0.01097832495231487)
-		self.assertEqual(report['largest_losing_trade_percent'], -0.017120038506448918)
-		self.assertEqual(report['total_bars'], 20)
+		with open(ORACLE_DIR / 'analysis' / 'report_full.txt') as file:
+			text = file.read()
+		self.assertEqual(text, json.dumps(report, indent=2, default=str))
 
 	def test_analysis_report_no_trade(self):
 		capital = 10000
@@ -1866,26 +1698,12 @@ class TestAnalysis(SimpleTestCase):
 			self.ohlc_data['Close'].to_numpy(),
 			[capital] * self.MAX_LENGTH,
 			['hold'] * self.MAX_LENGTH,
+			[],
 		)
 
-		self.assertEqual(report['open_profit'], 0)
-		self.assertEqual(report['total_profit'], 0)
-		self.assertIsNone(report['max_equity_run_up'])
-		self.assertIsNone(report['max_drawdown'])
-		self.assertEqual(report['total_trades'], 0)
-		self.assertEqual(report['winning_count'], 0)
-		self.assertEqual(report['losing_count'], 0)
-		self.assertIsNone(report['profit_percent'])
-		self.assertIsNone(report['percent_profitable'])
-		self.assertIsNone(report['average_profit'])
-		self.assertIsNone(report['average_winning_trade'])
-		self.assertIsNone(report['average_losing_trade'])
-		self.assertIsNone(report['ratio_average_win_loss'])
-		self.assertIsNone(report['largest_winning_trade'])
-		self.assertIsNone(report['largest_losing_trade'])
-		self.assertIsNone(report['largest_winning_trade_percent'])
-		self.assertIsNone(report['largest_losing_trade_percent'])
-		self.assertEqual(report['total_bars'], 0)
+		with open(ORACLE_DIR / 'analysis' / 'report_no_trade.txt') as file:
+			text = file.read()
+		self.assertEqual(text, json.dumps(report, indent=2, default=str))
 
 	def test_analysis_report_only_win(self):
 		capital = 10000
@@ -1898,27 +1716,13 @@ class TestAnalysis(SimpleTestCase):
 		trade_results = calculate_amount(capital, open_times, close_data, buy_signals, sell_signals, unit_types)
 		holdings = trade_results['holdings']
 		trade_types = trade_results['trade_types']
+		trades = trade_results['trades']
 
-		report = analyse_strategy(capital, self.ohlc_data['Close'].to_numpy(), holdings, trade_types)
+		report = analyse_strategy(capital, self.ohlc_data['Close'].to_numpy(), holdings, trade_types, trades)
 
-		self.assertEqual(report['open_profit'], 0)
-		self.assertEqual(report['total_profit'], 109.7832495231487)
-		self.assertEqual(report['max_equity_run_up'], 302.0599965319925)
-		self.assertEqual(report['max_drawdown'], -0.0025956118919180635)
-		self.assertEqual(report['total_trades'], 2)
-		self.assertEqual(report['winning_count'], 1)
-		self.assertEqual(report['losing_count'], 0)
-		self.assertEqual(report['profit_percent'], 0.01097832495231487)
-		self.assertEqual(report['percent_profitable'], 1)
-		self.assertEqual(report['average_profit'], 109.7832495231487)
-		self.assertEqual(report['average_winning_trade'], 109.7832495231487)
-		self.assertIsNone(report['average_losing_trade'])
-		self.assertIsNone(report['ratio_average_win_loss'])
-		self.assertEqual(report['largest_winning_trade'], 109.7832495231487)
-		self.assertIsNone(report['largest_losing_trade'])
-		self.assertEqual(report['largest_winning_trade_percent'], 0.01097832495231487)
-		self.assertIsNone(report['largest_losing_trade_percent'])
-		self.assertEqual(report['total_bars'], 10)
+		with open(ORACLE_DIR / 'analysis' / 'report_only_win.txt') as file:
+			text = file.read()
+		self.assertEqual(text, json.dumps(report, indent=2, default=str))
 
 	def test_analysis_report_only_loss(self):
 		capital = 10000
@@ -1931,24 +1735,10 @@ class TestAnalysis(SimpleTestCase):
 		trade_results = calculate_amount(capital, open_times, close_data, buy_signals, sell_signals, unit_types)
 		holdings = trade_results['holdings']
 		trade_types = trade_results['trade_types']
+		trades = trade_results['trades']
 
-		report = analyse_strategy(capital, self.ohlc_data['Close'].to_numpy(), holdings, trade_types)
+		report = analyse_strategy(capital, self.ohlc_data['Close'].to_numpy(), holdings, trade_types, trades)
 
-		self.assertEqual(report['open_profit'], 0)
-		self.assertEqual(report['total_profit'], -171.20038506448873)
-		self.assertIsNone(report['max_equity_run_up'])
-		self.assertIsNone(report['max_drawdown'])
-		self.assertEqual(report['total_trades'], 2)
-		self.assertEqual(report['winning_count'], 0)
-		self.assertEqual(report['losing_count'], 1)
-		self.assertEqual(report['profit_percent'], -0.017120038506448873)
-		self.assertEqual(report['percent_profitable'], 0)
-		self.assertEqual(report['average_profit'], -171.20038506448873)
-		self.assertIsNone(report['average_winning_trade'])
-		self.assertEqual(report['average_losing_trade'], -171.20038506448873)
-		self.assertEqual(report['ratio_average_win_loss'], 0)
-		self.assertIsNone(report['largest_winning_trade'])
-		self.assertEqual(report['largest_losing_trade'], -171.20038506448873)
-		self.assertIsNone(report['largest_winning_trade_percent'])
-		self.assertEqual(report['largest_losing_trade_percent'], -0.017120038506448873)
-		self.assertEqual(report['total_bars'], 2)
+		with open(ORACLE_DIR / 'analysis' / 'report_only_loss.txt') as file:
+			text = file.read()
+		self.assertEqual(text, json.dumps(report, indent=2, default=str))

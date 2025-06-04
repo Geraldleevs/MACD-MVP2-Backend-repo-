@@ -570,6 +570,7 @@ def calculate_amount(
 					'from_token': unit_types[1],
 					'to_amount': base_amount,
 					'to_token': unit_types[0],
+					'price': close_data[i],
 				}
 			)
 		elif bought and take_profit is not None and sec_amount * close_data[i] >= take_profit:
@@ -592,6 +593,7 @@ def calculate_amount(
 					'from_token': unit_types[1],
 					'to_amount': base_amount,
 					'to_token': unit_types[0],
+					'price': close_data[i],
 				}
 			)
 		elif not bought and buy_signals[i] != 0:
@@ -613,6 +615,7 @@ def calculate_amount(
 					'from_token': unit_types[0],
 					'to_amount': sec_amount,
 					'to_token': unit_types[1],
+					'price': close_data[i],
 				}
 			)
 		elif bought and sell_signals[i] != 0:
@@ -633,6 +636,7 @@ def calculate_amount(
 					'from_token': unit_types[1],
 					'to_amount': base_amount,
 					'to_token': unit_types[0],
+					'price': close_data[i],
 				}
 			)
 		else:
@@ -667,6 +671,7 @@ def calculate_amount(
 				'from_token': unit_types[1],
 				'to_amount': base_amount,
 				'to_token': unit_types[0],
+				'price': close_data[-1],
 			}
 		)
 
@@ -685,9 +690,14 @@ def analyse_strategy(
 	close_prices: np.ndarray[np.float64],
 	holdings: list[float],
 	trade_types: list[str],
+	trades: list,
 ):
-	max_run_up = None  # Max Equity Run-Up: Maximum potential profit within trades
+	max_run_up = None
+	run_ups = []  # Max Equity Run-Up: Maximum potential profit within trades
 	max_drawdowns = []  # Max Equity Drawdowns: Largest peak-to-trough decline within trades
+	max_drawdowns_perc = []  # Max Equity Drawdowns: Largest peak-to-trough decline within trades
+	drawdowns = []
+	drawdowns_perc = []
 	buy_amounts = []
 
 	profits = []
@@ -707,6 +717,13 @@ def analyse_strategy(
 			this_profit = holdings[i] - buy_amount
 			profits.append(this_profit)
 			buy_amount = None
+
+			run_ups.append(max_run_up)
+			max_run_up = None
+			max_drawdowns.append(float(np.min(drawdowns)) if len(drawdowns) > 0 else None)
+			drawdowns = []
+			max_drawdowns_perc.append(float(np.min(drawdowns_perc)) if len(drawdowns_perc) > 0 else None)
+			drawdowns_perc = []
 		elif buy_amount is not None:
 			total_bars += 1
 			amount_if_traded = holdings[i] * close_prices[i]
@@ -717,7 +734,8 @@ def analyse_strategy(
 
 			if close_prices[i] >= highest:
 				if highest != lowest:
-					max_drawdowns.append((lowest - highest) / highest)
+					drawdowns.append(lowest - highest)
+					drawdowns_perc.append((lowest - highest) / highest)
 				highest = close_prices[i]
 				lowest = close_prices[i]
 			else:
@@ -725,11 +743,21 @@ def analyse_strategy(
 
 	# Open P&L: Profit/Loss of remaining open trades
 	open_profit = buy_amount * close_prices[-1] if buy_amount is not None else 0
-	max_drawdown = float(np.average(max_drawdowns)) if len(max_drawdowns) > 0 else None
 
-	total_trades = len(profits) * 2
-	total_trades += 1 if buy_amount is not None else 0
+	max_drawdown = None
+	max_drawdown_perc = None
+	valid_drawdowns = [drawdown for drawdown in max_drawdowns if drawdown is not None]
+	valid_drawdowns_perc = [drawdown for drawdown in max_drawdowns_perc if drawdown is not None]
+	if len(valid_drawdowns) > 0:
+		max_drawdown = float(np.min(valid_drawdowns))
+		max_drawdown_perc = float(np.min(valid_drawdowns_perc))
 
+	max_run_up = None
+	valid_run_ups = [run_up for run_up in run_ups if run_up is not None]
+	if len(valid_run_ups) > 0:
+		max_run_up = float(max(valid_run_ups))
+
+	total_trades = len(profits)
 	winning_trades = [profit for profit in profits if profit >= 0]
 	losing_trades = [profit for profit in profits if profit < 0]
 	winning_count = len(winning_trades)
@@ -767,12 +795,40 @@ def analyse_strategy(
 		largest_losing_trade_percent = float(min(profit_percent)) if len(losing_trades) > 0 else None
 		profit_percent = float(np.average(profit_percent))
 
+	trade_reports = []
+	cum_profit = 0
+	for i in range(0, len(trades), 2):
+		profit = float(profits[int(i / 2)])
+		cum_profit += profit
+
+		# i: Buy; i+1: Sell; Trade[0]: First buy
+		trade_reports.append(
+			{
+				'buy_time': trades[i]['datetime'],
+				'buy_timestamp': trades[i]['timestamp'],
+				'sell_time': trades[i + 1]['datetime'],
+				'sell_timestamp': trades[i + 1]['timestamp'],
+				'profit': profit,
+				'profit_percent': profit / trades[i]['from_amount'],
+				'cumulative_profit': cum_profit,
+				'cumulative_profit_percentage': cum_profit / trades[0]['from_amount'],
+				'run_up': run_ups[int(i / 2)],
+				'drawdown': max_drawdowns[int(i / 2)],
+				'drawdown_percentage': max_drawdowns_perc[int(i / 2)],
+				'starting_amount': trades[i]['from_amount'],
+				'starting_price': trades[i]['price'],
+				'final_amount': trades[i + 1]['to_amount'],
+				'final_price': trades[i + 1]['price'],
+			}
+		)
+
 	return {
 		# Performance
 		'open_profit': open_profit,
 		'total_profit': total_profit,
 		'max_equity_run_up': max_run_up,
 		'max_drawdown': max_drawdown,
+		'max_drawdown_percentage': max_drawdown_perc,
 		# Trade analysis
 		'total_trades': total_trades,
 		'winning_count': winning_count,
@@ -788,4 +844,5 @@ def analyse_strategy(
 		'largest_winning_trade_percent': largest_winning_trade_percent,
 		'largest_losing_trade_percent': largest_losing_trade_percent,
 		'total_bars': total_bars,
+		'trade_reports': trade_reports,
 	}
