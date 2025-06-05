@@ -542,6 +542,7 @@ def calculate_amount(
 	last_price = None
 	stopped = False
 	stopped_by = None
+	trade_count = 0
 
 	for i in range(len(holdings)):
 		if stopped:
@@ -557,6 +558,7 @@ def calculate_amount(
 			holdings[i] = base_amount
 
 			trade_types[i] = 'sell'
+			trade_count += 1
 			bought = False
 			stopped = True
 			stopped_by = 'loss'
@@ -580,6 +582,7 @@ def calculate_amount(
 			holdings[i] = base_amount
 
 			trade_types[i] = 'sell'
+			trade_count += 1
 			bought = False
 			stopped = True
 			stopped_by = 'profit'
@@ -625,6 +628,7 @@ def calculate_amount(
 			holdings[i] = base_amount
 
 			trade_types[i] = 'sell'
+			trade_count += 1
 			bought = False
 
 			trade_time = datetime.fromtimestamp(open_times[i] / 1000).astimezone(pytz.UTC)
@@ -648,7 +652,7 @@ def calculate_amount(
 		if not (np.isnan(close_data[i]) or close_data[i] is None):
 			last_price = close_data[i]
 
-		if trade_limit is not None and not stopped and len(trades) >= trade_limit:
+		if trade_limit is not None and not stopped and trade_count >= trade_limit:
 			stopped = True
 			stopped_by = 'trade limit hit'
 
