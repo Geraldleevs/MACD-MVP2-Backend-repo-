@@ -26,3 +26,6 @@ media
 # Binance Data
 binance_public_data/data
 *binance_data_not_exists.txt
+.
+# Jupyter Notebooks
+*.ipynb
