@@ -31,7 +31,7 @@
       "run_up": 302.0599965319925,
       "drawdown": -75.11000000000058,
       "drawdown_percentage": -0.0025956118919180635,
-      "starting_amount": 10000,
+      "starting_amount": 10000.0,
       "starting_price": 28835.0,
       "final_amount": 10109.783249523149,
       "final_price": 29151.56

@@ -25,6 +25,7 @@ from core.technical_analysis import TechnicalAnalysis, TechnicalAnalysisTemplate
 
 CORE_DIR = settings.BASE_DIR / 'core'
 ORACLE_DIR = CORE_DIR / 'oracles'
+WRITE_TEST = False
 
 
 class TestTechnicalAnalysis(SimpleTestCase):
@@ -38,16 +39,24 @@ class TestTechnicalAnalysis(SimpleTestCase):
 		cls.TA_templates = TechnicalAnalysisTemplate(cls.TA)
 
 	def test_indicator_options(self):
+		ref_file = ORACLE_DIR / 'technical_analysis' / 'indicators.txt'
+
 		options = self.TA.options
 		for ta in options:
 			self.assertIsNotNone(getattr(self.TA, ta))
 			self.assertIsNotNone(options[ta].get('name'))
 
-		with open(ORACLE_DIR / 'technical_analysis' / 'indicators.txt') as file:
+		if WRITE_TEST:
+			with open(ref_file, 'w') as file:
+				file.write(json.dumps(options, indent=2))
+
+		with open(ref_file) as file:
 			text = file.read()
 		self.assertEqual(text, json.dumps(options, indent=2))
 
 	def test_technical_templates(self):
+		ref_file = ORACLE_DIR / 'technical_analysis' / 'templates.txt'
+
 		templates = self.TA_templates.templates
 		for ta in templates:
 			self.assertIsNotNone(templates[ta]['description'])
@@ -64,7 +73,11 @@ class TestTechnicalAnalysis(SimpleTestCase):
 			for template in templates
 		}
 
-		with open(ORACLE_DIR / 'technical_analysis' / 'templates.txt') as file:
+		if WRITE_TEST:
+			with open(ref_file, 'w') as file:
+				file.write(json.dumps(templates, indent=2))
+
+		with open(ref_file) as file:
 			text = file.read()
 		self.assertEqual(text, json.dumps(templates, indent=2))
 
@@ -1590,6 +1603,8 @@ class TestEvaluation(SimpleTestCase):
 		self.assertTrue(np.array_equal(result, compare_result))
 
 	def test_calculate_amount(self):
+		ref_file = ORACLE_DIR / 'evaluations' / 'evaluation_full.txt'
+
 		capital = 10000
 		open_times = self.ohlc_data['Open Time'].to_numpy()
 		close_data = self.ohlc_data['Close'].to_numpy()
@@ -1605,11 +1620,17 @@ class TestEvaluation(SimpleTestCase):
 			unit_types,
 		)
 
-		with open(ORACLE_DIR / 'evaluations' / 'evaluation_full.txt') as file:
+		if WRITE_TEST:
+			with open(ref_file, 'w') as file:
+				file.write(json.dumps(trade_results, indent=2, default=str))
+
+		with open(ref_file) as file:
 			text = file.read()
 		self.assertEqual(text, json.dumps(trade_results, indent=2, default=str))
 
 	def test_calculate_amount_loss(self):
+		ref_file = ORACLE_DIR / 'evaluations' / 'evaluation_loss.txt'
+
 		capital = 10000
 		open_times = self.ohlc_data['Open Time'].to_numpy()
 		close_data = self.ohlc_data['Close'].to_numpy()
@@ -1626,11 +1647,17 @@ class TestEvaluation(SimpleTestCase):
 			9900,
 		)
 
-		with open(ORACLE_DIR / 'evaluations' / 'evaluation_loss.txt') as file:
+		if WRITE_TEST:
+			with open(ref_file, 'w') as file:
+				file.write(json.dumps(trade_results, indent=2, default=str))
+
+		with open(ref_file) as file:
 			text = file.read()
 		self.assertEqual(text, json.dumps(trade_results, indent=2, default=str))
 
 	def test_calculate_amount_profit(self):
+		ref_file = ORACLE_DIR / 'evaluations' / 'evaluation_profit.txt'
+
 		capital = 10000
 		open_times = self.ohlc_data['Open Time'].to_numpy()
 		close_data = self.ohlc_data['Close'].to_numpy()
@@ -1647,7 +1674,11 @@ class TestEvaluation(SimpleTestCase):
 			take_profit=10100,
 		)
 
-		with open(ORACLE_DIR / 'evaluations' / 'evaluation_profit.txt') as file:
+		if WRITE_TEST:
+			with open(ref_file, 'w') as file:
+				file.write(json.dumps(trade_results, indent=2, default=str))
+
+		with open(ref_file) as file:
 			text = file.read()
 		self.assertEqual(text, json.dumps(trade_results, indent=2, default=str))
 
@@ -1664,6 +1695,8 @@ class TestAnalysis(SimpleTestCase):
 		cls.MAX_LENGTH = len(df['Open'])
 
 	def test_analysis_report(self):
+		ref_file = ORACLE_DIR / 'analysis' / 'report_full.txt'
+
 		capital = 10000
 		open_times = self.ohlc_data['Open Time'].to_numpy()
 		close_data = self.ohlc_data['Close'].to_numpy()
@@ -1687,11 +1720,17 @@ class TestAnalysis(SimpleTestCase):
 
 		report = analyse_strategy(capital, self.ohlc_data['Close'].to_numpy(), holdings, trade_types, trades)
 
-		with open(ORACLE_DIR / 'analysis' / 'report_full.txt') as file:
+		if WRITE_TEST:
+			with open(ref_file, 'w') as file:
+				file.write(json.dumps(report, indent=2, default=str))
+
+		with open(ref_file) as file:
 			text = file.read()
 		self.assertEqual(text, json.dumps(report, indent=2, default=str))
 
 	def test_analysis_report_no_trade(self):
+		ref_file = ORACLE_DIR / 'analysis' / 'report_no_trade.txt'
+
 		capital = 10000
 		report = analyse_strategy(
 			capital,
@@ -1701,11 +1740,17 @@ class TestAnalysis(SimpleTestCase):
 			[],
 		)
 
-		with open(ORACLE_DIR / 'analysis' / 'report_no_trade.txt') as file:
+		if WRITE_TEST:
+			with open(ref_file, 'w') as file:
+				file.write(json.dumps(report, indent=2, default=str))
+
+		with open(ref_file) as file:
 			text = file.read()
 		self.assertEqual(text, json.dumps(report, indent=2, default=str))
 
 	def test_analysis_report_only_win(self):
+		ref_file = ORACLE_DIR / 'analysis' / 'report_only_win.txt'
+
 		capital = 10000
 		open_times = self.ohlc_data['Open Time'].to_numpy()
 		close_data = self.ohlc_data['Close'].to_numpy()
@@ -1720,11 +1765,17 @@ class TestAnalysis(SimpleTestCase):
 
 		report = analyse_strategy(capital, self.ohlc_data['Close'].to_numpy(), holdings, trade_types, trades)
 
-		with open(ORACLE_DIR / 'analysis' / 'report_only_win.txt') as file:
+		if WRITE_TEST:
+			with open(ref_file, 'w') as file:
+				file.write(json.dumps(report, indent=2, default=str))
+
+		with open(ref_file) as file:
 			text = file.read()
 		self.assertEqual(text, json.dumps(report, indent=2, default=str))
 
 	def test_analysis_report_only_loss(self):
+		ref_file = ORACLE_DIR / 'analysis' / 'report_only_loss.txt'
+
 		capital = 10000
 		open_times = self.ohlc_data['Open Time'].to_numpy()
 		close_data = self.ohlc_data['Close'].to_numpy()
@@ -1739,6 +1790,10 @@ class TestAnalysis(SimpleTestCase):
 
 		report = analyse_strategy(capital, self.ohlc_data['Close'].to_numpy(), holdings, trade_types, trades)
 
-		with open(ORACLE_DIR / 'analysis' / 'report_only_loss.txt') as file:
+		if WRITE_TEST:
+			with open(ref_file, 'w') as file:
+				file.write(json.dumps(report, indent=2, default=str))
+
+		with open(ref_file) as file:
 			text = file.read()
 		self.assertEqual(text, json.dumps(report, indent=2, default=str))

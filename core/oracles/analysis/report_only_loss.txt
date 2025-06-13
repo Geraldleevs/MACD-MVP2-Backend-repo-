@@ -31,7 +31,7 @@
       "run_up": null,
       "drawdown": null,
       "drawdown_percentage": null,
-      "starting_amount": 10000,
+      "starting_amount": 10000.0,
       "starting_price": 56094.5,
       "final_amount": 9828.799614935511,
       "final_price": 55134.16

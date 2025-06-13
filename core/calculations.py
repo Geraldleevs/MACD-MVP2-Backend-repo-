@@ -568,11 +568,11 @@ def calculate_amount(
 				{
 					'timestamp': int(open_times[i]),
 					'datetime': trade_time,
-					'from_amount': old_amount,
+					'from_amount': float(old_amount),
 					'from_token': unit_types[1],
-					'to_amount': base_amount,
+					'to_amount': float(base_amount),
 					'to_token': unit_types[0],
-					'price': close_data[i],
+					'price': float(close_data[i]),
 				}
 			)
 		elif bought and take_profit is not None and sec_amount * close_data[i] >= take_profit:
@@ -592,11 +592,11 @@ def calculate_amount(
 				{
 					'timestamp': int(open_times[i]),
 					'datetime': trade_time,
-					'from_amount': old_amount,
+					'from_amount': float(old_amount),
 					'from_token': unit_types[1],
-					'to_amount': base_amount,
+					'to_amount': float(base_amount),
 					'to_token': unit_types[0],
-					'price': close_data[i],
+					'price': float(close_data[i]),
 				}
 			)
 		elif not bought and buy_signals[i] != 0:
@@ -614,11 +614,11 @@ def calculate_amount(
 				{
 					'timestamp': int(open_times[i]),
 					'datetime': trade_time,
-					'from_amount': old_amount,
+					'from_amount': float(old_amount),
 					'from_token': unit_types[0],
-					'to_amount': sec_amount,
+					'to_amount': float(sec_amount),
 					'to_token': unit_types[1],
-					'price': close_data[i],
+					'price': float(close_data[i]),
 				}
 			)
 		elif bought and sell_signals[i] != 0:
@@ -636,11 +636,11 @@ def calculate_amount(
 				{
 					'timestamp': int(open_times[i]),
 					'datetime': trade_time,
-					'from_amount': old_amount,
+					'from_amount': float(old_amount),
 					'from_token': unit_types[1],
-					'to_amount': base_amount,
+					'to_amount': float(base_amount),
 					'to_token': unit_types[0],
-					'price': close_data[i],
+					'price': float(close_data[i]),
 				}
 			)
 		else:
@@ -671,18 +671,18 @@ def calculate_amount(
 			{
 				'timestamp': int(open_times[-1]),
 				'datetime': trade_time,
-				'from_amount': sec_amount,
+				'from_amount': float(sec_amount),
 				'from_token': unit_types[1],
-				'to_amount': base_amount,
+				'to_amount': float(base_amount),
 				'to_token': unit_types[0],
-				'price': close_data[-1],
+				'price': float(last_price),
 			}
 		)
 
 	return {
 		'results': results,
 		'trades': trades,
-		'holdings': holdings,
+		'holdings': [float(holding) for holding in holdings],
 		'units': units,
 		'trade_types': trade_types,
 		'stopped_by': stopped_by,
