@@ -1,0 +1,40 @@
+{
+  "open_profit": 0,
+  "total_profit": -171.20038506448873,
+  "max_equity_run_up": null,
+  "max_drawdown": null,
+  "max_drawdown_percentage": null,
+  "total_trades": 1,
+  "winning_count": 0,
+  "losing_count": 1,
+  "profit_percent": -0.017120038506448873,
+  "percent_profitable": 0.0,
+  "average_profit": -171.20038506448873,
+  "average_winning_trade": null,
+  "average_losing_trade": -171.20038506448873,
+  "ratio_average_win_loss": 0,
+  "largest_winning_trade": null,
+  "largest_losing_trade": -171.20038506448873,
+  "largest_winning_trade_percent": null,
+  "largest_losing_trade_percent": -0.017120038506448873,
+  "total_bars": 2,
+  "trade_reports": [
+    {
+      "buy_time": "2024-08-07 12:00:00+00:00",
+      "buy_timestamp": 1723032000000,
+      "sell_time": "2024-08-07 20:00:00+00:00",
+      "sell_timestamp": 1723060800000,
+      "profit": -171.20038506448873,
+      "profit_percent": -0.017120038506448873,
+      "cumulative_profit": -171.20038506448873,
+      "cumulative_profit_percentage": -0.017120038506448873,
+      "run_up": null,
+      "drawdown": null,
+      "drawdown_percentage": null,
+      "starting_amount": 10000.0,
+      "starting_price": 56094.5,
+      "final_amount": 9828.799614935511,
+      "final_price": 55134.16
+    }
+  ]
+}

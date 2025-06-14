@@ -1,43 +1,31 @@
-**/tempkeys.txt
-Kraken_OHLCVT
-**/.DS_Store
-.env
-venv
-
-
-
-coin_profit.csv
-coin_profit_may2020.csv
-
-output.txt
-kraken-react-app/src/tempkeys.txt
-kraken-react-app/server/tempkeys.txt
-
-trade_logs.log
-data/trade_logs_full_backup.log
-
-**/__pycache__
+# Django
+*.log
+*.pot
 __pycache__
-Krakenbot/unzipper
-Krakenbot/Binance_data_concatenator.py
+db.sqlite3
+media
 
-*.sqlite3
-*trade_logs.csv
-strategies_visualization
-coin_profit_recommended.csv
-performance_metrics_logs.csv
+# Python
+*.py[cod]
+*$py.class
+
+# Environments
+.env
+.venv
+.DS_Store
 *firebase-adminsdk*.json
-Krakenbot/krakenpair.py
-debug_log.txt
-trading_pairs.txt
-/data
-/output
-/talib
-data/Kraken/*.csv
-Krakenbot/kraken_data_api
-Krakenbot/LocalScripts/data/*/*.csv
-Krakenbot/LocalScripts/binance_data/**/*.csv
-Krakenbot/LocalScripts/discover/[a-zA-Z0-9]*.docx
-Krakenbot/LocalScripts/discover/~*
-Krakenbot/LocalScripts/discover/*.md
-backtest_results/
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history
+
+# Binance Data
+binance_public_data/data
+*binance_data_not_exists.txt
+.
+# Jupyter Notebooks
+*.ipynb

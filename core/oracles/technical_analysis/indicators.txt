@@ -1,0 +1,1407 @@
+{
+  "ad": {
+    "name": "Chaikin A/D Line",
+    "params": {
+      "shift": 0
+    },
+    "limits": []
+  },
+  "adx": {
+    "name": "ADX - Average Directional Movement Index",
+    "params": {
+      "timeperiod": 14
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 2.0
+      }
+    ]
+  },
+  "adxr": {
+    "name": "ADXR - Average Directional Movement Index Rating",
+    "params": {
+      "timeperiod": 14
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 2.0
+      }
+    ]
+  },
+  "apo": {
+    "name": "APO - Absolute Price Oscillator",
+    "params": {
+      "source": "Close",
+      "fastperiod": 12,
+      "timeperiod": 26
+    },
+    "limits": [
+      {
+        "variable": "fastperiod",
+        "operation": ">=",
+        "value": 2.0
+      },
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 2.0
+      },
+      {
+        "variable": "source",
+        "operation": "IN",
+        "value": [
+          "Open",
+          "High",
+          "Low",
+          "Close"
+        ]
+      }
+    ]
+  },
+  "aroon_down": {
+    "name": "Aroon Down",
+    "params": {
+      "timeperiod": 14
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 2.0
+      }
+    ]
+  },
+  "aroon_up": {
+    "name": "Aroon Up",
+    "params": {
+      "timeperiod": 14
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 2.0
+      }
+    ]
+  },
+  "aroonosc": {
+    "name": "Aroon Oscillator",
+    "params": {
+      "timeperiod": 14
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 2.0
+      }
+    ]
+  },
+  "atr": {
+    "name": "ATR - Average True Range",
+    "params": {
+      "timeperiod": 14,
+      "shift": 0
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 1.0
+      }
+    ]
+  },
+  "bbands_lower": {
+    "name": "Bollinger Bands (Lower Band)",
+    "params": {
+      "source": "Close",
+      "timeperiod": 20,
+      "nbdevup": 2,
+      "nbdevdn": 2
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 2.0
+      },
+      {
+        "variable": "source",
+        "operation": "IN",
+        "value": [
+          "Open",
+          "High",
+          "Low",
+          "Close"
+        ]
+      }
+    ]
+  },
+  "bbands_upper": {
+    "name": "Bollinger Bands (Upper Band)",
+    "params": {
+      "source": "Close",
+      "timeperiod": 20,
+      "nbdevup": 2,
+      "nbdevdn": 2
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 2.0
+      },
+      {
+        "variable": "source",
+        "operation": "IN",
+        "value": [
+          "Open",
+          "High",
+          "Low",
+          "Close"
+        ]
+      }
+    ]
+  },
+  "bop": {
+    "name": "BOP - Balance of Power",
+    "params": {},
+    "limits": []
+  },
+  "cci": {
+    "name": "CCI - Commodity Channel Index",
+    "params": {
+      "timeperiod": 14
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 2.0
+      }
+    ]
+  },
+  "cdl2crows": {
+    "name": "Two Crows",
+    "params": {},
+    "limits": []
+  },
+  "cdl3blackcrows": {
+    "name": "Three Black Crows",
+    "params": {},
+    "limits": []
+  },
+  "cdl3inside": {
+    "name": "Three Inside Up/Down",
+    "params": {},
+    "limits": []
+  },
+  "chikou_span": {
+    "name": "Chikou Span",
+    "params": {},
+    "limits": []
+  },
+  "cmo": {
+    "name": "CMO - Chande Momentum Oscillator",
+    "params": {
+      "source": "Close",
+      "timeperiod": 14
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 2.0
+      },
+      {
+        "variable": "source",
+        "operation": "IN",
+        "value": [
+          "Open",
+          "High",
+          "Low",
+          "Close"
+        ]
+      }
+    ]
+  },
+  "dema": {
+    "name": "DEMA - Double Exponential Moving Average",
+    "params": {
+      "source": "Close",
+      "timeperiod": 30
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 2.0
+      },
+      {
+        "variable": "source",
+        "operation": "IN",
+        "value": [
+          "Open",
+          "High",
+          "Low",
+          "Close"
+        ]
+      }
+    ]
+  },
+  "donchian_lower": {
+    "name": "Donchian Channels (Lower band)",
+    "params": {},
+    "limits": []
+  },
+  "donchian_upper": {
+    "name": "Donchian Channels (Upper band)",
+    "params": {},
+    "limits": []
+  },
+  "dx": {
+    "name": "DX - Directional Movement Index",
+    "params": {
+      "timeperiod": 14
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 2.0
+      }
+    ]
+  },
+  "ema": {
+    "name": "EMA - Exponential Moving Average",
+    "params": {
+      "source": "Close",
+      "timeperiod": 30
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 2.0
+      },
+      {
+        "variable": "source",
+        "operation": "IN",
+        "value": [
+          "Open",
+          "High",
+          "Low",
+          "Close"
+        ]
+      }
+    ]
+  },
+  "ht_trendline": {
+    "name": "HT Trendline - Hilbert Transform - Instantaneous Trendline",
+    "params": {
+      "source": "Close"
+    },
+    "limits": [
+      {
+        "variable": "source",
+        "operation": "IN",
+        "value": [
+          "Open",
+          "High",
+          "Low",
+          "Close"
+        ]
+      }
+    ]
+  },
+  "kama": {
+    "name": "KAMA - Kaufman Adaptive Moving Average",
+    "params": {
+      "source": "Close",
+      "timeperiod": 30
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 2.0
+      },
+      {
+        "variable": "source",
+        "operation": "IN",
+        "value": [
+          "Open",
+          "High",
+          "Low",
+          "Close"
+        ]
+      }
+    ]
+  },
+  "kijun_sen": {
+    "name": "Kijun-sen",
+    "params": {},
+    "limits": []
+  },
+  "ma": {
+    "name": "MA - All Moving Average",
+    "params": {
+      "source": "Close",
+      "timeperiod": 30
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 1.0
+      },
+      {
+        "variable": "source",
+        "operation": "IN",
+        "value": [
+          "Open",
+          "High",
+          "Low",
+          "Close"
+        ]
+      }
+    ]
+  },
+  "macd": {
+    "name": "MACD - Moving Average Convergence/Divergence",
+    "params": {
+      "source": "Close",
+      "fastperiod": 12,
+      "slowperiod": 26,
+      "signalperiod": 9
+    },
+    "limits": [
+      {
+        "variable": "fastperiod",
+        "operation": ">=",
+        "value": 2.0
+      },
+      {
+        "variable": "slowperiod",
+        "operation": ">=",
+        "value": 2.0
+      },
+      {
+        "variable": "signalperiod",
+        "operation": ">=",
+        "value": 1.0
+      },
+      {
+        "variable": "source",
+        "operation": "IN",
+        "value": [
+          "Open",
+          "High",
+          "Low",
+          "Close"
+        ]
+      }
+    ]
+  },
+  "macdext": {
+    "name": "MACDext - MACD with controllable MA type",
+    "params": {
+      "source": "Close",
+      "fastperiod": 12,
+      "slowperiod": 26,
+      "signalperiod": 9
+    },
+    "limits": [
+      {
+        "variable": "fastperiod",
+        "operation": ">=",
+        "value": 2.0
+      },
+      {
+        "variable": "slowperiod",
+        "operation": ">=",
+        "value": 2.0
+      },
+      {
+        "variable": "signalperiod",
+        "operation": ">=",
+        "value": 1.0
+      },
+      {
+        "variable": "source",
+        "operation": "IN",
+        "value": [
+          "Open",
+          "High",
+          "Low",
+          "Close"
+        ]
+      }
+    ]
+  },
+  "macdext_signal": {
+    "name": "MACDext (Signal) - MACD with controllable MA type (Signal)",
+    "params": {
+      "source": "Close",
+      "fastperiod": 12,
+      "slowperiod": 26,
+      "signalperiod": 9
+    },
+    "limits": [
+      {
+        "variable": "fastperiod",
+        "operation": ">=",
+        "value": 2.0
+      },
+      {
+        "variable": "slowperiod",
+        "operation": ">=",
+        "value": 2.0
+      },
+      {
+        "variable": "signalperiod",
+        "operation": ">=",
+        "value": 1.0
+      },
+      {
+        "variable": "source",
+        "operation": "IN",
+        "value": [
+          "Open",
+          "High",
+          "Low",
+          "Close"
+        ]
+      }
+    ]
+  },
+  "macdfix": {
+    "name": "MACD-Fixed - Moving Average Convergence/Divergence Fix 12/26",
+    "params": {
+      "source": "Close",
+      "signalperiod": 9
+    },
+    "limits": [
+      {
+        "variable": "signalperiod",
+        "operation": ">=",
+        "value": 1.0
+      },
+      {
+        "variable": "source",
+        "operation": "IN",
+        "value": [
+          "Open",
+          "High",
+          "Low",
+          "Close"
+        ]
+      }
+    ]
+  },
+  "macdfix_signal": {
+    "name": "MACD-Fixed (signal) - Moving Average Convergence/Divergence Fix 12/26 (Signal)",
+    "params": {
+      "source": "Close",
+      "signalperiod": 9
+    },
+    "limits": [
+      {
+        "variable": "signalperiod",
+        "operation": ">=",
+        "value": 1.0
+      },
+      {
+        "variable": "source",
+        "operation": "IN",
+        "value": [
+          "Open",
+          "High",
+          "Low",
+          "Close"
+        ]
+      }
+    ]
+  },
+  "macdsignal": {
+    "name": "MACD (Signal) - Moving Average Convergence/Divergence (Signal)",
+    "params": {
+      "source": "Close",
+      "fastperiod": 12,
+      "slowperiod": 26,
+      "signalperiod": 9
+    },
+    "limits": [
+      {
+        "variable": "fastperiod",
+        "operation": ">=",
+        "value": 2.0
+      },
+      {
+        "variable": "slowperiod",
+        "operation": ">=",
+        "value": 2.0
+      },
+      {
+        "variable": "signalperiod",
+        "operation": ">=",
+        "value": 1.0
+      },
+      {
+        "variable": "source",
+        "operation": "IN",
+        "value": [
+          "Open",
+          "High",
+          "Low",
+          "Close"
+        ]
+      }
+    ]
+  },
+  "mama_fast": {
+    "name": "MAMA - MESA Adaptive Moving Average (MAMA)",
+    "params": {
+      "source": "Close",
+      "fastlimit": 0.5,
+      "slowlimit": 0.05
+    },
+    "limits": [
+      {
+        "variable": "fastlimit",
+        "operation": ">",
+        "value": 0.0
+      },
+      {
+        "variable": "fastlimit",
+        "operation": "<",
+        "value": 1.0
+      },
+      {
+        "variable": "slowlimit",
+        "operation": ">",
+        "value": 0.0
+      },
+      {
+        "variable": "slowlimit",
+        "operation": "<",
+        "value": 1.0
+      },
+      {
+        "variable": "source",
+        "operation": "IN",
+        "value": [
+          "Open",
+          "High",
+          "Low",
+          "Close"
+        ]
+      }
+    ]
+  },
+  "mama_slow": {
+    "name": "MAMA - MESA Adaptive Moving Average (FAMA)",
+    "params": {
+      "source": "Close",
+      "fastlimit": 0.5,
+      "slowlimit": 0.05
+    },
+    "limits": [
+      {
+        "variable": "fastlimit",
+        "operation": ">",
+        "value": 0.0
+      },
+      {
+        "variable": "fastlimit",
+        "operation": "<",
+        "value": 1.0
+      },
+      {
+        "variable": "slowlimit",
+        "operation": ">",
+        "value": 0.0
+      },
+      {
+        "variable": "slowlimit",
+        "operation": "<",
+        "value": 1.0
+      },
+      {
+        "variable": "source",
+        "operation": "IN",
+        "value": [
+          "Open",
+          "High",
+          "Low",
+          "Close"
+        ]
+      }
+    ]
+  },
+  "mavp": {
+    "name": "MAVP - Moving Average with Variable Period",
+    "params": {
+      "source": "Close",
+      "periods": "High",
+      "minperiod": 2,
+      "maxperiod": 30
+    },
+    "limits": [
+      {
+        "variable": "minperiod",
+        "operation": ">",
+        "value": 2.0
+      },
+      {
+        "variable": "maxperiod",
+        "operation": ">",
+        "value": 2.0
+      },
+      {
+        "variable": "periods",
+        "operation": "IN",
+        "value": [
+          "Open",
+          "High",
+          "Low",
+          "Close"
+        ]
+      },
+      {
+        "variable": "source",
+        "operation": "IN",
+        "value": [
+          "Open",
+          "High",
+          "Low",
+          "Close"
+        ]
+      }
+    ]
+  },
+  "mfi": {
+    "name": "MFI - Money Flow Index",
+    "params": {
+      "timeperiod": 14
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 2.0
+      }
+    ]
+  },
+  "midpoint": {
+    "name": "MidPoint over period",
+    "params": {
+      "source": "Close",
+      "timeperiod": 14
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 2.0
+      },
+      {
+        "variable": "source",
+        "operation": "IN",
+        "value": [
+          "Open",
+          "High",
+          "Low",
+          "Close"
+        ]
+      }
+    ]
+  },
+  "midprice": {
+    "name": "Midpoint Price over period",
+    "params": {
+      "timeperiod": 14
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 2.0
+      }
+    ]
+  },
+  "minus_di": {
+    "name": "-DI - Minus Directional Indicator",
+    "params": {
+      "timeperiod": 14
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 1.0
+      }
+    ]
+  },
+  "minus_dm": {
+    "name": "-DM - Minus Directional Movement",
+    "params": {
+      "timeperiod": 14
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 1.0
+      }
+    ]
+  },
+  "mom": {
+    "name": "Momentum",
+    "params": {
+      "source": "Close",
+      "timeperiod": 10
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 1.0
+      },
+      {
+        "variable": "source",
+        "operation": "IN",
+        "value": [
+          "Open",
+          "High",
+          "Low",
+          "Close"
+        ]
+      }
+    ]
+  },
+  "obv": {
+    "name": "OBV - On Balance Volume",
+    "params": {
+      "shift": 0
+    },
+    "limits": []
+  },
+  "plus_di": {
+    "name": "+DI - Plus Directional Indicator",
+    "params": {
+      "timeperiod": 14
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 1.0
+      }
+    ]
+  },
+  "plus_dm": {
+    "name": "+DM - Plus Directional Movement",
+    "params": {
+      "timeperiod": 14
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 1.0
+      }
+    ]
+  },
+  "ppo": {
+    "name": "PPO - Percentage Price Oscillator",
+    "params": {
+      "source": "Close",
+      "fastperiod": 12,
+      "slowperiod": 26
+    },
+    "limits": [
+      {
+        "variable": "fastperiod",
+        "operation": ">=",
+        "value": 2.0
+      },
+      {
+        "variable": "slowperiod",
+        "operation": ">=",
+        "value": 2.0
+      },
+      {
+        "variable": "source",
+        "operation": "IN",
+        "value": [
+          "Open",
+          "High",
+          "Low",
+          "Close"
+        ]
+      }
+    ]
+  },
+  "psar": {
+    "name": "PSAR - Parabolic Stop and Reverse",
+    "params": {
+      "acceleration": 0.02,
+      "maximum": 0.2
+    },
+    "limits": [
+      {
+        "variable": "acceleration",
+        "operation": ">=",
+        "value": 0.0
+      },
+      {
+        "variable": "maximum",
+        "operation": ">=",
+        "value": 0.0
+      }
+    ]
+  },
+  "roc": {
+    "name": "ROC - Rate of Change",
+    "params": {
+      "source": "Close",
+      "timeperiod": 10
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 1.0
+      },
+      {
+        "variable": "source",
+        "operation": "IN",
+        "value": [
+          "Open",
+          "High",
+          "Low",
+          "Close"
+        ]
+      }
+    ]
+  },
+  "rocp": {
+    "name": "ROCP - Rate of Change Percentage",
+    "params": {
+      "source": "Close",
+      "timeperiod": 10
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 1.0
+      },
+      {
+        "variable": "source",
+        "operation": "IN",
+        "value": [
+          "Open",
+          "High",
+          "Low",
+          "Close"
+        ]
+      }
+    ]
+  },
+  "rocr": {
+    "name": "ROCR - Rate of Change Ratio",
+    "params": {
+      "source": "Close",
+      "timeperiod": 10
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 1.0
+      },
+      {
+        "variable": "source",
+        "operation": "IN",
+        "value": [
+          "Open",
+          "High",
+          "Low",
+          "Close"
+        ]
+      }
+    ]
+  },
+  "rocr100": {
+    "name": "ROCR100 - Rate of Change Ratio (100 Scale)",
+    "params": {
+      "source": "Close",
+      "timeperiod": 10
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 1.0
+      },
+      {
+        "variable": "source",
+        "operation": "IN",
+        "value": [
+          "Open",
+          "High",
+          "Low",
+          "Close"
+        ]
+      }
+    ]
+  },
+  "rsi": {
+    "name": "RSI - Relative Strength Index",
+    "params": {
+      "source": "Close",
+      "timeperiod": 14
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 2.0
+      },
+      {
+        "variable": "source",
+        "operation": "IN",
+        "value": [
+          "Open",
+          "High",
+          "Low",
+          "Close"
+        ]
+      }
+    ]
+  },
+  "sarext": {
+    "name": "SAR - Parabolic SAR (Extended)",
+    "params": {
+      "startvalue": 0,
+      "offsetonreverse": 0,
+      "accelerationinitlong": 0,
+      "accelerationlong": 0,
+      "accelerationmaxlong": 0,
+      "accelerationinitshort": 0,
+      "accelerationshort": 0,
+      "accelerationmaxshort": 0
+    },
+    "limits": [
+      {
+        "variable": "offsetonreverse",
+        "operation": ">=",
+        "value": 0.0
+      },
+      {
+        "variable": "accelerationinitlong",
+        "operation": ">=",
+        "value": 0.0
+      },
+      {
+        "variable": "accelerationlong",
+        "operation": ">=",
+        "value": 0.0
+      },
+      {
+        "variable": "accelerationmaxlong",
+        "operation": ">=",
+        "value": 0.0
+      },
+      {
+        "variable": "accelerationinitshort",
+        "operation": ">=",
+        "value": 0.0
+      },
+      {
+        "variable": "accelerationshort",
+        "operation": ">=",
+        "value": 0.0
+      },
+      {
+        "variable": "accelerationmaxshort",
+        "operation": ">=",
+        "value": 0.0
+      }
+    ]
+  },
+  "senkou_span_a": {
+    "name": "Senkou Span A",
+    "params": {},
+    "limits": []
+  },
+  "senkou_span_b": {
+    "name": "Senkou Span B",
+    "params": {},
+    "limits": []
+  },
+  "sma": {
+    "name": "SMA - Simple Moving Average",
+    "params": {
+      "source": "Close",
+      "timeperiod": 30
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 2.0
+      },
+      {
+        "variable": "source",
+        "operation": "IN",
+        "value": [
+          "Open",
+          "High",
+          "Low",
+          "Close"
+        ]
+      }
+    ]
+  },
+  "stoch_slowd": {
+    "name": "Stochastic Oscillator (Slow D)",
+    "params": {
+      "fastk_period": 5,
+      "slowk_period": 3,
+      "slowd_period": 3
+    },
+    "limits": [
+      {
+        "variable": "fastk_period",
+        "operation": ">=",
+        "value": 1.0
+      },
+      {
+        "variable": "slowk_period",
+        "operation": ">=",
+        "value": 1.0
+      },
+      {
+        "variable": "slowd_period",
+        "operation": ">=",
+        "value": 1.0
+      }
+    ]
+  },
+  "stoch_slowk": {
+    "name": "Stochastic Oscillator (Slow K)",
+    "params": {
+      "fastk_period": 5,
+      "slowk_period": 3,
+      "slowd_period": 3
+    },
+    "limits": [
+      {
+        "variable": "fastk_period",
+        "operation": ">=",
+        "value": 1.0
+      },
+      {
+        "variable": "slowk_period",
+        "operation": ">=",
+        "value": 1.0
+      },
+      {
+        "variable": "slowd_period",
+        "operation": ">=",
+        "value": 1.0
+      }
+    ]
+  },
+  "stochf_fastd": {
+    "name": "Stochastic Fast (Fast D)",
+    "params": {
+      "fastk_period": 14,
+      "fastd_period": 3
+    },
+    "limits": [
+      {
+        "variable": "fastk_period",
+        "operation": ">=",
+        "value": 1.0
+      },
+      {
+        "variable": "fastd_period",
+        "operation": ">=",
+        "value": 1.0
+      }
+    ]
+  },
+  "stochf_fastk": {
+    "name": "Stochastic Fast (Fast K)",
+    "params": {
+      "fastk_period": 14,
+      "fastd_period": 3
+    },
+    "limits": [
+      {
+        "variable": "fastk_period",
+        "operation": ">=",
+        "value": 1.0
+      },
+      {
+        "variable": "fastd_period",
+        "operation": ">=",
+        "value": 1.0
+      }
+    ]
+  },
+  "stochrsi_fastd": {
+    "name": "Stochastic Relative Strength Index (Fast D)",
+    "params": {
+      "source": "Close",
+      "timeperiod": 14,
+      "fastk_period": 14,
+      "fastd_period": 3
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 2.0
+      },
+      {
+        "variable": "fastk_period",
+        "operation": ">=",
+        "value": 1.0
+      },
+      {
+        "variable": "fastd_period",
+        "operation": ">=",
+        "value": 1.0
+      },
+      {
+        "variable": "source",
+        "operation": "IN",
+        "value": [
+          "Open",
+          "High",
+          "Low",
+          "Close"
+        ]
+      }
+    ]
+  },
+  "stochrsi_fastk": {
+    "name": "Stochastic Relative Strength Index (Fast K)",
+    "params": {
+      "source": "Close",
+      "timeperiod": 14,
+      "fastk_period": 14,
+      "fastd_period": 3
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 2.0
+      },
+      {
+        "variable": "fastk_period",
+        "operation": ">=",
+        "value": 1.0
+      },
+      {
+        "variable": "fastd_period",
+        "operation": ">=",
+        "value": 1.0
+      },
+      {
+        "variable": "source",
+        "operation": "IN",
+        "value": [
+          "Open",
+          "High",
+          "Low",
+          "Close"
+        ]
+      }
+    ]
+  },
+  "t3": {
+    "name": "T3 - Triple Exponential Moving Average",
+    "params": {
+      "source": "Close",
+      "timeperiod": 30,
+      "vfactor": 0.7
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 2.0
+      },
+      {
+        "variable": "vfactor",
+        "operation": ">=",
+        "value": 0.0
+      },
+      {
+        "variable": "vfactor",
+        "operation": "<=",
+        "value": 1.0
+      },
+      {
+        "variable": "source",
+        "operation": "IN",
+        "value": [
+          "Open",
+          "High",
+          "Low",
+          "Close"
+        ]
+      }
+    ]
+  },
+  "tema": {
+    "name": "TEMA - Triple Exponential Moving Average",
+    "params": {
+      "source": "Close",
+      "timeperiod": 30
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 2.0
+      },
+      {
+        "variable": "source",
+        "operation": "IN",
+        "value": [
+          "Open",
+          "High",
+          "Low",
+          "Close"
+        ]
+      }
+    ]
+  },
+  "tenkan_sen": {
+    "name": "Tenkan-sen",
+    "params": {},
+    "limits": []
+  },
+  "trima": {
+    "name": "TRIMA - Triangular Moving Average",
+    "params": {
+      "source": "Close",
+      "timeperiod": 30
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 2.0
+      },
+      {
+        "variable": "source",
+        "operation": "IN",
+        "value": [
+          "Open",
+          "High",
+          "Low",
+          "Close"
+        ]
+      }
+    ]
+  },
+  "trix": {
+    "name": "TRIX - Triple Smoothed Exponential Moving Average",
+    "params": {
+      "source": "Close",
+      "timeperiod": 30
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 1.0
+      },
+      {
+        "variable": "source",
+        "operation": "IN",
+        "value": [
+          "Open",
+          "High",
+          "Low",
+          "Close"
+        ]
+      }
+    ]
+  },
+  "ultosc": {
+    "name": "UltOsc - Ultimate Oscillato",
+    "params": {
+      "timeperiod1": 7,
+      "timeperiod2": 14,
+      "timeperiod3": 28
+    },
+    "limits": [
+      {
+        "variable": "timeperiod1",
+        "operation": ">=",
+        "value": 1.0
+      },
+      {
+        "variable": "timeperiod2",
+        "operation": ">=",
+        "value": 1.0
+      },
+      {
+        "variable": "timeperiod3",
+        "operation": ">=",
+        "value": 1.0
+      }
+    ]
+  },
+  "willr": {
+    "name": "Williams' %R",
+    "params": {
+      "timeperiod": 14
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 2.0
+      }
+    ]
+  },
+  "wma": {
+    "name": "WMA - Weighted Moving Average",
+    "params": {
+      "source": "Close",
+      "timeperiod": 30
+    },
+    "limits": [
+      {
+        "variable": "timeperiod",
+        "operation": ">=",
+        "value": 2.0
+      },
+      {
+        "variable": "source",
+        "operation": "IN",
+        "value": [
+          "Open",
+          "High",
+          "Low",
+          "Close"
+        ]
+      }
+    ]
+  }
+}

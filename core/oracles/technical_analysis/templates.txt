@@ -1,0 +1,262 @@
+{
+  "ad": {
+    "description": "Buy: AD (Shift 0) > AD (Shift 1);Sell: AD (Shift 0) <= AD (Shift 1)",
+    "function": "\tdef ad(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: AD (Shift 0) > AD (Shift 1);Sell: AD (Shift 0) <= AD (Shift 1)\"\"\"\n\t\tad0 = self.TA.ad(df)\n\t\tad1 = self.TA.ad(df, shift=1)\n\t\treturn np.where(ad0 > ad1, 1, -1)\n"
+  },
+  "adx": {
+    "description": "Buy: ADX > 25;Sell: ADX <= 25",
+    "function": "\tdef adx(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: ADX > 25;Sell: ADX <= 25\"\"\"\n\t\tadx = self.TA.adx(df)\n\t\treturn np.where(adx > 25, 1, -1)\n"
+  },
+  "adxr": {
+    "description": "Buy: ADXR > 25;Sell: ADXR <= 25",
+    "function": "\tdef adxr(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: ADXR > 25;Sell: ADXR <= 25\"\"\"\n\t\tadxr = self.TA.adxr(df)\n\t\treturn np.where(adxr > 25, 1, -1)\n"
+  },
+  "apo": {
+    "description": "Buy: APO > 0;Sell: APO <= 0",
+    "function": "\tdef apo(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: APO > 0;Sell: APO <= 0\"\"\"\n\t\tapo = self.TA.apo(df)\n\t\treturn np.where(apo > 0, 1, -1)\n"
+  },
+  "aroon": {
+    "description": "Buy: Aroon Up > Aroon Down;Sell: Aroon Up <= Aroon Down",
+    "function": "\tdef aroon(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: Aroon Up > Aroon Down;Sell: Aroon Up <= Aroon Down\"\"\"\n\t\taroon_up = self.TA.aroon_up(df)\n\t\taroon_down = self.TA.aroon_down(df)\n\t\treturn np.where(aroon_up > aroon_down, 1, -1)\n"
+  },
+  "aroonosc": {
+    "description": "Buy: Aroon OSC > 0;Sell: Aroon OSC <= 0",
+    "function": "\tdef aroonosc(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: Aroon OSC > 0;Sell: Aroon OSC <= 0\"\"\"\n\t\taroonosc = self.TA.aroonosc(df)\n\t\treturn np.where(aroonosc > 0, 1, -1)\n"
+  },
+  "atr": {
+    "description": "Buy: ATR (Shift 0) > ATR (Shift 1);Sell: ATR (Shift 0) <= ATR (Shift 1)",
+    "function": "\tdef atr(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: ATR (Shift 0) > ATR (Shift 1);Sell: ATR (Shift 0) <= ATR (Shift 1)\"\"\"\n\t\tatr0 = self.TA.atr(df)\n\t\tatr1 = self.TA.atr(df, shift=1)\n\t\treturn np.where(atr0 > atr1, 1, -1)\n"
+  },
+  "bbands": {
+    "description": "Buy: Close < BBand Lower;Sell: Close > BBand Upper",
+    "function": "\tdef bbands(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: Close < BBand Lower;Sell: Close > BBand Upper\"\"\"\n\t\tupperband = self.TA.bbands_upper(df)\n\t\tlowerband = self.TA.bbands_lower(df)\n\t\treturn np.where(df['Close'] > upperband, -1, np.where(df['Close'] < lowerband, 1, 0))\n"
+  },
+  "bop": {
+    "description": "Buy: BOP > 0;Sell: BOP <= 0",
+    "function": "\tdef bop(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: BOP > 0;Sell: BOP <= 0\"\"\"\n\t\tbop = self.TA.bop(df)\n\t\treturn np.where(bop > 0, 1, -1)\n"
+  },
+  "cci": {
+    "description": "Buy: CCI < -100;Sell: CCI > 100",
+    "function": "\tdef cci(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: CCI < -100;Sell: CCI > 100\"\"\"\n\t\tcci = self.TA.cci(df)\n\t\treturn np.where(cci > 100, -1, np.where(cci < -100, 1, 0))\n"
+  },
+  "cdl2crows": {
+    "description": "Buy: Two Crows > 0;Sell: Two Crows < 0",
+    "function": "\tdef cdl2crows(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: Two Crows > 0;Sell: Two Crows < 0\"\"\"\n\t\tpattern = self.TA.cdl2crows(df)\n\t\treturn np.where(pattern != 0, np.sign(pattern), 0)\n"
+  },
+  "cdl3blackcrows": {
+    "description": "Buy: Three Black Crows > 0;Sell: Three Black Crows < 0",
+    "function": "\tdef cdl3blackcrows(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: Three Black Crows > 0;Sell: Three Black Crows < 0\"\"\"\n\t\tpattern = self.TA.cdl3blackcrows(df)\n\t\treturn np.where(pattern != 0, np.sign(pattern), 0)\n"
+  },
+  "cdl3inside": {
+    "description": "Buy: Three Inside Up/Down > 0;Sell: Three Inside Up/Down < 0",
+    "function": "\tdef cdl3inside(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: Three Inside Up/Down > 0;Sell: Three Inside Up/Down < 0\"\"\"\n\t\tpattern = self.TA.cdl3inside(df)\n\t\treturn np.where(pattern != 0, np.sign(pattern), 0)\n"
+  },
+  "cmo": {
+    "description": "Buy: CMO > 0;Sell: CMO <= 0",
+    "function": "\tdef cmo(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: CMO > 0;Sell: CMO <= 0\"\"\"\n\t\tcmo = self.TA.cmo(df)\n\t\treturn np.where(cmo > 0, 1, -1)\n"
+  },
+  "dema": {
+    "description": "Buy: Close > DEMA;Sell: Close <= DEMA",
+    "function": "\tdef dema(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: Close > DEMA;Sell: Close <= DEMA\"\"\"\n\t\tdema = self.TA.dema(df)\n\t\treturn np.where(df['Close'] > dema, 1, -1)\n"
+  },
+  "donchian": {
+    "description": "Buy: Close > Donchian Upper;Sell: Close < Donchian Lower",
+    "function": "\tdef donchian(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: Close > Donchian Upper;Sell: Close < Donchian Lower\"\"\"\n\t\tupperband = self.TA.donchian_upper(df)\n\t\tlowerband = self.TA.donchian_lower(df)\n\t\treturn np.where(df['Close'] > upperband, 1, np.where(df['Close'] < lowerband, -1, 0))\n"
+  },
+  "dx": {
+    "description": "Buy: DX > 25;Sell: DX <= 25",
+    "function": "\tdef dx(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: DX > 25;Sell: DX <= 25\"\"\"\n\t\tdx = self.TA.dx(df)\n\t\treturn np.where(dx > 25, 1, -1)\n"
+  },
+  "ema": {
+    "description": "Buy: Close > EMA;Sell: Close <= EMA",
+    "function": "\tdef ema(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: Close > EMA;Sell: Close <= EMA\"\"\"\n\t\tema = self.TA.ema(df)\n\t\treturn np.where(df['Close'] > ema, 1, -1)\n"
+  },
+  "ht_trendline": {
+    "description": "Buy: Close > HT TRENDLINE;Sell: Close <= HT TRENDLINE",
+    "function": "\tdef ht_trendline(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: Close > HT TRENDLINE;Sell: Close <= HT TRENDLINE\"\"\"\n\t\tht_trendline = self.TA.ht_trendline(df)\n\t\treturn np.where(df['Close'] > ht_trendline, 1, -1)\n"
+  },
+  "ichimoku": {
+    "description": "Buy: Tenkan-sen > Kijun-sen;Sell: Tenkan-sen <= Kijun-sen",
+    "function": "\tdef ichimoku(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: Tenkan-sen > Kijun-sen;Sell: Tenkan-sen <= Kijun-sen\"\"\"\n\t\ttenkan_sen = self.TA.tenkan_sen(df)\n\t\tkijun_sen = self.TA.kijun_sen(df)\n\t\treturn np.where(tenkan_sen > kijun_sen, 1, -1)\n"
+  },
+  "kama": {
+    "description": "Buy: Close > KAMA;Sell: Close <= KAMA",
+    "function": "\tdef kama(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: Close > KAMA;Sell: Close <= KAMA\"\"\"\n\t\tkama = self.TA.kama(df)\n\t\treturn np.where(df['Close'] > kama, 1, -1)\n"
+  },
+  "ma": {
+    "description": "Buy: Close > MA;Sell: Close <= MA",
+    "function": "\tdef ma(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: Close > MA;Sell: Close <= MA\"\"\"\n\t\tma = self.TA.ma(df)\n\t\treturn np.where(df['Close'] > ma, 1, -1)\n"
+  },
+  "macd": {
+    "description": "Buy: MACD > MACD Signal;Sell: MACD <= MACD Signal",
+    "function": "\tdef macd(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: MACD > MACD Signal;Sell: MACD <= MACD Signal\"\"\"\n\t\tmacd = self.TA.macd(\n\t\t\tdf,\n\t\t)\n\t\tmacdsignal = self.TA.macdsignal(df)\n\t\treturn np.where(macd > macdsignal, 1, -1)\n"
+  },
+  "macdext": {
+    "description": "Buy: MACDext > MACDext Signal;Sell: MACDext <= MACDext Signal",
+    "function": "\tdef macdext(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: MACDext > MACDext Signal;Sell: MACDext <= MACDext Signal\"\"\"\n\t\tmacd = self.TA.macdext(df)\n\t\tmacdsignal = self.TA.macdext_signal(df)\n\t\treturn np.where(macd > macdsignal, 1, -1)\n"
+  },
+  "macdfix": {
+    "description": "Buy: MACD-Fixed > MACD-Fixed Signal;Sell: MACD-Fixed <= MACD-Fixed Signal",
+    "function": "\tdef macdfix(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: MACD-Fixed > MACD-Fixed Signal;Sell: MACD-Fixed <= MACD-Fixed Signal\"\"\"\n\t\tmacd = self.TA.macdfix(df)\n\t\tmacdsignal = self.TA.macdfix_signal(df)\n\t\treturn np.where(macd > macdsignal, 1, -1)\n"
+  },
+  "mama": {
+    "description": "Buy: MAMA > FAMA;Sell: MAMA <= FAMA",
+    "function": "\tdef mama(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: MAMA > FAMA;Sell: MAMA <= FAMA\"\"\"\n\t\tmama_fast = self.TA.mama_fast(df)\n\t\tmama_slow = self.TA.mama_slow(df)\n\t\treturn np.where(mama_fast > mama_slow, 1, -1)\n"
+  },
+  "mavp": {
+    "description": "Buy: Close > MAVP;Sell: Close <= MAVP",
+    "function": "\tdef mavp(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: Close > MAVP;Sell: Close <= MAVP\"\"\"\n\t\tmavp = self.TA.mavp(df)\n\t\treturn np.where(df['Close'] > mavp, 1, -1)\n"
+  },
+  "mfi": {
+    "description": "Buy: MFI < 20;Sell: MFI > 80",
+    "function": "\tdef mfi(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: MFI < 20;Sell: MFI > 80\"\"\"\n\t\tmfi = self.TA.mfi(df)\n\t\treturn np.where(mfi > 80, -1, np.where(mfi < 20, 1, 0))\n"
+  },
+  "midpoint": {
+    "description": "Buy: Close > MidPoint;Sell: Close <= MidPoint",
+    "function": "\tdef midpoint(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: Close > MidPoint;Sell: Close <= MidPoint\"\"\"\n\t\tmidpoint = self.TA.midpoint(df)\n\t\treturn np.where(df['Close'] > midpoint, 1, -1)\n"
+  },
+  "midprice": {
+    "description": "Buy: Close > MidPrice;Sell: Close <= MidPrice",
+    "function": "\tdef midprice(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: Close > MidPrice;Sell: Close <= MidPrice\"\"\"\n\t\tmidprice = self.TA.midprice(df)\n\t\treturn np.where(df['Close'] > midprice, 1, -1)\n"
+  },
+  "minus_di": {
+    "description": "Buy: -DI > 25;Sell: -DI <= 25",
+    "function": "\tdef minus_di(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: -DI > 25;Sell: -DI <= 25\"\"\"\n\t\tminus_di = self.TA.minus_di(df)\n\t\treturn np.where(minus_di > 25, 1, -1)\n"
+  },
+  "minus_dm": {
+    "description": "Buy: -DM > 0;Sell: -DM <= 0",
+    "function": "\tdef minus_dm(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: -DM > 0;Sell: -DM <= 0\"\"\"\n\t\tminus_dm = self.TA.minus_dm(df)\n\t\treturn np.where(minus_dm > 0, 1, -1)\n"
+  },
+  "mom": {
+    "description": "Buy: Momentum > 0;Sell: Momentum <= 0",
+    "function": "\tdef mom(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: Momentum > 0;Sell: Momentum <= 0\"\"\"\n\t\tmom = self.TA.mom(df)\n\t\treturn np.where(mom > 0, 1, -1)\n"
+  },
+  "obv": {
+    "description": "Buy: OBV (Shift 0) > OBV (Shift 1);Sell: OBV (Shift 0) <= OBV (Shift 1)",
+    "function": "\tdef obv(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: OBV (Shift 0) > OBV (Shift 1);Sell: OBV (Shift 0) <= OBV (Shift 1)\"\"\"\n\t\tobv0 = self.TA.obv(df)\n\t\tobv1 = self.TA.obv(df, shift=1)\n\t\treturn np.where(obv0 > obv1, 1, -1)\n"
+  },
+  "plus_di": {
+    "description": "Buy: +DI > 25;Sell: +DI <= 25",
+    "function": "\tdef plus_di(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: +DI > 25;Sell: +DI <= 25\"\"\"\n\t\tplus_di = self.TA.plus_di(df)\n\t\treturn np.where(plus_di > 25, 1, -1)\n"
+  },
+  "plus_dm": {
+    "description": "Buy: +DM > 0;Sell: +DM <= 0",
+    "function": "\tdef plus_dm(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: +DM > 0;Sell: +DM <= 0\"\"\"\n\t\tplus_dm = self.TA.plus_dm(df)\n\t\treturn np.where(plus_dm > 0, 1, -1)\n"
+  },
+  "ppo": {
+    "description": "Buy: PPO > 0;Sell: PPO <= 0",
+    "function": "\tdef ppo(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: PPO > 0;Sell: PPO <= 0\"\"\"\n\t\tppo = self.TA.ppo(df)\n\t\treturn np.where(ppo > 0, 1, -1)\n"
+  },
+  "psar": {
+    "description": "Buy: Close > PSAR;Sell: Close <= PSAR",
+    "function": "\tdef psar(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: Close > PSAR;Sell: Close <= PSAR\"\"\"\n\t\tpsar = self.TA.psar(df)\n\t\treturn np.where(df['Close'] > psar, 1, -1)\n"
+  },
+  "roc": {
+    "description": "Buy: ROC > 0;Sell: ROC <= 0",
+    "function": "\tdef roc(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: ROC > 0;Sell: ROC <= 0\"\"\"\n\t\troc = self.TA.roc(df)\n\t\treturn np.where(roc > 0, 1, -1)\n"
+  },
+  "rocp": {
+    "description": "Buy: ROCP > 0;Sell: ROCP <= 0",
+    "function": "\tdef rocp(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: ROCP > 0;Sell: ROCP <= 0\"\"\"\n\t\trocp = self.TA.rocp(df)\n\t\treturn np.where(rocp > 0, 1, -1)\n"
+  },
+  "rocr": {
+    "description": "Buy: ROCR > 0;Sell: ROCR <= 0",
+    "function": "\tdef rocr(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: ROCR > 0;Sell: ROCR <= 0\"\"\"\n\t\trocr = self.TA.rocr(df)\n\t\treturn np.where(rocr > 0, 1, -1)\n"
+  },
+  "rocr100": {
+    "description": "Buy: ROCR100 > 100;Sell: ROCR100 <= 100",
+    "function": "\tdef rocr100(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: ROCR100 > 100;Sell: ROCR100 <= 100\"\"\"\n\t\trocr100 = self.TA.rocr100(df)\n\t\treturn np.where(rocr100 > 100, 1, -1)\n"
+  },
+  "rsi_70_30": {
+    "description": "Buy: RSI < 30;Sell: RSI > 70",
+    "function": "\tdef rsi_70_30(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: RSI < 30;Sell: RSI > 70\"\"\"\n\t\treturn self._rsi(df, 70, 30)\n"
+  },
+  "rsi_71_31": {
+    "description": "Buy: RSI < 31;Sell: RSI > 71",
+    "function": "\tdef rsi_71_31(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: RSI < 31;Sell: RSI > 71\"\"\"\n\t\treturn self._rsi(df, 71, 31)\n"
+  },
+  "rsi_72_32": {
+    "description": "Buy: RSI < 32;Sell: RSI > 72",
+    "function": "\tdef rsi_72_32(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: RSI < 32;Sell: RSI > 72\"\"\"\n\t\treturn self._rsi(df, 72, 32)\n"
+  },
+  "rsi_73_33": {
+    "description": "Buy: RSI < 33;Sell: RSI > 73",
+    "function": "\tdef rsi_73_33(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: RSI < 33;Sell: RSI > 73\"\"\"\n\t\treturn self._rsi(df, 73, 33)\n"
+  },
+  "rsi_74_34": {
+    "description": "Buy: RSI < 34;Sell: RSI > 74",
+    "function": "\tdef rsi_74_34(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: RSI < 34;Sell: RSI > 74\"\"\"\n\t\treturn self._rsi(df, 74, 34)\n"
+  },
+  "rsi_75_35": {
+    "description": "Buy: RSI < 35;Sell: RSI > 75",
+    "function": "\tdef rsi_75_35(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: RSI < 35;Sell: RSI > 75\"\"\"\n\t\treturn self._rsi(df, 75, 35)\n"
+  },
+  "sarext": {
+    "description": "Buy: Close > SAR-ext;Sell: Close <= SAR-ext",
+    "function": "\tdef sarext(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: Close > SAR-ext;Sell: Close <= SAR-ext\"\"\"\n\t\tsarext = self.TA.sarext(df)\n\t\treturn np.where(df['Close'] > sarext, 1, -1)\n"
+  },
+  "sma": {
+    "description": "Buy: Close > SMA;Sell: Close <= SMA",
+    "function": "\tdef sma(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: Close > SMA;Sell: Close <= SMA\"\"\"\n\t\tsma = self.TA.sma(df)\n\t\treturn np.where(df['Close'] > sma, 1, -1)\n"
+  },
+  "stoch_10_3_80_20": {
+    "description": "Buy: Stoch Slow K < 20;Sell: Stoch Slow K > 80;(Fast K Period = 10, Slow D Period = 3)",
+    "function": "\tdef stoch_10_3_80_20(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: Stoch Slow K < 20;Sell: Stoch Slow K > 80;(Fast K Period = 10, Slow D Period = 3)\"\"\"\n\t\treturn self._stoch(df, 10, 3, 80, 20)\n"
+  },
+  "stoch_10_3_85_15": {
+    "description": "Buy: Stoch Slow K < 15;Sell: Stoch Slow K > 85;(Fast K Period = 10, Slow D Period = 3)",
+    "function": "\tdef stoch_10_3_85_15(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: Stoch Slow K < 15;Sell: Stoch Slow K > 85;(Fast K Period = 10, Slow D Period = 3)\"\"\"\n\t\treturn self._stoch(df, 10, 3, 85, 15)\n"
+  },
+  "stoch_14_3_80_20": {
+    "description": "Buy: Stoch Slow K < 20;Sell: Stoch Slow K > 80;(Fast K Period = 14, Slow D Period = 3)",
+    "function": "\tdef stoch_14_3_80_20(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: Stoch Slow K < 20;Sell: Stoch Slow K > 80;(Fast K Period = 14, Slow D Period = 3)\"\"\"\n\t\treturn self._stoch(df, 14, 3, 80, 20)\n"
+  },
+  "stoch_14_3_85_15": {
+    "description": "Buy: Stoch Slow K < 15;Sell: Stoch Slow K > 85;(Fast K Period = 14, Slow D Period = 3)",
+    "function": "\tdef stoch_14_3_85_15(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: Stoch Slow K < 15;Sell: Stoch Slow K > 85;(Fast K Period = 14, Slow D Period = 3)\"\"\"\n\t\treturn self._stoch(df, 14, 3, 85, 15)\n"
+  },
+  "stoch_21_5_80_20": {
+    "description": "Buy: Stoch Slow K < 20;Sell: Stoch Slow K > 80;(Fast K Period = 21, Slow D Period = 5)",
+    "function": "\tdef stoch_21_5_80_20(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: Stoch Slow K < 20;Sell: Stoch Slow K > 80;(Fast K Period = 21, Slow D Period = 5)\"\"\"\n\t\treturn self._stoch(df, 21, 5, 80, 20)\n"
+  },
+  "stoch_21_5_85_15": {
+    "description": "Buy: Stoch Slow K < 15;Sell: Stoch Slow K > 85;(Fast K Period = 21, Slow D Period = 5)",
+    "function": "\tdef stoch_21_5_85_15(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: Stoch Slow K < 15;Sell: Stoch Slow K > 85;(Fast K Period = 21, Slow D Period = 5)\"\"\"\n\t\treturn self._stoch(df, 21, 5, 85, 15)\n"
+  },
+  "stochf": {
+    "description": "Buy: STOCHF Fast K > STOCHF Fast D;Sell: STOCHF Fast K <= STOCHF Fast D",
+    "function": "\tdef stochf(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: STOCHF Fast K > STOCHF Fast D;Sell: STOCHF Fast K <= STOCHF Fast D\"\"\"\n\t\tfastk = self.TA.stochf_fastk(df)\n\t\tfastd = self.TA.stochf_fastd(df)\n\t\treturn np.where(fastk > fastd, 1, -1)\n"
+  },
+  "stochrsi": {
+    "description": "Buy: STOCHRSI Fast K > STOCHRSI Fast D;Sell: STOCHRSI Fast K <= STOCHRSI Fast D",
+    "function": "\tdef stochrsi(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: STOCHRSI Fast K > STOCHRSI Fast D;Sell: STOCHRSI Fast K <= STOCHRSI Fast D\"\"\"\n\t\tfastk = self.TA.stochrsi_fastk(df)\n\t\tfastd = self.TA.stochrsi_fastd(df)\n\t\treturn np.where(fastk > fastd, 1, -1)\n"
+  },
+  "t3": {
+    "description": "Buy: Close > T3;Sell: Close <= T3",
+    "function": "\tdef t3(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: Close > T3;Sell: Close <= T3\"\"\"\n\t\tt3 = self.TA.t3(df)\n\t\treturn np.where(df['Close'] > t3, 1, -1)\n"
+  },
+  "tema": {
+    "description": "Buy: Close > TEMA;Sell: Close <= TEMA",
+    "function": "\tdef tema(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: Close > TEMA;Sell: Close <= TEMA\"\"\"\n\t\ttema = self.TA.tema(df)\n\t\treturn np.where(df['Close'] > tema, 1, -1)\n"
+  },
+  "trima": {
+    "description": "Buy: Close > TRIMA;Sell: Close <= TRIMA",
+    "function": "\tdef trima(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: Close > TRIMA;Sell: Close <= TRIMA\"\"\"\n\t\ttrima = self.TA.trima(df)\n\t\treturn np.where(df['Close'] > trima, 1, -1)\n"
+  },
+  "trix": {
+    "description": "Buy: TRIX > 0;Sell: TRIX <= 0",
+    "function": "\tdef trix(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: TRIX > 0;Sell: TRIX <= 0\"\"\"\n\t\ttrix = self.TA.trix(df)\n\t\treturn np.where(trix > 0, 1, -1)\n"
+  },
+  "ultosc": {
+    "description": "Buy: UltOsc > 50;Sell: UltOsc <= 50",
+    "function": "\tdef ultosc(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: UltOsc > 50;Sell: UltOsc <= 50\"\"\"\n\t\tultosc = self.TA.ultosc(df)\n\t\treturn np.where(ultosc > 50, 1, -1)\n"
+  },
+  "willr": {
+    "description": "Buy: Will R < -80;Sell: Will R > -20",
+    "function": "\tdef willr(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: Will R < -80;Sell: Will R > -20\"\"\"\n\t\twillr = self.TA.willr(df)\n\t\treturn np.where(willr < -80, 1, np.where(willr > -20, -1, 0))\n"
+  },
+  "wma": {
+    "description": "Buy: Close > WMA;Sell: Close <= WMA",
+    "function": "\tdef wma(self, df: pd.DataFrame):\n\t\t\"\"\"Buy: Close > WMA;Sell: Close <= WMA\"\"\"\n\t\twma = self.TA.wma(df)\n\t\treturn np.where(df['Close'] > wma, 1, -1)\n"
+  }
+}
