@@ -7,4 +7,4 @@ firebase-admin
 numpy
 pandas
 requests
-ta-lib==0.6.3
+ta-lib==0.6.4

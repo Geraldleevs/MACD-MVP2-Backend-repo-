@@ -12,7 +12,7 @@ export TA_LIBRARY_PATH="/usr/lib"
 export TA_INCLUDE_PATH="/usr/include"
 cd /tmp
 sudo apt-get update
-sudo apt-get install --y --no-install-recommends build-essential gcc wget
+sudo apt-get install --yes --no-install-recommends build-essential gcc wget
 sudo apt clean
 sudo wget https://github.com/ta-lib/ta-lib/releases/download/v0.6.4/ta-lib-0.6.4-src.tar.gz
 tar -xvzf ta-lib-0.6.4-src.tar.gz
@@ -21,7 +21,7 @@ cd ta-lib-0.6.4
 make
 sudo make install
 cd ..
-rm -rf ta-lib*
+sudo rm -rf ta-lib*
 ```
 
 ### 2. Install Python 3.13 and Virtual Env
@@ -52,7 +52,7 @@ pip install -r requirements.txt
 ### 5. Create `.env` file
 
 ```bash
-cp .env-template .env
+cp .env.template .env
 # Changes are not needed for local development
 ```
 

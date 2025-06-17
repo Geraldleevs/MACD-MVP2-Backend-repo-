@@ -49,7 +49,7 @@ rsa==4.9
 setuptools==78.1.0
 six==1.17.0
 sqlparse==0.5.3
-ta-lib==0.6.3
+ta-lib==0.6.4
 tzdata==2025.2
 uritemplate==4.1.1
 urllib3==2.4.0

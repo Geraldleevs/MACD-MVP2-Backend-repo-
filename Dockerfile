@@ -21,7 +21,7 @@ RUN wget https://github.com/ta-lib/ta-lib/releases/download/v0.6.4/ta-lib-0.6.4-
 	make install && \
 	cd .. && \
 	rm -rf ../ta-lib*
-RUN pip install ta-lib==0.6.3
+RUN pip install ta-lib==0.6.4
 
 
 # --- INSTALL SERVER PACKAGES
