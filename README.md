@@ -54,6 +54,29 @@ pip install -r requirements.txt
 ```bash
 cp .env.template .env
 # Changes are not needed for local development
+
+# Required environments
+DJANGO_SECRET_KEY="RandomSecretKeyInTemplatesForDjango"
+EXCLUDE_FIRESTORE="False"
+DEBUG="True"
+SKIP_AUTH="False"
+
+PORT="8080"
+
+API_URL="https://apiserver.com"
+GCLOUD_EMAIL="firebase-adminsdk-XXX@XXX.iam.gserviceaccount.com"
+
+# Generate these from Firebase > Project settings > Service accounts > Generate new private key
+FIREBASE_PROJECT_ID=
+FIREBASE_PRIVATE_KEY_ID=
+FIREBASE_PRIVATE_KEY=
+FIREBASE_CLIENT_EMAIL=
+FIREBASE_CLIENT_ID=
+FIREBASE_CLIENT_X509_CERT_URL=
+
+KLINE_INTERVALS="1h;1d"
+KLINE_TOKENS="BTC;ETH;SOL;ADA;AVAX;DOT;MATIC;NEAR;LTC;LINK;UNI;AAVE;SUSHI;DOGE;XMR;BNB;GRT;USDC;USDT;EURT;EURC;USD;GBP"
+
 ```
 
 ### 6. Run migrations

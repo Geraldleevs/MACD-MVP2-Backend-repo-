@@ -25,6 +25,7 @@ venv*
 data
 output
 binance_public_data/data
+db.sqlite3
 
 # v1 Files
 Krakenbot

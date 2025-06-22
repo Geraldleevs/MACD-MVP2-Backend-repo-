@@ -5,24 +5,18 @@ from datetime import datetime
 import numpy as np
 import pandas as pd
 import pytz
+from django.conf import settings
 
 from core.technical_analysis import TechnicalAnalysis, TechnicalAnalysisTemplate
 
 TA = TechnicalAnalysis()
 TA_TEMPLATES = TechnicalAnalysisTemplate()
 
-INTERVAL_MAP = {
-	'1h': 60,
-	'2h': 120,
-	'4h': 240,
-	'6h': 360,
-	'12h': 720,
-	'1d': 1440,
-}
+INTERVAL_MAP: dict[str, int] = settings.INTERVAL_MAP
 BACKTEST_PARAMS = ['Open', 'High', 'Low', 'Close', 'Volume']
 OPERATORS = ['>', '>=', '<', '<=', '==', '!=', '=', '+', '-', '*', '/', '^', 'and', 'or', '(', ')']
 MATH_FUNCS = ['max', 'min', 'abs']
-TIMEFRAMES = [60, 120, 240, 360, 720, 1440]
+TIMEFRAMES = list(INTERVAL_MAP.values())
 
 
 def combine_ohlc(df: pd.DataFrame, merge_interval: int):
