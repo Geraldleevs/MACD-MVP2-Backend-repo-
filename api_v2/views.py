@@ -91,7 +91,6 @@ try:
 		symbol = token['token_id']
 		from_token = token['from_token']
 		to_token = token['to_token']
-		PAIRS[symbol] = {'FROM_TOKEN': from_token, 'TO_TOKEN': to_token}
 
 		firebase = FirebaseCandle(symbol, DEFAULT_TIMEFRAME, DEFAULT_PLATFORM)
 		start_time = None
@@ -100,11 +99,14 @@ try:
 		first = firebase.fetch_first()
 		if len(first) > 0:
 			start_time = first[0]['Open Time']
+		else:
+			continue
 
 		last = firebase.fetch_last()
 		if len(last) > 0:
 			end_time = last[-1]['Open Time']
 
+		PAIRS[symbol] = {'FROM_TOKEN': from_token, 'TO_TOKEN': to_token}
 		for interval in INTERVAL_MAP:
 			PAIRS[symbol][interval] = {'START_TIME': start_time, 'END_TIME': end_time}
 except Exception:
