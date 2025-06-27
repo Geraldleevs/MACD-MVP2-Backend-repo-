@@ -1,12 +1,11 @@
 import traceback
+from datetime import datetime
 from functools import lru_cache
 
 import firebase_admin.auth
 import numpy as np
 import pandas as pd
 from django.conf import settings
-from django.db import connection
-from django.db.utils import OperationalError
 from django.utils import timezone
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiExample, OpenApiParameter, extend_schema, inline_serializer
@@ -21,7 +20,7 @@ from rest_framework.response import Response
 from rest_framework.serializers import BooleanField, CharField, FloatField, IntegerField, ListField
 from rest_framework.views import APIView
 
-from api_v2.models import KLine
+from api_v2.firebase import FirebaseCandle
 from core.calculations import (
 	analyse_strategy,
 	calculate_amount,
@@ -36,7 +35,9 @@ from machd.utils import log_error
 
 TA: TechnicalAnalysis = settings.TA
 TA_TEMPLATES: TechnicalAnalysisTemplate = settings.TA_TEMPLATES
-DEFAULT_TIMEFRAME = '1h'
+DEFAULT_TIMEFRAME: str = settings.DEFAULT_TIMEFRAME
+DEFAULT_PLATFORM: str = settings.DEFAULT_PLATFORM
+INTERVAL_MAP: dict[str, int] = settings.INTERVAL_MAP
 DB_BATCH: WriteBatch = settings.DB_BATCH
 FIREBASE: Client = settings.FIREBASE
 
@@ -86,26 +87,30 @@ def error_logger():
 
 try:
 	PAIRS: dict[str, dict[str, int]] = {}
-	cursor = connection.cursor()
-	cursor.execute("""
-		SELECT
-			MIN(symbol),
-			MIN(timeframe),
-			MIN(from_token),
-			MIN(to_token),
-			MIN(open_time),
-			MAX(open_time)
-		FROM api_v2_kline
-		GROUP BY symbol, timeframe;
-	""")
-	for symbol, timeframe, from_token, to_token, start_time, end_time in cursor.fetchall():
-		if symbol not in PAIRS:
-			PAIRS[symbol] = {'FROM_TOKEN': from_token, 'TO_TOKEN': to_token}
-		PAIRS[symbol][timeframe] = {'START_TIME': start_time, 'END_TIME': end_time}
-except OperationalError:
-	print('KLine Table not Found! Have you run `python manage.py migrate`?')
-finally:
-	cursor.close()
+	for token in FirebaseCandle().fetch_pairs():
+		symbol = token['token_id']
+		from_token = token['from_token']
+		to_token = token['to_token']
+
+		firebase = FirebaseCandle(symbol, DEFAULT_TIMEFRAME, DEFAULT_PLATFORM)
+		start_time = None
+		end_time = None
+
+		first = firebase.fetch_first()
+		if len(first) > 0:
+			start_time = first[0]['Open Time']
+		else:
+			continue
+
+		last = firebase.fetch_last()
+		if len(last) > 0:
+			end_time = last[-1]['Open Time']
+
+		PAIRS[symbol] = {'FROM_TOKEN': from_token, 'TO_TOKEN': to_token}
+		for interval in INTERVAL_MAP:
+			PAIRS[symbol][interval] = {'START_TIME': start_time, 'END_TIME': end_time}
+except Exception:
+	print('Firebase not connected!')
 
 
 def validate_symbol_timeframe(
@@ -137,9 +142,7 @@ def validate_symbol_timeframe(
 		raise ValueError(f'Invalid start time "{start_time}"!')
 
 	if start_time is not None and start_time < PAIRS[symbol][DEFAULT_TIMEFRAME]['START_TIME']:
-		raise ValueError(
-			f'Invalid start time "{start_time}"! (Expected >= {PAIRS[symbol][DEFAULT_TIMEFRAME]["START_TIME"]})'
-		)
+		start_time = PAIRS[symbol][DEFAULT_TIMEFRAME]['START_TIME']
 
 	try:
 		if end_time is not None:
@@ -147,38 +150,27 @@ def validate_symbol_timeframe(
 	except ValueError:
 		raise ValueError(f'Invalid end time "{end_time}"!')
 
-	if end_time is not None and end_time > PAIRS[symbol][DEFAULT_TIMEFRAME]['END_TIME'] + 1000 * 60 * 60 * 12:
-		raise ValueError(f'Invalid end time "{end_time}"! (Expected <= {PAIRS[symbol][DEFAULT_TIMEFRAME]["END_TIME"]})')
+	if end_time is not None and end_time > PAIRS[symbol][DEFAULT_TIMEFRAME]['END_TIME']:
+		end_time = PAIRS[symbol][DEFAULT_TIMEFRAME]['END_TIME']
 
 
 @lru_cache(maxsize=8)
 def fetch_kline(symbol: str, timeframe: str, start_time: int = None, end_time: int = None):
-	data = KLine.objects.filter(symbol=symbol, timeframe=timeframe)
+	firebase = FirebaseCandle(symbol, timeframe, DEFAULT_PLATFORM)
 
 	if start_time is not None:
 		try:
-			data = data.filter(open_time__gte=int(start_time))
+			start_time = datetime.fromtimestamp(int(start_time) / 1000)
 		except ValueError:
 			raise ValueError(f'Invalid start time "{start_time}"')
 
 	if end_time is not None:
 		try:
-			data = data.filter(open_time__lte=int(end_time))
+			end_time = datetime.fromtimestamp(int(end_time) / 1000)
 		except ValueError:
 			raise ValueError(f'Invalid end time "{end_time}"')
 
-	data = [
-		{
-			'Open Time': row.open_time,
-			'Open': row.open,
-			'High': row.high,
-			'Low': row.low,
-			'Close': row.close,
-			'Volume': row.volume,
-		}
-		for row in data.order_by('open_time')
-	]
-
+	data = firebase.fetch(start_time, end_time)
 	return data
 
 

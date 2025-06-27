@@ -151,6 +151,8 @@ KLINE_TOKENS = env.str('KLINE_TOKENS', default='BTC;GBP').split(';')
 KLINE_INTERVALS = env.str('KLINE_INTERVALS', default='1h').split(';')
 
 # Constants
+DEFAULT_PLATFORM = 'binance'
+DEFAULT_TIMEFRAME = '1h'
 INTERVAL_MAP = {
 	'1h': 60,
 	'2h': 120,
@@ -160,18 +162,6 @@ INTERVAL_MAP = {
 	'1d': 1440,
 }
 
-FIAT = env.str('FIAT', default='GBP')
-DEMO_AMOUNT = env.float('DEMO_ACCOUNT_AMOUNT', default=10000)
-BOT_NAME = env.str('BOT_NAME', default='MachD')
-
-BACKTEST_TIMEFRAME = env.str('BACKTEST_TIMEFRAME', default='60->1h;240->4h;1440->1d').split(';')
-BACKTEST_TIMEFRAME = {tf.split('->')[1]: int(tf.split('->')[0]) for tf in BACKTEST_TIMEFRAME}
-TIMEFRAMES = env.str('TIMEFRAME_MAP', default='short->1h;medium->4h;long->1d').split(';')
-TIMEFRAMES = {tf.split('->')[1]: tf.split('->')[0] for tf in TIMEFRAMES}
-
-HISTORY_INTERVAL = env.int('TOKEN_HISTORY_INTERVAL_IN_MINUTES', default=60)
-HISTORY_COUNT = env.int('MAX_TOKEN_HISTORY_IN_DAYS', default=7) * 24 * 60 // HISTORY_INTERVAL  # Multiply into minutes
-
 GOOGLE_AUTH_EMAIL = 'https://accounts.google.com'
 GCLOUD_EMAIL = env.str('GCLOUD_EMAIL', default='')
 SERVER_API_URL = env.str('API_URL', default='')
@@ -179,13 +169,6 @@ SERVER_API_URL = env.str('API_URL', default='')
 KRAKEN_OHLC_API = 'https://api.kraken.com/0/public/OHLC'
 KRAKEN_PAIR_API = 'https://api.kraken.com/0/public/Ticker'
 COIN_GECKO_API = 'https://api.coingecko.com/api/v3/coins/markets'
-
-GNEWS_API = 'https://gnews.io/api/v4/search'
-GNEWS_API_KEY = env.str('GNEWS_API_KEY', default='')
-GNEWS_LANG = 'en'
-GNEWS_MAX_FETCH = env.float('GNEWS_MAX_FETCH', default=10)
-GNEWS_EXPIRY_DAY = env.float('NEWS_EXPIRED_IN_DAY', default=14)
-GNEWS_FETCH_FROM = env.float('FETCH_NEWS_IN_DAY', default=7)
 
 
 # Firebase Connection

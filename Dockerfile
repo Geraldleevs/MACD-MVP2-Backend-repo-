@@ -55,4 +55,4 @@ ENV EXCLUDE_FIRESTORE="True"
 RUN python manage.py migrate
 ENV EXCLUDE_FIRESTORE="False"
 
-CMD gunicorn --bind 0.0.0.0:${PORT} --workers 2 --threads 8 --timeout 0 --preload machd.wsgi:application
+CMD gunicorn --bind 0.0.0.0:${PORT} --workers 1 --threads 8 --timeout 0 --preload machd.asgi:application -k machd.uvicorn_workers.UvicornWorker
