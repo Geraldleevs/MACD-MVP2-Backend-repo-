@@ -1,13 +1,19 @@
 import math
 from datetime import datetime, timedelta
+from decimal import Decimal
 from enum import Enum
+from typing import Literal
 
 import numpy as np
 import pytz
 from django.conf import settings
+from django.utils import timezone
 from google.cloud.firestore_v1 import Client, CollectionReference, DocumentReference, WriteBatch
 from google.cloud.firestore_v1.base_query import FieldFilter
 from pandas import DataFrame
+
+from core.calculations import calculate
+from core.exceptions import NotEnoughTokenException
 
 FIREBASE: Client = settings.FIREBASE
 DB_BATCH: WriteBatch = settings.DB_BATCH
@@ -20,7 +26,9 @@ class Platform(Enum):
 
 class FirebaseCandle:
 	MAX_UPLOAD_LIMIT = 50000
+	TIMESTAMP_NS_THRES = 100000000000000
 	TIMESTAMP_MS_THRES = 100000000000
+	TABLE_NAME = 'Candle'
 	__candle_token: DocumentReference = None
 	__candle_data: CollectionReference = None
 	__record_per_day: int = None
@@ -28,7 +36,7 @@ class FirebaseCandle:
 	def __init__(self, token_pair=None, timeframe=None, platform=None):
 		self.__timestamp_column = 'Open Time'
 		self.__db_batch = DB_BATCH
-		self.__candle = FIREBASE.collection('Candle')
+		self.__candle = FIREBASE.collection(self.TABLE_NAME)
 
 		if None not in [token_pair, timeframe, platform]:
 			self.change_pair(token_pair, timeframe, platform)
@@ -227,3 +235,286 @@ class FirebaseCandle:
 	def fetch_pair(self, token_id: str):
 		doc = self.__candle.where(filter=FieldFilter('token_id', '==', token_id)).limit(1).get()[0]
 		return doc.to_dict()
+
+
+class FirebaseOrderBook:
+	ORDER_BOOK_TABLE = 'OrderBook'
+	__OPEN_STATUS = 'OPEN'
+	__COMPLETED_STATUS = 'COMPLETED'
+	__CANCELLED_STATUS = 'CANCELLED'
+
+	def __init__(self):
+		self.__order_book = FIREBASE.collection(self.ORDER_BOOK_TABLE)
+
+	def create_order(self, uid, from_token, to_token, price, volume):
+		FirebaseWallet(uid).hold_token_for_order(from_token, volume)
+
+		new_order = {
+			'uid': uid,
+			'from_token': from_token,
+			'to_token': to_token,
+			'price': str(price),
+			'volume': str(volume),
+			'created_time': timezone.now(),
+			'closed_time': None,
+			'status': self.__OPEN_STATUS,
+		}
+
+		doc_ref: DocumentReference = self.__order_book.document()
+		doc_ref.set(new_order)
+		doc_ref.update({'order_id': doc_ref.id})
+
+		return {'id': doc_ref.id, **doc_ref.get().to_dict()}
+
+	def cancel_order(self, id):
+		doc_ref: DocumentReference = self.__order_book.document(id)
+		doc = doc_ref.get()
+
+		if not doc.exists or doc.to_dict().get('status') != self.__OPEN_STATUS:
+			raise ValueError('Order is not open!')
+
+		order_data = doc.to_dict()
+		FirebaseWallet(order_data['uid']).release_token_hold(order_data['from_token'], order_data['volume'])
+
+		update_data = {
+			'closed_time': timezone.now(),
+			'status': self.__CANCELLED_STATUS,
+		}
+		doc_ref.update(update_data)
+		return {**doc_ref.get().to_dict(), 'id': doc_ref.id}
+
+	def complete_order(self, id):
+		doc_ref: DocumentReference = self.__order_book.document(id)
+		doc = doc_ref.get()
+
+		if not doc.exists or doc.to_dict().get('status') != self.__OPEN_STATUS:
+			raise ValueError('Order is not open!')
+
+		order_data = doc.to_dict()
+		uid = order_data['uid']
+		from_token = order_data['from_token']
+		from_amount = order_data['volume']
+		to_token = order_data['to_token']
+		to_amount = calculate(from_amount, '*', order_data['price'])
+		transaction = FirebaseWallet(uid).complete_order(from_token, from_amount, to_token, to_amount)
+
+		update_data = {
+			'closed_time': timezone.now(),
+			'status': self.__COMPLETED_STATUS,
+			'transaction_id': transaction['id'],
+		}
+		doc_ref.update(update_data)
+		return {**doc_ref.get().to_dict(), 'id': doc_ref.id}
+
+	def delete_by_id(self, id):
+		doc: DocumentReference = self.__order_book.document(id)
+		doc.delete()
+
+	def filter(
+		self,
+		since: datetime = None,
+		before: datetime = None,
+		status: Literal['OPEN', 'CANCELLED', 'CLOSED', 'ALL'] = 'ALL',
+		uid: str = None,
+	):
+		query = self.__order_book
+
+		match status:
+			case 'OPEN':
+				query = query.where(filter=FieldFilter('status', '==', self.__OPEN_STATUS))
+
+			case 'CANCELLED':
+				query = query.where(filter=FieldFilter('status', '==', self.__CANCELLED_STATUS))
+
+			case 'CLOSED':
+				query = query.where(filter=FieldFilter('status', '==', self.__COMPLETED_STATUS))
+
+		if since is not None:
+			query = query.where(filter=FieldFilter('created_time', '>=', since))
+
+		if before is not None:
+			query = query.where(filter=FieldFilter('created_time', '<=', before))
+
+		if uid is not None:
+			query = query.where(filter=FieldFilter('uid', '==', uid))
+
+		query = query.order_by('created_time')
+		docs = query.stream()
+		return [{**doc.to_dict(), 'id': doc.id} for doc in docs]
+
+	def get(self, id):
+		doc_ref: DocumentReference = self.__order_book.document(id)
+		doc = doc_ref.get()
+		return {**doc.to_dict(), 'id': doc.id}
+
+	def has(self, id):
+		doc_ref: DocumentReference = self.__order_book.document(id)
+		return doc_ref.get().exists
+
+
+class FirebaseWallet:
+	USER_TABLE = 'User'
+	WALLET_TABLE = 'wallet'
+	TRANSACTION_TABLE = 'transaction'
+	USER_AMOUNT = 'amount'
+	HOLD_AMOUNT = 'hold_amount'
+
+	def __init__(self, uid):
+		self.__user_doc: DocumentReference = FIREBASE.collection(self.USER_TABLE).document(uid)
+		self.__wallet_collection: CollectionReference = self.__user_doc.collection(self.WALLET_TABLE)
+		self.__transaction_collection: CollectionReference = self.__user_doc.collection(self.TRANSACTION_TABLE)
+
+	def demo_init(self, token, amount):
+		transaction: DocumentReference = self.__transaction_collection.document()
+		transaction.set(
+			{
+				'time': timezone.now(),
+				'from_token': token,
+				'from_amount': str(amount),
+				'to_token': token,
+				'to_amount': str(amount),
+				'operated_by': 'System',
+				'trade_type': 'Buy',
+			}
+		)
+		transaction.update({'id': transaction.id})
+		wallet: DocumentReference = self.__wallet_collection.document(token)
+		wallet.set({'token_id': token, self.USER_AMOUNT: str(amount)})
+
+	def trade(self, from_token, from_amount, to_token, to_amount, previous_amount=None):
+		trade_type = 'Convert'
+		profit = None
+		if previous_amount is not None:
+			profit = calculate(to_amount, '-', previous_amount)
+
+		from_amount = Decimal(str(from_amount))
+		from_after_trade = self.__update(from_token, -from_amount)
+		to_after_trade = self.__upsert(to_token, to_amount)
+
+		transaction: DocumentReference = self.__transaction_collection.document()
+		transaction.set(
+			{
+				'time': timezone.now(),
+				'from_token': from_token,
+				'from_amount': str(from_amount),
+				'to_token': to_token,
+				'to_amount': str(to_amount),
+				'trade_type': trade_type,
+				'profit': str(profit) if profit is not None else None,
+				'from_amount_after_trade': str(from_after_trade),
+				'to_amount_after_trade': str(to_after_trade),
+			}
+		)
+		transaction.update({'id': transaction.id})
+		return transaction.get().to_dict()
+
+	def _edit(self, token: str, data: dict[str, any]):
+		doc_ref: DocumentReference = self.__wallet_collection.document(token)
+		doc_ref.update(data)
+		return {'id': doc_ref.id, **doc_ref.get().to_dict()}
+
+	def __update(self, token, change) -> Decimal:
+		doc_ref: DocumentReference = self.__wallet_collection.document(token)
+		new_value = calculate(doc_ref.get().to_dict().get(self.USER_AMOUNT, 0), '+', change)
+
+		if new_value < 0:
+			raise NotEnoughTokenException
+
+		doc_ref.update({self.USER_AMOUNT: str(new_value)})
+		return new_value
+
+	def __upsert(self, token, change) -> Decimal:
+		doc_ref: DocumentReference = self.__wallet_collection.document(token)
+		doc = doc_ref.get()
+
+		if doc.exists:
+			new_value = calculate(doc.to_dict().get(self.USER_AMOUNT, 0), '+', change)
+
+			if new_value < 0:
+				raise NotEnoughTokenException
+
+			doc_ref.update({self.USER_AMOUNT: str(new_value)})
+		else:
+			new_value = calculate(0, '+', change)
+			doc_ref.set({'token_id': token, self.USER_AMOUNT: str(new_value)})
+
+		return new_value
+
+	def get_wallet(self, token_id=None):
+		if token_id is None:
+			docs = self.__wallet_collection.stream()
+		else:
+			docs = self.__wallet_collection.where(filter=FieldFilter('token_id', '==', token_id)).stream()
+		return [{**doc.to_dict(), 'id': doc.id} for doc in docs]
+
+	def get_transaction(self):
+		docs = self.__transaction_collection.order_by('-time').stream()
+		return [{**doc.to_dict()} for doc in docs]
+
+	def hold_token_for_order(self, token_id, amount):
+		has_wallet = len(self.__wallet_collection.limit(1).get()) > 0
+		if not has_wallet:
+			self.demo_init(settings.INITIAL_TOKEN, settings.INITIAL_AMOUNT)
+
+		doc_ref: DocumentReference = self.__wallet_collection.document(token_id)
+		doc = doc_ref.get()
+
+		if not doc.exists:
+			raise NotEnoughTokenException
+
+		new_value = doc.to_dict().get(self.USER_AMOUNT, 0)
+		new_value = calculate(new_value, '-', amount)
+
+		if new_value < 0:
+			raise NotEnoughTokenException
+
+		hold_value = doc.to_dict().get(self.HOLD_AMOUNT, 0)
+		hold_value = 0 if hold_value is None else hold_value
+		hold_value = calculate(hold_value, '+', amount)
+
+		new_data = {
+			self.USER_AMOUNT: str(new_value),
+			self.HOLD_AMOUNT: str(hold_value),
+		}
+
+		doc_ref.update(new_data)
+
+	def release_token_hold(self, token_id, amount):
+		doc_ref: DocumentReference = self.__wallet_collection.document(token_id)
+		doc = doc_ref.get()
+
+		if not doc.exists:
+			raise NotEnoughTokenException
+
+		hold_value = doc.to_dict().get(self.HOLD_AMOUNT, 0)
+		hold_value = calculate(hold_value, '-', amount)
+
+		if hold_value < 0:
+			raise NotEnoughTokenException
+
+		new_value = doc.to_dict().get(self.USER_AMOUNT, 0)
+		new_value = calculate(new_value, '+', amount)
+
+		new_data = {
+			self.USER_AMOUNT: str(new_value),
+			self.HOLD_AMOUNT: str(hold_value),
+		}
+
+		doc_ref.update(new_data)
+
+	def complete_order(self, from_token, from_amount, to_token, to_amount):
+		from_doc_ref: DocumentReference = self.__wallet_collection.document(from_token)
+		from_doc = from_doc_ref.get()
+
+		if not from_doc.exists:
+			raise NotEnoughTokenException
+
+		new_hold_value = from_doc.to_dict().get(self.HOLD_AMOUNT, 0)
+		new_hold_value = calculate(new_hold_value, '-', from_amount)
+
+		if new_hold_value < 0:
+			raise NotEnoughTokenException
+
+		self.release_token_hold(from_token, from_amount)
+		transaction = self.trade(from_token, from_amount, to_token, to_amount)
+		return transaction

@@ -18,8 +18,11 @@ Including another URLconf
 from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
+from machd import views
+
 urlpatterns = [
 	path('api/v2/', include('api_v2.urls')),
 	path('schema/', SpectacularAPIView.as_view(), name='schema'),  # OpenAPI schema
 	path('documentations/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),  # Swagger UI
+	path('healthz/', views.Health.as_view(), name='health'),
 ]

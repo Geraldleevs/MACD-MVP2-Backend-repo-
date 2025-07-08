@@ -1,10 +1,19 @@
+import asyncio
+import calendar
+import json
 import traceback
-from datetime import datetime
+import urllib.error
+import urllib.request
+from datetime import datetime, timedelta
 from functools import lru_cache
+from pathlib import Path
 
+import aiohttp
 import firebase_admin.auth
 import numpy as np
 import pandas as pd
+import requests
+from aiohttp import ClientSession
 from django.conf import settings
 from django.utils import timezone
 from drf_spectacular.types import OpenApiTypes
@@ -20,9 +29,10 @@ from rest_framework.response import Response
 from rest_framework.serializers import BooleanField, CharField, FloatField, IntegerField, ListField
 from rest_framework.views import APIView
 
-from api_v2.firebase import FirebaseCandle
+from api_v2.firebase import FirebaseCandle, FirebaseOrderBook, Platform
 from core.calculations import (
 	analyse_strategy,
+	calculate,
 	calculate_amount,
 	combine_ohlc,
 	evaluate_expressions,
@@ -30,8 +40,9 @@ from core.calculations import (
 	validate_indicators,
 	validate_strategy,
 )
+from core.exceptions import NotEnoughTokenException
 from core.technical_analysis import TechnicalAnalysis, TechnicalAnalysisTemplate
-from machd.utils import log_error
+from machd.utils import clean_kraken_pair, log, log_error, log_warning
 
 TA: TechnicalAnalysis = settings.TA
 TA_TEMPLATES: TechnicalAnalysisTemplate = settings.TA_TEMPLATES
@@ -40,6 +51,7 @@ DEFAULT_PLATFORM: str = settings.DEFAULT_PLATFORM
 INTERVAL_MAP: dict[str, int] = settings.INTERVAL_MAP
 DB_BATCH: WriteBatch = settings.DB_BATCH
 FIREBASE: Client = settings.FIREBASE
+BASE_DIR: Path = settings.BASE_DIR
 
 
 def authenticate_jwt(force_auth=False):
@@ -71,6 +83,38 @@ def authenticate_jwt(force_auth=False):
 	return decorator
 
 
+def authenticate_scheduler_oicd():
+	def decorator(view_func):
+		def wrapper(self, request: Request, *args, **kwargs):
+			if settings.DEBUG is True or settings.SKIP_AUTH is True:
+				return view_func(self, request, *args, **kwargs)
+
+			try:
+				token = get_authorization_header(request).decode('utf-8').split(' ')
+
+				if len(token) < 2:
+					return Response({'error': 'Unauthorised'}, status=403)
+
+				auth = requests.get(settings.GOOGLE_AUTH_URL, params={'id_token': token[1]}).json()
+
+				if (
+					'error' in auth.keys()
+					or auth['iss'] != settings.GOOGLE_AUTH_EMAIL
+					or auth['email'] != settings.GCLOUD_EMAIL
+					or auth['aud'] != settings.SERVER_API_URL
+				):
+					return Response({'error': 'Unauthorised'}, status=403)
+
+			except Exception:
+				return Response({'error': 'Unauthorised'}, status=403)
+
+			return view_func(self, request, *args, **kwargs)
+
+		return wrapper
+
+	return decorator
+
+
 def error_logger():
 	def decorator(view_func):
 		def wrapper(self, request: Request, *args, **kwargs):
@@ -85,40 +129,11 @@ def error_logger():
 	return decorator
 
 
-try:
-	PAIRS: dict[str, dict[str, int]] = {}
-	for token in FirebaseCandle().fetch_pairs():
-		symbol = token['token_id']
-		from_token = token['from_token']
-		to_token = token['to_token']
-
-		firebase = FirebaseCandle(symbol, DEFAULT_TIMEFRAME, DEFAULT_PLATFORM)
-		start_time = None
-		end_time = None
-
-		first = firebase.fetch_first()
-		if len(first) > 0:
-			start_time = first[0]['Open Time']
-		else:
-			continue
-
-		last = firebase.fetch_last()
-		if len(last) > 0:
-			end_time = last[-1]['Open Time']
-
-		PAIRS[symbol] = {'FROM_TOKEN': from_token, 'TO_TOKEN': to_token}
-		for interval in INTERVAL_MAP:
-			PAIRS[symbol][interval] = {'START_TIME': start_time, 'END_TIME': end_time}
-except Exception:
-	print('Firebase not connected!')
-
-
 def validate_symbol_timeframe(
 	symbol: str,
 	timeframe: str,
 	start_time: int = None,
 	end_time: int = None,
-	fetch_only=False,
 ):
 	if symbol is None or symbol == '':
 		raise ValueError('Missing "symbol"!')
@@ -126,13 +141,12 @@ def validate_symbol_timeframe(
 	if timeframe is None or timeframe == '':
 		raise ValueError('Missing "timeframe"!')
 
+	PAIRS = [pair['token_id'] for pair in FirebaseCandle().fetch_pairs()]
+
 	if symbol not in PAIRS:
 		raise ValueError(f'Invalid symbol "{symbol}"!')
 
-	if fetch_only:
-		if timeframe not in PAIRS[symbol]:
-			raise ValueError(f'Invalid timeframe "{timeframe}"!')
-	elif timeframe not in settings.INTERVAL_MAP:
+	if timeframe not in settings.INTERVAL_MAP:
 		raise ValueError(f'Invalid timeframe "{timeframe}"!')
 
 	try:
@@ -141,17 +155,11 @@ def validate_symbol_timeframe(
 	except ValueError:
 		raise ValueError(f'Invalid start time "{start_time}"!')
 
-	if start_time is not None and start_time < PAIRS[symbol][DEFAULT_TIMEFRAME]['START_TIME']:
-		start_time = PAIRS[symbol][DEFAULT_TIMEFRAME]['START_TIME']
-
 	try:
 		if end_time is not None:
 			end_time = int(end_time)
 	except ValueError:
 		raise ValueError(f'Invalid end time "{end_time}"!')
-
-	if end_time is not None and end_time > PAIRS[symbol][DEFAULT_TIMEFRAME]['END_TIME']:
-		end_time = PAIRS[symbol][DEFAULT_TIMEFRAME]['END_TIME']
 
 
 @lru_cache(maxsize=8)
@@ -203,6 +211,29 @@ class BacktestTemplates(APIView):
 class BacktestSymbols(APIView):
 	@error_logger()
 	def get(self, request: Request):
+		PAIRS = {}
+		for token in FirebaseCandle().fetch_pairs():
+			symbol = token['token_id']
+			from_token = token['from_token']
+			to_token = token['to_token']
+
+			firebase = FirebaseCandle(symbol, DEFAULT_TIMEFRAME, DEFAULT_PLATFORM)
+			start_time = None
+			end_time = None
+
+			first = firebase.fetch_first()
+			if len(first) > 0:
+				start_time = first[0]['Open Time']
+			else:
+				continue
+
+			last = firebase.fetch_last()
+			if len(last) > 0:
+				end_time = last[-1]['Open Time']
+
+			PAIRS[symbol] = {'FROM_TOKEN': from_token, 'TO_TOKEN': to_token}
+			PAIRS[symbol][DEFAULT_TIMEFRAME] = {'START_TIME': start_time, 'END_TIME': end_time}
+
 		return Response(
 			{
 				'trading_pairs': {
@@ -774,13 +805,17 @@ class RunBacktest(APIView):
 		expressions = evaluate_values({DEFAULT_TIMEFRAME: df}, sell_strategy, False, DEFAULT_TIMEFRAME)
 		sell_results = evaluate_expressions(expressions)
 
+		token = FirebaseCandle().fetch_pair(symbol)
+		to_token = token['to_token']
+		from_token = token['from_token']
+
 		results = calculate_amount(
 			capital=capital_amount,
 			open_times=df['Open Time'].to_numpy(),
 			close_data=df['Close'].to_numpy(),
 			buy_signals=buy_results,
 			sell_signals=sell_results,
-			unit_types=[PAIRS[symbol]['TO_TOKEN'], PAIRS[symbol]['FROM_TOKEN']],
+			unit_types=[to_token, from_token],
 			stop_loss=stop_loss,
 			take_profit=take_profit,
 			trade_limit=trade_limit if trade_limit is not None else 100,  # Default 100 trades
@@ -799,9 +834,9 @@ class RunBacktest(APIView):
 		data = {
 			'date': backtest_date,
 			'symbol': symbol,
-			'from_token': PAIRS[symbol]['FROM_TOKEN'],
-			'to_token': PAIRS[symbol]['TO_TOKEN'],
-			'trade_using': PAIRS[symbol]['TO_TOKEN'],
+			'from_token': from_token,
+			'to_token': to_token,
+			'trade_using': to_token,
 			'start_time': start_time,
 			'end_time': end_time,
 			'take_profit': take_profit,
@@ -834,3 +869,343 @@ class RunBacktest(APIView):
 		data['backtest_id'] = doc_ref.id if user_exists else None
 
 		return Response(data)
+
+
+# Live Tradings
+class TradeView(APIView):
+	@extend_schema(
+		request=inline_serializer(
+			name='Trade Form',
+			fields={
+				'uid': CharField(default=''),
+				'trade_type': CharField(default='ORDER|CANCEL'),
+				'order_id': CharField(default=''),
+				'from_token': CharField(default='GBP'),
+				'to_token': IntegerField(default='BTC'),
+				'from_amount': FloatField(default=100),
+				'order_price': FloatField(default=10083),
+			},
+		),
+	)
+	@authenticate_jwt()
+	@error_logger()
+	def post(self, request: Request):
+		uid = request.data.get('uid')
+		trade_type = request.data.get('trade_type', '').upper()
+		order_id = request.data.get('order_id', '')
+
+		firebase = FirebaseOrderBook()
+		if trade_type == 'CANCEL':
+			if not firebase.has(order_id) or firebase.get(order_id).get('uid', None) != uid:
+				return Response({'error': 'Order not found!'}, 400)
+			result = firebase.cancel_order(order_id)
+			return Response(result)
+
+		if trade_type != 'ORDER':
+			return Response({'error': 'Invalid trade type!'}, 400)
+
+		from_token = request.data.get('from_token', '').upper()
+		to_token = request.data.get('to_token', '').upper()
+		from_amount = str(request.data.get('from_amount', ''))
+		order_price = str(request.data.get('order_price', '0'))
+
+		try:
+			validate_field = 'from_amount'
+			if calculate(from_amount, '<=', 0):
+				raise ValueError
+			validate_field = 'order_price'
+			if calculate(order_price, '<=', 0):
+				raise ValueError
+		except ValueError:
+			return Response({'error': f'Invalid {validate_field} "{order_price}"!'}, 400)
+
+		try:
+			result = firebase.create_order(uid, from_token, to_token, order_price, from_amount)
+		except ValueError as e:
+			return Response({'error': str(e)})
+		except NotEnoughTokenException:
+			return Response({'error': 'Not enough token!'})
+		return Response(result)
+
+
+class CheckOrders:
+	def check(self):
+		order_book = FirebaseOrderBook()
+		orders = order_book.filter(status='OPEN')
+		token_pair_price = {}
+		for order in orders:
+			order_id = order['id']
+			price = order['price']
+			from_token = order['from_token']
+			to_token = order['to_token']
+			pair = f'{from_token}{to_token}'
+			reverse_pair = f'{to_token}{from_token}'
+			if pair not in token_pair_price:
+				token_pair_price[pair] = {'data': [], 'reverse': reverse_pair}
+			token_pair_price[pair]['data'].append((price, order_id))
+
+		success_pairs = asyncio.run(self.__check_orders_success(token_pair_price))
+		self.__trade(success_pairs)
+		return Response(status=200)
+
+	async def __check_orders_success(self, order_prices):
+		last_minute = timezone.now() - timedelta(minutes=2)
+		since = int(last_minute.timestamp())
+		prices = {}
+		async with aiohttp.ClientSession() as session:
+			tasks = [self.__fetch_kraken_ohlc(session, pair, since) for pair in order_prices]
+			reverse_tasks = [
+				self.__fetch_kraken_ohlc(session, order_prices[pair]['reverse'], since, pair) for pair in order_prices
+			]
+			results = await asyncio.gather(*tasks)
+			reverse_results = await asyncio.gather(*reverse_tasks)
+			results = {pair: (high, low) for pair, high, low in results if high is not None and low is not None}
+			reverse_results = {
+				pair: (calculate(1, '/', high), calculate(1, '/', low))
+				for (pair, high, low) in reverse_results
+				if high is not None and low is not None
+			}
+			prices = {**results, **reverse_results}
+
+		success_pair = []
+		for pair in order_prices:
+			values = prices.get(pair)
+			if values is None or values[0] is None or values[1] is None:
+				log_error(f'Check Orders Failed due to token price not found! ({pair})')
+				continue
+
+			high, low = values
+
+			for order_price, order_id in order_prices[pair]['data']:
+				if calculate(order_price, '>=', low) and calculate(order_price, '<=', high):
+					success_pair.append(order_id)
+
+		return success_pair
+
+	async def __fetch_kraken_ohlc(self, session: ClientSession, pair, since: int, reverse_pair_name=None):
+		params = {'pair': pair, 'interval': 1, 'since': since}
+		async with session.get(settings.KRAKEN_OHLC_API, params=params) as response:
+			if response.status == 200:
+				kraken_results = await response.json()
+				if len(kraken_results['error']) > 0:
+					return (pair, None, None) if reverse_pair_name is None else (reverse_pair_name, None, None)
+
+				results = clean_kraken_pair(kraken_results)[pair]
+				high = results[0][2]
+				low = results[0][3]
+
+				for result in results:
+					high = max(high, result[2])
+					low = min(low, result[3])
+
+				return (pair, high, low) if reverse_pair_name is None else (reverse_pair_name, low, high)
+			return (pair, None, None) if reverse_pair_name is None else (reverse_pair_name, None, None)
+
+	def __trade(self, success_pairs):
+		order_book = FirebaseOrderBook()
+		trade_count = 0
+
+		for success_pair in success_pairs:
+			try:
+				order_book.complete_order(success_pair)
+				trade_count += 1
+			except KeyError as e:
+				order_details = order_book.get(success_pair)
+				to_amount = calculate(order_details.get('volume', '0'), '*', order_details.get('price_str', '0'))
+				log_warning(
+					{
+						'error': f'Order fails: Invalid key {str(e)}',
+						'order_details': {
+							'order_id': order_details.get('id'),
+							'uid': order_details.get('uid'),
+							'volume': order_details.get('volume'),
+							'from_token': order_details.get('from_token'),
+							'to_amount': str(to_amount),
+							'to_token': order_details.get('to_token'),
+						},
+					}
+				)
+			except ValueError as e:
+				order_details = order_book.get(success_pair)
+				to_amount = calculate(order_details.get('volume', '0'), '*', order_details.get('price_str', '0'))
+				log_warning(
+					{
+						'error': f'Order fails: {str(e)}',
+						'order_details': {
+							'order_id': order_details.get('id'),
+							'uid': order_details.get('uid'),
+							'volume': order_details.get('volume'),
+							'from_token': order_details.get('from_token'),
+							'to_amount': str(to_amount),
+							'to_token': order_details.get('to_token'),
+						},
+					}
+				)
+			except NotEnoughTokenException:
+				order_details = order_book.get(success_pair)
+				to_amount = calculate(order_details.get('volume', '0'), '*', order_details.get('price_str', '0'))
+				log_warning(
+					{
+						'error': 'Order fails: Not enough token!',
+						'order_details': {
+							'order_id': order_details.get('id'),
+							'uid': order_details.get('uid'),
+							'volume': order_details.get('volume'),
+							'from_token': order_details.get('from_token'),
+							'to_amount': str(to_amount),
+							'to_token': order_details.get('to_token'),
+						},
+					}
+				)
+
+		log(f'Trade Success: {trade_count}')
+
+
+class FetchCandle:
+	UNIT_MS = settings.INTERVAL_MAP[DEFAULT_TIMEFRAME] * 60 * 1000
+	BEGINNING = {
+		Platform.BINANCE: datetime(year=2017, month=7, day=1),
+	}
+
+	def fetch(self):
+		self.fetch_binance()
+
+	def fetch_binance(self):
+		pairs: dict[str, datetime] = {}
+		for token in FirebaseCandle().fetch_pairs():
+			symbol = token['token_id']
+			firebase = FirebaseCandle(symbol, DEFAULT_TIMEFRAME, Platform.BINANCE.value)
+			end_time = None
+			last = firebase.fetch_last()
+			if len(last) > 0:
+				end_time = last[-1]['Open Time']
+				if end_time > FirebaseCandle.TIMESTAMP_MS_THRES:
+					end_time = end_time / 1000
+				end_time = datetime.fromtimestamp(end_time)
+
+			pairs[symbol] = end_time
+
+		response = urllib.request.urlopen('https://api.binance.com/api/v3/exchangeInfo').read()
+		all_symbols = list(map(lambda symbol: symbol['symbol'], json.loads(response)['symbols']))
+		filtered_symbols = list(filter(lambda x: x in pairs, all_symbols))
+
+		now = datetime.now()
+		for symbol in filtered_symbols:
+			start_time = pairs[symbol]
+			has_start = True if start_time is not None else False
+			if start_time is None:
+				start_time = self.BEGINNING[Platform.BINANCE]
+			start_time = datetime(start_time.year, start_time.month, 1)
+
+			concat_dfs = []
+			while start_time < now:
+				path = f'data/spot/monthly/klines/{symbol}/{DEFAULT_TIMEFRAME}'
+				filename = f'{symbol.upper()}-{DEFAULT_TIMEFRAME}-{start_time.year}-{start_time.month:02d}.zip'
+				write_path = BASE_DIR / 'binance_public_data' / path / filename
+				if write_path.exists():
+					write_path.unlink()
+				parent_path = BASE_DIR / 'binance_public_data' / path
+				parent_path.mkdir(parents=True, exist_ok=True)
+
+				download_url = f'https://data.binance.vision/{path}/{filename}'
+				try:
+					dl_file = urllib.request.urlopen(download_url)
+					length = dl_file.getheader('content-length')
+					if length:
+						length = int(length)
+						blocksize = max(4096, length // 100)
+
+					with open(write_path, 'wb') as out_file:
+						dl_progress = 0
+						while True:
+							buf = dl_file.read(blocksize)
+							if not buf:
+								break
+							dl_progress += len(buf)
+							out_file.write(buf)
+
+					df = pd.read_csv(write_path, compression='zip', header=None)
+					df = df.iloc[:, 0:6]
+					df.columns = ['Open Time', 'Open', 'High', 'Low', 'Close', 'Volume']
+					if df.iloc[0, 0] > FirebaseCandle.TIMESTAMP_NS_THRES:
+						df['Open Time'] = df['Open Time'] / 1000
+					elif df.iloc[0, 0] < FirebaseCandle.TIMESTAMP_MS_THRES:
+						df['Open Time'] = df['Open Time'] * 1000
+
+					df_start_time = datetime.fromtimestamp(df.iloc[0, 0] / 1000)
+					num_days = calendar.monthrange(df_start_time.year, df_start_time.month)[1]
+					df_start_time = datetime(year=df_start_time.year, month=df_start_time.month, day=1)
+					df_end_time = df_start_time + timedelta(days=num_days)
+					start_timestamp = int(df_start_time.timestamp() * 1000)
+					end_timestamp = int(df_end_time.timestamp() * 1000)
+					all_time = list(range(start_timestamp, end_timestamp, self.UNIT_MS))
+					full_df = pd.DataFrame({'Open Time': all_time})
+					full_df = full_df.merge(df, how='left', on='Open Time')
+					full_df = full_df.replace(np.nan, None)
+					concat_dfs.append(full_df)
+				except urllib.error.HTTPError:
+					log_warning(f'Failed to download {download_url}!')
+
+				start_time = start_time + timedelta(days=31)
+				start_time = datetime(start_time.year, start_time.month, 1)
+
+			if all([df is None for df in concat_dfs]):
+				continue
+
+			df = pd.concat(concat_dfs).reset_index(drop=True)
+			if has_start:
+				first_valid = 0
+			else:
+				first_valid = df['Open'].first_valid_index()
+			last_valid = df['Open'].last_valid_index()
+			df = df.iloc[first_valid : last_valid + 1, :]
+
+			if len(df) == 0:
+				continue
+
+			rows_per_day = round(60 * 24 / settings.INTERVAL_MAP[DEFAULT_TIMEFRAME])
+			max_upload_limit = FirebaseCandle.MAX_UPLOAD_LIMIT - (FirebaseCandle.MAX_UPLOAD_LIMIT % rows_per_day)
+			for _, group in df.groupby(np.arange(len(df)) // max_upload_limit):
+				FirebaseCandle(symbol, DEFAULT_TIMEFRAME, Platform.BINANCE.value).save_ohlc(group)
+				log(f'Updated {symbol} Binance data!')
+
+
+class ScheduleView(APIView):
+	@authenticate_scheduler_oicd()
+	@error_logger()
+	def post(self, request: Request):
+		now = timezone.now()
+		monthly = now.day == 5
+
+		error = []
+		completed_task = []
+
+		def check_order_fn():
+			CheckOrders().check()
+
+		completed_task, error = self.schedule_run(check_order_fn, 'Check Orders', completed_task, error)
+
+		def fetch_candles_fn():
+			FetchCandle().fetch()
+
+		if monthly:
+			completed_task, error = self.schedule_run(fetch_candles_fn, 'Fetch Candles', completed_task, error)
+
+		log(f'Completed Task: [{", ".join(completed_task)}]')
+
+		if len(error) > 0:
+			log_error('\n'.join(error))
+			return Response(status=500)
+
+		return Response(status=200)
+
+	def schedule_run(self, function, title, completed_task: list[str], error: list[str], retry=False):
+		try:
+			function()
+			completed_task.append(title)
+		except Exception as e:
+			error.append(f'Error {title}: {str(e)}')
+			if retry:
+				completed_task, error = self.schedule_run(function, title, completed_task, error)
+
+		return completed_task, error
