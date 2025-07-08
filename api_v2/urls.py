@@ -10,4 +10,6 @@ urlpatterns = [
 	path('indicators', views.RunIndicators.as_view(), name='analyse-indicators'),
 	path('backtest', views.RunBacktest.as_view(), name='run-backtest'),
 	path('check-login', views.CheckLoginStatus.as_view(), name='check-login'),
+	path('trade', views.TradeView.as_view(), name='trade'),
+	path('schedule', views.ScheduleView.as_view(), name='schedule'),
 ]

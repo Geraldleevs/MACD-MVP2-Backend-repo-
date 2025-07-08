@@ -151,6 +151,8 @@ KLINE_TOKENS = env.str('KLINE_TOKENS', default='BTC;GBP').split(';')
 KLINE_INTERVALS = env.str('KLINE_INTERVALS', default='1h').split(';')
 
 # Constants
+INITIAL_TOKEN = 'GBP'
+INITIAL_AMOUNT = 10000
 DEFAULT_PLATFORM = 'binance'
 DEFAULT_TIMEFRAME = '1h'
 INTERVAL_MAP = {
@@ -163,6 +165,7 @@ INTERVAL_MAP = {
 }
 
 GOOGLE_AUTH_EMAIL = 'https://accounts.google.com'
+GOOGLE_AUTH_URL = 'https://oauth2.googleapis.com/tokeninfo'
 GCLOUD_EMAIL = env.str('GCLOUD_EMAIL', default='')
 SERVER_API_URL = env.str('API_URL', default='')
 

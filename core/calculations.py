@@ -1,6 +1,8 @@
 import math
 from copy import deepcopy
 from datetime import datetime
+from decimal import ROUND_DOWN, Decimal
+from typing import Literal
 
 import numpy as np
 import pandas as pd
@@ -844,3 +846,103 @@ def analyse_strategy(
 		'total_bars': total_bars,
 		'trade_reports': trade_reports,
 	}
+
+
+def calculate(
+	num1: str | float | int | Decimal,
+	op: Literal['+', '-', '*', '/', '%', '//', '==', '!=', '>', '>=', '<', '<='],
+	num2: str | float | int | Decimal,
+	decimal_count=18,
+) -> Decimal | bool:
+	"""
+	Performs calculations with Float128 type with higher precision.
+	Accepts `str`, `float`, `int`, `Decimal` types
+	Returns:
+		result:
+		Result of calculation in decimal type
+	"""
+
+	full_decimal = 18
+	full_decimal_places = '.' + '0' * (full_decimal - 1) + '1'
+	full_decimal_places = Decimal(full_decimal_places)
+
+	if decimal_count is None:
+		decimal_count = full_decimal
+	elif decimal_count < 0:
+		raise ValueError('Invalid decimal count!')
+	decimal_places = '.' + '0' * (decimal_count - 1) + '1'
+	decimal_places = Decimal(decimal_places)
+
+	if num1 is None:
+		num1 = 0
+	if num2 is None:
+		num2 = 0
+
+	try:
+		num1 = Decimal(str(num1))
+		num2 = Decimal(str(num2))
+	except Exception:
+		raise ValueError('Invalid number!')
+
+	match op:
+		case '+':
+			result = num1 + num2
+
+		case '-':
+			result = num1 - num2
+
+		case '*':
+			result = num1 * num2
+
+		case '/':
+			result = num1 / num2
+
+		case '%':
+			result = num1 % num2
+
+		case '//':
+			result = num1 // num2
+
+		case '==':
+			return num1 == num2
+
+		case '!=':
+			return num1 != num2
+
+		case '>':
+			return num1 > num2
+
+		case '>=':
+			return num1 >= num2
+
+		case '<':
+			return num1 < num2
+
+		case '<=':
+			return num1 <= num2
+
+		case _:
+			raise ValueError('Invalid operator!')
+
+	result = result.quantize(decimal_places, rounding=ROUND_DOWN)
+	return result
+
+
+def check_take_profit_stop_loss(amount: float, stop_loss: float = None, take_profit: float = None, none_allowed=True):
+	try:
+		if stop_loss < 0 or stop_loss >= amount:
+			return False
+		if stop_loss >= take_profit:
+			return False
+	except TypeError:
+		if not none_allowed:
+			return False
+
+	try:
+		if take_profit < 0 or take_profit <= amount:
+			return False
+	except TypeError:
+		if not none_allowed:
+			return False
+
+	return True
